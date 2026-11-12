@@ -59,6 +59,14 @@ const BESTAND: Record<GeldSoort, string> = {
   b100: "/geld/getekend/briefje-100-euro.svg",
 };
 
+/**
+ * Opt-in `herstelBriefje` (gouden lessen, besluit Sara 12 november 2026): het briefje van 10 euro zonder de losse '8'
+ * (een KOPIE; het origineel hierboven blijft ongewijzigd en de oude lessen gebruiken dat). Een eigen sleutel in de
+ * cache en in de texturen, zodat oude en gouden lessen elkaar nooit de afbeelding afpakken.
+ */
+const B10_HERSTELD = "/geld/getekend/briefje-10-euro-hersteld.svg";
+export const beeldSleutel = (g: GeldSoort, herstel?: boolean) => (herstel && g === "b10" ? "b10h" : g);
+
 /** Geladen afbeeldingen: geld op zijn soort, proefplaatjes als "p:<sleutel>" (null = er is (nog) geen PNG). */
 const BEELD = new Map<string, HTMLImageElement | null>();
 const LADEN = new Map<string, Promise<void>>();
@@ -85,9 +93,9 @@ function laad(sleutel: string, pad: string): Promise<void> {
 }
 
 /** De officiële afbeeldingen laden (elk één keer). */
-export function laadGeld(soorten: GeldSoort[], getekendeMunten = false): Promise<void> {
+export function laadGeld(soorten: GeldSoort[], getekendeMunten = false, herstelBriefje = false): Promise<void> {
   return Promise.all([
-    ...[...new Set(soorten)].map((g) => laad(g, BESTAND[g])),
+    ...[...new Set(soorten)].map((g) => laad(beeldSleutel(g, herstelBriefje), herstelBriefje && g === "b10" ? B10_HERSTELD : BESTAND[g])),
     ...(getekendeMunten ? [laad("munten-concept", MUNTENBLAD)] : []),
   ]).then(() => undefined);
 }
@@ -121,6 +129,10 @@ export type GeldProps = {
   introductie?: boolean;
   /** Uitsluitend presentatie; alleen aangezet in het muntconcept. */
   getekendeMunten?: boolean;
+  /** Opt-in (gouden lessen): het briefje van 10 euro zonder de losse '8' (kopie van het plaatje, zie boven). */
+  herstelBriefje?: boolean;
+  /** Opt-in (gouden lessen): bij 1 geld groot in beeld ("Wat is dit?") geen zacht vak met dunne rand eromheen. */
+  zonderPaneelVak?: boolean;
   /** Een nieuw tafereel (nieuwe vraag): alles verschijnt opnieuw. */
   nr: number;
   groot?: GDeel[] | null;
@@ -408,9 +420,10 @@ function maakScene(Phaser: typeof import("phaser"), rustig: boolean) {
       const groter = !!this.p?.paneel;
       const uitsnede = this.p?.getekendeMunten && !isBriefje(g)
         ? MUNTUITSNEDE[g as "m1" | "m2" | "c50"] : undefined;
-      const sl = `${groter ? `geld|${g}|L` : `geld|${g}`}${uitsnede ? "|getekend-v2" : ""}`;
+      const bs = beeldSleutel(g, this.p?.herstelBriefje);
+      const sl = `${groter ? `geld|${bs}|L` : `geld|${bs}`}${uitsnede ? "|getekend-v2" : ""}`;
       if (this.textures.exists(sl)) return sl;
-      const img = BEELD.get(uitsnede ? "munten-concept" : g) ?? null;
+      const img = BEELD.get(uitsnede ? "munten-concept" : bs) ?? null;
       const brief = isBriefje(g);
       const verh = uitsnede ? 1 : img ? img.naturalWidth / img.naturalHeight : brief ? 1.9 : 1;
       const b = brief ? (groter ? 780 : 260) : groter ? 320 : 140;
@@ -596,7 +609,7 @@ function maakScene(Phaser: typeof import("phaser"), rustig: boolean) {
      */
     legEen(box: Box, g: GeldSoort, u: number, munt: number) {
       const brief = isBriefje(g);
-      const img = BEELD.get(g) ?? null;
+      const img = BEELD.get(beeldSleutel(g, this.p?.herstelBriefje)) ?? null;
       const verh = img ? img.naturalWidth / img.naturalHeight : brief ? 1.9 : 1;
       const b = brief ? u : munt * muntMaat(g);
       const h = brief ? b / verh : b;
@@ -666,7 +679,7 @@ function maakScene(Phaser: typeof import("phaser"), rustig: boolean) {
         } else if (d.soort === "geld") {
           /* Het goedgekeurde geldvlak onder de vraag, met ruimte voor de bestaande knoppen eronder. */
           const staandPaneel = p.midden === VLAK_B / 2;
-          if (p.paneel && d.geld.length === 1) {
+          if (p.paneel && d.geld.length === 1 && !p.zonderPaneelVak) {
             const paneel = this.add.graphics();
             const breedte = staandPaneel ? 880 : 660;
             const hoogte = staandPaneel ? 350 : 280;
@@ -712,7 +725,7 @@ function maakScene(Phaser: typeof import("phaser"), rustig: boolean) {
 
     zet(p: GeldProps) {
       this.p = p;
-      if (p.vooraf?.length) void laadGeld(p.vooraf, p.getekendeMunten);
+      if (p.vooraf?.length) void laadGeld(p.vooraf, p.getekendeMunten, p.herstelBriefje);
       const sig = JSON.stringify([
         p.nr,
         p.groot ?? null,
@@ -727,11 +740,11 @@ function maakScene(Phaser: typeof import("phaser"), rustig: boolean) {
       ]);
       if (sig !== this.sig) {
         const geld = this.nodigGeld(p);
-        const klaar = geld.every((g) => BEELD.has(g)) && (!p.getekendeMunten || BEELD.has("munten-concept"));
+        const klaar = geld.every((g) => BEELD.has(beeldSleutel(g, p.herstelBriefje))) && (!p.getekendeMunten || BEELD.has("munten-concept"));
         if (!klaar) {
           /* Eerst de afbeeldingen; daarna pas opbouwen (als er intussen niets anders gevraagd is). */
           this.wacht = sig;
-          void laadGeld(geld, p.getekendeMunten).then(() => {
+          void laadGeld(geld, p.getekendeMunten, p.herstelBriefje).then(() => {
             if (this.wacht !== sig || !this.sys?.isActive()) return;
             this.wacht = "";
             this.bouw(this.p!, this.p!.nr !== this.nr);
@@ -1155,7 +1168,7 @@ export function SqulaGeldVlak(props: GeldProps & Vlakbasis) {
     return () => window.removeEventListener("resize", meet);
   }, []);
   const midden = paneel ? (staand ? VLAK_B / 2 : 640) : undefined;
-  const stand = JSON.stringify({ nr, groot, kaarten, kaartenActief, zweven, uit, goed, fout, licht, gekozen, rondje, verbind, geteld, vooraf, paneel, midden, getekendeMunten, vakken, sfeer });
+  const stand = JSON.stringify({ nr, groot, kaarten, kaartenActief, zweven, uit, goed, fout, licht, gekozen, rondje, verbind, geteld, vooraf, paneel, midden, getekendeMunten, vakken, sfeer, herstelBriefje: props.herstelBriefje, zonderPaneelVak: props.zonderPaneelVak });
   useEffect(() => {
     if (scene) scene.zet(JSON.parse(stand) as GeldProps);
   }, [scene, stand]);
@@ -1163,8 +1176,8 @@ export function SqulaGeldVlak(props: GeldProps & Vlakbasis) {
   /* Het geld van de les alvast laden, ook voordat Phaser klaar is. */
   const voorafSleutel = (vooraf ?? []).join(",");
   useEffect(() => {
-    if (voorafSleutel) void laadGeld(voorafSleutel.split(",") as GeldSoort[], getekendeMunten);
-  }, [voorafSleutel, getekendeMunten]);
+    if (voorafSleutel) void laadGeld(voorafSleutel.split(",") as GeldSoort[], getekendeMunten, props.herstelBriefje);
+  }, [voorafSleutel, getekendeMunten, props.herstelBriefje]);
 
   const schudNr = props.schud?.n;
   useEffect(() => {

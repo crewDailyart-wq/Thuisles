@@ -8,13 +8,16 @@
  * een fout en stuurt nooit door.
  */
 
+import { headers } from "next/headers";
 import { huidigKind } from "@/lib/auth/sessie";
+import { voorbeeldMagBewaren } from "@/lib/data/lesuitkomsten-voorbeeld";
 import { bewaarLesUitkomst, type LesUitkomst } from "@/lib/data/lesuitkomsten";
 
 export async function bewaarUitkomst(invoer: { lesId: string; vraagId: string; uitkomst: LesUitkomst; denkfouten: string[]; pogingen: number }): Promise<{ ok: boolean }> {
   try {
     const kind = await huidigKind();
     if (!kind) return { ok: false };
+    if (!voorbeeldMagBewaren((await headers()).get("referer"), kind.roepnaam)) return { ok: false };
     return { ok: bewaarLesUitkomst({ kindId: kind.id, ...invoer, denkfouten: Array.isArray(invoer.denkfouten) ? invoer.denkfouten.map(String) : [] }) };
   } catch {
     return { ok: false };

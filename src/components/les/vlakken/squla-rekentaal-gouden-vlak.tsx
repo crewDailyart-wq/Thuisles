@@ -331,6 +331,47 @@ function tekenDing(c: C, d: RekenDing) {
 /** Rand om een tekening (lijnen mogen iets buiten het vak, zoals in de SVG). */
 const RAND = 10;
 
+/**
+ * De LICHTE RAND (Sara, 12 november 2026): de donkerblauwe lijnen van de tekeningen zijn in de donkere ruimte slecht te
+ * zien. Elke tekening krijgt daarom een dunne lichte omtrek LANGS DE VORM zelf: geen vak, geen kader, geen rechthoek,
+ * geen witte achtergrond. Hoe: de tekening wordt 1 keer in een hulpplaatje getekend; de omtrek is dat plaatje, in
+ * 16 richtingen een klein stukje opgeschoven, 1 keer in lichte kleur gezet (alleen waar de tekening zit) en achter de
+ * tekening gelegd. Dit gebeurt alleen bij het bakken van het plaatje (nooit elk beeld; HARDE REGEL 7): er is geen filter.
+ */
+export const LICHT_RAND = "#e4edff";
+const LICHT_DIK = 3;
+/** Ruimte rondom een plaatje voor de lichte rand (lijnen steken al buiten het vak). */
+const LICHT_RUIMTE = 10;
+function metLichteRand(c: C, teken: (c: C) => void) {
+  const W = c.canvas.width;
+  const H = c.canvas.height;
+  const maak = () => {
+    const k = document.createElement("canvas");
+    k.width = W;
+    k.height = H;
+    return k;
+  };
+  const tek = maak();
+  const tc = tek.getContext("2d")!;
+  tc.setTransform(c.getTransform());
+  teken(tc);
+  const halo = maak();
+  const hc = halo.getContext("2d")!;
+  const r = LICHT_DIK * c.getTransform().a;
+  for (let i = 0; i < 16; i++) {
+    const hoek = (i / 16) * Math.PI * 2;
+    hc.drawImage(tek, Math.cos(hoek) * r, Math.sin(hoek) * r);
+  }
+  hc.globalCompositeOperation = "source-in";
+  hc.fillStyle = LICHT_RAND;
+  hc.fillRect(0, 0, W, H);
+  c.save();
+  c.setTransform(1, 0, 0, 1, 0, 0);
+  c.drawImage(halo, 0, 0);
+  c.drawImage(tek, 0, 0);
+  c.restore();
+}
+
 /* ---------- Phaser ---------- */
 
 interface Scene {
@@ -364,16 +405,23 @@ function maakScene(Phaser: PhaserModule, rustig: boolean) {
       this.load.image("rt-rondje", "/rondje/rondje-rood-2.png");
     }
 
+    /** Een plaatje 1 keer bakken met de lichte rand om de vorm (zie metLichteRand); de ruimte eromheen komt erbij, het midden blijft. */
+    randPlaatje(sl: string, b: number, h: number, teken: (c: C) => void, ruimte = LICHT_RUIMTE) {
+      this.canvasPlaatje(sl, b + 2 * ruimte, h + 2 * ruimte, (c) => {
+        c.translate(ruimte, ruimte);
+        metLichteRand(c, teken);
+      });
+    }
+
     /** Het plaatje van een voorwerp (1 keer getekend per soort en maat). */
     plaatje(d: RekenDing): string {
       const { b, h } = maten(d);
       const sl = `rt-${d.soort}-${Math.round(b)}-${Math.round(h)}-${d.vul ?? ""}`;
       const vak = tekenVak(d);
-      this.canvasPlaatje(sl, b + 2 * RAND, h + 2 * RAND, (c) => {
-        c.translate(RAND, RAND);
+      this.randPlaatje(sl, b, h, (c) => {
         c.scale(b / vak.b, h / vak.h);
         tekenDing(c, d);
-      });
+      }, RAND);
       return sl;
     }
 
@@ -398,8 +446,7 @@ function maakScene(Phaser: PhaserModule, rustig: boolean) {
 
     grondPlaatje(soort: "tafel" | "kleed", b: number, h: number): string {
       const sl = `rt-grond-${soort}-${b}-${h}`;
-      this.canvasPlaatje(sl, b + 8, h + 8, (c) => {
-        c.translate(4, 4);
+      this.randPlaatje(sl, b, h, (c) => {
         if (soort === "tafel") {
           c.beginPath();
           c.roundRect(0, 0, b, Math.min(h, 34), 10);
@@ -445,18 +492,18 @@ function maakScene(Phaser: PhaserModule, rustig: boolean) {
 
     weegPlaatjes() {
       /* De paal en de voet (vast). */
-      this.canvasPlaatje("rt-paal", 200, 420, (c) => {
+      this.randPlaatje("rt-paal", 200, 420, (c) => {
         c.translate(100 - DX, -200);
         pad(c, `M${DX - 14} ${DY} H${DX + 14} V590 H${DX - 14} Z`, { vul: PALET.petrol, lijn: NAVY });
         pad(c, `M${DX - 90} 616 L${DX - 64} 584 H${DX + 64} L${DX + 90} 616 Z`, { vul: PALET.petrol, lijn: NAVY, hoek: true });
       });
       /* Een schaal met de touwtjes; (0, 0) van de groep = de lijn bovenop de schaal. */
-      this.canvasPlaatje("rt-schaal", 240, HANG + 50, (c) => {
+      this.randPlaatje("rt-schaal", 240, HANG + 50, (c) => {
         c.translate(120, HANG + 6);
         pad(c, `M-104 0 L0 ${-HANG} L104 0`, { lijn: "#d6d8e1", dik: 3 });
         pad(c, "M-112 0 A112 30 0 0 0 112 0 Z", { vul: PALET.warmwit, lijn: NAVY, hoek: true });
       });
-      this.canvasPlaatje("rt-balk", 2 * ARM + 34, 28, (c) => {
+      this.randPlaatje("rt-balk", 2 * ARM + 34, 28, (c) => {
         c.beginPath();
         c.roundRect(5, 5, 2 * ARM + 24, 18, 9);
         c.fillStyle = PALET.geel;
@@ -465,7 +512,7 @@ function maakScene(Phaser: PhaserModule, rustig: boolean) {
         c.lineWidth = 5;
         c.stroke();
       });
-      this.canvasPlaatje("rt-spil", 40, 40, (c) => ovaal(c, 20, 20, 15, 15, PALET.koraal, NAVY, 5));
+      this.randPlaatje("rt-spil", 40, 40, (c) => ovaal(c, 20, 20, 15, 15, PALET.koraal, NAVY, 5));
     }
 
     weegschaal(p: RTProps) {
@@ -529,7 +576,7 @@ function maakScene(Phaser: PhaserModule, rustig: boolean) {
         this.ondergrond(p.ondergrond, 60, top, 740, bodem - top);
         /* De startstreep (gestippeld). */
         const sl = `rt-streep-${bodem - top}`;
-        this.canvasPlaatje(sl, 12, bodem - top - 28, (c) => {
+        this.randPlaatje(sl, 12, bodem - top - 28, (c) => {
           c.setLineDash([12, 10]);
           c.lineCap = "round";
           c.strokeStyle = NAVY;
@@ -546,7 +593,7 @@ function maakScene(Phaser: PhaserModule, rustig: boolean) {
       else {
         this.ondergrond(p.ondergrond, 20, p.ondergrond === "kleed" ? VOLG_BOVEN - 30 : VOLG_BOVEN, 800, p.ondergrond === "kleed" ? 120 : 60);
         /* De plank met 3 lege plekken die van klein naar groot gaan (zoals het oude vlak). */
-        this.canvasPlaatje("rt-plank", 770, 32, (c) => {
+        this.randPlaatje("rt-plank", 770, 32, (c) => {
           c.beginPath();
           c.roundRect(4, 4, 760, 22, 8);
           c.fillStyle = "#c98b52";

@@ -9,6 +9,8 @@
  *   - de eigen tikknoppen van het oude vlak staan uit (`kaartenActief` blijft false) en er gaat geen `goed`, `fout` of
  *     `gekozen` naar het oude vlak: daar zou een gloed om de keuze komen (BOUWREGELS 6.5, 7.6, 7.8a). Bij goed alleen
  *     de lichtgolf (`golf`, 7.6). Het rode rondje om wat Bliepo noemt komt van het oude vlak zelf (`licht` + `rondje`);
+ *   - `herstelBriefje`: het briefje van 10 euro zonder de losse '8' (kopie; origineel blijft, 12 november 2026);
+ *     `zonderPaneelVak`: bij "Wat is dit?" geen zacht vak met dunne rand om het geld (geld blijft op dezelfde plek);
  *   - `kies`: de kaartjes om aan te tikken. Een tik zet een VINKJE op het kaartje (nog een tik haalt het weg; een ander
  *     kaartje neemt het over); `vinkjes` = kaartjes die al goed gevonden zijn (de zwevende munten). Meldt
  *     `{ soort: "geldKies", id }`;
@@ -73,7 +75,7 @@ export function GoudenGeldVlak({ kies = null, grootTik = false, hulphand = null,
   useEffect(() => () => clearTimeout(klok.current), []);
   return (
     <div className={s.wortel} style={{ transform: `scale(${KLEINER})`, transformOrigin: "0 50%" }} data-geld-gouden="">
-      <SqulaGeldVlak {...rest} kaartenActief={false} goed={[]} fout={[]} gekozen={[]} uit={[]} />
+      <SqulaGeldVlak {...rest} herstelBriefje zonderPaneelVak kaartenActief={false} goed={[]} fout={[]} gekozen={[]} uit={[]} />
       {kies &&
         kaarten.map((k, i) => {
           const r = ind.kaarten[i];

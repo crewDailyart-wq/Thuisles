@@ -598,6 +598,7 @@ const ROUTES = {
   async kleur(P) {
     const uit = new Set();
     let k = 0;
+    let verhaalGezien = false;
     const ok = await speel(P, {
       naam: "kleur",
       keuze: (t) => {
@@ -608,8 +609,15 @@ const ROUTES = {
       bijElkeStap: async () => {
         const kl = await P.ev(`JSON.stringify([...document.querySelectorAll(".bliepo-tekst .getal, .bliepo-tekst [data-eigen]")].map((e) => e.textContent.trim() + "=" + getComputedStyle(e).color))`);
         for (const x of JSON.parse(kl ?? "[]")) uit.add(x.replace(/^\d+=/, "getal="));
+        /* Het verhaaltje bij "wat is meer" (13 en 14 sterren): de getallen hebben de kleur van de sterren, geel (12 nov, BOUWREGELS 2.1/14.27). */
+        const vh = await P.ev(`(() => { const t = document.querySelector(".bliepo-tekst"); return t && /Gisteren vond|Vandaag vond/.test(t.textContent) ? JSON.stringify([...t.querySelectorAll(".getal, [data-eigen]")].map((e) => e.textContent.trim() + "=" + getComputedStyle(e).color)) : null; })()`);
+        if (vh) {
+          verhaalGezien = true;
+          for (const x of JSON.parse(vh)) if (!x.endsWith("=rgb(255, 224, 102)")) fout(`kleur: in het verhaaltje van "wat is meer" is een getal niet geel: ${x}`);
+        }
       },
     });
+    if (!verhaalGezien) fout("kleur: het verhaaltje van 'wat is meer' (Gisteren vond het er ...) kwam niet in beeld");
     zie(`kleur: ${[...uit].join(", ")}`);
     return ok;
   },

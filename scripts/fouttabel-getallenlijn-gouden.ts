@@ -283,7 +283,7 @@ Gemaakt op 10 november 2026 **uit de code** met \`npx tsx scripts/fouttabel-geta
 
 **Eigen invulling, niet van Synthesis (15.22 punt 5):** Count the Jumps gaat over het verschil tussen 2 getallen. **Bij welk getal staat het, na 10, wat is meer, op volgorde, wat staat er bij, het dichtst bij en ongeveer** zitten er niet in (draaiboek §8 en §11 punt 2). Die vragen hebben hetzelfde skelet (vraag met het beeld, 1e fout zin + hint + vraag in andere woorden, 2e fout samen springen met bogen), maar hun eerste zinnen en hints zijn eigen invulling; de laatste kolom zegt het per rij. Alleen de uitlegvraag na Nee ("hoeveel sprongen?") volgt Synthesis.
 
-De getallen op de lijn zijn wit; in de les zijn de getallen in Bliepo's zinnen dus wit (2.2). Hier zonder kleur.
+De getallen op de lijn zijn wit; in de les zijn de getallen in Bliepo's zinnen dus wit (2.2), behalve de 13 en 14 sterren in het verhaaltje bij "wat is meer": die zijn geel, zoals de sterren in beeld (2.1, 14.27). Hier zonder kleur.
 
 **Zo werkt het bij een fout — 2 POGINGEN (BOUWREGELS 15.9 en 15.11):**
 - **1e fout:** Bliepo's scherm 1,5 seconde rood (geen fout-geluidje). De knoppen gaan weg (bij "wat staat er bij" gaat het vinkje weg; bij op volgorde blijven de kaarten even liggen en glijden daarna terug). Bliepo zegt de eerste zin en de hint; een rood rondje staat om het getal (of vak, of bordje) dat hij noemt, nooit om het antwoord. Daarna gaat de les vanzelf door (15.27): de vraag in andere woorden en het kind mag opnieuw.

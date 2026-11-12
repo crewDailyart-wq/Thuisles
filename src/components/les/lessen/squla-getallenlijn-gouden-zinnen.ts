@@ -45,6 +45,8 @@ const rij = (zinnen: string[], robot: number[] = []): Rijtje => ({ zinnen, robot
 
 /** Een getal in de zin: wit, zoals op de lijn (BOUWREGELS 2.2). */
 export const w = (n: number) => `{${n}:wit}`;
+/** Een getal dat het aantal sterren is (het verhaaltje bij "wat is meer"): de kleur van de sterren in beeld, geel (BOUWREGELS 2.1 en 14.27; Sara 12 november 2026). */
+export const ster = (n: number) => `{${n}:geel}`;
 
 /* ---------- de 15 vragen van squla-getallenlijn-kat-1 (zelfde volgorde, getallen en keuzes) ---------- */
 
@@ -144,7 +146,7 @@ export const VRAGEN: Vraag[] = [
   /* na 10 (de lijn loopt door, zonder getallen) */
   { nr: 4, id: "vraag4-natien-11", soort: "natien", goed: "11", opties: ["11", "1", "12"], van: 0, tot: 10, labels: reeks(0, 10), door: true, raketje: 11, n: 11 },
   /* wat is meer (kies uit 2) */
-  { nr: 5, id: "vraag5-meer-14", soort: "meer", goed: "14", opties: ["14", "13"], van: 10, tot: 20, labels: [10, 15, 20], meer: { a: 13, b: 14, verhaal: ["Het raketje zoekt graag sterren.", `Gisteren vond het er ${w(13)}.`, `Vandaag vond het er ${w(14)}.`] } },
+  { nr: 5, id: "vraag5-meer-14", soort: "meer", goed: "14", opties: ["14", "13"], van: 10, tot: 20, labels: [10, 15, 20], meer: { a: 13, b: 14, verhaal: ["Het raketje zoekt graag sterren.", `Gisteren vond het er ${ster(13)}.`, `Vandaag vond het er ${ster(14)}.`] } },
   /* op volgorde, het eerste getal staat er al */
   orden(6, 5, [7, 8, 6]),
   orden(7, 12, [14, 13, 15]),
@@ -239,7 +241,7 @@ export const ZIN = {
     if (v.vraagzin) return v.vraagzin;
     if (v.soort === "bij") return [v.nr === 2 ? "Bij welk getal staat het raketje nu?" : "Bij welk getal staat het raketje?"];
     if (v.soort === "natien") return [`Het raketje vliegt verder dan de ${w(10)}.`, `Welk getal komt na ${w(10)}?`];
-    if (v.soort === "meer") return [...v.meer!.verhaal, `Wat is meer: ${w(v.meer!.a)} of ${w(v.meer!.b)}?`];
+    if (v.soort === "meer") return [...v.meer!.verhaal, `Wat is meer: ${ster(v.meer!.a)} of ${ster(v.meer!.b)}?`];
     if (v.soort === "orden") return ["Zet de getallen op volgorde.", "Van klein naar groot."];
     if (v.soort === "wie") return [`Wat staat er bij ${w(v.n!)}?`, "Tik erop."];
     if (v.soort === "dichtst") return [`Welk getal ligt het dichtst bij ${w(v.n!)}?`];
