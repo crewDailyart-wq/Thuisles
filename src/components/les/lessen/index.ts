@@ -37,10 +37,16 @@ import { LESSEN_SQULA_KLOK } from "./squla-klok";
 import { LESSEN_SQULA_KLOK_GOUDEN } from "./squla-klok-gouden";
 /* De gouden les Tellen (9 november 2026, BOUWREGELS 15.22): een nieuwe les naast squla-tellen-fruit-1. */
 import { LESSEN_SQULA_TELLEN_GOUDEN } from "./squla-tellen-gouden";
+/* De extra les Tellen (12 november 2026, besluit Sara 20.3): de Synthesis-opdrachten die niet in de Squla-les zitten, apart naast de gouden les. */
+import { LESSEN_SQULA_TELLEN_EXTRA_GOUDEN } from "./squla-tellen-extra-gouden";
 /* De gouden les Splitsen (9 november 2026, BOUWREGELS 15.22): een nieuwe les naast squla-splits-splitsen1-1. */
 import { LESSEN_SQULA_SPLITSEN_GOUDEN } from "./squla-splitsen-gouden";
+/* De extra les Splitsen (12 november 2026, besluit Sara 21.7): de Synthesis-opdrachten die niet in de Squla-les zitten, apart naast de gouden les. */
+import { LESSEN_SQULA_SPLITSEN_EXTRA_GOUDEN } from "./squla-splitsen-extra-gouden";
 /* De gouden les Plussommen (9 november 2026, BOUWREGELS 15.22): een nieuwe les naast squla-plus-bakkerij-1. */
 import { LESSEN_SQULA_PLUSSOMMEN_GOUDEN } from "./squla-plussommen-gouden";
+/* De extra les Plussommen (12 november 2026, besluit Sara 22.3): de Synthesis-opdrachten die niet in de Squla-les zitten, apart naast de gouden les. */
+import { LESSEN_SQULA_PLUSSOMMEN_EXTRA_GOUDEN } from "./squla-plussommen-extra-gouden";
 /* De gouden les Minsommen (10 november 2026, BOUWREGELS 15.22): een nieuwe les naast squla-min-machine-1. */
 import { LESSEN_SQULA_MINSOMMEN_GOUDEN } from "./squla-minsommen-gouden";
 /* De gouden les Meer-minder (10 november 2026, BOUWREGELS 15.22): een nieuwe les naast squla-meer-minder-evenveel2-1. */
@@ -86,6 +92,7 @@ export const LESSEN: Lesdraaiboek[] = [
   ...LESSEN_SQULA_VORMEN_GOUDEN,
   ...LESSEN_SQULA_SPLITSEN,
   ...LESSEN_SQULA_SPLITSEN_GOUDEN,
+  ...LESSEN_SQULA_SPLITSEN_EXTRA_GOUDEN,
   ...LESSEN_SQULA_PIRAAT,
   ...LESSEN_SQULA_REKENTAAL,
   ...LESSEN_SQULA_REKENTAAL_GOUDEN,
@@ -94,6 +101,7 @@ export const LESSEN: Lesdraaiboek[] = [
   ...LESSEN_SQULA_GETALLENLIJN,
   ...LESSEN_SQULA_TELLEN,
   ...LESSEN_SQULA_TELLEN_GOUDEN,
+  ...LESSEN_SQULA_TELLEN_EXTRA_GOUDEN,
   ...LESSEN_SQULA_TIJD,
   ...LESSEN_SQULA_TIJD_GOUDEN,
   ...LESSEN_SQULA_MEER_MINDER,
@@ -102,6 +110,7 @@ export const LESSEN: Lesdraaiboek[] = [
   ...LESSEN_SQULA_MINSOMMEN_GOUDEN,
   ...LESSEN_SQULA_PLUSSOMMEN,
   ...LESSEN_SQULA_PLUSSOMMEN_GOUDEN,
+  ...LESSEN_SQULA_PLUSSOMMEN_EXTRA_GOUDEN,
   ...LESSEN_SQULA_GELD,
   ...LESSEN_SQULA_METEN,
   ...LESSEN_SQULA_KLOK,
