@@ -24,13 +24,17 @@
  *       beeld, het KIND haalt er zelf zoveel weg als in de som staat (de kleine stap), Bliepo telt hardop mee (§3 F) en de
  *       teller telt mee; daarna "er blijven er 6 over; 10 − 4 = 6" en de les gaat door;
  *     - goed na een fout: alleen een korte bevestiging met de som (§3 G.3);
- *   de TELLER (15.20): staat alleen in beeld bij het samen voordoen, dus nooit zolang de vraag nog open is;
+ *   de TELLER (15.20): staat alleen in beeld bij het samen voordoen (en bij de uitleg van de stippenmachine aan het begin, waar hij de stippen telt), dus nooit zolang een van de 15 vragen nog open is;
  *   hulphandje: alleen bij de opdracht "haal er … weg" (na ± 6 s stilte, met 1 korte zin, 15.19); bij een keuzevraag
  *     zegt Bliepo niets (§4: Synthesis ook niet);
  *   heel snel: Bliepo zegt niets (§3 G.7, BOUWREGELS 6.10);
  *   stap 19 einde: een slotzin, de kaart, een eindzin uit het rijtje en "Tik op de kaart." (geen pijl op de kaart).
- *   Wat Synthesis vóór de oefenreeks doet (de machine leren kennen, plussommen als opwarmer, de zapper, het minteken,
- *   "alles weg") zit er NIET in: de Squla-les heeft die vragen niet (KEUZES-VOOR-SARA.md, Ronde 24).
+ *  Ronde 34 (12 november 2026, Sara punt 24.5): vóór de 15 vragen komt de uitleg "de machine leren kennen" (draaiboek `intro`,
+ *   stap 1 t/m 4 en 7), in eigen woorden: Bliepo zegt waar de stippenmachine voor dient, het kind tikt op de plusknop
+ *   (de teller telt mee), doet er nog 2 stippen bij, en kiest dan bij 2 keuzevragen wat het totaal doet en hoe "erbij doen"
+ *   heet. Zelfde regels als de rest (2 pogingen, hint zonder antwoord, 2e fout = samen voordoen met 1 tik op de plus).
+ *   Niet gebouwd: de vraag "blijft het totaal stijgen?" (stap 5 en 6, alleen na een fout), plussommen als opwarmer, de
+ *   zapper, het minteken en "alles weg" (stap 8 t/m 16): niet in de Squla-les (KEUZES-VOOR-SARA.md, Ronde 24).
  *
  * De verder-pijl (15.27, zoals de gouden klokles): Bliepo praat door; na elk stuk tekst gaat de les ±0,7 s na de stem
  * vanzelf verder (`zegDoor`). De pijl staat rechts onder de tekst als snelkoppeling: een tik stopt de stem en gaat meteen
@@ -43,7 +47,7 @@
 
 import type { Lesdraaiboek, Lesgids } from "../soort";
 import { KaartMinsommen, machineDuur } from "../vlakken/squla-minsommen-vlak";
-import { GoudenMinVlak, wegPlek, type GoudenMinProps } from "../vlakken/squla-minsommen-gouden-vlak";
+import { GoudenMinVlak, wegPlek, PLUS_PLEK, type GoudenMinProps } from "../vlakken/squla-minsommen-gouden-vlak";
 import { KLEURHEX } from "../vlakken/squla-getalring";
 import { zetTestAntwoord } from "./squla-hulp";
 import { speelLesgeluid } from "@/lib/lesgeluiden";
@@ -54,6 +58,9 @@ import {
   BEVESTIG,
   EINDE,
   EINDE_VEEL_FOUTEN,
+  INTRO,
+  INTRO_KLEUR,
+  INTRO_VRAGEN,
   LOF,
   LOF_KIJK_INDEX,
   MOMENT,
@@ -70,6 +77,7 @@ import {
   metNaam,
   minReactie,
   type Fout,
+  type IntroVraag,
   type Minvraag,
   type Rijtje,
 } from "./squla-minsommen-gouden-zinnen";
@@ -111,6 +119,8 @@ type Staat = {
   log: unknown[];
   robotReactie: boolean;
   nakijk: number;
+  /** Hoeveel keer het hulphandje bij de plusknop kwam: de zin wisselt (F8: nooit 2 keer dezelfde zin vlak na elkaar). */
+  handNr: number;
 };
 const STAAT = new WeakMap<Lesgids, Staat>();
 const st = (l: Lesgids): Staat => {
@@ -118,13 +128,13 @@ const st = (l: Lesgids): Staat => {
   if (!s)
     STAAT.set(
       l,
-      (s = { vorige: new Map(), recent: new Map(), zinNr: 0, robotNr: -99, namen: 0, naamKeer: 0, naamVraag: -99, opRij: 0, momenten: new Set(), goed: 0, fout: 0, vraag: 0, haak: 0, laatste: false, eerste: new Map(), vraagFouten: new Map(), log: [], robotReactie: false, nakijk: 0 }),
+      (s = { vorige: new Map(), recent: new Map(), zinNr: 0, robotNr: -99, namen: 0, naamKeer: 0, naamVraag: -99, opRij: 0, momenten: new Set(), goed: 0, fout: 0, vraag: 0, haak: 0, laatste: false, eerste: new Map(), vraagFouten: new Map(), log: [], robotReactie: false, nakijk: 0, handNr: 0 }),
     );
   return s;
 };
 
 const zet = (l: Lesgids, p: Partial<GoudenMinProps>) => l.pasVlakAan<GoudenMinProps>(p);
-const LEEG: Partial<GoudenMinProps> = { kaleSom: null, machineRondje: false, weg: null, teller: null, hand: null, uitkomst: null, grijs: 0, licht: null, stippen: null, verbind: null, bubbels: null };
+const LEEG: Partial<GoudenMinProps> = { kaleSom: null, machineRondje: false, weg: null, teller: null, hand: null, uitkomst: null, grijs: 0, licht: null, stippen: null, verbind: null, bubbels: null, erbij: null, ring: null };
 
 /** Zinnen van Bliepo, met {naam} ingevuld (hooguit 2 keer per les; daarna valt de naam netjes weg). */
 const zeg = (l: Lesgids, ...zinnen: string[]) =>
@@ -182,7 +192,8 @@ function noteer(l: Lesgids, vraag: string, uit: Uitkomst): Uitkomst {
 
 /** "Volgende keer gaat het nog beter" alleen als de helft of meer niet in 1 keer goed was (15.13 punt 3). */
 function veelFouten(l: Lesgids): boolean {
-  const alle = [...st(l).eerste.values()];
+  /* Alleen de 15 vragen van de Squla-les tellen mee; de 2 vragen van de uitleg niet. */
+  const alle = [...st(l).eerste.entries()].filter(([id]) => VRAGEN.some((v) => v.id === id)).map(([, u]) => u);
   return alle.length > 0 && alle.filter((x) => x !== "goed").length * 2 >= alle.length;
 }
 
@@ -409,6 +420,128 @@ async function samenVoordoen(l: Lesgids, v: Minvraag) {
   await zegDoor(l, ZIN.samenKlaar(v));
 }
 
+/* ---------- de uitleg aan het begin: de stippenmachine (draaiboek Minsommen stap 1 t/m 7; ronde 34) ---------- */
+
+/** De stippen en de teller van de uitleg: `n` stippen, de plusknop tikbaar of dof. */
+function toonMachine(l: Lesgids, n: number, plus: "aan" | "dof") {
+  zet(l, { erbij: { n, kleur: hex(INTRO_KLEUR), plus }, teller: { n, kleur: hex(INTRO_KLEUR) } });
+}
+
+/**
+ * Het kind tikt `nodig` keer op de plusknop (een opdracht: geen pijl, de les wacht, 15.27). Elke tik: een stip erbij en
+ * de teller telt mee. Na ± 6 s stilte komt vanzelf het hulphandje met 1 korte zin (15.19). Meer tikken dan gevraagd kan
+ * niet (de knop wordt dof). Geeft het aantal stippen terug.
+ */
+async function tikPlus(l: Lesgids, begin: number, nodig: number, zinnen: string[], vraag: string, ring: boolean): Promise<number> {
+  let n = begin;
+  let gedaan = 0;
+  toonMachine(l, n, "aan");
+  if (ring) zet(l, { ring: "plus" });
+  haak(l, { soort: "plus", nodig, vraag }, true);
+  zetTestAntwoord("plus");
+  let handGezegd = false;
+  let klok: ReturnType<typeof setTimeout> | undefined;
+  const wachtOpHand = () => {
+    clearTimeout(klok);
+    klok = setTimeout(() => {
+      if (gedaan >= nodig) return;
+      log(l, "aanwijzing", { plus: true });
+      zet(l, { hand: { plek: { x: PLUS_PLEK.x + 16, y: PLUS_PLEK.y + 20 }, sleutel: `plus-${n}-${Date.now()}` } });
+      if (!handGezegd) {
+        handGezegd = true;
+        const nr = st(l).handNr++;
+        void zeg(l, `${AANMOEDIG_TIKKEN[nr % AANMOEDIG_TIKKEN.length]} ${INTRO.plusHand[nr % INTRO.plusHand.length]}`).catch(() => {});
+      }
+    }, AANWIJZING_MS);
+  };
+  let eersteTik: (() => void) | null = null;
+  const eerste = new Promise<void>((r) => (eersteTik = r));
+  void zegOpdracht(l, zinnen, eerste).catch(() => {});
+  wachtOpHand();
+  try {
+    while (gedaan < nodig) {
+      await l.wachtOpVlak<{ soort: string }>("plusTik");
+      (eersteTik as (() => void) | null)?.();
+      gedaan++;
+      n++;
+      zet(l, { hand: null, ring: null });
+      toonMachine(l, n, gedaan >= nodig ? "dof" : "aan");
+      speelLesgeluid("tik");
+      log(l, "plus-tik", { n });
+      if (gedaan < nodig) wachtOpHand();
+    }
+  } finally {
+    clearTimeout(klok);
+    zet(l, { hand: null, ring: null });
+  }
+  haak(l, null);
+  zetTestAntwoord(null);
+  await l.wacht(DENK_MS);
+  return n;
+}
+
+/** Een keuzevraag van de uitleg: 2 pogingen (15.11), hint zonder het antwoord (15.17), 2e fout = samen voordoen. */
+async function introVraag(l: Lesgids, q: IntroVraag, stippen: number): Promise<number> {
+  const s = st(l);
+  const opties = schud(q.keuzes);
+  let zinnen = q.vraag;
+  for (let poging = 1 as 1 | 2; poging <= 2; poging++) {
+    zetTestAntwoord(q.goed);
+    haak(l, { soort: "kies", opties, goed: q.goed, poging, vraag: q.id }, poging === 1);
+    const x = await vraagMetKnoppen(l, opties, zinnen, MIDDEN_SOM);
+    haak(l, null);
+    await l.wacht(DENK_MS);
+    if (x === q.goed) {
+      speelLesgeluid("goed");
+      bliepoScherm("goed");
+      zet(l, { goed: ++s.goed });
+      /* Lof (zonder de bijzondere momenten van de 15 vragen), en wat er klopt; geen woord dat in beide zinnen begint. */
+      const lof = poging === 1 ? kies(l, LOF, [LOF_KIJK_INDEX]) : bevestig(l);
+      const reactie = rijtjeIntro(q);
+      const r = kies(l, reactie, reactie.zinnen.map((_, i) => i).filter((i) => woord(reactie.zinnen[i]) === woord(lof)), `reactie-${q.id}`);
+      log(l, "reactie", { soort: poging === 1 ? "goed" : "goed-na-fout", vraag: q.id, zin: `${lof} ${r}` });
+      await zegDoor(l, lof, r);
+      noteer(l, q.id, poging === 1 ? "goed" : "naFout");
+      return stippen;
+    }
+    bliepoScherm("fout");
+    s.opRij = 0;
+    const f = q.fouten[x];
+    zet(l, { fout: ++s.fout });
+    legDenkfoutVast(l, { vraag: q.id, antwoord: x, denkfout: f.code, poging });
+    log(l, "reactie", { soort: `fout${poging}`, vraag: q.id, x, denkfout: f.code });
+    if (poging === 1) {
+      zet(l, { ring: f.ring });
+      await zegDoor(l, f.eerste, f.hint);
+      zet(l, { ring: null });
+      zinnen = q.opnieuw;
+      continue;
+    }
+    /* 2e fout: uitleg, dan samen voordoen: het kind doet de kleine stap (1 keer op de plus). */
+    await zegDoor(l, ...f.tweede, ZIN.samen);
+    const n = await tikPlus(l, stippen, 1, q.samen.opdracht, q.id, false);
+    speelLesgeluid("goed");
+    bliepoScherm("goed");
+    await zegDoor(l, ...q.samen.klaar);
+    noteer(l, q.id, "samen");
+    return n;
+  }
+  return stippen;
+}
+const rijtjeIntro = (q: IntroVraag): Rijtje => ({ zinnen: q.goedReactie, robot: [] });
+
+/** Stap 1 t/m 7 van het draaiboek: de machine leren kennen (stippen erbij, de teller, het totaal, hoe heet dit). */
+async function leerMachineKennen(l: Lesgids) {
+  await zegDoor(l, INTRO.begin);
+  let n = await tikPlus(l, 0, 1, INTRO.plusEerst, "intro-plus-1", true);
+  zet(l, { ring: "teller" });
+  await zegDoor(l, INTRO.eersteStip);
+  zet(l, { ring: null });
+  n = await tikPlus(l, n, 2, INTRO.meer, "intro-plus-3", false);
+  for (const q of INTRO_VRAGEN) n = await introVraag(l, q, n);
+  await zegDoor(l, INTRO.einde);
+}
+
 /* ---------- een vraag ---------- */
 
 async function minVraag(l: Lesgids, v: Minvraag, i: number): Promise<Uitkomst> {
@@ -504,13 +637,20 @@ const gouden: Lesdraaiboek = {
   async speel(l) {
     STAAT.delete(l);
     log(l, "start");
-    /* Stap 1. Openen: de machine van vraag 1 staat er; Bliepo groet en zegt in hetzelfde stuk wat we gaan doen. */
+    /* Stap 1. Openen: de lege stippenmachine staat er (teller 0); Bliepo groet en zegt in hetzelfde stuk wat we gaan doen. */
     l.vlak<GoudenMinProps>(GoudenMinVlak, { toneel: null });
-    toonBeeld(l, VRAGEN[0]);
+    toonMachine(l, 0, "dof");
     await l.wacht(600);
     st(l).naamKeer = 1;
     st(l).naamVraag = 0;
     await zegDoor(l, NAAM_GROET, ZIN.begin);
+
+    /* De machine leren kennen (ronde 34, 12 november 2026): draaiboek stap 1 t/m 7, in eigen woorden. */
+    await leerMachineKennen(l);
+    /* Dan de eerste vraag van de Squla-les: de min-machine met blokjes. */
+    void l.zeg().catch(() => {});
+    toonBeeld(l, VRAGEN[0]);
+    await l.wacht(150);
 
     /* De 15 vragen van squla-min-machine-1. */
     for (const [i, v] of VRAGEN.entries()) {

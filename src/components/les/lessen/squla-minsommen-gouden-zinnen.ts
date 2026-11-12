@@ -134,6 +134,110 @@ export const ZIN = {
   kaartTik: "Tik op de kaart.",
 };
 
+/* ---------- de uitleg aan het begin: de stippenmachine (draaiboek Minsommen stap 1 t/m 7; ronde 34, 12 november 2026) ---------- */
+
+/** De stippen en de teller van de uitleg zijn paars; een getal in een zin die naar die stippen verwijst ook (2.1, 2.2). */
+export const INTRO_KLEUR = "paars";
+const K = INTRO_KLEUR;
+
+export type IntroFout = {
+  code: string;
+  denkfout: string;
+  /** Bliepo's eerste zin bij de 1e fout: zegt alleen wat het kind koos (de reden is niet zeker), nooit het woord "fout". */
+  eerste: string;
+  hint: string;
+  /** Het rondje tijdens de hint: om de teller of de plusknop (Bliepo noemt die). */
+  ring: "teller" | "plus";
+  /** De uitleg bij de 2e fout (daarna samen voordoen; nu mag het antwoord, want het komt toch in beeld). */
+  tweede: string[];
+};
+export type IntroVraag = {
+  id: string;
+  vraag: string[];
+  /** De vraag na de hint: iets anders gezegd (3.23). */
+  opnieuw: string[];
+  keuzes: string[];
+  goed: string;
+  /** Wat Bliepo na de lof zegt als het goed is (een rijtje; hij wisselt af). */
+  goedReactie: string[];
+  fouten: Record<string, IntroFout>;
+  /** Samen voordoen na de 2e fout: het kind tikt zelf 1 keer op de plus. */
+  samen: { opdracht: string[]; klaar: string[] };
+};
+
+const HINT_PLUS = "Kijk wat de plusknop met de stippen doet: komen ze erbij of gaan ze eraf?";
+
+export const INTRO = {
+  /** Stap 1 van het draaiboek: waar de machine voor dient. Komt na de groet en de beginzin van de les. */
+  begin: "Eerst leer je mijn stippenmachine kennen. Hij helpt je straks bij het aftrekken.",
+  /** Stap 1: de eerste opdracht (knop 1 keer uitleggen, 3.15). */
+  plusEerst: ["Tik op de plusknop onder de machine."],
+  /** Het hulphandje bij de plusknop (na de aanmoediging). */
+  plusHand: ["Tik op de plusknop.", "Tik maar op de plus.", "Probeer de plusknop maar."],
+  /** Stap 2: de eerste stip en de teller. */
+  eersteStip: `Je deed er ${g(1, K)} stip bij. Bovenaan staat het totaal: zoveel stippen zijn er nu.`,
+  /** Stap 3: meer stippen. */
+  meer: [`Doe er nog ${g(2, K)} stippen bij en kijk goed naar het totaal.`],
+  /** Na de uitleg, vóór de eerste minsom van de les. */
+  einde: "Nu gaan we juist aftrekken. Dan gaat er iets af.",
+};
+
+/** Stap 4 (het totaal) en stap 7 (hoe heet dit): de 2 keuzevragen van het begin. */
+export const INTRO_VRAGEN: IntroVraag[] = [
+  {
+    id: "intro-totaal",
+    vraag: ["Wat doet het totaal elke keer als er een stip bij komt?"],
+    opnieuw: ["Wat gebeurt er dan met het totaal?"],
+    keuzes: ["Het wordt groter.", "Het wordt kleiner."],
+    goed: "Het wordt groter.",
+    goedReactie: [`Er komt steeds ${g(1, K)} stip bij, dus het totaal wordt groter.`, "Elke nieuwe stip maakt het totaal groter.", "Meer stippen geven een groter totaal."],
+    fouten: {
+      "Het wordt kleiner.": {
+        code: "totaal-kleiner",
+        denkfout: "koos dat het totaal kleiner wordt (de reden is niet zeker; misschien aan aftrekken gedacht of niet naar de teller gekeken)",
+        eerste: "Je koos dat het kleiner wordt.",
+        hint: "Kijk naar het totaal bovenaan. Wat stond daar eerst, en wat staat er nu?",
+        ring: "teller",
+        tweede: ["Er komen alleen stippen bij.", "Dan kan het totaal niet kleiner worden: het wordt groter."],
+      },
+    },
+    samen: {
+      opdracht: [`Doe er nog ${g(1, K)} stip bij en kijk naar het totaal.`],
+      klaar: [`Eerst was het ${g(3, K)}, nu is het ${g(4, K)}. Het totaal wordt groter.`],
+    },
+  },
+  {
+    id: "intro-optellen",
+    vraag: ["Wat heet het als je steeds stippen erbij doet?"],
+    opnieuw: ["Wat heet dat, als je zo stippen erbij doet?"],
+    keuzes: ["Optellen", "Aftrekken", "Delen"],
+    goed: "Optellen",
+    goedReactie: ["Erbij doen heet optellen.", "Stippen erbij doen is optellen.", "Met de plusknop tel je steeds op."],
+    fouten: {
+      Aftrekken: {
+        code: "aftrekken-gekozen",
+        denkfout: "koos aftrekken (plus en min verwisseld, of vooruitgedacht: de les gaat over aftrekken)",
+        eerste: "Je koos aftrekken. Dat doen we straks.",
+        hint: HINT_PLUS,
+        ring: "plus",
+        tweede: ["Bij aftrekken gaat er iets weg.", "De plusknop zet er juist stippen bij."],
+      },
+      Delen: {
+        code: "delen-gekozen",
+        denkfout: "koos delen (de reden is niet zeker; misschien het woord niet goed gekend)",
+        eerste: "Je koos delen.",
+        hint: HINT_PLUS,
+        ring: "plus",
+        tweede: ["Delen is eerlijk verdelen.", "De plusknop doet iets anders: hij zet er stippen bij."],
+      },
+    },
+    samen: {
+      opdracht: [`Doe er nog ${g(1, K)} stip bij.`],
+      klaar: [`Er komt ${g(1, K)} stip bij. Erbij doen heet optellen.`],
+    },
+  },
+];
+
 /** Aanmoediging bij het hulphandje (het kind moet tikken, niet nadenken; 14.35, geleerd bij Tellen). */
 export const AANMOEDIG_TIKKEN = ["Je bent goed bezig.", "Jij kunt dit."];
 

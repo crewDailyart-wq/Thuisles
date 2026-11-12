@@ -40,6 +40,13 @@ export type KaleSom = {
 export type Weg = { n: number; weg: boolean[]; kleurA: string; kleurB: string; tikbaar: boolean };
 export type Teller = { n: number; kleur: string };
 export type Hand = { plek: Punt; sleutel: string };
+/**
+ * De stippenmachine van de uitleg aan het begin (ronde 34, 12 november 2026; draaiboek Minsommen stap 1 t/m 7): `n` stippen
+ * in `kleur`, en de plusknop (`plus`: "aan" = tikbaar, "dof" = er mag nu niet op getikt worden). De teller is `teller`.
+ */
+export type Erbij = { n: number; kleur: string; plus: "aan" | "dof" };
+/** Het rode rondje (alleen als Bliepo het noemt): om de teller of om de plusknop. */
+export type Ring = "teller" | "plus" | null;
 
 export type GoudenMinProps = MinVlakProps & {
   kaleSom?: KaleSom | null;
@@ -47,6 +54,8 @@ export type GoudenMinProps = MinVlakProps & {
   weg?: Weg | null;
   teller?: Teller | null;
   hand?: Hand | null;
+  erbij?: Erbij | null;
+  ring?: Ring;
 };
 
 /* ---------- waar staat wat ---------- */
@@ -60,6 +69,15 @@ export function wegPlek(i: number, n: number): Punt {
   const y0 = 405 - ((rijen - 1) * STIP_CEL) / 2;
   return { x: x0 + (i % 5) * STIP_CEL, y: y0 + Math.floor(i / 5) * STIP_CEL };
 }
+/** De plusknop en de stippen van de uitleg (stippen los door elkaar, niet in een rij; hooguit 5). */
+export const PLUS_PLEK: Punt = { x: 490, y: 510 };
+export const ERBIJ_PLEK: Punt[] = [
+  { x: 400, y: 300 },
+  { x: 575, y: 285 },
+  { x: 490, y: 385 },
+  { x: 365, y: 410 },
+  { x: 625, y: 405 },
+];
 /** Het getal op de machine ("− 3"): zelfde plek als in het minvlak (MACH.machine, het label 7 punten hoger). */
 const MACHINE_GETAL: Punt = { x: 490, y: 293 };
 
@@ -73,7 +91,7 @@ const MACHINE_GETAL: Punt = { x: 490, y: 293 };
  */
 export const KLEINER = 0.9;
 
-export function GoudenMinVlak({ kaleSom = null, machineRondje = false, weg = null, teller = null, hand = null, ...rest }: GoudenMinProps & Vlakbasis) {
+export function GoudenMinVlak({ kaleSom = null, machineRondje = false, weg = null, teller = null, hand = null, erbij = null, ring = null, ...rest }: GoudenMinProps & Vlakbasis) {
   return (
     <div className={s.wortel} style={{ transform: `scale(${KLEINER})`, transformOrigin: "0 50%" }} data-minsommen-gouden="">
       <SqulaMinVlak {...rest} som={null} />
@@ -89,6 +107,17 @@ export function GoudenMinVlak({ kaleSom = null, machineRondje = false, weg = nul
         </div>
       )}
       {machineRondje && <div className={s.rondje} style={{ left: MACHINE_GETAL.x, top: MACHINE_GETAL.y }} aria-hidden data-rondje="" />}
+      {erbij && (
+        <>
+          {ERBIJ_PLEK.slice(0, erbij.n).map((p, i) => (
+            <div key={i} className={`${s.stip} ${s.nieuw}`} style={{ left: p.x, top: p.y, ["--stip" as string]: erbij.kleur }} aria-hidden data-erbijstip="" />
+          ))}
+          <button type="button" className={s.plus} style={{ left: PLUS_PLEK.x, top: PLUS_PLEK.y }} disabled={erbij.plus === "dof"} aria-label="doe er een stip bij" data-ding="plus" onClick={() => rest.meld({ soort: "plusTik" })}>
+            +
+          </button>
+        </>
+      )}
+      {ring && <div className={s.rondje} style={ring === "teller" ? { left: 490, top: 196, width: 150, height: 130 } : { left: PLUS_PLEK.x, top: PLUS_PLEK.y, width: 150, height: 130 }} aria-hidden data-rondje={ring} />}
       {teller && (
         <div className={s.teller} style={{ color: teller.kleur }} aria-hidden data-teller={teller.n}>
           {teller.n}

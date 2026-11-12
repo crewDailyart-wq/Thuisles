@@ -109,8 +109,8 @@ const IN_PAGINA = `
     const plek = { vak: rect(vak), regel: rect(document.querySelector(".bliepo-tekst")), pijl: pijl ? rect(b) : null, robot: rect(robotEl), robotB: robotEl ? Math.round(robotEl.getBoundingClientRect().width) : 0, inhoud, over: vak ? vak.scrollHeight - vak.clientHeight : 0 };
     const teller = !!document.querySelector("[data-teller]");
     const hand = !!document.querySelector("[data-hulphand]");
-    const s = JSON.stringify({ pijl, tekst, taak: taak ? taak.soort + ":" + (taak.opties ? taak.opties.length : "") : null, kaart, dim: nog > 0, leest, plek, teller, hand });
-    if (s !== vorige) { vorige = s; window.__meet.push({ t: Math.round(performance.now()), pijl, tekst, taak: taak ? taak.soort + ":" + (taak.opties ? taak.opties.length : "") : null, kaart, dim: nog > 0, leest, plek, teller, hand }); }
+    const s = JSON.stringify({ pijl, tekst, taak: taak ? taak.soort + ":" + (taak.opties ? taak.opties.length : "") : null, vraag: taak ? taak.vraag : null, kaart, dim: nog > 0, leest, plek, teller, hand });
+    if (s !== vorige) { vorige = s; window.__meet.push({ t: Math.round(performance.now()), pijl, tekst, taak: taak ? taak.soort + ":" + (taak.opties ? taak.opties.length : "") : null, vraag: taak ? taak.vraag : null, kaart, dim: nog > 0, leest, plek, teller, hand }); }
   }, 50);
   /* Oplichten van de woorden (eis Sara 10 nov): elke wissel van het woord van nu, en elke woordmelding van de stem. */
   window.__woord = [];
@@ -260,7 +260,8 @@ async function speel(P, o = {}) {
         const z2 = await P.nu();
         if (z2.pijl && z2.taak?.soort === "kies") fout(`pijl bij een vraag (${taak.vraag})`);
         /* 15.20: tijdens de vraag nooit de teller. */
-        if (await P.ev(`!!document.querySelector("[data-teller]")`)) fout(`teller in beeld tijdens de vraag (${taak.vraag})`);
+        /* (De 2 vragen van de uitleg, "intro-…", gaan over de teller van de stippenmachine: die staat daar bewust in beeld.) */
+        if (!/^intro-/.test(taak.vraag) && (await P.ev(`!!document.querySelector("[data-teller]")`))) fout(`teller in beeld tijdens de vraag (${taak.vraag})`);
         if (o.vraagWacht && (await P.ev(`!!document.querySelector("[data-hulphand]")`))) fout(`hulphandje bij een keuzevraag (${taak.vraag})`);
         /* Vaste zone (15.30; keuring Meer-minder: het vak met het vraagteken liep ± 25 px onder het tekstvak; 11 nov 2026 het
            vlak 90 % vanaf links). De som (getallen en vraagteken), de knoppen in het vlak en de machine (rechts tot x = 900
@@ -270,10 +271,30 @@ async function speel(P, o = {}) {
           if (r && (r.ding ?? -1) > 0) fout(`het speelvlak loopt onder het tekstvak (${JSON.stringify(r)}, ${taak.vraag})`);
           if (r) globalThis.__zone = { ding: Math.max(globalThis.__zone?.ding ?? -999, r.ding ?? -999), machine: Math.max(globalThis.__zone?.machine ?? -999, r.machine) };
         }
+        if (/^intro-/.test(taak.vraag)) await P.foto?.(`${o.naam}-${taak.vraag}-poging${taak.poging}`);
         laatsteTaak = sleutel;
         const x = keuze(taak);
         if (await P.klikTekst(x)) await wacht(200);
         else laatsteTaak = null;
+      }
+    } else if (taak && taak.soort === "plus") {
+      /* De uitleg aan het begin: tik op de plusknop (opdracht: geen pijl; na lang wachten het hulphandje). */
+      if (laatsteTaak !== `plus:${taak.n}`) {
+        laatsteTaak = `plus:${taak.n}`;
+        await wacht(o.opdrachtWacht ?? 300);
+        if ((await P.nu()).pijl) fout(`pijl bij de opdracht 'tik op de plus' (${taak.vraag})`);
+        if (o.opdrachtWacht && o.opdrachtWacht > 6500) {
+          const h = await P.ev(`!!document.querySelector("[data-hulphand]")`);
+          zie(`${o.naam}: hulphandje na ${o.opdrachtWacht} ms stilte bij 'tik op de plus': ${h ? "ja" : "nee"}`);
+          if (!h) fout("geen hulphandje bij de plusknop na lange stilte");
+        }
+      }
+      const p = await P.ev(`(() => { const b = document.querySelector('[data-ding="plus"]:not(:disabled)'); if (!b) return null; const r = b.getBoundingClientRect(); return { x: r.left + r.width / 2, y: r.top + r.height / 2 }; })()`);
+      if (p) {
+        await P.foto?.(`${o.naam}-${taak.vraag}-voor-tik-${taak.n}`);
+        await P.tik(p);
+        await wacht(o.tikWacht ?? 450);
+        continue;
       }
     } else if (taak && taak.soort === "weg") {
       if (laatsteTaak !== `weg:${taak.n}`) {
@@ -453,6 +474,17 @@ const ROUTES = {
     const uit = [];
     for (let n = 0; n < 900 && uit.length < 3; n++) {
       const z = await P.nu();
+      if (z?.taak?.soort === "plus") {
+        const p = await P.ev(`(() => { const b = document.querySelector('[data-ding="plus"]:not(:disabled)'); if (!b) return null; const r = b.getBoundingClientRect(); return { x: r.left + r.width / 2, y: r.top + r.height / 2 }; })()`);
+        if (p) await P.tik(p);
+        await wacht(500);
+        continue;
+      }
+      if (z?.taak?.soort === "kies" && /^intro-/.test(z.taak.vraag)) {
+        await P.klikTekst(z.taak.goed);
+        await wacht(600);
+        continue;
+      }
       if (z?.taak?.soort === "kies") {
         await wacht(1500);
         const k = await P.ev(`JSON.stringify([...document.querySelectorAll(".bliepo-tekst .getal, .bliepo-tekst [data-eigen]")].map((e) => e.textContent.trim() + "=" + getComputedStyle(e).color))`);
@@ -507,7 +539,7 @@ const ROUTES = {
     await controleer(P, "allefout");
     const m = await P.meet();
     const metTeller = m.filter((r) => r.teller);
-    const tellerBijVraag = metTeller.filter((r) => r.taak && r.taak.startsWith("kies:"));
+    const tellerBijVraag = metTeller.filter((r) => r.taak && r.taak.startsWith("kies:") && !/^intro-/.test(r.vraag ?? ""));
     zie(`allefout: teller ${metTeller.length} metingen in beeld, waarvan bij een keuzevraag: ${tellerBijVraag.length} (moet 0)`);
     if (tellerBijVraag.length) fout("teller in beeld bij een keuzevraag");
     return ok;
@@ -531,6 +563,10 @@ const ROUTES = {
       for (let i = 0; i < 400 && !((await P.nu())?.pijl && (await P.ev(`!!document.querySelector(".bliepo-tekst-nog")`))); i++) {
         const z = await P.nu();
         if (z?.taak?.soort === "kies") await P.klikTekst(z.taak.goed);
+        if (z?.taak?.soort === "plus") {
+          const p = await P.ev(`(() => { const b = document.querySelector('[data-ding="plus"]:not(:disabled)'); if (!b) return null; const r = b.getBoundingClientRect(); return { x: r.left + r.width / 2, y: r.top + r.height / 2 }; })()`);
+          if (p) await P.tik(p);
+        }
         await wacht(80);
       }
       const voor = await P.nu();

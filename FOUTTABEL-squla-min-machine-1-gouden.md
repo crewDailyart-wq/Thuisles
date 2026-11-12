@@ -29,6 +29,26 @@ In de les staan de getallen bij de machine in de kleur van de blokjes; bij een k
 
 `plus-in-plaats-van-min` (draaiboek §7) komt in deze les niet voor: geen enkele keuze is a + b.
 
+## 1b. De uitleg aan het begin: de stippenmachine (ronde 34, 12 november 2026)
+
+Voor de 15 vragen komt een korte uitleg van de machine (draaiboek Minsommen, onderdeel `intro`, stap 1 t/m 4 en 7), in eigen woorden: Bliepo legt uit waar de stippenmachine voor dient, het kind tikt op de plusknop, de teller telt mee, het kind doet er nog 2 stippen bij, en dan komen 2 keuzevragen: wat doet het totaal, en hoe heet "erbij doen". De vraag "blijft het totaal stijgen?" (stap 5 en 6 van het draaiboek, alleen na een fout) is niet gebouwd; bij een fout volgt de gewone hint en de 2e fout = samen voordoen (15.11).
+
+**Wat Bliepo zegt en het kind ziet (stippen en teller paars: het getal hoort bij de stippen, 2.1):**
+1. Na de groet en de beginzin van de les: "Eerst leer je mijn stippenmachine kennen. Hij helpt je straks bij het aftrekken." De lege machine, teller 0, plusknop dof.
+2. Opdracht: "Tik op de plusknop onder de machine." (rondje om de plusknop; geen pijl; na ± 6 s het hulphandje bij de plusknop met "Je bent goed bezig. Tik op de plusknop." (daarna wisselen de zinnen, F8)). Na de tik: 1 stip, teller 1.
+3. "Je deed er 1 stip bij. Bovenaan staat het totaal: zoveel stippen zijn er nu." (rondje om de teller; vanzelf door).
+4. Opdracht: "Doe er nog 2 stippen bij en kijk goed naar het totaal." (geen pijl; hulphandje als bij 2; de knop wordt dof bij 3 stippen).
+5. Vraag 1 en vraag 2 hieronder, met de keuzes tegelijk (de tik is het antwoord, geen "Weet ik niet").
+6. "Nu gaan we juist aftrekken. Dan gaat er iets af." Dan de eerste minsom (de machine met blokjes).
+
+**Goed in 1 keer:** een lofzin uit het rijtje + 1 zin die uitlegt waarom (afwisselend). **Goed na een fout:** alleen een korte bevestiging + die zin. **1e fout:** scherm 1,5 s rood, de knoppen weg, de eerste zin en de hint (met het rondje), dan dezelfde vraag iets anders gezegd. **2e fout:** de uitleg, "Kom, we doen het samen.", het kind tikt zelf 1 keer op de plusknop (de kleine stap), Bliepo zegt wat er nu klopt, en de les gaat door.
+
+| Vraag | Fout antwoord | Denkfout (bewaard als) | Eerste zin van Bliepo | Hint | 2e fout: uitleg en samen voordoen |
+|---|---|---|---|---|---|
+| intro-totaal: Wat doet het totaal elke keer als er een stip bij komt? (keuzes Het wordt groter. / Het wordt kleiner.) | Het wordt kleiner. | `totaal-kleiner` — koos dat het totaal kleiner wordt (de reden is niet zeker; misschien aan aftrekken gedacht of niet naar de teller gekeken) | Je koos dat het kleiner wordt. | Kijk naar het totaal bovenaan. Wat stond daar eerst, en wat staat er nu? (rondje om de teller) | Er komen alleen stippen bij. Dan kan het totaal niet kleiner worden: het wordt groter. Kom, we doen het samen. Doe er nog 1 stip bij en kijk naar het totaal. … Eerst was het 3, nu is het 4. Het totaal wordt groter. |
+| intro-optellen: Wat heet het als je steeds stippen erbij doet? (keuzes Optellen / Aftrekken / Delen) | Aftrekken | `aftrekken-gekozen` — koos aftrekken (plus en min verwisseld, of vooruitgedacht: de les gaat over aftrekken) | Je koos aftrekken. Dat doen we straks. | Kijk wat de plusknop met de stippen doet: komen ze erbij of gaan ze eraf? (rondje om de plusknop) | Bij aftrekken gaat er iets weg. De plusknop zet er juist stippen bij. Kom, we doen het samen. Doe er nog 1 stip bij. … Er komt 1 stip bij. Erbij doen heet optellen. |
+| intro-optellen: Wat heet het als je steeds stippen erbij doet? (keuzes Optellen / Aftrekken / Delen) | Delen | `delen-gekozen` — koos delen (de reden is niet zeker; misschien het woord niet goed gekend) | Je koos delen. | Kijk wat de plusknop met de stippen doet: komen ze erbij of gaan ze eraf? (rondje om de plusknop) | Delen is eerlijk verdelen. De plusknop doet iets anders: hij zet er stippen bij. Kom, we doen het samen. Doe er nog 1 stip bij. … Er komt 1 stip bij. Erbij doen heet optellen. |
+
 ## 2. De fouttabel: per vraag elk fout antwoord (30 rijen)
 
 | Vraag | Fout antwoord | Denkfout (bewaard als) | Eerste zin van Bliepo | Hint | Op het scherm |

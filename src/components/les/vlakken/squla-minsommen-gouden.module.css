@@ -135,6 +135,51 @@ button.stip:focus-visible {
   opacity: 0.8;
 }
 
+/* De plusknop van de uitleg: rond, wit met zwarte tekst; dof als er nu niet op getikt mag worden. */
+.plus {
+  position: absolute;
+  z-index: 5;
+  width: 96px;
+  height: 96px;
+  margin: 0;
+  padding: 0;
+  transform: translate(-50%, -50%);
+  border: 3px solid #0b1028;
+  border-radius: 50%;
+  background: #ffffff;
+  color: #0b1028;
+  font-family: var(--font-les), "Work Sans", system-ui, sans-serif;
+  font-size: 72px;
+  font-weight: 800;
+  line-height: 1;
+  cursor: pointer;
+  box-shadow: 0 4px 10px rgba(0, 0, 20, 0.45);
+  transition: opacity 0.25s;
+  -webkit-tap-highlight-color: transparent;
+}
+.plus:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+.plus:focus-visible {
+  outline: 3px solid #ffd36e;
+  outline-offset: 3px;
+}
+/* Een nieuwe stip plopt in beeld. */
+.nieuw {
+  animation: plopStip 0.3s ease-out both;
+}
+@keyframes plopStip {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.6);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+}
+
 /* Het hulphandje: de vingertop staat op (left, top); de hand ligt schuin rechtsonder (zoals de andere gouden lessen). */
 .hand {
   position: absolute;
@@ -189,6 +234,7 @@ button.stip:focus-visible {
 
 @media (prefers-reduced-motion: reduce) {
   .pak,
+  .nieuw,
   .som {
     animation: none;
   }

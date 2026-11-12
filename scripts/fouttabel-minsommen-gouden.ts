@@ -10,7 +10,7 @@
  * het goede antwoord noemen bij de 1e fout, en geen zin mag het woord "fout" hebben.
  */
 import { writeFileSync } from "node:fs";
-import { VRAGEN, ZIN, foutenVan, overNa, type Fout, type Minvraag } from "../src/components/les/lessen/squla-minsommen-gouden-zinnen";
+import { INTRO, INTRO_VRAGEN, VRAGEN, ZIN, foutenVan, overNa, type Fout, type Minvraag } from "../src/components/les/lessen/squla-minsommen-gouden-zinnen";
 
 const kaal = (z: string) => z.replace(/\{(\d+):[a-z]+\}/g, "$1");
 /** Woorden die een richting geven; verboden in een hint als Bliepo de richting niet noemt. */
@@ -57,6 +57,43 @@ for (const v of VRAGEN) {
   const z = kaal(ZIN.samenKlaar(v));
   if (!z.includes(`${v.a} − ${v.b} = ${v.a - v.b}`)) fouten.push(`${v.id}: samenKlaar klopt niet: ${z}`);
 }
+/* 2b. De uitleg aan het begin (ronde 34): 2 keuzevragen. Elke fout keuze een rij; hint en eerste zin verklappen het goede
+   antwoord niet; het woord "fout" komt niet voor; binnen 1 reactie komt geen woord (4 letters of meer) of getal 2 keer voor (F-regels). */
+const STOP = new Set(["deze", "daar", "dan", "dat", "dit", "een", "het", "met", "naar", "nog", "nu", "van", "voor", "zijn", "zoveel", "kijk", "goed", "hij", "ook", "die", "maar", "wat", "als", "elke", "steeds", "juist", "straks"]);
+const dubbel = (zinnen: string[]): string[] => {
+  const w = kaal(zinnen.join(" ")).toLowerCase().replace(/[^a-zà-ÿ0-9 ]/g, " ").split(/\s+/).filter((x) => x && !STOP.has(x) && (x.length >= 4 || /^\d+$/.test(x)));
+  return w.filter((x, i) => w.indexOf(x) !== i);
+};
+const reacties = (q: (typeof INTRO_VRAGEN)[number]): [string, string[]][] => [
+  [`${q.id} vraag`, q.vraag],
+  [`${q.id} opnieuw`, q.opnieuw],
+  [`${q.id} samen opdracht`, q.samen.opdracht],
+  [`${q.id} samen klaar`, q.samen.klaar],
+  ...q.goedReactie.map((z, i): [string, string[]] => [`${q.id} goed ${i + 1}`, [z]]),
+  ...Object.entries(q.fouten).flatMap(([a, f]): [string, string[]][] => [
+    [`${q.id} ${a} 1e fout`, [f.eerste, f.hint]],
+    [`${q.id} ${a} 2e fout`, [...f.tweede, ZIN.samen]],
+  ]),
+];
+if (INTRO_VRAGEN.length !== 2) fouten.push(`${INTRO_VRAGEN.length} vragen in de uitleg in plaats van 2 (draaiboek stap 4 en 7)`);
+for (const q of INTRO_VRAGEN) {
+  if (!q.keuzes.includes(q.goed)) fouten.push(`${q.id}: het goede antwoord staat niet bij de keuzes`);
+  for (const k of q.keuzes.filter((x) => x !== q.goed)) if (!q.fouten[k]) fouten.push(`${q.id}: geen fouttabel voor "${k}"`);
+  const stam = q.goed.toLowerCase().replace(/^het wordt /, "").slice(0, 6);
+  for (const [a, f] of Object.entries(q.fouten)) {
+    if (/\bfout\b/i.test(`${f.eerste} ${f.hint} ${f.tweede.join(" ")}`)) fouten.push(`${q.id} ${a}: het woord "fout"`);
+    if (kaal(`${f.eerste} ${f.hint}`).toLowerCase().includes(stam)) fouten.push(`${q.id} ${a}: eerste zin of hint noemt het goede antwoord ("${stam}")`);
+    if (!f.hint || !f.eerste || f.tweede.length < 2) fouten.push(`${q.id} ${a}: fouttabel niet compleet`);
+  }
+  for (const [naam, zinnen] of reacties(q)) {
+    const d = dubbel(zinnen);
+    if (d.length) fouten.push(`${naam}: ${[...new Set(d)].join(", ")} komt 2 keer voor in 1 reactie`);
+  }
+}
+for (const [naam, z] of [["eerste stip", INTRO.eersteStip], ["meer", INTRO.meer.join(" ")], ["begin", INTRO.begin], ["einde", INTRO.einde]]) {
+  const d = dubbel([z]);
+  if (d.length) fouten.push(`uitleg ${naam}: ${[...new Set(d)].join(", ")} komt 2 keer voor in 1 reactie`);
+}
 if (fouten.length) {
   console.error("FOUTEN:\n" + fouten.join("\n"));
   process.exit(1);
@@ -73,6 +110,10 @@ const rijen = VRAGEN.flatMap((v) =>
 ).join("\n");
 const uitleg = VRAGEN.flatMap((v) =>
   Object.entries(foutenVan(v)).map(([a, f]) => `| ${v.nr} | ${a} (\`${f.code}\`) | ${kaal(f.kort ?? f.eerste) || "(zin uit §10)"} ${kaal(f.uitleg)} | ${f.weer.length && !f.noot ? f.weer.map(kaal).join(" ") : "— (dan de uitleg links)"} | ${kaal(ZIN.samenStippen(v))} ${kaal(ZIN.samenWeg(v))} … ${kaal(ZIN.samenKlaar(v))} |`),
+).join("\n");
+
+const introRijen = INTRO_VRAGEN.flatMap((q) =>
+  Object.entries(q.fouten).map(([a, f]) => `| ${q.id}: ${q.vraag.join(" ")} (keuzes ${q.keuzes.join(" / ")}) | ${a} | \`${f.code}\` — ${f.denkfout} | ${kaal(f.eerste)} | ${kaal(f.hint)} (rondje om ${f.ring === "teller" ? "de teller" : "de plusknop"}) | ${kaal(f.tweede.join(" "))} ${ZIN.samen} ${kaal(q.samen.opdracht.join(" "))} … ${kaal(q.samen.klaar.join(" "))} |`),
 ).join("\n");
 
 const tekst = `# FOUTTABEL — gouden les Minsommen (squla-min-machine-1-gouden, "Minsommen: hoeveel over?")
@@ -105,6 +146,24 @@ In de les staan de getallen bij de machine in de kleur van de blokjes; bij een k
 | \`onduidelijk\` | niet duidelijk: geen reden verzonnen | BLIEPO-KARAKTER.md §10 |
 
 \`plus-in-plaats-van-min\` (draaiboek §7) komt in deze les niet voor: geen enkele keuze is a + b.
+
+## 1b. De uitleg aan het begin: de stippenmachine (ronde 34, 12 november 2026)
+
+Voor de 15 vragen komt een korte uitleg van de machine (draaiboek Minsommen, onderdeel \`intro\`, stap 1 t/m 4 en 7), in eigen woorden: Bliepo legt uit waar de stippenmachine voor dient, het kind tikt op de plusknop, de teller telt mee, het kind doet er nog 2 stippen bij, en dan komen 2 keuzevragen: wat doet het totaal, en hoe heet "erbij doen". De vraag "blijft het totaal stijgen?" (stap 5 en 6 van het draaiboek, alleen na een fout) is niet gebouwd; bij een fout volgt de gewone hint en de 2e fout = samen voordoen (15.11).
+
+**Wat Bliepo zegt en het kind ziet (stippen en teller paars: het getal hoort bij de stippen, 2.1):**
+1. Na de groet en de beginzin van de les: "${INTRO.begin}" De lege machine, teller 0, plusknop dof.
+2. Opdracht: "${INTRO.plusEerst.join(" ")}" (rondje om de plusknop; geen pijl; na ± 6 s het hulphandje bij de plusknop met "Je bent goed bezig. ${INTRO.plusHand[0]}" (daarna wisselen de zinnen, F8)). Na de tik: 1 stip, teller 1.
+3. "${kaal(INTRO.eersteStip)}" (rondje om de teller; vanzelf door).
+4. Opdracht: "${kaal(INTRO.meer.join(" "))}" (geen pijl; hulphandje als bij 2; de knop wordt dof bij 3 stippen).
+5. Vraag 1 en vraag 2 hieronder, met de keuzes tegelijk (de tik is het antwoord, geen "Weet ik niet").
+6. "${INTRO.einde}" Dan de eerste minsom (de machine met blokjes).
+
+**Goed in 1 keer:** een lofzin uit het rijtje + 1 zin die uitlegt waarom (afwisselend). **Goed na een fout:** alleen een korte bevestiging + die zin. **1e fout:** scherm 1,5 s rood, de knoppen weg, de eerste zin en de hint (met het rondje), dan dezelfde vraag iets anders gezegd. **2e fout:** de uitleg, "Kom, we doen het samen.", het kind tikt zelf 1 keer op de plusknop (de kleine stap), Bliepo zegt wat er nu klopt, en de les gaat door.
+
+| Vraag | Fout antwoord | Denkfout (bewaard als) | Eerste zin van Bliepo | Hint | 2e fout: uitleg en samen voordoen |
+|---|---|---|---|---|---|
+${introRijen}
 
 ## 2. De fouttabel: per vraag elk fout antwoord (${telling} rijen)
 
