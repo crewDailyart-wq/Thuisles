@@ -1,0 +1,241 @@
+/*
+  Extra les Tellen (12 november 2026). Geen eigen achtergrond of kader: de ruimte van het lesscherm blijft zichtbaar.
+  Maten in punten van het vlak (980 × 720). Het fruit blijft links van het tekstvak (15.30).
+*/
+
+.vlak {
+  position: absolute;
+  inset: 0;
+  color: #ffffff;
+  font-family: var(--font-les), "Work Sans", system-ui, sans-serif;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.rooster {
+  position: absolute;
+  left: 0;
+  top: 215px;
+  width: 980px;
+}
+
+.cel {
+  position: absolute;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  transition: opacity 0.25s ease;
+}
+.dof {
+  opacity: 0.22;
+}
+.fruit {
+  display: block;
+  object-fit: contain;
+  pointer-events: none;
+}
+/* Een lege plek: een stippelrondje om in te tikken (geen kader om een plaatje). */
+.leeg {
+  display: block;
+  border: 3px dashed rgba(255, 255, 255, 0.55);
+  border-radius: 50%;
+  margin-bottom: 4px;
+}
+
+/* Het nummer boven het fruit (samen tellen, of alle nummers tegelijk na goed). */
+.nummer {
+  position: absolute;
+  left: 50%;
+  top: 0;
+  width: 64px;
+  height: 36px;
+  margin-left: -32px;
+  display: grid;
+  place-items: center;
+  pointer-events: none;
+  font-size: 32px;
+  font-weight: 800;
+  line-height: 1;
+  text-shadow:
+    0 0 3px rgba(4, 18, 60, 1),
+    0 2px 8px rgba(4, 18, 60, 0.95),
+    0 0 1px rgba(4, 18, 60, 1);
+  animation: plop 0.28s ease-out both;
+}
+@keyframes plop {
+  from {
+    opacity: 0;
+    transform: scale(0.4);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* De telhulp: een zwart stipje op het fruit. */
+.stip {
+  position: absolute;
+  left: 50%;
+  bottom: 22%;
+  width: 22px;
+  height: 22px;
+  margin-left: -11px;
+  border-radius: 50%;
+  background: #0b1230;
+  border: 2px solid rgba(255, 255, 255, 0.85);
+  pointer-events: none;
+}
+
+/* Een onzichtbare knop over een plek (minstens 48 punten, BOUWREGELS 6.6). */
+.tik {
+  position: absolute;
+  inset: 0;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  padding: 0;
+  border-radius: 14px;
+}
+.tik:focus-visible {
+  outline: 4px solid #ffffff;
+  outline-offset: 2px;
+}
+
+.golf {
+  animation: golf 0.9s ease-out;
+}
+@keyframes golf {
+  0% {
+    filter: brightness(1);
+  }
+  35% {
+    filter: brightness(1.35);
+  }
+  100% {
+    filter: brightness(1);
+  }
+}
+.schud {
+  animation: schud 0.5s ease-in-out;
+}
+@keyframes schud {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  20% {
+    transform: translateX(-7px);
+  }
+  40% {
+    transform: translateX(7px);
+  }
+  60% {
+    transform: translateX(-5px);
+  }
+  80% {
+    transform: translateX(5px);
+  }
+}
+
+/* Het lijstje (maken en lijstje): per soort het aantal in de kleur van het fruit. */
+.lijst {
+  position: absolute;
+  left: 60px;
+  top: 36px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.regel {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  height: 56px;
+  padding: 0 18px 0 12px;
+  border-radius: 28px;
+  border: 3px solid transparent;
+  background: transparent;
+  color: #ffffff;
+  font: inherit;
+}
+.regelKnop {
+  cursor: pointer;
+}
+.regelKnop:focus-visible {
+  outline: 4px solid #ffffff;
+  outline-offset: 2px;
+}
+.gekozen {
+  border-color: #ffffff;
+  background: rgba(255, 255, 255, 0.12);
+}
+.lijstGetal {
+  font-size: 40px;
+  font-weight: 800;
+  line-height: 1;
+  min-width: 38px;
+  text-align: right;
+  text-shadow:
+    0 0 3px rgba(4, 18, 60, 1),
+    0 2px 8px rgba(4, 18, 60, 0.95);
+}
+.lijstKruis {
+  font-size: 28px;
+  font-weight: 700;
+  opacity: 0.9;
+}
+.lijstFruit {
+  width: 44px;
+  height: 44px;
+  object-fit: contain;
+  pointer-events: none;
+}
+.vink {
+  font-size: 26px;
+  font-weight: 800;
+  margin-left: 4px;
+}
+
+/* Het hulphandje (15.19): komt vanzelf, doet niets met muis of vinger. */
+.hand {
+  position: absolute;
+  width: 62px;
+  height: 84px;
+  margin: -4px 0 0 -26px;
+  pointer-events: none;
+  z-index: 8;
+  animation: handwip 1.05s ease-in-out infinite;
+  transform-origin: 48% 3%;
+}
+.handTekening {
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  filter: drop-shadow(0 4px 6px rgba(0, 0, 20, 0.45));
+}
+.handTekening rect {
+  fill: #ffffff;
+  stroke: #2b3a66;
+  stroke-width: 3;
+}
+@keyframes handwip {
+  0%,
+  100% {
+    transform: translate(0, 0) rotate(-0.5rad);
+  }
+  50% {
+    transform: translate(-6px, 8px) rotate(-0.5rad);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nummer,
+  .hand,
+  .golf,
+  .schud {
+    animation-duration: 1ms;
+  }
+}
