@@ -68,6 +68,8 @@ import { LESSEN_SQULA_VORMEN } from "./squla-vormen";
 import { LESSEN_SQULA_REKENMIX } from "./squla-rekenmix";
 import { LESSEN_SQULA_REKENMIX_GOUDEN } from "./squla-rekenmix-gouden";
 import { LESSEN_SQULA_REKENMIX4_GOUDEN } from "./squla-rekenmix4-gouden";
+import { LESSEN_SQULA_REKENMIX3_GOUDEN } from "./squla-rekenmix3-gouden";
+import { LESSEN_SQULA_REKENMIX2_GOUDEN } from "./squla-rekenmix2-gouden";
 
 export const LESSEN: Lesdraaiboek[] = [
   ...LESSEN_ZO_WERKT_HET,
@@ -120,6 +122,8 @@ export const LESSEN: Lesdraaiboek[] = [
   ...LESSEN_SQULA_REKENMIX,
   ...LESSEN_SQULA_REKENMIX_GOUDEN,
   ...LESSEN_SQULA_REKENMIX4_GOUDEN,
+  ...LESSEN_SQULA_REKENMIX3_GOUDEN,
+  ...LESSEN_SQULA_REKENMIX2_GOUDEN,
 ];
 
 export function zoekDraaiboek(id: string): Lesdraaiboek | null {

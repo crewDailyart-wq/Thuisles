@@ -341,7 +341,7 @@ export function GoudenRekenmixVlak({ opgave, nummers = [], kleur = "wit", tikbaa
       {vinkje != null && ind?.plekken[vinkje] && (
         <div
           key={`${ind.id}-v${vinkje}`}
-          style={{ position: "absolute", left: ind.plekken[vinkje].x + ind.plekken[vinkje].m * 0.3, top: ind.plekken[vinkje].y - ind.plekken[vinkje].m * 0.5 - 8, width: 64, height: 64, borderRadius: "50%", background: "#2fbf71", border: "4px solid #ffffff", display: "grid", placeItems: "center", pointerEvents: "none", boxShadow: "0 3px 10px rgba(0,0,0,0.35)" }}
+          style={{ position: "absolute", left: ind.plekken[vinkje].x + ind.plekken[vinkje].m * (ind.plekken[vinkje].beeld.startsWith("spies") ? 0.08 : 0.3), top: ind.plekken[vinkje].y - ind.plekken[vinkje].m * 0.5 - 8, width: 64, height: 64, borderRadius: "50%", background: "#2fbf71", border: "4px solid #ffffff", display: "grid", placeItems: "center", pointerEvents: "none", boxShadow: "0 3px 10px rgba(0,0,0,0.35)" }}
           aria-hidden
           data-vinkje=""
         >
