@@ -35,6 +35,8 @@ export type GoudenRekenmixProps = {
   /** De kleur van de nummers: de kleurnaam van het ding (dezelfde namen als in Bliepo's zinnen). */
   kleur?: string;
   tikbaar?: boolean;
+  /** Alleen deze dingen zijn tikbaar (Rekenmix 4: in een druk plaatje tellen alleen de dingen van 1 soort mee). Zonder: alle dingen. */
+  tikbaarOp?: number[];
   hand?: number | null;
   goed?: number;
   fout?: number;
@@ -232,7 +234,7 @@ function maakScene(Phaser: PhaserModule, rustig: boolean) {
   return GoudenRekenmix as unknown as new () => import("phaser").Scene;
 }
 
-export function GoudenRekenmixVlak({ opgave, nummers = [], kleur = "wit", tikbaar = false, hand = null, goed = 0, fout = 0, voorraad, meld, schaal }: GoudenRekenmixProps & Vlakbasis) {
+export function GoudenRekenmixVlak({ opgave, nummers = [], kleur = "wit", tikbaar = false, tikbaarOp, hand = null, goed = 0, fout = 0, voorraad, meld, schaal }: GoudenRekenmixProps & Vlakbasis) {
   const { plek, scene } = useHoloMotor<Scene>(schaal, maakScene);
   const opgaveSleutel = opgave ? JSON.stringify(opgave) : "";
   const ind = useMemo(() => (opgaveSleutel ? indeling(JSON.parse(opgaveSleutel) as RmgOpgave) : null), [opgaveSleutel]);
@@ -287,7 +289,7 @@ export function GoudenRekenmixVlak({ opgave, nummers = [], kleur = "wit", tikbaa
       )}
       {tikbaar &&
         ind?.plekken.map((p, i) => {
-          if (nummers[i] > 0) return null;
+          if (nummers[i] > 0 || (tikbaarOp && !tikbaarOp.includes(i))) return null;
           const b = Math.max(p.beeld === "potlood" ? p.m * 0.42 : p.m, 44 / schaal);
           const h = Math.max(p.m, 44 / schaal);
           return (

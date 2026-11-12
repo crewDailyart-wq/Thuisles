@@ -236,6 +236,7 @@ export const LESCATALOGUS: Lesregel[] = [
   { id: "squla-klok-klokkijken3-4", titel: "Halve uren: later en eerder", synthesis: "Squla groep 3 · Klokkijken · Klokkijken 3 · level 4 (alleen leerdoel)" },
   { id: "squla-rekenmix-mix1-1", titel: "Rekenmix 1", synthesis: "Squla groep 3 · Rekenmix · Rekenmix 1 · level 1 (alleen leerdoel)" },
   { id: "squla-rekenmix-mix1-1-gouden", titel: "Rekenmix 1", synthesis: "Squla groep 3 · Rekenmix · Rekenmix 1 · level 1 · gouden les (nieuwe versie van squla-rekenmix-mix1-1) · alle vragen zijn telvragen: verloop van de gouden les Tellen (draaiboek Tellen, Color Count)" },
+  { id: "squla-rekenmix-mix4-1-gouden", titel: "Rekenmix 4", synthesis: "Squla groep 3 · Rekenmix · Rekenmix 4 · level 1 · gouden les (nieuwe versie van squla-rekenmix-mix4-1) · alle vragen zijn telvragen (gewoon, in een druk plaatje, 2 rijen samen): verloop van de gouden les Tellen (draaiboek Tellen, Color Count)" },
   { id: "squla-rekenmix-mix1-2", titel: "Rekenmix 1 (moeilijker)", synthesis: "Squla groep 3 · Rekenmix · Rekenmix 1 · level 2 (alleen leerdoel)" },
   { id: "squla-rekenmix-mix1-3", titel: "Rekenmix 1 (nog moeilijker)", synthesis: "Squla groep 3 · Rekenmix · Rekenmix 1 · level 3 (alleen leerdoel)" },
   { id: "squla-rekenmix-mix1-4", titel: "Rekenmix 1 (heel moeilijk)", synthesis: "Squla groep 3 · Rekenmix · Rekenmix 1 · level 4 (alleen leerdoel)" },
