@@ -27,7 +27,10 @@ export { KaartRekenmix as KaartRekenmixGouden } from "./squla-rekenmix-vlak";
 
 /** 1 ding: het plaatje (naam in public/voorwerpen) en zijn plek, in punten ten opzichte van het midden van de tekening. */
 export type RmgDing = { beeld: string; x: number; y: number; m: number; boven: number };
-export type RmgOpgave = { id: string; dingen: RmgDing[] };
+/** `reserveer`: zoveel punten bovenaan vrijhouden (Rekenmix 3 splitsen: daar staat het splitsbeen). */
+export type RmgOpgave = { id: string; dingen: RmgDing[]; reserveer?: number };
+/** Het splitsbeen (Rekenmix 3 splitsen): het totaal, het deel dat je ziet (in de kleur van het ding) en een vraagteken. */
+export type Splitsbeen = { tot: number; deel: number; kleur: string };
 
 export type GoudenRekenmixProps = {
   opgave: RmgOpgave | null;
@@ -37,6 +40,13 @@ export type GoudenRekenmixProps = {
   tikbaar?: boolean;
   /** Alleen deze dingen zijn tikbaar (Rekenmix 4: in een druk plaatje tellen alleen de dingen van 1 soort mee). Zonder: alle dingen. */
   tikbaarOp?: number[];
+  /** Deze dingen zijn er (nog) niet: onzichtbaar. Zodra ze uit de lijst gaan, wippen ze in beeld (de dingen uit de doos). */
+  verborgen?: number[];
+  splitsbeen?: Splitsbeen | null;
+  /** Een vinkje op dit ding (Rekenmix 2: het gekozen plaatje; alleen een vinkje, geen gloed, BOUWREGELS 6.5). */
+  vinkje?: number | null;
+  /** De tikvlakken zijn rechthoekig over het hele plaatje (Rekenmix 2: een boterham of spiesje kiezen). */
+  vierkant?: boolean;
   hand?: number | null;
   goed?: number;
   fout?: number;
@@ -55,9 +65,10 @@ export function indeling(o: RmgOpgave) {
   const rechts = Math.max(...o.dingen.map((d) => d.x + d.m / 2));
   const boven = Math.min(...o.dingen.map((d) => d.y - d.boven - 22));
   const onder = Math.max(...o.dingen.map((d) => d.y + d.m / 2));
-  const f = Math.min(MAX_SCHAAL, (ZONE.x1 - ZONE.x0) / (rechts - links), (ZONE.y1 - ZONE.y0) / (onder - boven));
+  const y0 = ZONE.y0 + (o.reserveer ?? 0);
+  const f = Math.min(MAX_SCHAAL, (ZONE.x1 - ZONE.x0) / (rechts - links), (ZONE.y1 - y0) / (onder - boven));
   const cx = (ZONE.x0 + ZONE.x1) / 2 - ((links + rechts) / 2) * f;
-  const cy = (ZONE.y0 + ZONE.y1) / 2 - ((boven + onder) / 2) * f;
+  const cy = (y0 + ZONE.y1) / 2 - ((boven + onder) / 2) * f;
   return { id: o.id, f, plekken: o.dingen.map((d) => ({ beeld: d.beeld, x: cx + d.x * f, y: cy + d.y * f, m: d.m * f, boven: d.boven * f })) };
 }
 type Ind = ReturnType<typeof indeling>;
@@ -66,6 +77,7 @@ interface Scene {
   zetIndeling(o: Ind | null): void;
   pop(i: number): void;
   zetHand(i: number | null): void;
+  zetVerborgen(lijst: number[]): void;
   goed(): void;
   fout(): void;
   bakVooruit(namen: string[]): void;
@@ -178,6 +190,20 @@ function maakScene(Phaser: PhaserModule, rustig: boolean) {
       this.tweens.add({ targets: im, scale: basis * 1.16, duration: 110, yoyo: true, ease: "Sine.easeOut", onComplete: () => im.setScale(basis) });
     }
 
+    /** Dingen die er nog niet zijn: onzichtbaar; zodra ze uit de lijst gaan, wippen ze in beeld. */
+    zetVerborgen(lijst: number[]) {
+      this.items.forEach((im, i) => {
+        if (lijst.includes(i)) {
+          this.tweens.killTweensOf(im);
+          im.setVisible(false);
+        } else if (!im.visible) {
+          const basis = (im.getData("sc") as number | undefined) ?? 1 / TX;
+          im.setVisible(true).setAlpha(1).setScale(basis);
+          this.pop(i);
+        }
+      });
+    }
+
     /** Het handje wijst met de vingertop naar het ding, vanuit de ruimte rechtsonder, en beweegt zacht heen en weer. */
     zetHand(i: number | null) {
       if (i === this.handI) return;
@@ -234,7 +260,7 @@ function maakScene(Phaser: PhaserModule, rustig: boolean) {
   return GoudenRekenmix as unknown as new () => import("phaser").Scene;
 }
 
-export function GoudenRekenmixVlak({ opgave, nummers = [], kleur = "wit", tikbaar = false, tikbaarOp, hand = null, goed = 0, fout = 0, voorraad, meld, schaal }: GoudenRekenmixProps & Vlakbasis) {
+export function GoudenRekenmixVlak({ opgave, nummers = [], kleur = "wit", tikbaar = false, tikbaarOp, hand = null, goed = 0, fout = 0, voorraad, verborgen, splitsbeen = null, vinkje = null, vierkant = false, meld, schaal }: GoudenRekenmixProps & Vlakbasis) {
   const { plek, scene } = useHoloMotor<Scene>(schaal, maakScene);
   const opgaveSleutel = opgave ? JSON.stringify(opgave) : "";
   const ind = useMemo(() => (opgaveSleutel ? indeling(JSON.parse(opgaveSleutel) as RmgOpgave) : null), [opgaveSleutel]);
@@ -259,6 +285,11 @@ export function GoudenRekenmixVlak({ opgave, nummers = [], kleur = "wit", tikbaa
     vorige.current = { id: ind.id, n: nu };
   }, [scene, ind, nummerSleutel]);
 
+  const verborgenSleutel = verborgen ? verborgen.join(",") : "";
+  useEffect(() => {
+    scene?.zetVerborgen(verborgenSleutel ? verborgenSleutel.split(",").map(Number) : []);
+  }, [scene, ind, verborgenSleutel]);
+
   useEffect(() => {
     scene?.zetHand(hand);
   }, [scene, ind, hand]);
@@ -280,12 +311,44 @@ export function GoudenRekenmixVlak({ opgave, nummers = [], kleur = "wit", tikbaa
   return (
     <div className={s.vlak} data-rekenmix-gouden="">
       <div ref={plek} style={HOLO_CANVAS} aria-hidden />
+      {splitsbeen && (
+        <svg style={{ position: "absolute", left: 0, top: 0, width: 980, height: 720, pointerEvents: "none" }} viewBox="0 0 980 720" aria-hidden data-splitsbeen="">
+          <g stroke="#ffffff" strokeWidth="4" strokeLinecap="round">
+            <line x1="190" y1="92" x2="110" y2="178" />
+            <line x1="190" y1="92" x2="270" y2="178" />
+          </g>
+          {[
+            { x: 190, y: 74, r: 42, t: String(splitsbeen.tot), c: "#ffffff" },
+            { x: 110, y: 200, r: 38, t: String(splitsbeen.deel), c: LABELKLEUR[splitsbeen.kleur] ?? "#ffffff" },
+            { x: 270, y: 200, r: 38, t: "?", c: "#ffffff" },
+          ].map((k, i) => (
+            <g key={i}>
+              <circle cx={k.x} cy={k.y} r={k.r} fill="#0d2466" stroke="#ffffff" strokeWidth="4" />
+              <text x={k.x} y={k.y + 14} textAnchor="middle" fontSize="42" fontWeight="800" fill={k.c} fontFamily="inherit">
+                {k.t}
+              </text>
+            </g>
+          ))}
+        </svg>
+      )}
       {ind?.plekken.map((p, i) =>
         nummers[i] > 0 ? (
           <div key={`${ind.id}-n${i}`} className={s.nummer} style={{ left: p.x, top: p.y - p.boven, color: kleurHex }} aria-hidden data-nummer="">
             {nummers[i]}
           </div>
         ) : null,
+      )}
+      {vinkje != null && ind?.plekken[vinkje] && (
+        <div
+          key={`${ind.id}-v${vinkje}`}
+          style={{ position: "absolute", left: ind.plekken[vinkje].x + ind.plekken[vinkje].m * 0.3, top: ind.plekken[vinkje].y - ind.plekken[vinkje].m * 0.5 - 8, width: 64, height: 64, borderRadius: "50%", background: "#2fbf71", border: "4px solid #ffffff", display: "grid", placeItems: "center", pointerEvents: "none", boxShadow: "0 3px 10px rgba(0,0,0,0.35)" }}
+          aria-hidden
+          data-vinkje=""
+        >
+          <svg viewBox="0 0 24 24" width="38" height="38" fill="none" stroke="#ffffff" strokeWidth="3.4" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M5 12.5l4.5 4.5L19 7.5" />
+          </svg>
+        </div>
       )}
       {tikbaar &&
         ind?.plekken.map((p, i) => {
@@ -297,7 +360,7 @@ export function GoudenRekenmixVlak({ opgave, nummers = [], kleur = "wit", tikbaa
               key={`${ind.id}-t${i}`}
               type="button"
               className={s.tik}
-              style={{ left: p.x - b / 2, top: p.y - h / 2, width: b, height: h, borderRadius: p.beeld === "potlood" ? 18 : "50%" }}
+              style={{ left: p.x - b / 2, top: p.y - h / 2, width: b, height: h, borderRadius: vierkant ? 18 : p.beeld === "potlood" ? 18 : "50%" }}
               aria-label="Tel dit ding"
               data-ding={`tel-${i}`}
               onClick={() => meld({ soort: "telTik", index: i })}
