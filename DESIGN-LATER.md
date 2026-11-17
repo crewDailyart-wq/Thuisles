@@ -48,3 +48,7 @@ De gouden les Minsommen zet `woordenMeeMetStem` aan: elk woord licht op als Blie
 
 ## Woorden oplichten: precies met Ruth (11 november 2026, F10)
 Met de Google-stem in Chrome zijn de woordtijden een schatting (spreekmodel `GOOGLE_NL` in lib/voorlezen.ts): gemeten ongeveer 7 van de 10 woorden binnen ± 150 ms, gemiddeld ± 0,12 s naast, soms tot ± 0,5 s (vooral na een punt). Preciezer kan niet met deze stem: hij meldt geen woorden (geen onboundary) en Chrome op deze Mac heeft geen andere Nederlandse stem. **Ruth (ElevenLabs) levert echte woordtijden per woord**; die gaan al via `meldVoorlezen(zin, grenzen, tijden)`. Bij de overstap: de tijden per woord meesturen met elk bestand (ook bij {naam}) en opnieuw meten met `node scripts/test-woord-oplichten.mjs`.
+
+## Woord-voor-woord oplichten gelijk met de stem (Sara, 17 november 2026)
+
+Sara ziet dat het oplichten niet samengaat met de stem (gouden Tellen). Oorzaak: de huidige stem (Google) geeft geen woordtijden, dus de tijd per woord wordt geschat (ongeveer 70% van de woorden binnen 150 ms). Besluit Sara: dit doen we pas als de officiële stem (Ruth) erbij komt, omdat die de exacte woordtijden meegeeft. Dan voor alle gouden lessen tegelijk de geschatte tijden vervangen door de echte, en `scripts/test-woord-oplichten.mjs` opnieuw draaien (ook voor de 3 extra-lessen). Eerst toestemming vragen voor het tegoed (regel 9).
