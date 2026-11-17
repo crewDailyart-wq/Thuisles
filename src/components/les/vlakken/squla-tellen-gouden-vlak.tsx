@@ -128,7 +128,7 @@ function maakScene(Phaser: PhaserModule, rustig: boolean) {
         if (!img || !this.sys?.isActive()) return;
         if (!this.textures.exists("stg-hand-magnific")) this.textures.addImage("stg-hand-magnific", img);
         this.nieuweHand = true;
-        this.hand.setTexture("stg-hand-magnific").setOrigin(0.25, 0.19);
+        this.hand.setTexture("stg-hand-magnific").setOrigin(0.2, 0.17);
         if (this.handI != null) {
           const i = this.handI;
           this.handI = null;
