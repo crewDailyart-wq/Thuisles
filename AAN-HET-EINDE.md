@@ -2,6 +2,14 @@
 
 Deze lijst wordt bijgehouden. Wat klaar is, krijgt een vinkje; niets verdwijnt zonder dat Sara het zegt.
 
+## Volgorde van werken (Sara, 17 november 2026)
+1. De helpers die al bezig zijn afmaken (hulphandje in alle gouden lessen, dubbel gezegd).
+2. A: zinnenronde met Fable, alleen gouden lessen (15 + Rekenmix 2, 3, 4 + 3 extra's): zinnen beoordelen, verbeteren, toetsen aan de bouwregels, doorvoeren. Eén helper tegelijk.
+3. B: variatie in wat Bliepo zegt (reacties/lof/aanmoediging 3-5 varianten, instructies 2-3 varianten, nooit 2x dezelfde zin achter elkaar; fouttabel intact; geen ElevenLabs-tegoed; schatting aantal zinnen en kosten in KEUZES-VOOR-SARA.md).
+4. Kale cijfers (waar het past kleur van het voorwerp).
+5. Scherm Kralenavontuur (404) uitzoeken.
+6. Onafhankelijke keuring per les, één korte lijst aan Sara.
+
 ## Vloeiend-meting (besluit Sara, 17 november 2026)
 - [ ] Eén keer meten voor ALLE opdrachten, als alle ongeveer 1000 opdrachten klaar zijn (niet per les). `npm run vloeiend`; minstens 55-60 beelden per seconde, hapering hooguit 50 ms, op laptop én trage telefoon.
 - [ ] Vooraf: energiebesparing van de Mac uit, geen helpers of tests ernaast (anders meet hij te traag).
@@ -23,7 +31,7 @@ Deze lijst wordt bijgehouden. Wat klaar is, krijgt een vinkje; niets verdwijnt z
 
 ## Losse punten
 - [ ] Scherm Kralenavontuur (tellen-sprongen) geeft een 404 (niet nieuw): uitzoeken als Sara het wil.
-- [ ] In de browser staan 10 "404 Not Found"-meldingen in de Tellen-les: uitzoeken welk bestand.
+- [x] De "404 Not Found"-meldingen in de lessen: uitgezocht (17 november). Het is de stem: er is nog geen officiële stem (Ruth), dus de site antwoordt 404 en de les gebruikt de stem uit de browser. Verdwijnt vanzelf met de officiële stem.
 - [ ] Opstarttijd van minder dan 1 seconde kan pas op de echte site worden gemeten.
 
 ## Online zetten
