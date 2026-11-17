@@ -46,6 +46,20 @@ const FRUIT_SCHAAL = 0.85;
 /** Hoe hoog het nummer boven het midden van het fruit staat (punten van het vlak). */
 const NUMMER_BOVEN = 52;
 
+/** Het hulphandje uit Magnific, 1 keer geladen voor de hele pagina. Mislukt het laden, dan blijft de getekende hand. */
+let handPlaatje: Promise<HTMLImageElement | null> | null = null;
+function laadHulphand(): Promise<HTMLImageElement | null> {
+  if (!handPlaatje) {
+    const img = new Image();
+    img.src = "/hulphand/hulphand-wijs.png";
+    handPlaatje = img.decode().then(
+      () => img,
+      () => null,
+    );
+  }
+  return handPlaatje;
+}
+
 interface Scene {
   zetIndeling(o: Ind | null): void;
   pop(i: number): void;
@@ -66,6 +80,7 @@ function maakScene(Phaser: PhaserModule, rustig: boolean) {
     ind: Ind | null = null;
     hand!: Img;
     handI: number | null = null;
+    nieuweHand = false;
 
     constructor() {
       super("squla-tellen-gouden");
@@ -107,6 +122,19 @@ function maakScene(Phaser: PhaserModule, rustig: boolean) {
         c.stroke();
       });
       this.hand = this.plaats("stg-hand", 0, 0).setOrigin(0.48, 0.03).setVisible(false).setDepth(10);
+      /* Het mooiere handje uit Magnific (kinderstijl, 17 nov 2026): zodra het plaatje geladen is, vervangt het de getekende hand.
+         Tot dan (of als het laden mislukt) blijft de getekende hand zichtbaar. */
+      void laadHulphand().then((img) => {
+        if (!img || !this.sys?.isActive()) return;
+        if (!this.textures.exists("stg-hand-magnific")) this.textures.addImage("stg-hand-magnific", img);
+        this.nieuweHand = true;
+        this.hand.setTexture("stg-hand-magnific").setOrigin(0.25, 0.19);
+        if (this.handI != null) {
+          const i = this.handI;
+          this.handI = null;
+          this.zetHand(i);
+        }
+      });
     }
 
     tex(p: Plaatje) {
@@ -165,9 +193,10 @@ function maakScene(Phaser: PhaserModule, rustig: boolean) {
       /* De vingertop raakt het fruit rechtsonder; de hand ligt schuin in de ruimte rechtsonder, niet over het fruit eronder
          (kind-test 9 nov). Hij beweegt zacht heen en weer in de richting van de vinger. */
       const tip = { x: pl.x + 24, y: pl.y + 26 };
-      const hoek = -0.65;
-      const stap = { x: -Math.sin(hoek) * 8, y: Math.cos(hoek) * 8 };
-      this.hand.setScale(0.55 / TX).setRotation(hoek).setPosition(tip.x, tip.y).setAlpha(1).setVisible(true);
+      /* De Magnific-hand wijst zelf al schuin omhoog naar links (de vingertop is het ankerpunt): geen draaiing nodig. */
+      const hoek = this.nieuweHand ? 0 : -0.65;
+      const stap = this.nieuweHand ? { x: 5, y: 5 } : { x: -Math.sin(hoek) * 8, y: Math.cos(hoek) * 8 };
+      this.hand.setScale(this.nieuweHand ? 0.1 : 0.55 / TX).setRotation(hoek).setPosition(tip.x, tip.y).setAlpha(1).setVisible(true);
       if (this.rustig) return;
       this.hand.setAlpha(0);
       this.tweens.add({ targets: this.hand, alpha: 1, duration: 300 });
