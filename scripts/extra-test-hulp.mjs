@@ -17,6 +17,7 @@ import { spawn, execFileSync } from "node:child_process";
 import { mkdtempSync, rmSync, existsSync, mkdirSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
+import { korteDubbel, opnameDubbel } from "./dubbel-controle.mjs";
 
 export const BASIS = "http://localhost:3000";
 export const wacht = (ms) => new Promise((r) => setTimeout(r, ms));
@@ -29,7 +30,7 @@ const IN_PAGINA = `
     HTMLMediaElement.prototype.play = function () { const t = this; setTimeout(() => { t.dispatchEvent(new Event("playing")); setTimeout(() => t.dispatchEvent(new Event("ended")), 1200); }, 20); return Promise.resolve(); };
     if (window.speechSynthesis) window.speechSynthesis.speak = (u) => setTimeout(() => { u.onstart && u.onstart(new Event("start")); setTimeout(() => { u.onend && u.onend(new Event("end")); }, ${process.env.SNELSTEM ? "80" : '400 + String(u.text || "").length * 25'}); }, 20);
   }
-  window.__zinnen = [];
+  window.__zinnen = []; window.__stemSpeel = [];
   if (window.speechSynthesis) { const sp = window.speechSynthesis.speak.bind(window.speechSynthesis); window.speechSynthesis.speak = (u) => { window.__zinnen.push({ t: Math.round(performance.now()), z: u.text }); sp(u); }; }
   window.__tikken = [];
   document.addEventListener("pointerdown", () => window.__tikken.push(Math.round(performance.now())), true);
@@ -115,7 +116,7 @@ export async function start(les, { venster = [1440, 900], fotoMap = process.env.
     return false;
   };
   const nu = () => ev(`(() => { const ph = window.__phaser ?? {}; const taak = ph.telTaak ?? null; const knoppen = [...document.querySelectorAll("button")].filter((b) => b.getBoundingClientRect().width > 3).map((b) => (b.textContent || "").trim()); return { pijl: !!document.querySelector('[data-knop="verder"]') && document.querySelector('[data-knop="verder"]').getBoundingClientRect().width > 3, tekst: [...document.querySelectorAll(".bliepo-tekst")].map((e) => e.textContent.replace(/\\s+/g, " ").trim()).filter(Boolean), taak, antwoord: ph.antwoord ?? null, kaart: !!document.querySelector('button[aria-label$="af te vinken"]'), controleer: !!document.querySelector('[data-knop="controleer"]') && document.querySelector('[data-knop="controleer"]').getBoundingClientRect().width > 3, hand: !!document.querySelector("[data-hulphand]"), knoppen }; })()`);
-  const gegevens = () => ev(`JSON.stringify({ d: window.__denkfouten ?? [], u: window.__uitkomsten ?? [], g: window.__gouden ?? [], zinnen: window.__zinnen ?? [], tikken: window.__tikken ?? [], pijlTik: window.__pijlTik ?? 0 })`).then((x) => JSON.parse(x ?? "{}"));
+  const gegevens = () => ev(`JSON.stringify({ d: window.__denkfouten ?? [], u: window.__uitkomsten ?? [], g: window.__gouden ?? [], zinnen: window.__zinnen ?? [], ruth: window.__stemSpeel ?? [], tikken: window.__tikken ?? [], pijlTik: window.__pijlTik ?? 0 })`).then((x) => JSON.parse(x ?? "{}"));
   const sluit = async () => {
     await stuur("Target.closeTarget", { targetId }).catch(() => {});
     opruimen();
@@ -247,6 +248,9 @@ export async function rapport(naam, P, uit) {
   const tikken = g.tikken ?? [];
   const herhaald = Object.entries(dubbel).filter(([, ts]) => ts.some((t, i) => i > 0 && t - ts[i - 1] < 20000 && !tikken.some((k) => k > ts[i - 1] && k < t)));
   for (const [z] of herhaald) fouten.push(`dezelfde uiting binnen 20 s 2 keer gestart (F8): "${z.slice(0, 60)}"`);
+  /* Korte uitingen ook na een tik, en de Ruth-opnames zelf (17 nov 2026, 15.29). */
+  for (const f of korteDubbel([...(g.zinnen ?? []), ...(g.ruth ?? [])])) fouten.push(f);
+  for (const f of opnameDubbel(g.ruth).fouten) fouten.push(f);
   console.log(`${naam}: ${uit.klaar ? "tot de eindkaart" : "NIET klaar"}; ${uit.kiesTaken} keuzevragen; ${g.d?.length ?? 0} denkfouten vastgelegd; ${g.u?.length ?? 0} uitkomsten (${(g.u ?? []).map((x) => x.uitkomst).join(", ")})`);
   if (uit.stil) console.log(`${naam}: ${uit.stil}`);
   console.log(`${naam}: denkfouten: ${(g.d ?? []).map((x) => `${x.vraag}:${x.denkfout}`).join(" | ") || "geen"}`);

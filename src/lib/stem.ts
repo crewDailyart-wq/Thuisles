@@ -806,6 +806,12 @@ function speelVanServer(
         gestart: begint,
         klaar: eindigt,
         metGeluid: (b) => (grenzen = spraakGrenzen(b.getChannelData(0), b.sampleRate)),
+        /* Opt-in gouden lessen (15.29): een kort woord of getal dat in het bestand 2 keer staat ("1 ... 1"), klinkt 1 keer. */
+        knipDubbel: heelUitpraten && zin.trim().split(/\s+/).length <= 2,
+        meld: (blokken, geknipt) => {
+          const w = window as unknown as { __stemSpeel?: unknown[] };
+          w.__stemSpeel?.push({ t: Math.round(performance.now()), z: zin, blokken, geknipt });
+        },
       });
       if (stop) {
         if (!nogAanDeBeurt()) stop();

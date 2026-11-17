@@ -31,11 +31,12 @@ import { mkdtempSync, rmSync, existsSync, mkdirSync, writeFileSync, appendFileSy
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { kiesLessen } from "./lessenkeuze.mjs";
+import { korteDubbel, opnameDubbel } from "./dubbel-controle.mjs";
 import { onthoudGoed, zonderAlGoed } from "./controlegeheugen.mjs";
 
 /* F7-meter (10 nov 2026): de tekst van Bliepo en de pijl elke 100 ms, en elke tik. */
 const F7_METER = `
-  window.__f7 = []; window.__f7tik = []; window.__f8 = []; let vorige = "";
+  window.__f7 = []; window.__f7tik = []; window.__f8 = []; window.__stemSpeel = []; let vorige = "";
   /* F8 (Sara, 10 nov 2026): elke gestarte uiting van de browserstem, om dubbel uitspreken te vinden. */
   if (window.speechSynthesis) { const sp = window.speechSynthesis.speak.bind(window.speechSynthesis); window.speechSynthesis.speak = (u) => { window.__f8.push({ t: Math.round(performance.now()), z: u.text }); return sp(u); }; }
   document.addEventListener("click", () => window.__f7tik.push(Math.round(performance.now())), true);
@@ -531,7 +532,7 @@ async function speel(c, id) {
       await klik(`(b) => !["opnieuw","terug"].includes(b.getAttribute("data-knop") || "") && b.tagName === "BUTTON"`);
     }
     if (process.env.F7) {
-      const r = JSON.parse((await ev(`JSON.stringify({ m: window.__f7 ?? [], t: window.__f7tik ?? [], s: window.__f8 ?? [] })`)) ?? "{}");
+      const r = JSON.parse((await ev(`JSON.stringify({ m: window.__f7 ?? [], t: window.__f7tik ?? [], s: window.__f8 ?? [], r: window.__stemSpeel ?? [] })`)) ?? "{}");
       let dubbel = 0;
       for (let i = 0; i < (r.s ?? []).length; i++)
         for (let j = i - 1; j >= 0 && r.s[i].t - r.s[j].t < 20000; j--)
@@ -542,7 +543,11 @@ async function speel(c, id) {
             }
             break;
           }
-      console.log(`  F8 ${id}: ${dubbel} keer dezelfde uiting 2 keer gestart (${(r.s ?? []).length} uitingen)`);
+      /* Korte uitingen ook na een tik, en de Ruth-opnames zelf (17 nov 2026, 15.29). */
+      for (const f of korteDubbel([...(r.s ?? []), ...(r.r ?? [])])) { dubbel++; fouten.add(f); }
+      const op = opnameDubbel(r.r);
+      for (const f of op.fouten) { dubbel++; fouten.add(f); }
+      console.log(`  F8 ${id}: ${dubbel} keer dezelfde uiting 2 keer gestart (${(r.s ?? []).length} uitingen browser, ${(r.r ?? []).length} van Ruth; ${op.geknipt} dubbele opnames geknipt)`);
       const k = (x) => x.tekst.join(" | ");
       let n = 0;
       for (let i = 1; i < (r.m ?? []).length; i++) {

@@ -40,6 +40,8 @@ Elke fout die Sara vindt komt hier, met de regel die erbij hoort (BOUWREGELS.md 
 - Wat mis was: Sara hoorde de groet en soms andere zinnen 2 keer.
 - Regel: elke uiting wordt per stuk maar 1 keer uitgesproken (BOUWREGELS 15.29). Test met de F8-teller (stem-logboek) in een zichtbare Chrome met de echte stem.
 - Oorzaak en gemeten aantallen in de andere gouden lessen: zie KEUZES-VOOR-SARA.md Ronde 23b.
+- **Nog een vorm (17 november 2026, gouden Tellen-les, samen tellen):** het kind tikt op een appel en Bliepo zegt "1...1". Oorzaak: het bewaarde Ruth-bestand van "1." (en van "11.") bevat het woord 2 keer, met 1 s stilte ertussen; de les startte de zin maar 1 keer. De oude F8-controle zag dit niet, omdat ze alleen de browserstem telde, een tik als "het kind deed iets" zag en Ruth-opnames niet bekeek.
+- Regel: ook korte uitingen (1 of 2 woorden) en opnames tellen (BOUWREGELS 15.29). Gouden lessen knippen een kort woord dat in de opname 2 keer klinkt. Controle: `node scripts/stem-dubbel-controle.mjs`, plus de F8-controle in speelcontrole, test-tellen-gouden en extra-test-hulp (korte uiting binnen 3 s 2 keer = fout, ook na een tik).
 
 **F9. Gouden klokles: de tekst springt, de pijl knippert en Bliepo valt over de tekst.** (10 november 2026)
 - Wat mis was: de pijl ging tussen de stukken weg en kwam terug, het tekstblok verschoof van boven naar beneden bij elke nieuwe zin, en met een langer tekstvak stond Bliepo deels over de tekst.

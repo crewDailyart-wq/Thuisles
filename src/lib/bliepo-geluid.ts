@@ -86,6 +86,30 @@ export async function bliepoGeluidKlaar(): Promise<boolean> {
 }
 
 /**
+ * Dubbel opgenomen woord ("1 ... 1", 17 november 2026, BOUWREGELS 15.29): telt de blokken spraak (stilte van minstens
+ * 0,35 s ertussen) en geeft het einde van het eerste blok terug als er meer dan 1 is, anders null.
+ */
+export function spraakBlokken(kanaal: Float32Array, sr: number): { blokken: number; eersteEind: number } {
+  const stap = Math.max(1, Math.round(sr * 0.025));
+  const drempel = 0.03;
+  let blokken = 0;
+  let eersteEind = 0;
+  let laatsteStem = -1;
+  for (let i = 0; i < kanaal.length; i += stap) {
+    let m = 0;
+    for (let j = i; j < Math.min(kanaal.length, i + stap); j++) m = Math.max(m, Math.abs(kanaal[j]));
+    if (m >= drempel) {
+      if (laatsteStem < 0 || (i - laatsteStem) / sr >= 0.35) {
+        blokken++;
+        if (blokken === 2) eersteEind = laatsteStem / sr;
+      }
+      laatsteStem = i + stap;
+    }
+  }
+  return { blokken, eersteEind };
+}
+
+/**
  * Speelt een helemaal geladen geluid (bijvoorbeeld een mp3) als Bliepo, met
  * eerst `stilte` seconden niets, zodat er nooit een begin wegvalt. Het lijntje
  * beweegt mee. Geeft een functie om te stoppen terug, of null als het zo niet
@@ -99,11 +123,34 @@ export async function speelBliepoData(
     gestart,
     klaar,
     metGeluid,
-  }: { stilte?: number; gestart?: () => void; klaar?: () => void; metGeluid?: (buffer: AudioBuffer) => void } = {},
+    knipDubbel = false,
+    meld,
+  }: {
+    stilte?: number;
+    gestart?: () => void;
+    klaar?: () => void;
+    metGeluid?: (buffer: AudioBuffer) => void;
+    /** Alleen een kort woord of getal: staat het er 2 keer in het geluid, speel dan alleen het eerste (opt-in, gouden lessen). */
+    knipDubbel?: boolean;
+    /** Voor de test: hoeveel blokken spraak er in dit geluid zaten en of het is afgekapt. */
+    meld?: (blokken: number, geknipt: boolean) => void;
+  } = {},
 ): Promise<(() => void) | null> {
   if (!(await bliepoGeluidKlaar()) || !context || !meter) return null;
-  const buffer = await context.decodeAudioData(data).catch(() => null);
+  let buffer = await context.decodeAudioData(data).catch(() => null);
   if (!buffer) return null;
+  {
+    const b = spraakBlokken(buffer.getChannelData(0), buffer.sampleRate);
+    let geknipt = false;
+    if (knipDubbel && b.blokken > 1 && b.eersteEind > 0) {
+      const lengte = Math.min(buffer.length, Math.round((b.eersteEind + 0.12) * buffer.sampleRate));
+      const kort = context.createBuffer(buffer.numberOfChannels, lengte, buffer.sampleRate);
+      for (let c = 0; c < buffer.numberOfChannels; c++) kort.copyToChannel(buffer.getChannelData(c).subarray(0, lengte), c);
+      buffer = kort;
+      geknipt = true;
+    }
+    meld?.(b.blokken, geknipt);
+  }
   /* Het uitgepakte geluid, voor wie wil weten waar de spraak zit (woorden oplichten). */
   metGeluid?.(buffer);
   const bron = context.createBufferSource();

@@ -18,6 +18,7 @@
  */
 
 import { spawn, execFileSync } from "node:child_process";
+import { korteDubbel, opnameDubbel } from "./dubbel-controle.mjs";
 import { mkdtempSync, rmSync, existsSync, mkdirSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
@@ -92,6 +93,7 @@ const IN_PAGINA = `
     ss.speak = (u) => { window.__stem.push({ t: n(), wat: "speak", z: u.text }); for (const e of ["start", "end", "error"]) u.addEventListener(e, (ev) => window.__stem.push({ t: n(), wat: e, z: u.text, fout: ev.error })); spreek(u); };
     ss.cancel = () => { window.__stem.push({ t: n(), wat: "cancel", door: (new Error().stack || "").split(String.fromCharCode(10)).slice(2, 4).join(" ").slice(0, 160) }); stop(); };
   }
+  window.__stemSpeel = [];
   window.__meet = []; const t0 = performance.now(); let vorige = "";
   setInterval(() => {
     const b = document.querySelector('[data-knop="verder"]');
@@ -426,6 +428,12 @@ async function controleer(P, naam) {
           }
           break;
         }
+    /* Korte uitingen ook na een tik, en de Ruth-opnames zelf (17 nov 2026, 15.29). */
+    const ruth = await P.ev(`JSON.stringify(window.__stemSpeel ?? [])`).then((x) => JSON.parse(x ?? "[]"));
+    for (const f of korteDubbel([...starts, ...ruth])) fout(`${naam}: ${f}`);
+    const op = opnameDubbel(ruth);
+    for (const f of op.fouten) fout(`${naam}: ${f}`);
+    zie(`${naam}: F8 korte uitingen en opnames: ${ruth.length} Ruth-uitingen, ${op.geknipt} dubbele opnames geknipt`);
     zie(`${naam}: F8-controle: ${dubbel} keer dezelfde uiting 2 keer gestart; ${stemlog.filter((x) => x.wat === "geluid").length} keer een geluidsbestand gestart`);
   }
   /* Gedimd/wit: komt een tekst die al wit was, weer gedimd terug zonder actie (F7 in gedimd/wit)? */
