@@ -10,6 +10,9 @@ Deze lijst wordt bijgehouden. Wat klaar is, krijgt een vinkje; niets verdwijnt z
 5. Scherm Kralenavontuur (404) uitzoeken.
 6. Onafhankelijke keuring per les, één korte lijst aan Sara.
 
+## Rekentaal-plaatjes (Sara, 17 november 2026)
+- [ ] De gouden les Rekentaal (squla-rekentaal-gouden) tekent de voorwerpen nog zelf in code. Maak ze met Magnific in de Bliepo-stijl, efficiënt (vellen van 9, bestaande plaatjes in public/voorwerpen hergebruiken: beker, mand, appel, watermeloen, aardbei, zak-meel, broodje, picknickkleed). Ontbreekt nog: pannenkoek, glas met sap (leeg/half/vol), sliert spaghetti, weegschaal, tafel. Pas ná het hulphandje-werk aan hetzelfde vlak (squla-rekentaal-gouden-vlak.tsx). Kosten melden.
+
 ## Vloeiend-meting (besluit Sara, 17 november 2026)
 - [ ] Eén keer meten voor ALLE opdrachten, als alle ongeveer 1000 opdrachten klaar zijn (niet per les). `npm run vloeiend`; minstens 55-60 beelden per seconde, hapering hooguit 50 ms, op laptop én trage telefoon.
 - [ ] Vooraf: energiebesparing van de Mac uit, geen helpers of tests ernaast (anders meet hij te traag).
