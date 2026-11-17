@@ -128,7 +128,7 @@ function maakScene(Phaser: PhaserModule, rustig: boolean) {
         if (!img || !this.sys?.isActive()) return;
         if (!this.textures.exists("stg-hand-magnific")) this.textures.addImage("stg-hand-magnific", img);
         this.nieuweHand = true;
-        this.hand.setTexture("stg-hand-magnific").setOrigin(0.2, 0.17);
+        this.hand.setTexture("stg-hand-magnific").setOrigin(0.14, 0.05);
         if (this.handI != null) {
           const i = this.handI;
           this.handI = null;
@@ -196,7 +196,7 @@ function maakScene(Phaser: PhaserModule, rustig: boolean) {
       /* De Magnific-hand wijst zelf al schuin omhoog naar links (de vingertop is het ankerpunt): geen draaiing nodig. */
       const hoek = this.nieuweHand ? 0 : -0.65;
       const stap = this.nieuweHand ? { x: 5, y: 5 } : { x: -Math.sin(hoek) * 8, y: Math.cos(hoek) * 8 };
-      this.hand.setScale(this.nieuweHand ? 0.1 : 0.55 / TX).setRotation(hoek).setPosition(tip.x, tip.y).setAlpha(1).setVisible(true);
+      this.hand.setScale(this.nieuweHand ? 0.135 : 0.55 / TX).setRotation(hoek).setPosition(tip.x, tip.y).setAlpha(1).setVisible(true);
       if (this.rustig) return;
       this.hand.setAlpha(0);
       this.tweens.add({ targets: this.hand, alpha: 1, duration: 300 });
