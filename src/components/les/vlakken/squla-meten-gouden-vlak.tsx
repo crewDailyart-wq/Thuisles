@@ -35,6 +35,7 @@ import { MUREN, tekeningMaat, tekeningPunten } from "./squla-meten-tekeningen";
 import { zegKeuze } from "@/lib/stem";
 import { useInBeeld } from "@/components/oefenen/toetsenbordruimte";
 import s from "./squla-meten-gouden.module.css";
+import { HulphandDom } from "../holo/hulphand-dom";
 
 export type Punt = { x: number; y: number };
 export type Hand = { plek: Punt; naar?: Punt | null; sleutel: string };
@@ -213,14 +214,16 @@ export function GoudenMetenVlak({ kies2 = null, merken = [], tik = null, typ = n
         />
       )}
       {hulphand && (
-        <div
+        <HulphandDom
           key={hulphand.sleutel}
-          className={`${s.hand} ${hulphand.naar ? s.sleepGebaar : s.tikGebaar}`}
-          style={{ left: hulphand.plek.x, top: hulphand.plek.y, ...(hulphand.naar ? ({ "--dx": `${hulphand.naar.x - hulphand.plek.x}px`, "--dy": `${hulphand.naar.y - hulphand.plek.y}px` } as CSSProperties) : {}) }}
-          aria-hidden
-          data-hulphand=""
-        >
-          <svg viewBox="0 0 90 120" className={s.handTekening}>
+          left={hulphand.plek.x}
+          top={hulphand.plek.y}
+          animatie={hulphand.naar ? s.sleepGebaar : s.tikGebaar}
+          handKlasse={s.hand}
+          schaal={1}
+          stijl={{ ...(hulphand.naar ? ({ "--dx": `${hulphand.naar.x - hulphand.plek.x}px`, "--dy": `${hulphand.naar.y - hulphand.plek.y}px` } as CSSProperties) : {}) }}
+          reserve={
+            <svg viewBox="0 0 90 120" className={s.handTekening}>
             <g>
               <rect x="34" y="6" width="20" height="62" rx="10" />
               <rect x="16" y="52" width="60" height="56" rx="18" />
@@ -230,7 +233,8 @@ export function GoudenMetenVlak({ kies2 = null, merken = [], tik = null, typ = n
             </g>
             <path d="M54 66v12M66 70v14" className={s.lijn} />
           </svg>
-        </div>
+          }
+        />
       )}
     </div>
   );

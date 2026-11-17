@@ -25,6 +25,7 @@
 import { useEffect, useRef } from "react";
 import type { Vlakbasis, Vlakgebeurtenis } from "../soort";
 import { holoBasis } from "../holo/basis";
+import { HULPHAND_ANKER, HULPHAND_SCHAAL, laadHulphand } from "../holo/hulphand";
 import { HOLO_CANVAS, useHoloMotor } from "../holo/motor";
 import { voorwerpTextuur } from "../voorwerpen";
 import s from "./klok-bliepo-klok.module.css";
@@ -99,6 +100,8 @@ const GETAL_UUR = "#b4520a";
 const GETAL_MIN = "#5b2bb0";
 const BLAUW = 0x4b9af5;
 
+/** Grootte van het nieuwe hulphandje op de klok (punten per beeldpunt; ± even groot als een getal van de klok). */
+const HANDSCHAAL = HULPHAND_SCHAAL;
 const graad = (g: number) => (g * Math.PI) / 180;
 const mod = (n: number, m: number) => ((n % m) + m) % m;
 const op = (hoek: number, r: number) => ({ x: Math.sin(graad(hoek)) * r, y: -Math.cos(graad(hoek)) * r });
@@ -164,6 +167,8 @@ function maakScene(lettertype: () => string, begintijd: number) {
       hand!: Img;
       handN: number | null = null;
       handVorm: "klok" | "lijn" = "klok";
+      /** Het hulphandje uit Magnific (17 nov 2026) is geladen; tot dan (of bij een mislukte lading) blijft de getekende hand. */
+      nieuweHand = false;
 
       constructor() {
         super("goudenklok");
@@ -383,6 +388,15 @@ function maakScene(lettertype: () => string, begintijd: number) {
         this.midden = p("gk-midden");
         this.hand = p("gk-hand").setOrigin(0.48, 0.03).setVisible(false);
         this.box.add([this.pijl, this.driehoek, this.lichtMin, this.min, this.lichtUur, this.uur, this.midden, this.hand]);
+        void laadHulphand().then((img) => {
+          if (!img || !this.sys?.isActive()) return;
+          if (!this.textures.exists("gk-hand-magnific")) this.textures.addImage("gk-hand-magnific", img);
+          this.nieuweHand = true;
+          this.hand.setTexture("gk-hand-magnific").setOrigin(HULPHAND_ANKER.x, HULPHAND_ANKER.y);
+          const n = this.handN;
+          this.handN = null;
+          if (n != null) this.zetHand(n);
+        });
         this.hoeken(begintijd * 0.5, begintijd * 6);
         this.tover(this.box);
 
@@ -503,7 +517,8 @@ function maakScene(lettertype: () => string, begintijd: number) {
         const tip = lijn ? { x: lijnplek(n).x, y: LIJN_Y + 62 + 26 } : op(n * 30, 0.93 * R);
         const hoek = lijn ? 0 : n * 30 + 180;
         const stap = lijn ? { x: 0, y: -9 } : op(n * 30, -9);
-        this.hand.setScale(0.85).setPosition(tip.x, tip.y).setRotation(graad(hoek)).setVisible(true);
+        /* De nieuwe hand wijst zelf schuin omhoog naar links (± 30 graden): 30 graden erbij, zodat de vinger recht naar het getal wijst. */
+        this.hand.setScale(this.nieuweHand ? HANDSCHAAL : 0.85).setPosition(tip.x, tip.y).setRotation(graad(this.nieuweHand ? hoek + 30 : hoek)).setVisible(true);
         if (rustig) return;
         this.hand.setAlpha(0);
         this.tweens.add({ targets: this.hand, alpha: 1, duration: 300 });

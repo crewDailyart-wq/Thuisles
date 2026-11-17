@@ -27,6 +27,7 @@ import { VLAK_B } from "../holo/basis";
 import { SqulaGeldVlak, indeling, type GeldProps, type Rect } from "./squla-geld-vlak";
 import { zegKeuze } from "@/lib/stem";
 import s from "./squla-geld-gouden.module.css";
+import { HulphandDom } from "../holo/hulphand-dom";
 
 export type Punt = { x: number; y: number };
 export type Hand = { plek: Punt; sleutel: string };
@@ -120,7 +121,7 @@ export function GoudenGeldVlak({ kies = null, grootTik = false, hulphand = null,
         />
       )}
       {hulphand && (
-        <div key={hulphand.sleutel} className={`${s.hand} ${s.tikGebaar}`} style={{ left: hulphand.plek.x, top: hulphand.plek.y }} aria-hidden data-hulphand="">
+        <HulphandDom key={hulphand.sleutel} left={hulphand.plek.x} top={hulphand.plek.y} animatie={s.tikGebaar} handKlasse={s.hand} schaal={1.4} reserve={
           <svg viewBox="0 0 90 120" className={s.handTekening}>
             <g>
               <rect x="34" y="6" width="20" height="62" rx="10" />
@@ -131,7 +132,7 @@ export function GoudenGeldVlak({ kies = null, grootTik = false, hulphand = null,
             </g>
             <path d="M54 66v12M66 70v14" className={s.lijn} />
           </svg>
-        </div>
+        } />
       )}
     </div>
   );

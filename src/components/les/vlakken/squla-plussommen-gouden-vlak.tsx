@@ -22,6 +22,7 @@ import type { Vlakbasis } from "../soort";
 import { SqulaPlusVlak, type Groep, type PlusProps } from "./squla-plussommen-vlak";
 import { rekVakje } from "./squla-plussommen-tekenen";
 import s from "./squla-plussommen-gouden.module.css";
+import { HulphandDom } from "../holo/hulphand-dom";
 
 export type Punt = { x: number; y: number };
 /** Samen tellen: per plek het getal dat erop staat (0 = nog niet geteld). */
@@ -118,7 +119,7 @@ export function GoudenPlusVlak({ tel = null, hand = null, vinkjes = [], ...rest 
         </div>
       ))}
       {hand && (
-        <div key={hand.sleutel} className={`${s.hand} ${s.pak}`} style={{ left: hand.plek.x, top: hand.plek.y }} aria-hidden data-hulphand="">
+        <HulphandDom key={hand.sleutel} left={hand.plek.x} top={hand.plek.y} animatie={s.pak} handKlasse={s.hand} schaal={1} reserve={
           <svg viewBox="0 0 90 120" className={s.handTekening}>
             <g>
               <rect x="34" y="6" width="20" height="62" rx="10" />
@@ -129,7 +130,7 @@ export function GoudenPlusVlak({ tel = null, hand = null, vinkjes = [], ...rest 
             </g>
             <path d="M54 66v12M66 70v14" className={s.lijn} />
           </svg>
-        </div>
+        } />
       )}
     </div>
   );
