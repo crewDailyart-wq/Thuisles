@@ -162,6 +162,7 @@ async function nieuwTotaalVraag(l: Lesgids) {
   s.lijst = [];
   void l.zeg().catch(() => {});
   zet(l, { id: "nieuw7", delen: [0, 0], totaal: TOTAAL7, ring: null, actief: [], kop: null, lijst: [], hand: null, telTotaal: 0 });
+  l.opdracht?.(null);
   speelLesgeluid("verschijn");
   await l.wacht(150);
   return B.keuzeVraag(l, {
@@ -259,12 +260,17 @@ function nieuwPaar(T: number, gehad: Paar[]): Paar {
   return [1, T - 1];
 }
 
+/** De kop in het vlak als gewone zin (voor de vergelijking met Bliepo's opdracht). */
+const kopZin = (k: Kop) => `${k.voor}${k.n !== undefined ? ` {${k.n}}` : ""}${k.na ? ` ${k.na}` : ""}`;
+
 async function splitsOpdracht(l: Lesgids, o: Opdracht): Promise<{ uitkomst: Uitkomst; paar: Paar }> {
   const s = S(l);
   const st = B.st(l);
   st.vraag++;
   s.delen = [0, 0];
   zet(l, { id: o.id, delen: [0, 0], totaal: o.vast ? o.T : null, actief: ALLE_KNOPPEN, kop: o.kop, ring: null, hand: null, lijst: s.lijst, telTotaal: 0 });
+  /* F11 (17 nov 2026, 15.31): de kop staat al in het vlak; is Bliepo's opdracht dezelfde zin, dan staat hij maar 1 keer op het scherm (Bliepo spreekt hem wel). */
+  l.opdracht?.(o.kop ? kopZin(o.kop) : null);
   await l.wacht(150);
   let eerder: Fout | null = null;
   let eersteX = "";
@@ -403,6 +409,7 @@ async function keuzeGetal(l: Lesgids): Promise<number> {
   s.lijst = [];
   void l.zeg().catch(() => {});
   zet(l, { id: "keuze", delen: [0, 0], totaal: null, ring: null, actief: [], kop: null, lijst: [], hand: null, telTotaal: 0 });
+  l.opdracht?.(null);
   await l.wacht(150);
   const opties = schud([ZIN.keuzeGelijk, ZIN.keuzeGroter]);
   zetTestAntwoord(ZIN.keuzeGelijk);
@@ -426,6 +433,7 @@ const gouden: Lesdraaiboek = {
   browserstem: true,
   nacht: true,
   pijlZoalsSynthesis: true,
+  opdrachtInVlak: true,
   stemHeelUitpraten: true,
   woordenMeeMetStem: true,
   kaarttekening: KaartSplitsenExtra,
@@ -477,6 +485,7 @@ const gouden: Lesdraaiboek = {
 
     /* Stap 16. Einde: slotzin, kaart, eindzin. */
     zet(l, { delen: [0, 0], totaal: null, lijst: [], kop: null, actief: [], hand: null, ring: null });
+    l.opdracht?.(null);
     await B.einde(l, ZIN.slot);
   },
 };

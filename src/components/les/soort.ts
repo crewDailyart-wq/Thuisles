@@ -186,6 +186,13 @@ export type Lesdraaiboek = {
    */
   vraagBoven?: true;
   /**
+   * Opt-in gouden lessen (Sara, 17 november 2026; BOUWREGELS 15.31, FOUTEN-VOORBEELDEN F11): staat de opdracht al ergens
+   * anders in beeld (een kop in het speelvlak), dan toont Bliepo's tekstvak dezelfde zin NIET nog een keer; Bliepo
+   * spreekt hem wel. De les meldt de zin met `l.opdracht(zin)`; alle andere zinnen van Bliepo blijven gewoon in zijn tekstvak.
+   * Oude lessen hebben dit niet en blijven precies zoals ze zijn.
+   */
+  opdrachtInVlak?: true;
+  /**
    * Opt-in (10 november 2026, DEFINITIEF met Sara's akkoord; BOUWREGELS 15.27, SYNTHESIS-ANALYSE/PIJL-KLOK.md): tekst en
    * pijl zoals Synthesis, nu alleen in de gouden klokles. (1) De zinnen van 1 `zeg`-aanroep blijven onder
    * elkaar staan in plaats van elkaar te vervangen; (2) een tik op de blauwe pijl breekt de stem meteen af; (3) de pijl

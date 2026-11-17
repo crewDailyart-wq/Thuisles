@@ -18,6 +18,7 @@ import { mkdtempSync, rmSync, existsSync, mkdirSync, writeFileSync } from "node:
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { korteDubbel, opnameDubbel } from "./dubbel-controle.mjs";
+import { DUBBELE_TEKST_METER, dubbeleTekstFouten } from "./dubbele-tekst-controle.mjs";
 
 export const BASIS = "http://localhost:3000";
 export const wacht = (ms) => new Promise((r) => setTimeout(r, ms));
@@ -35,6 +36,7 @@ const IN_PAGINA = `
   window.__tikken = [];
   document.addEventListener("pointerdown", () => window.__tikken.push(Math.round(performance.now())), true);
   window.__pijlTik = 0;
+  ${DUBBELE_TEKST_METER}
   document.addEventListener("click", (e) => { if (e.target && e.target.closest && e.target.closest('[data-knop="verder"]')) window.__pijlTik++; }, true);
 `;
 
@@ -116,7 +118,7 @@ export async function start(les, { venster = [1440, 900], fotoMap = process.env.
     return false;
   };
   const nu = () => ev(`(() => { const ph = window.__phaser ?? {}; const taak = ph.telTaak ?? null; const knoppen = [...document.querySelectorAll("button")].filter((b) => b.getBoundingClientRect().width > 3).map((b) => (b.textContent || "").trim()); return { pijl: !!document.querySelector('[data-knop="verder"]') && document.querySelector('[data-knop="verder"]').getBoundingClientRect().width > 3, tekst: [...document.querySelectorAll(".bliepo-tekst")].map((e) => e.textContent.replace(/\\s+/g, " ").trim()).filter(Boolean), taak, antwoord: ph.antwoord ?? null, kaart: !!document.querySelector('button[aria-label$="af te vinken"]'), controleer: !!document.querySelector('[data-knop="controleer"]') && document.querySelector('[data-knop="controleer"]').getBoundingClientRect().width > 3, hand: !!document.querySelector("[data-hulphand]"), knoppen }; })()`);
-  const gegevens = () => ev(`JSON.stringify({ d: window.__denkfouten ?? [], u: window.__uitkomsten ?? [], g: window.__gouden ?? [], zinnen: window.__zinnen ?? [], ruth: window.__stemSpeel ?? [], tikken: window.__tikken ?? [], pijlTik: window.__pijlTik ?? 0 })`).then((x) => JSON.parse(x ?? "{}"));
+  const gegevens = () => ev(`JSON.stringify({ d: window.__denkfouten ?? [], u: window.__uitkomsten ?? [], g: window.__gouden ?? [], zinnen: window.__zinnen ?? [], ruth: window.__stemSpeel ?? [], tikken: window.__tikken ?? [], pijlTik: window.__pijlTik ?? 0, dubbeleTekst: window.__dubbeleTekst ?? [] })`).then((x) => JSON.parse(x ?? "{}"));
   const sluit = async () => {
     await stuur("Target.closeTarget", { targetId }).catch(() => {});
     opruimen();
@@ -206,6 +208,7 @@ export async function speel(P, o = {}) {
       }
       uit.stil = `hulphandje na ${Math.round((Date.now() - t0) / 100) / 10} s stilte: ${h ? "ja" : "NEE"}`;
       if (!h) uit.fouten.push("geen hulphandje na lange stilte bij een opdracht");
+      await wacht(450); /* het handje verschijnt zacht (17 nov): even wachten voor de schermfoto */
       await P.foto("hulphandje");
       stilGedaan = true;
       continue;
@@ -251,6 +254,8 @@ export async function rapport(naam, P, uit) {
   /* Korte uitingen ook na een tik, en de Ruth-opnames zelf (17 nov 2026, 15.29). */
   for (const f of korteDubbel([...(g.zinnen ?? []), ...(g.ruth ?? [])])) fouten.push(f);
   for (const f of opnameDubbel(g.ruth).fouten) fouten.push(f);
+  /* F11 (17 nov 2026, 15.31): dezelfde tekst nooit 2 keer tegelijk op het scherm. */
+  for (const f of dubbeleTekstFouten(g.dubbeleTekst)) fouten.push(f);
   console.log(`${naam}: ${uit.klaar ? "tot de eindkaart" : "NIET klaar"}; ${uit.kiesTaken} keuzevragen; ${g.d?.length ?? 0} denkfouten vastgelegd; ${g.u?.length ?? 0} uitkomsten (${(g.u ?? []).map((x) => x.uitkomst).join(", ")})`);
   if (uit.stil) console.log(`${naam}: ${uit.stil}`);
   console.log(`${naam}: denkfouten: ${(g.d ?? []).map((x) => `${x.vraag}:${x.denkfout}`).join(" | ") || "geen"}`);

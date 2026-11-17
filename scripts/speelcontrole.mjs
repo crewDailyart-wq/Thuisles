@@ -32,6 +32,7 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { kiesLessen } from "./lessenkeuze.mjs";
 import { korteDubbel, opnameDubbel } from "./dubbel-controle.mjs";
+import { DUBBELE_TEKST_METER, dubbeleTekstFouten } from "./dubbele-tekst-controle.mjs";
 import { onthoudGoed, zonderAlGoed } from "./controlegeheugen.mjs";
 
 /* F7-meter (10 nov 2026): de tekst van Bliepo en de pijl elke 100 ms, en elke tik. */
@@ -210,6 +211,9 @@ async function speel(c, id) {
       en noteer elke tik. Komt dezelfde tekst terug nadat hij weg was, zonder dat er ertussen getikt is, dan is dat fout F7.
     */
     if (process.env.F7) await c.stuur("Page.addScriptToEvaluateOnNewDocument", { source: F7_METER }, s);
+    /* F11 (17 nov 2026, 15.31): bij elke gouden les: staat dezelfde tekst ooit 2 keer tegelijk op het scherm? */
+    const f11 = id.includes("gouden") || !!process.env.F11;
+    if (f11) await c.stuur("Page.addScriptToEvaluateOnNewDocument", { source: DUBBELE_TEKST_METER }, s);
     await c.stuur("Page.navigate", { url: `${BASIS}/voorbeeld/les/${id}?naam=Testkind` }, s);
     const begin = Date.now();
     let stilSinds = null;
@@ -530,6 +534,11 @@ async function speel(c, id) {
       if (await ev(`(() => { const lijst = [...document.querySelectorAll("[data-zin], [data-getal], [data-signaal]")].filter((b) => { const r = b.getBoundingClientRect(); return r.width > 3 && r.height > 3 && !b.disabled; }); if (!lijst.length) return false; lijst[${stappen} % lijst.length].click(); return true; })()`)) continue;
       if (await klik(`(b) => b.getAttribute("data-knop") === "weetniet"`)) continue;
       await klik(`(b) => !["opnieuw","terug"].includes(b.getAttribute("data-knop") || "") && b.tagName === "BUTTON"`);
+    }
+    if (f11) {
+      const dt = dubbeleTekstFouten(JSON.parse((await ev(`JSON.stringify(window.__dubbeleTekst ?? [])`)) ?? "[]"));
+      for (const f of dt) fouten.add(f);
+      console.log(`  F11 ${id}: ${dt.length} keer dezelfde tekst 2 keer tegelijk op het scherm`);
     }
     if (process.env.F7) {
       const r = JSON.parse((await ev(`JSON.stringify({ m: window.__f7 ?? [], t: window.__f7tik ?? [], s: window.__f8 ?? [], r: window.__stemSpeel ?? [] })`)) ?? "{}");

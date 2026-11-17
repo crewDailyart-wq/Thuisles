@@ -21,6 +21,8 @@ for (const route of routes) {
       if (v === "totaal-5" && taak?.poging === 1) return `${route}-2-totaal-vraag`;
       if (v === "som-3-2-5" && taak?.poging === 1) return `${route}-3-som-vraag`;
       if (v === "zoek-7" && z.controleer && !z.antwoord) return `${route}-4-zoek-7-klaar`;
+      if (v === "nog-7" && taak?.poging === 1) return `${route}-6-nog-7-opdracht`;
+      if (/^splits-\d+-1$/.test(v) && taak?.poging === 1) return `${route}-7-splits-keuze-opdracht`;
       if (route === "allefout" && taak?.soort === "tel" && z.hand && v === "zoek-7") return `${route}-5-samen-hand`;
       return null;
     },

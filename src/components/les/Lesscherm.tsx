@@ -728,7 +728,7 @@ function Lesscherm({
     const gids: Lesgids = {
       lesId: les.id,
       naam,
-      ...(les.vraagBoven ? { opdracht: (tekst: string | null) => zet((b) => ({ ...b, opdracht: tekst })) } : {}),
+      ...(les.vraagBoven || les.opdrachtInVlak ? { opdracht: (tekst: string | null) => zet((b) => ({ ...b, opdracht: tekst })) } : {}),
       /* Nergens meer "Tik op het vinkje." (30 oktober 2026, opdracht eigenaar: in alle lessen). */
       zeg: (...zinnen) => {
         const z = zinnen.filter((zin) => zin && !/vinkje/i.test(zin));
@@ -1062,7 +1062,10 @@ function Lesscherm({
   /* Opt-in per les (proef geldmachine-1): zin en keuzes bovenaan in het midden van het speelvlak, niet in de kolom bij Bliepo. */
   const vraagBoven = nieuw && !!les.vraagBoven;
   const opdrachtKnoppen = vraagBoven && !!beeld.opdracht && b?.soort === "kies" && !!b.instel?.bijOpdracht;
-  const spreektOpdracht = vraagBoven && !!beeld.opdracht && beeld.zinnen[beeld.zichtbaar - 1] === beeld.opdracht;
+  /* F11 (17 nov 2026, 15.31): staat de opdracht al in beeld (boven het vlak, of via opdrachtInVlak in het vlak zelf), dan toont Bliepo's tekstvak dezelfde zin niet nog een keer. */
+  const zinSleutel = (t: string | null | undefined) => kaal(t ?? "").toLowerCase().replace(/[^a-z0-9\u00c0-\u024f]+/g, "");
+  const spreektOpdracht = (vraagBoven || (nieuw && !!les.opdrachtInVlak)) && !!beeld.opdracht && beeld.zichtbaar > 0 &&
+    (vraagBoven ? beeld.zinnen[beeld.zichtbaar - 1] === beeld.opdracht : zinSleutel(beeld.zinnen[beeld.zichtbaar - 1]) === zinSleutel(beeld.opdracht));
   const geldBeeld = beeld.vlak?.props as { groot?: { soort: string }[] | null; kaarten?: unknown[]; verbind?: unknown } | undefined;
   const geldEnkel = vraagBoven && les.id === "squla-geld-geldmachine-1" &&
     geldBeeld?.groot?.length === 1 && geldBeeld.groot[0].soort === "geld" &&
