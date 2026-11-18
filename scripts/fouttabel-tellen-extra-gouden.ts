@@ -4,8 +4,8 @@
  *   npx tsx scripts/fouttabel-tellen-extra-gouden.ts
  * Schrijft alleen dat ene bestand. Raakt de database en de lessen niet aan.
  */
-import { ALLE_FRUIT, LIJST, MAAK, SOORTVRAGEN, TWEE, aantalVan, foutenMaak, foutenSoort, foutenTwee, lijstFout } from "../src/components/les/lessen/squla-tellen-extra-zinnen";
-import { controleer, schrijf, tabel, type Rij } from "./fouttabel-extra-hulp";
+import { ALLE_FRUIT, APPEL, LIJST, MAAK, PEER, PRUIM, SOORTVRAGEN, TWEE, ZIN, aantalVan, foutenMaak, foutenSoort, foutenTwee, lijstFout, type FoutV } from "../src/components/les/lessen/squla-tellen-extra-zinnen";
+import { controleer, kaal, schrijf, tabel, type Rij } from "./fouttabel-extra-hulp";
 
 const rijen: Rij[] = [];
 for (const v of SOORTVRAGEN)
@@ -21,6 +21,51 @@ void LIJST;
 
 /* Waarheidscontrole: de eerste zin noemt alleen soorten die kloppen of niet kloppen zoals het kind ze zette. */
 const { beweringen } = controleer(rijen);
+/*
+ * 18 november 2026: elke zin bestaat in varianten. Loop dezelfde controles na voor ELKE combinatie van varianten
+ * (verklappen 15.17, geen opdracht bij de 2e fout), en: nooit het woord "fout", geen getal 2 keer in 1 zin.
+ */
+const alleVarianten: Rij[] = [];
+const problemen: string[] = [];
+const zinCheck = (waar: string, z: string) => {
+  if (/\bfout/i.test(z)) problemen.push(`${waar}: het woord "fout" in "${kaal(z)}"`);
+  const g = kaal(z).split(/(?<=[.!?])\s+/).map((deel) => deel.match(/\d+/g) ?? []);
+  if (g.some((d) => new Set(d).size !== d.length)) problemen.push(`${waar}: een getal staat 2 keer in "${kaal(z)}"`);
+};
+for (const r of rijen) {
+  const v = (r.f as FoutV).v;
+  if (!v) continue;
+  for (const z of [...v.eerste, ...v.hint, ...v.uitleg, ...v.weerEerste, ...v.weerUitleg]) zinCheck(`${r.vraag} ${r.antwoord}`, z);
+  for (const eerste of v.eerste.length ? v.eerste : [r.f.eerste])
+    for (const hint of v.hint)
+      for (const uitleg of v.uitleg) alleVarianten.push({ ...r, f: { ...r.f, eerste, hint, uitleg, weer: [...v.weerEerste, ...v.weerUitleg] } });
+}
+const extra = controleer(alleVarianten);
+const f1 = PEER;
+const verloop: [string, string[], number][] = [
+  ["samenHelp", ZIN.samenHelp, 3], ["samenSoort", ZIN.samenSoort(f1), 2], ["samenTwee", ZIN.samenTwee(PEER, PRUIM), 2], ["samenHand", ZIN.samenHand(f1), 2], ["samenHandTwee", ZIN.samenHandTwee(PEER, PRUIM), 2],
+  ["samenKlaar", ZIN.samenKlaar(8, f1), 2], ["samenKlaarTwee", ZIN.samenKlaarTwee(7, PEER, PRUIM), 2], ["samenZelf", ZIN.samenZelf(8, f1), 2], ["samenZelfTwee", ZIN.samenZelfTwee(7), 2],
+  ["maakHelp", ZIN.maakHelp, 3], ["maakSamenZin", ZIN.maakSamenZin(f1), 2], ["maakKlaar", ZIN.maakKlaar(4, f1), 2], ["maakZelf", ZIN.maakZelf(4, f1), 2], ["lijstHelp", ZIN.lijstHelp(APPEL), 2],
+  ["slot", ZIN.slot, 2], ["kaartTik", ZIN.kaartTik, 3], ["aanmoedigTikken", ZIN.aanmoedigTikken, 3], ["maakHand", ZIN.maakHand, 2],
+];
+for (const [naam, zinnen, min] of verloop) {
+  if (new Set(zinnen).size < min) problemen.push(`${naam}: maar ${new Set(zinnen).size} variant(en), moet minstens ${min}`);
+  for (const z of zinnen) zinCheck(naam, z);
+}
+if (problemen.length) {
+  console.error("PROBLEMEN:\n" + problemen.join("\n"));
+  process.exit(1);
+}
+console.log(`Varianten: ${alleVarianten.length} combinaties van eerste zin, hint en uitleg nagelopen (${extra.beweringen} keuzes); ${verloop.length} rijtjes van het verloop; nooit "fout", geen getal 2 keer in 1 zin.`);
+const variantenTabel = [
+  "| Situatie | Varianten |",
+  "|---|---|",
+  ...verloop.map(([naam, zinnen]) => `| ${naam} | ${zinnen.map(kaal).join(" / ")} |`),
+  ...rijen.filter((r) => (r.f as FoutV).v).flatMap((r) => {
+    const v = (r.f as FoutV).v!;
+    return [`| ${r.vraag} — ${r.antwoord} | **Eerste zin:** ${v.eerste.map(kaal).join(" / ") || "(vaste rijtje §10)"} **Hint:** ${v.hint.map(kaal).join(" / ")} **Uitleg:** ${v.uitleg.map(kaal).join(" / ")}${v.weerEerste.length ? ` **Weer:** ${[...v.weerEerste, ...v.weerUitleg].map(kaal).join(" / ")}` : ""} |`];
+  }),
+].join("\n");
 console.log(`Controle: ${rijen.length} rijen; ${beweringen} keuzes nagelopen (geen hint verklapt het antwoord); geen opdracht in de zinnen bij de 2e fout.`);
 
 const tekst = `# FOUTTABEL — extra les Tellen (squla-tellen-fruit-1-gouden-extra, "Fruit tellen, extra")
@@ -30,7 +75,7 @@ Gemaakt op 12 november 2026 **uit de code** met \`npx tsx scripts/fouttabel-tell
 **EIGEN INVULLING, NIET VAN SYNTHESIS.** Het draaiboek Tellen (Color Count, stap 5 t/m 9) benoemt de denkfout zelden (§6); Bliepo doet dat altijd (BOUWREGELS 15.9). De getallen zijn die van het draaiboek (tot en met 10): van welk fruit zie je er 8 en 7, peren en pruimen samen (3 + 4 = 7), maak 4 peren, het lijstje 4 + 7 + 10. Het fruit (appel rood, peer groen, pruim paars, citroen geel) komt in de plaats van de gekleurde vakjes; in de les staan de getallen in de kleur van het fruit, hier zonder kleur.
 
 **Zo werkt het bij een fout — 2 POGINGEN (BOUWREGELS 15.9 en 15.11):**
-- **Keuzevragen (stap 5 en 6):** 1e fout = scherm 1,5 s rood (geen fout-geluidje), Bliepo noemt wat het kind koos (en bij stap 5 hoeveel dat er zijn: de gekozen soort krijgt zijn nummers, de rest wordt dof; draaiboek §3 B.2); dan komen de knoppen terug met de hint. 2e fout = uitleg (zonder het antwoord), "Kom, we tellen samen.", het kind tikt elk stuk fruit van het goede fruit, Bliepo telt mee, het laatste getal is het aantal; de les gaat door. Elk vervolg gaat vanzelf (15.27).
+- **Keuzevragen (stap 5 en 6):** 1e fout = scherm 1,5 s rood (geen fout-geluidje), Bliepo noemt wat het kind koos (en bij stap 5 hoeveel dat er zijn: de gekozen soort krijgt zijn nummers, de rest wordt dof; draaiboek §3 B.2); dan komen de knoppen terug met de hint. 2e fout = uitleg (zonder het antwoord), "Kom, we tellen samen." (of een variant), het kind tikt elk stuk fruit van het goede fruit, Bliepo telt mee, het laatste getal is het aantal; de les gaat door. Elk vervolg gaat vanzelf (15.27).
 - **Maken en het lijstje (stap 8 en 9):** het kind maakt het rooster en tikt het vinkje. 1e fout = Bliepo zegt wat er mis is (te veel of te weinig; bij het lijstje welke soort klopt en welke niet, draaiboek §3 C en D), dan komt de hint (het lijstje wordt opnieuw voorgelezen) en mag het kind verder tikken: de vakjes blijven staan. 2e fout = uitleg (bij het lijstje het precieze aantal van de eerste soort die niet klopt), Bliepo helpt: hij zet de rest klaar, het kind tikt de laatste vakjes en Bliepo telt mee.
 - **Hulphandje (15.19):** komt vanzelf na ± 6 s stilte bij maken, het lijstje en samen tellen; nooit bij een keuzevraag, nooit een knop.
 - **Richting en verklappen (15.17):** de hint wijst naar de plek waar het kind moet kijken en zegt het antwoord niet. Het script controleert dat er na de eerste zin en de hint minstens 2 keuzes overblijven (stap 6, kiezen 6: alleen "dichtbij"; zou de richting maar 1 keuze overlaten, dan noemt Bliepo hem niet).
@@ -59,8 +104,14 @@ ${tabel(rijen)}
 ## 3. Goed
 
 - **Goed in één keer (stap 5 en 6):** scherm 1 s groen, een lofzin uit het rijtje (BLIEPO-KARAKTER.md §3) en het aantal met de soort ("Klopt, er zijn er 8." / "Ja, je telde 8 peren." / "Het zijn 8 peren." / "8 peren, precies." / "Ik heb ze nagekeken: 8 peren."); alle nummers 1 t/m N verschijnen tegelijk bij dat fruit (leesvolgorde), de rest wordt dof (draaiboek §3 A.1 (a)).
-- **Goed in één keer (stap 8 en 9):** lofzin en het aantal; bij het lijstje "Perfect, je vulde het hele rooster." (draaiboek §3 D.1).
+- **Goed in één keer (stap 8 en 9):** lofzin en het aantal; bij het lijstje "Perfect, alle vakjes zijn vol." (draaiboek §3 D.1).
 - **Goed na een fout:** alleen een korte bevestiging (BLIEPO-KARAKTER.md §3.4); vanzelf door.
 - **Telhulp (stap 5 en 6):** een tik op het fruit zet een zwart stipje, nog een tik haalt het weg; Bliepo zegt er niets bij (draaiboek §2 stap 5).
+
+## 4. Alle varianten (18 november 2026)
+
+Elke zin die terugkomt, bestaat in varianten. De les kiest willekeurig, maar nooit 2 keer achter elkaar dezelfde zin, ook niet over vragen heen (gedeelde kiezer \`nooit-dubbel.ts\`). In §2 staat per fout antwoord 1 vaste variant als voorbeeld; het script loopt alle varianten na. Oud naast nieuw: WIJZIGINGEN-ZINNEN-TELLEN.md.
+
+${variantenTabel}
 `;
 schrijf("FOUTTABEL-squla-tellen-fruit-1-gouden-extra.md", tekst);

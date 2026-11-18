@@ -43,7 +43,8 @@ import { zetTestAntwoord } from "./squla-hulp";
 import { speelLesgeluid } from "@/lib/lesgeluiden";
 import { bliepoScherm } from "@/lib/bliepo-scherm";
 import { bewaarUitkomst } from "@/app/lesuitkomstacties";
-import { AANMOEDIG_TIKKEN, BEVESTIG, EINDE, EINDE_VEEL_FOUTEN, LOF, LOF_KIJK_INDEX, MOMENT, NAAM_GROET, NAAM_LOF, ONDUIDELIJK, ONDUIDELIJK_NOG_1_KEER, OVERGANG, TELREACTIE, TELREACTIE_JA, TELREACTIE_ROBOT, VRAGEN, ZIN, dichtbijAnders, foutenVan, zonderDichtbij, gk, metNaam, type Fout, type Rijtje, type Telvraag } from "./squla-tellen-gouden-zinnen";
+import { BEVESTIG, EINDE, EINDE_VEEL_FOUTEN, LOF, LOF_KIJK_INDEX, MOMENT, NAAM_GROET, NAAM_LOF, ONDUIDELIJK, ONDUIDELIJK_NOG_1_KEER, OVERGANG, TEL, TELREACTIE_JA, TELREACTIE_ROBOT, TELREACTIE_WARM, VRAGEN, foutenVan, gk, metNaam, tweedeEerste, type Fout, type Rijtje, type Telvraag } from "./squla-tellen-gouden-zinnen";
+import { deeltStuk, maakKiezer } from "./nooit-dubbel";
 
 const LES_ID = "squla-tellen-fruit-1-gouden";
 
@@ -72,6 +73,15 @@ const st = (l: Lesgids): Staat => {
 };
 
 const zet = (l: Lesgids, p: Partial<GoudenTelProps>) => l.pasVlakAan<GoudenTelProps>(p);
+
+/**
+ * NOOIT 2 KEER HETZELFDE (Sara, 18 november 2026): alle zinnen in varianten (TEL en de fouttabel) kiest de les met deze
+ * gedeelde kiezer. Nooit dezelfde zin 2 keer achter elkaar, ook niet over vragen heen (en ook niet als je de les nog een
+ * keer speelt: de kiezer leeft zolang de pagina open is). "Je koos 12." en "Je koos 14." tellen als dezelfde zin, net
+ * als "Tik op elke appel." en "Tik op elke peer.".
+ */
+const KIEZER = maakKiezer({ wissel: ["appels", "appel", "peren", "peer", "pruimen", "pruim"] });
+const variant = (sleutel: string, zinnen: readonly string[], mag?: (z: string) => boolean) => KIEZER.kies(sleutel, zinnen, mag);
 
 /** Zinnen van Bliepo, met {naam} ingevuld (hooguit 2 keer per les; daarna valt de naam netjes weg). */
 const zeg = (l: Lesgids, ...zinnen: string[]) =>
@@ -166,7 +176,7 @@ function lofZinnen(l: Lesgids, v: Telvraag, eerste: boolean): string[] {
   lof ??= kies(l, LOF, [LOF_KIJK_INDEX]);
   /* Lof en aantal beginnen niet allebei met hetzelfde woord ("Ja, … Ja, …"). */
   const woord = (z: string) => z.split(/[\s,:!.]/)[0].toLowerCase();
-  const r = TELREACTIE(v.n, v.fruit);
+  const r = TELREACTIE_WARM(v.n, v.fruit);
   const zonder = r.zinnen.map((_, i) => i).filter((i) => woord(r.zinnen[i]) === woord(lof));
   /* Nooit 2 keer "Ja" achter elkaar, ook niet als de lof met "Ja" begint en het rijtje anders vastloopt (kind-test 9 nov). */
   if (woord(lof) === "ja") zonder.push(...TELREACTIE_JA);
@@ -241,13 +251,32 @@ async function vraagMetKnoppen(l: Lesgids, opties: string[], zinnen: string[]): 
   return x;
 }
 
-/** Wat Bliepo zegt bij een fout, uit de fouttabel (zelfde regels als de gouden klokles). */
-function foutZinnen(l: Lesgids, f: Fout, poging: 1 | 2, eerder: Fout | null): string[] {
-  const eerste = f.eerste || kies(l, ONDUIDELIJK, poging === 2 ? [ONDUIDELIJK_NOG_1_KEER] : []);
-  if (poging === 1) return [eerste, f.hint];
-  /* "Weer" alleen als Bliepo de 1e keer al zei wat er mis was (niet na alleen "… is dichtbij."; kind-test 9 nov). */
-  const zelfde = eerder !== null && eerder.soort === f.soort && !eerder.noot && f.code !== "onduidelijk";
-  return zelfde ? f.weer : [eerste, f.uitleg];
+/**
+ * Wat Bliepo zegt bij een fout, uit de fouttabel. Elke zin heeft varianten (18 november 2026); de kiezer neemt nooit 2
+ * keer achter elkaar dezelfde, ook niet over vragen heen.
+ *   1e keer: eerste zin (wat het kind koos) + hint.
+ *   2e keer: eerste zin + uitleg; of, bij 2 keer dezelfde denkfout, "weer" + een andere uitleg; of, bij hetzelfde getal
+ *   2 keer, "Je koos weer …" + uitleg. In 1 reactie staat geen stuk 2 keer ("… te veel. … te veel.").
+ */
+function foutZinnen(l: Lesgids, f: Fout, v: Telvraag, x: string, poging: 1 | 2, eerder: Fout | null, eersteX: string, eersteZin: string): string[] {
+  if (!f.v) {
+    /* Denkfout niet duidelijk (komt in deze les niet voor): een zin uit het vaste rijtje en de algemene hint. */
+    const eerste = f.eerste || kies(l, ONDUIDELIJK, poging === 2 ? [ONDUIDELIJK_NOG_1_KEER] : []);
+    return poging === 1 ? [eerste, f.hint] : [eerste, f.uitleg];
+  }
+  if (poging === 1) {
+    const eerste = variant("eerste", f.v.eerste);
+    return [eerste, variant("hint", f.v.hint, (z) => !deeltStuk(eerste, z))];
+  }
+  /* "Weer" alleen als Bliepo de 1e keer al zei wat er mis was (niet na alleen "… dichtbij."; kind-test 9 nov). */
+  if (eerder !== null && eerder.soort === f.soort && !eerder.noot) {
+    const weer = variant("weer", f.v.weerEerste);
+    return [weer, variant("uitleg", f.v.weerUitleg, (z) => !deeltStuk(weer, z))];
+  }
+  /* Hetzelfde getal 2 keer: "Je koos weer …" (keuring 9 nov). Een ander getal: een eerste zin zonder een woord dat
+     Bliepo bij deze vraag al zei (nooit 2 keer "dichtbij" bij 1 vraag; keuring 10 en 11 nov). */
+  const eerste = x === eersteX ? variant("weerGekozen", TEL.weerGekozen(Number(x), v.fruit)) : variant("eerste", tweedeEerste(Number(x), v, eersteZin));
+  return [eerste, variant("uitleg", f.v.uitleg, (z) => !deeltStuk(eerste, z))];
 }
 
 /* ---------- het beeld ---------- */
@@ -281,7 +310,7 @@ async function natellen(l: Lesgids, v: Telvraag) {
     zet(l, { nummers: alle(v) });
   }
   log(l, "nageteld", { n: v.n });
-  await zegDoor(l, ZIN.natellenKlaar(v.n, v.fruit));
+  await zegDoor(l, variant("natellenKlaar", TEL.natellenKlaar(v.n, v.fruit)));
 }
 
 /**
@@ -308,13 +337,13 @@ async function samenTellen(l: Lesgids, v: Telvraag) {
       if (!handGezegd) {
         handGezegd = true;
         /* Het kind moet tikken, niet nadenken: geen "Denk maar even na." (14.35; kind-test 9 nov). 1 uiting. */
-        void zeg(l, `${AANMOEDIG_TIKKEN[Math.floor(Math.random() * AANMOEDIG_TIKKEN.length)]} ${ZIN.samenHand(v.fruit)}`).catch(() => {});
+        void zeg(l, `${variant("aanmoedigTikken", TEL.aanmoedigTikken)} ${variant("samenHand", TEL.samenHand(v.fruit))}`).catch(() => {});
       }
     }, AANWIJZING_MS);
   };
   log(l, "samen-tellen", { vraag: v.id });
   /* De opdracht: geen pijl (15.27). Een tik op het fruit telt al tijdens de zin. */
-  void zegOpdracht(l, ZIN.samenTik(v.fruit)).then(() => log(l, "vraag-klaar"), () => {});
+  void zegOpdracht(l, variant("samenTik", TEL.samenTik(v.fruit))).then(() => log(l, "vraag-klaar"), () => {});
   wachtOpHand();
   let zelf = false;
   let sinds = Date.now();
@@ -357,11 +386,11 @@ async function samenTellen(l: Lesgids, v: Telvraag) {
       speelLesgeluid("tik");
       await l.wacht(250);
     }
-    await zegDoor(l, ZIN.samenZelf(v.n, v.fruit));
+    await zegDoor(l, variant("samenZelf", TEL.samenZelf(v.n, v.fruit)));
     return;
   }
   await l.wacht(DENK_MS);
-  await zegDoor(l, ZIN.samenKlaar(v.n, v.fruit));
+  await zegDoor(l, variant("samenKlaar", TEL.samenKlaar(v.n, v.fruit)));
 }
 
 /* ---------- 1 telvraag: 2 pogingen ---------- */
@@ -381,7 +410,7 @@ async function telVraag(l: Lesgids, v: Telvraag, eersteVraag: boolean): Promise<
   let eerder: Fout | null = null;
   let eersteX = "";
   let eersteZin = "";
-  let zinnen = eersteVraag ? [ZIN.vraag(v.fruit), ZIN.vraagEerste] : [ZIN.vraag(v.fruit)];
+  let zinnen = eersteVraag ? [TEL.vraag(v.fruit), TEL.vraagEerste] : [TEL.vraag(v.fruit)];
   for (let poging = 1 as 1 | 2; poging <= 2; poging++) {
     zetTestAntwoord(goed);
     haak(l, { soort: "kies", opties, goed, poging, vraag: v.id, fout: v.keuzes.filter((k) => k !== v.n).map(String) });
@@ -398,7 +427,7 @@ async function telVraag(l: Lesgids, v: Telvraag, eersteVraag: boolean): Promise<
         log(l, "reactie", { soort: "goed", vraag: v.id, zin: lof.join(" ") });
         if (eersteVraag) {
           /* Draaiboek §3 A.1 (b): bij de eerste telvraag samen natellen in plaats van alle nummers tegelijk. */
-          await zegDoor(l, lof[0], ZIN.natellen);
+          await zegDoor(l, lof[0], variant("natellen", TEL.natellen));
           await natellen(l, v);
         } else await zegDoor(l, lof.join(" "));
         return noteer(l, v.id, "goed");
@@ -414,13 +443,7 @@ async function telVraag(l: Lesgids, v: Telvraag, eersteVraag: boolean): Promise<
     s.opRij = 0;
     const f = fouten[x] ?? { code: "onduidelijk", soort: "onduidelijk", denkfout: "niet duidelijk", eerste: "", hint: "", uitleg: "", weer: [], scherm: "" } satisfies Fout;
     legDenkfoutVast(l, { vraag: v.id, antwoord: x, denkfout: f.code, poging });
-    const fz = foutZinnen(l, f, poging, eerder).filter(Boolean);
-    /* Hetzelfde foute getal 2 keer: niet 2 keer dezelfde eerste zin (keuring 9 nov). */
-    if (poging === 2 && x === eersteX && fz[0] === f.eerste) fz[0] = ZIN.weerGekozen(Number(x), v.fruit);
-    /* Een ander fout getal, maar weer zonder richting: een andere versie van de eerste zin (keuring Meten, 10 nov). */
-    else if (poging === 2 && eerder?.noot && f.noot && fz[0] === f.eerste) fz[0] = dichtbijAnders(Number(x), v);
-    /* Nooit 2 keer "dichtbij" bij 1 vraag (keuring 11 nov 2026): een versie zonder dat woord, zelfde betekenis. */
-    if (poging === 2 && /dichtbij/.test(eersteZin) && /dichtbij/.test(fz[0]) && x !== eersteX) fz[0] = zonderDichtbij(Number(x), v);
+    const fz = foutZinnen(l, f, v, x, poging, eerder, eersteX, eersteZin).filter(Boolean);
     log(l, "reactie", { soort: `fout${poging}`, vraag: v.id, x, denkfout: f.code, zin: fz.join(" ") });
     if (poging === 1) {
       /* 1e fout (draaiboek §3 A.2): de vraag verdwijnt; de eerste zin (vanzelf door, 15.27), dan komen de knoppen terug
@@ -433,7 +456,7 @@ async function telVraag(l: Lesgids, v: Telvraag, eersteVraag: boolean): Promise<
     } else {
       /* 2e fout (draaiboek §3 A.3, 15.11): uitleg, samen tellen, door. Alles vanzelf door (15.27). */
       await zegDoor(l, ...fz);
-      await zegDoor(l, ZIN.samenHelp[st(l).fout % 3]);
+      await zegDoor(l, variant("samenHelp", TEL.samenHelp));
       await samenTellen(l, v);
       return noteer(l, v.id, "samen");
     }
@@ -470,7 +493,7 @@ const gouden: Lesdraaiboek = {
     await l.wacht(600);
     st(l).naamKeer = 1;
     st(l).naamVraag = 0;
-    await zegDoor(l, NAAM_GROET, ZIN.begin.join(" "));
+    await zegDoor(l, NAAM_GROET, `${variant("begin", TEL.begin)} ${TEL.beginKijk}`);
 
     /* Stap 3 en 4. De 15 vragen van squla-tellen-fruit-1. */
     for (const [i, v] of VRAGEN.entries()) {
@@ -483,14 +506,14 @@ const gouden: Lesdraaiboek = {
     /* Stap 10. Einde: slotzin, kaart, eindzin uit het rijtje. */
     void l.zeg().catch(() => {});
     zet(l, { opgave: null, nummers: [], hand: null, tikbaar: false });
-    await zegDoor(l, ZIN.slot);
+    await zegDoor(l, variant("slot", TEL.slot));
     log(l, "kaart");
     /* Geen pijl op de eindkaart (15.27). */
     l.verderWeg?.();
     const tik = l.kaart();
     speelLesgeluid("kaart");
     /* Draaiboek stap 10: Bliepo zegt kort wat het kind met de kaart doet (kind-test 9 nov). 1 uiting. */
-    await zeg(l, `${veelFouten(l) ? EINDE_VEEL_FOUTEN : kies(l, EINDE)} ${ZIN.kaartTik}`);
+    await zeg(l, `${veelFouten(l) ? EINDE_VEEL_FOUTEN : kies(l, EINDE)} ${variant("kaartTik", TEL.kaartTik)}`);
     await tik;
   },
 };

@@ -2066,3 +2066,37 @@ Als aparte lessen naast de gouden lessen (die zijn niet veranderd), zelfde stof 
 5. Rekentaal onthoudt de aantal-zin per vraag, niet per hele les. Zo laten? Advies: ja.
 6. Klok: 2 grensgevallen ("Deze wijzer is lang.", "Bij een heel uur…"): zo laten? Advies: ja.
 7. Kralenavontuur (tellen-sprongen) geeft een 404; dat is niet nieuw. Wil je dat ik het uitzoek?
+
+## Ronde 49 — proefles Tellen: warmere zinnen en variatie (18 november 2026)
+
+Alleen de gouden les Tellen en de extra les Tellen. Andere lessen zijn niet veranderd. Niets online, geen stem gemaakt.
+Oud naast nieuw staat in WIJZIGINGEN-ZINNEN-TELLEN.md. Bekijken:
+http://localhost:3000/voorbeeld/les/squla-tellen-fruit-1-gouden?naam=Testkind en
+http://localhost:3000/voorbeeld/les/squla-tellen-fruit-1-gouden-extra?naam=Testkind
+
+**Wat er gedaan is:**
+- Elke zin is nagelopen: korter, warmer, gewone woorden, nooit "fout", geen getal 2 keer achter elkaar.
+- Elke situatie die terugkomt heeft nu 3 tot 5 varianten (instructies 2 of 3). De les kiest nooit 2 keer achter elkaar
+  dezelfde zin, ook niet over vragen heen.
+- Vraag 15, keuze 10 (open sinds Ronde 20, vraag 2): Bliepo noemt de volle rijen daar niet meer bij de 1e keer, want dan
+  bleef alleen 11 over. De hint verklapt het antwoord nu nergens meer.
+
+**Stem (alleen geschat, NIETS gemaakt):**
+- Nieuwe zinnen voor Ruth, met alle getallen en fruit ingevuld: ongeveer 500 losse zinnen, samen ongeveer 13.600 tekens
+  (gouden les ± 7.000, extra les ± 6.500).
+- Maakt de site ze als hele uiting (2 zinnen aan elkaar, zoals nu), dan is het ongeveer 600 uitingen en 26.000 tekens.
+- Kosten bij ElevenLabs: 1 tegoed per teken (of een half, hangt af van het model). Dus tussen ± 7.000 en ± 26.000 tegoed.
+- Niet meegeteld: lofzin + zin met het aantal aan elkaar (dat zijn heel veel combinaties; dat was al zo).
+- Tot Ruth ze heeft, leest de browserstem de nieuwe zinnen voor.
+- Dit is meer dan 5.000 tegoed: ik maak niets zonder jouw ja (harde regel 9).
+
+**Graag een besluit (ja of nee):**
+1. Zijn de nieuwe zinnen goed zo? Dan kunnen de andere gouden lessen dezelfde aanpak krijgen (elke les apart, met jouw ja).
+2. Je schreef dat zinnen van Synthesis vertaald overgenomen mogen worden. BOUWREGELS 15.2 en BLIEPO-KARAKTER.md zeggen:
+   nooit, ook niet vertaald. Ik heb daarom alles in eigen woorden geschreven. Moet de regel aangepast worden? Advies: nee,
+   eigen woorden werkt goed.
+3. De vaste rijtjes (lof, "nu is het goed", eindzinnen) zijn niet veranderd: alle 15 gouden lessen gebruiken ze. Wil je
+   dat ik die ook naloop? Advies: ja, maar apart.
+4. De Rekenmix-lessen gebruiken nog de oude telzinnen ("Laten we ze samen natellen.", "12. Samen telden we 12 appels.").
+   Mogen die ook de nieuwe zinnen krijgen? Advies: ja.
+5. Mag Ruth de nieuwe zinnen inspreken (zie de schatting hierboven)? Advies: pas na jouw ja op punt 1.

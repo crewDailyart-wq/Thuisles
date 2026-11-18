@@ -29,7 +29,8 @@ import { KaartTellenExtra, TelExtraVlak, type ExtraCel, type TelExtraProps } fro
 import type { Soort } from "../vlakken/squla-tellen-tekenen";
 import { speelLesgeluid } from "@/lib/lesgeluiden";
 import { zetTestAntwoord } from "./squla-hulp";
-import { maakBasis, schud, type Fout } from "./squla-extra-basis";
+import { EINDE, EINDE_VEEL_FOUTEN, maakBasis, schud, type Fout } from "./squla-extra-basis";
+import { deeltStuk, maakKiezer } from "./nooit-dubbel";
 import {
   ALLE_FRUIT,
   LIJST,
@@ -52,6 +53,7 @@ import {
   lijstFout,
   lijstRegels,
   maakFout,
+  type FoutV,
   type Fruit,
   type Rooster,
   type SoortVraag,
@@ -64,6 +66,44 @@ const VANGNET_MS = 20000;
 const B_DENK = 200;
 
 const zet = (l: Lesgids, p: Partial<TelExtraProps>) => l.pasVlakAan<TelExtraProps>(p);
+
+/**
+ * NOOIT 2 KEER HETZELFDE (Sara, 18 november 2026): alle zinnen in varianten kiest de les met de gedeelde kiezer
+ * (nooit-dubbel.ts). Nooit dezelfde zin 2 keer achter elkaar, ook niet over vragen heen; "Tik op elke peer." en "Tik op
+ * elke pruim." tellen als dezelfde zin.
+ */
+const KIEZER = maakKiezer({ wissel: ["appels", "appel", "peren", "peer", "pruimen", "pruim", "citroenen", "citroen"] });
+const variant = (sleutel: string, zinnen: readonly string[], mag?: (z: string) => boolean) => KIEZER.kies(sleutel, zinnen, mag);
+
+/**
+ * Kiest per fout de zinnen uit de varianten van de fouttabel, precies de zinnen die Bliepo gaat zeggen (zelfde regels als
+ * squla-extra-basis: 1e keer eerste zin + hint; 2e keer eerste zin + uitleg, of "weer" bij dezelfde denkfout of
+ * hetzelfde antwoord). Eén kiezer per vraag: hij onthoudt de 1e fout.
+ */
+function foutKiezer() {
+  let eerder: { x: string; f: Fout } | null = null;
+  return (x: string, f: FoutV): Fout => {
+    const v = f.v;
+    if (!v) {
+      eerder ??= { x, f };
+      return f;
+    }
+    if (!eerder) {
+      const eerste = v.eerste.length ? variant("eerste", v.eerste) : f.eerste;
+      const uit = { ...f, eerste, hint: variant("hint", v.hint, (z) => !deeltStuk(eerste, z)) };
+      eerder = { x, f: uit };
+      return uit;
+    }
+    const zelfde = eerder.f.soort === f.soort && !eerder.f.noot && f.code !== "onduidelijk";
+    if (v.weerEerste.length && (zelfde || x === eerder.x)) {
+      const weer = variant("weer", v.weerEerste);
+      return { ...f, weer: [weer, ...(v.weerUitleg.length ? [variant("uitleg", v.weerUitleg, (z) => !deeltStuk(weer, z))] : [])] };
+    }
+    const eerste = v.eerste.length ? variant("eerste", v.eerste) : f.eerste;
+    return { ...f, eerste, uitleg: variant("uitleg", v.uitleg, (z) => !deeltStuk(eerste, z)) };
+  };
+}
+const aanmoedig = () => variant("aanmoedigTikken", ZIN.aanmoedigTikken);
 const robotGehad = new WeakSet<Lesgids>();
 
 /* ---------- het rooster in beeld ---------- */
@@ -100,7 +140,7 @@ async function samenTellen(l: Lesgids, v: { id: string; rooster: Rooster }, idx:
   const volgende = () => idx.find((i) => nummers[i] === 0) ?? -1;
   zetTestAntwoord(`cel-${volgende()}`);
   B.haak(l, { soort: "tel", goed: `cel-${volgende()}`, vraag: v.id });
-  const hk = B.handKlok(l, { aan: () => zet(l, { hand: volgende() >= 0 ? volgende() : null }), uit: () => zet(l, { hand: null }), zin: `${["Je bent goed bezig.", "Jij kunt dit."][B.st(l).fout % 2]} ${o.hand}` });
+  const hk = B.handKlok(l, { aan: () => zet(l, { hand: volgende() >= 0 ? volgende() : null }), uit: () => zet(l, { hand: null }), zin: `${aanmoedig()} ${o.hand}` });
   B.log(l, "samen-tellen", { vraag: v.id });
   void B.zegOpdracht(l, o.tik).catch(() => {});
   hk.opnieuw();
@@ -157,6 +197,7 @@ async function soortVraag(l: Lesgids, v: SoortVraag, eerste: boolean) {
   const cellen = v.rooster.cellen;
   const fouten = foutenSoort(v);
   const vanNaam = (x: string): Fruit => ALLE_FRUIT.find((f) => f.naam === x) ?? v.goed;
+  const kiesFout = foutKiezer();
   if (!eerste) void l.zeg().catch(() => {});
   toon(l, v.rooster, { stipjes: true });
   if (!eerste) speelLesgeluid("verschijn");
@@ -169,7 +210,7 @@ async function soortVraag(l: Lesgids, v: SoortVraag, eerste: boolean) {
     goed: v.goed.naam,
     zinnen,
     eerste,
-    fout: (x) => fouten[vanNaam(x).soort],
+    fout: (x) => kiesFout(x, fouten[vanNaam(x).soort]),
     bijGoed: async (poging, lofZin) => {
       /* Draaiboek §3 B.1: alle nummers 1 t/m N tegelijk in de vakjes (leesvolgorde), de andere soorten dof. */
       zet(l, { ...metNummers(cellen, goedIdx), stipjes: false, goed: B.st(l).goed });
@@ -181,12 +222,12 @@ async function soortVraag(l: Lesgids, v: SoortVraag, eerste: boolean) {
       zet(l, { ...metNummers(cellen, indicesVan(cellen, [vanNaam(x).soort])), fout: B.st(l).fout });
     },
     samen: async () => {
-      await B.zegDoor(l, ZIN.samenHelp[B.st(l).fout % 3]);
+      await B.zegDoor(l, variant("samenHelp", ZIN.samenHelp));
       await samenTellen(l, v, goedIdx, {
-        tik: ZIN.samenSoort(v.goed),
-        hand: ZIN.samenHand(v.goed),
-        klaar: (n) => ZIN.samenKlaar(n, v.goed),
-        zelf: (n) => ZIN.samenZelf(n, v.goed),
+        tik: variant("samenTik", ZIN.samenSoort(v.goed)),
+        hand: variant("samenHand", ZIN.samenHand(v.goed)),
+        klaar: (n) => variant("samenKlaar", ZIN.samenKlaar(n, v.goed)),
+        zelf: (n) => variant("samenZelf", ZIN.samenZelf(n, v.goed)),
         kleur: (n) => `${gk(n, v.goed)}.`,
       });
     },
@@ -199,6 +240,7 @@ async function tweeVraag(l: Lesgids) {
   const cellen = TWEE.rooster.cellen;
   const fouten = foutenTwee();
   const idx = indicesVan(cellen, [TWEE.a.soort, TWEE.b.soort]);
+  const kiesFout = foutKiezer();
   void l.zeg().catch(() => {});
   toon(l, TWEE.rooster, { stipjes: true });
   speelLesgeluid("verschijn");
@@ -209,7 +251,7 @@ async function tweeVraag(l: Lesgids) {
     goed: String(TWEE.n),
     zinnen: [ZIN.vraagTwee(TWEE.a, TWEE.b)],
     raster: false,
-    fout: (x) => fouten[x],
+    fout: (x) => kiesFout(x, fouten[x]),
     bijGoed: async (poging, lofZin) => {
       zet(l, { ...metNummers(cellen, idx), stipjes: false, goed: B.st(l).goed });
       if (poging === 1) await B.zegDoor(l, lofZin, aantalZin(l, TELREACTIE_TWEE(TWEE.n, TWEE.a, TWEE.b), lofZin));
@@ -219,12 +261,12 @@ async function tweeVraag(l: Lesgids) {
       zet(l, { dof: cellen.map((_, i) => !idx.includes(i)), fout: B.st(l).fout });
     },
     samen: async () => {
-      await B.zegDoor(l, ZIN.samenHelp[B.st(l).fout % 3]);
+      await B.zegDoor(l, variant("samenHelp", ZIN.samenHelp));
       await samenTellen(l, { id: TWEE.id, rooster: TWEE.rooster }, idx, {
-        tik: ZIN.samenTwee(TWEE.a, TWEE.b),
-        hand: ZIN.samenHandTwee,
-        klaar: (n) => ZIN.samenKlaarTwee(n, TWEE.a, TWEE.b),
-        zelf: (n) => ZIN.samenZelfTwee(n),
+        tik: variant("samenTik", ZIN.samenTwee(TWEE.a, TWEE.b)),
+        hand: variant("samenHand", ZIN.samenHandTwee(TWEE.a, TWEE.b)),
+        klaar: (n) => variant("samenKlaar", ZIN.samenKlaarTwee(n, TWEE.a, TWEE.b)),
+        zelf: (n) => variant("samenZelf", ZIN.samenZelfTwee(n)),
         kleur: (n) => `${gw(n)}.`,
       });
     },
@@ -244,7 +286,7 @@ async function samenMaken(l: Lesgids, id: string, rooster: Rooster, vooraf: Extr
   toonNu();
   zetTestAntwoord(`cel-${leeg()[0]}`);
   B.haak(l, { soort: "tel", goed: `cel-${leeg()[0]}`, vraag: id });
-  const hk = B.handKlok(l, { aan: () => zet(l, { hand: leeg()[0] ?? null }), uit: () => zet(l, { hand: null }), zin: `${["Je bent goed bezig.", "Jij kunt dit."][B.st(l).fout % 2]} ${o.hand}` });
+  const hk = B.handKlok(l, { aan: () => zet(l, { hand: leeg()[0] ?? null }), uit: () => zet(l, { hand: null }), zin: `${aanmoedig()} ${o.hand}` });
   void B.zegOpdracht(l, o.help).catch(() => {});
   hk.opnieuw();
   let zelf = false;
@@ -306,7 +348,7 @@ type RondeKeuze = {
   /** Telt wat er staat: per regel van het lijstje hoeveel. */
   tel: (cellen: ExtraCel[]) => number[];
   klopt: (tel: number[]) => boolean;
-  fout: (tel: number[]) => Fout;
+  fout: (tel: number[]) => FoutV;
   goedZinnen: (lofZin: string) => string[];
   samen: (cellen: ExtraCel[], tel: number[]) => Promise<void>;
   /** Wat de automatische speler als volgende moet tikken (alleen voor de test). */
@@ -324,6 +366,7 @@ async function opdrachtRonde(l: Lesgids, c: RondeKeuze) {
   await l.wacht(150);
   let eerder: Fout | null = null;
   let eersteX = "";
+  const kiesFout = foutKiezer();
   let zin: Promise<void> = B.zegOpdracht(l, c.opdracht.join(" "));
   for (let poging = 1 as 1 | 2; poging <= 2; poging++) {
     /* Het kind tikt vakjes; het vinkje komt na elke tik opnieuw (het lesscherm haalt het weg bij een tik in het vlak). */
@@ -362,8 +405,8 @@ async function opdrachtRonde(l: Lesgids, c: RondeKeuze) {
     }
     B.foutMoment(l);
     zet(l, { tikbaar: [], fout: B.st(l).fout });
-    const f = c.fout(tel);
     const sleutel = tel.join("-");
+    const f = kiesFout(sleutel, c.fout(tel));
     B.legDenkfoutVast(l, { vraag: c.id, antwoord: sleutel, denkfout: f.code, poging });
     const fz = B.foutZinnen(l, f, poging, eerder).filter(Boolean);
     if (poging === 2 && sleutel === eersteX && fz[0] === f.eerste && f.weer.length) fz.splice(0, fz.length, ...f.weer);
@@ -376,7 +419,7 @@ async function opdrachtRonde(l: Lesgids, c: RondeKeuze) {
       eersteX = sleutel;
     } else {
       await B.zegDoor(l, ...fz);
-      await B.zegDoor(l, ZIN.maakHelp[B.st(l).fout % 3]);
+      await B.zegDoor(l, variant("maakHelp", ZIN.maakHelp));
       await c.samen(cellen, tel);
       return B.noteer(l, c.id, "samen");
     }
@@ -393,14 +436,14 @@ async function maakRonde(l: Lesgids) {
     lijst: [{ soort: MAAK.f.soort, n: doel }],
     verfKiezen: false,
     startVerf: MAAK.f.soort,
-    opdracht: [ZIN.maakOpdracht(MAAK.f, doel), ZIN.maakUitleg],
-    handZin: ZIN.maakHand,
+    opdracht: [ZIN.maakOpdracht(MAAK.f, doel), ZIN.maakUitleg(MAAK.f)],
+    handZin: variant("maakHand", ZIN.maakHand),
     tel: (cellen) => [aantalVan(cellen, MAAK.f)],
     klopt: (t) => t[0] === doel,
     fout: (t) => maakFout(t[0]),
     goedZinnen: (lofZin) => [lofZin, aantalZin(l, MAAKREACTIE(doel, MAAK.f), lofZin)],
     samen: async () => {
-      await samenMaken(l, MAAK.id, MAAK.rooster, MAAK.rooster.cellen.map(() => null), MAAK.f, doel, { help: ZIN.maakSamenZin(MAAK.f), hand: ZIN.maakHand, klaar: (n) => ZIN.maakKlaar(n, MAAK.f), zelf: (n) => ZIN.maakZelf(n, MAAK.f) });
+      await samenMaken(l, MAAK.id, MAAK.rooster, MAAK.rooster.cellen.map(() => null), MAAK.f, doel, { help: variant("maakSamenZin", ZIN.maakSamenZin(MAAK.f)), hand: variant("maakHand", ZIN.maakHand), klaar: (n) => variant("maakKlaar", ZIN.maakKlaar(n, MAAK.f)), zelf: (n) => variant("maakZelf", ZIN.maakZelf(n, MAAK.f)) });
     },
     testStap: (cellen) => {
       const n = aantalVan(cellen, MAAK.f);
@@ -420,7 +463,7 @@ async function lijstRonde(l: Lesgids) {
     verfKiezen: true,
     startVerf: LIJST.regels[0].f.soort,
     opdracht: [ZIN.lijstOpdracht],
-    handZin: ZIN.lijstHand,
+    handZin: variant("maakHand", ZIN.lijstHand),
     tel,
     klopt: (t) => t.every((n, i) => n === LIJST.regels[i].n),
     fout: (t) => lijstFout(t),
@@ -430,7 +473,7 @@ async function lijstRonde(l: Lesgids) {
       const k = LIJST.regels.findIndex((r, i) => t[i] !== r.n);
       const r = LIJST.regels[k];
       const vooraf = LIJST_OPLOSSING.map((x) => (x === r.f.soort ? null : x));
-      await samenMaken(l, LIJST.id, LIJST.rooster, vooraf, r.f, r.n, { help: ZIN.lijstHelp(r.f), hand: ZIN.lijstHand, klaar: (n) => ZIN.maakKlaar(n, r.f), zelf: (n) => ZIN.maakZelf(n, r.f) });
+      await samenMaken(l, LIJST.id, LIJST.rooster, vooraf, r.f, r.n, { help: variant("lijstHelp", ZIN.lijstHelp(r.f)), hand: variant("maakHand", ZIN.lijstHand), klaar: (n) => variant("maakKlaar", ZIN.maakKlaar(n, r.f)), zelf: (n) => variant("maakZelf", ZIN.maakZelf(n, r.f)) });
     },
     testStap: (cellen, verf) => {
       const i = cellen.findIndex((x, k) => x !== LIJST_OPLOSSING[k]);
@@ -490,7 +533,15 @@ const gouden: Lesdraaiboek = {
 
     /* Stap 10. Einde: slotzin, kaart, eindzin. */
     zet(l, { cellen: [], lijst: null, nummers: [], tikbaar: [], hand: null });
-    await B.einde(l, ZIN.slot);
+    /* Zelfde stappen als B.einde (squla-extra-basis), met de slotzin en "Tik op de kaart." in varianten. */
+    void l.zeg().catch(() => {});
+    await B.zegDoor(l, variant("slot", ZIN.slot));
+    B.log(l, "kaart");
+    l.verderWeg?.();
+    const tik = l.kaart();
+    speelLesgeluid("kaart");
+    await B.zeg(l, `${B.veelFouten(l) ? EINDE_VEEL_FOUTEN : B.kies(l, EINDE)} ${variant("kaartTik", ZIN.kaartTik)}`);
+    await tik;
   },
 };
 

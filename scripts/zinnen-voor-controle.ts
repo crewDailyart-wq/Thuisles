@@ -167,7 +167,7 @@ function leesFouttabel(md: string, lijst: Lijst) {
 
 /** Namen van eigenschappen/variabelen waarvan de tekst voor een bouwer is, niet voor het kind. */
 const NIET_KIND = new Set(["scherm", "denkfout", "noot", "soort", "code", "id", "key", "kleur", "type", "className", "style", "src", "href", "alt", "d", "fill", "stroke", "viewBox", "transform", "role", "name", "htmlFor", "target", "rel", "font", "fontFamily", "fontWeight", "cursor", "background", "border", "boxShadow", "transition", "filter", "animation", "pointerEvents", "inputMode", "pattern", "autoComplete", "lang", "mode", "wanneer", "bron", "reden", "goed", "naFout", "antwoord", "sleutel", "synthesis", "gouden", "sl", "bestand", "les", "lesId", "vraagId", "tag"]);
-const NIET_KIND_VAR = new Set(["DENKFOUT_UITLEG", "SCHERM_TEKST", "DENKFOUTEN", "SCHERM", "RICHTINGWOORDEN", "OPDRACHT"]);
+const NIET_KIND_VAR = new Set(["DENKFOUT_UITLEG", "SCHERM_TEKST", "DENKFOUTEN", "SCHERM", "RICHTINGWOORDEN", "OPDRACHT", "VARIANTEN_FOUT", "NOOT", "RICHTINGWOORDEN_TEL", "KERN"]);
 const ATTR_TEKST = new Set(["tekst", "text", "label", "titel", "title", "kop", "bordje", "regel", "zin", "placeholder", "knop", "opdracht", "vraag", "uitleg", "hint"]);
 
 const WANNEER: Record<string, string> = {
@@ -188,6 +188,11 @@ const WANNEER: Record<string, string> = {
   AANMOEDIG_DOEN: "aanmoediging bij het hulphandje",
   TELREACTIE: "na een goed antwoord, reactie bij het tellen",
   DICHTBIJ: "na de 1e foute poging (eerste zin, sjabloon)",
+  WEINIG: "na de 1e foute poging (eerste zin, sjabloon)",
+  VEEL: "na de 1e foute poging (eerste zin, sjabloon)",
+  VOLLE: "na de 1e foute poging (eerste zin, sjabloon)",
+  aanmoedigTikken: "aanmoediging bij het hulphandje",
+  TELREACTIE_WARM: "na een goed antwoord, reactie bij het tellen",
 };
 
 /** Namen uit de code die op een vaste plek in de les wijzen; eerste treffer (van binnen naar buiten) wint. */
