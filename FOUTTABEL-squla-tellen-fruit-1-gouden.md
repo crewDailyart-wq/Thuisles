@@ -103,7 +103,7 @@ Na deze uitleg volgt altijd: "Kom, we tellen ze samen." (of een variant) en het 
 ## 4. Goed
 
 - **Goed in één keer:** scherm 1 s groen, een lofzin uit het rijtje (BLIEPO-KARAKTER.md §3) en het aantal ("Ja, er zijn er 12." / "Ja, je hebt ze allemaal geteld: 12." / "Het zijn er 12." / "Je hebt er 12 geteld." / "Ik heb ze nagekeken: het zijn er 12." / "Er liggen 12 appels." / "12 appels, precies!" / "Precies, 12 appels." / "Dat klopt, er zijn 12 appels."), samen als 1 uiting. Begint de lofzin met "Ja", dan komt een telzin zonder "Ja". De robotzin "Ik heb ze nagekeken …" hooguit 1 keer per les. Niet 2 keer achter elkaar dezelfde telzin.
-- **Eerste vraag in één keer goed:** lofzin, "Ik tel ze hardop voor je. Tel maar mee!", Bliepo telt hardop 1 t/m 12 (± 1,15 s per nummer; een tik op de pijl zet alle nummers er meteen bij), "Zie je? Het zijn er 12. Je had het precies goed." Alles vanzelf door.
+- **Eerste vraag in één keer goed:** lofzin, "Ik tel ze hardop voor je. Tel maar mee!", Bliepo telt hardop 1 t/m 11 (± 1,15 s per nummer); het laatste getal zegt hij in de slotzin, zodat het maar 1 keer klinkt: "En 12! Je had het precies goed." Een tik op de pijl zet alle nummers er meteen bij: dan "Zie je? Het zijn er 12. Je had het precies goed." Alles vanzelf door.
 - **Goed na een fout:** alleen een korte bevestiging (BLIEPO-KARAKTER.md §3.4); de nummers staan erbij; vanzelf door.
 - **Heel snel:** Bliepo zegt niets over snel (BOUWREGELS 6.10).
 - **Hetzelfde foute getal 2 keer:** de eerste zin wordt "Je koos weer 11." of een variant (niet 2 keer dezelfde zin).
@@ -143,7 +143,8 @@ De les kiest uit elk rijtje steeds een andere zin dan de vorige keer. Voorbeeld 
 |---|---|
 | Begin van de les | Vandaag gaan we fruit tellen. / We gaan samen fruit tellen. (daarna: Kijk, de appels liggen in rijen van 5.) |
 | Eerste vraag goed: Bliepo telt na | Ik tel ze hardop voor je. Tel maar mee! / Kom, ik tel ze hardop. Tel maar mee! / Laten we ze samen tellen. Ik tel hardop. |
-| Na het natellen | Zie je? Het zijn er 12. Je had het precies goed. / Zie je wel? Het zijn er 12. Jij had het goed geteld. / Kijk, daar heb je het: 12. Je zat precies goed. |
+| Na het natellen | En 12! Je had het precies goed. / En de laatste is 12. Jij had het goed geteld. / En 12! Zie je? Je zat precies goed. |
+| Na het natellen, als het kind op de pijl tikte | Zie je? Het zijn er 12. Je had het precies goed. / Zie je wel? Het zijn er 12. Jij had het goed geteld. / Kijk, daar heb je het: 12. Je zat precies goed. |
 | 2e fout: we gaan samen tellen | Kom, we tellen ze samen. / Weet je wat? We tellen ze samen. / Geeft niks. We tellen ze samen. / Ik help je even. We tellen ze samen. / Laten we ze samen tellen en kijken. |
 | Samen tellen: de opdracht | Tik op elke appel. Ik tel mee. / Tik elke appel aan. Ik zeg het getal. / Tik op alle appels. Ik tel hardop mee. |
 | Samen tellen: het hulphandje (aanmoediging) | Je bent goed bezig. / Jij kunt dit. / Het gaat goed zo. / Probeer het maar. / Toe maar, je doet het goed. |

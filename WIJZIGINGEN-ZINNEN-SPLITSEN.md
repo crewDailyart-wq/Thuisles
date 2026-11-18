@@ -239,3 +239,10 @@ Alleen de tekst, passend gemaakt voor groep 3. Geen audio, beeld of code.
 | perfect; je splitste 8 in 5 en 3 | Je hebt 7 gesplitst in 4 en 3. | gouden en extra: zin na lof | gouden: erbij; extra: was "Je splitste 7 in 4 en 3." |
 | klopt, maar zo heb je hem al gesplitst | Dat klopt, maar 1 en 4 hadden we al. Zoek een andere manier. | gouden: uitleg "splits 5 anders" | VERVANGEN: "Klopt, maar zo had je hem al: 1 en 4. Probeer een andere manier." |
 | 4 en 3 is samen 7; we zoeken 6 | Even rekenen bij dit huisje: 4 en 3 is samen 7. We zoeken 6. | gouden: 3 huisjes | erbij (nu 3 varianten) |
+
+## Herstel 18 november 2026 (logica-controle: F16)
+
+| Oud | Nieuw | Waarom |
+|---|---|---|
+| (extra, stap 12) Maak met de plus en de min 2 delen die samen 7 zijn. Tik dan op het vinkje. | Maak met de plus en de min 2 delen die samen 7 zijn. | een zin met "vinkje" laat het lesscherm helemaal weg, dus Bliepo zei deze opdracht nooit (15.37 punt 2); het vinkje legt het lesscherm zelf 1 keer uit |
+

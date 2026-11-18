@@ -133,7 +133,7 @@ Voor elke situatie die terugkomt is er een rijtje zinnen. De les kiest er willek
 - **Richting noemen bij elke keuze ("te veel", "te weinig"):** niet waar er dan nog maar 1 keuze overblijft. Dan zou de hint het antwoord verklappen (15.17). Daar zegt Bliepo alleen dat het dichtbij is.
 - **"1 voor 1" (cijferafspraak) in plaats van "een voor een":** niet gedaan, want dan staat het getal 1 twee keer achter elkaar. Het is "stuk voor stuk" geworden.
 - **De vraag "Hoeveel appels zie je?" afwisselen:** niet gedaan. Dezelfde soort vraag heet overal hetzelfde (BOUWREGELS 3.11).
-- **"Zie je? Het zijn er 12." weghalen omdat Bliepo net tot 12 telde:** niet gedaan. Het laatste getal is het aantal; dat hoort het kind hier juist te horen.
+- **"Zie je? Het zijn er 12." weghalen omdat Bliepo net tot 12 telde:** niet gedaan. Het laatste getal is het aantal; dat hoort het kind hier juist te horen. **Later op 18 november toch aangepast** (logica-controle, zoals Rekenmix 1): het getal klinkt nog steeds, maar 1 keer; zie "Herstel 18 november" onderaan.
 - **Een aanmoediging met de naam van het kind bij een keuze die niet goed is:** niet gedaan (BOUWREGELS 3.17: geen naam bij een fout).
 
 ## Twee regels van Sara voor de volgende lessen (18 november 2026)
@@ -162,3 +162,11 @@ Alleen de tekst, passend gemaakt voor groep 3. Geen audio, beeld of code. Ze zij
 | Echt indrukwekkend; je hebt helemaal tot 10 geteld | Knap, hoor! Je hebt helemaal tot 17 geteld. | gouden en extra: slotzin | erbij (nu 3) |
 
 Niet overgenomen: "tik op de kaart om je trofee te halen" (bij ons is er geen trofee), "kies je lievelingskleur" (de Squla-les heeft die stap niet) en de lofwoorden "oké, uitstekend" (lof komt uit het vaste rijtje van alle lessen).
+
+## Herstel 18 november 2026 (logica-controle: F16 en "niets dubbel")
+
+| Oud | Nieuw | Waarom |
+|---|---|---|
+| (gouden, Bliepo telt "… 11. 12.") Zie je? Het zijn er 12. Je had het precies goed. | (Bliepo telt "… 10. 11.") En 12! Je had het precies goed. / En de laatste is 12. Jij had het goed geteld. / En 12! Zie je? Je zat precies goed. | het laatste getal klonk 2 keer achter elkaar (15.29); zoals Rekenmix 1. Tikt het kind op de pijl, dan blijven de oude zinnen ("Zie je? Het zijn er 12. …") |
+| (extra, lijstje, hint 1e fout) Op het lijstje staan 4 appels, 7 peren en 10 pruimen. | Op het lijstje staan 4 appels, 7 peren en 10 pruimen. Zet in elk vakje het goede fruit. / … Kies een fruit en tik op de vakjes. | er stond geen opdracht bij terwijl de les op het kind wachtte (F16, 15.37) |
+| (extra, lijstje, samen maken) Ik zet de rest klaar. Jij maakt de appels. / De rest leg ik vast neer. De appels zijn voor jou. | Ik zet de rest klaar. Jij maakt de appels: tik op de lege vakjes. / De rest leg ik vast neer. De appels zijn voor jou: tik op de lege vakjes. | het kind wist niet wat het moest doen (F16, 15.37) |

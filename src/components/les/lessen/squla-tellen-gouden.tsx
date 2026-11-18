@@ -302,6 +302,8 @@ async function natellen(l: Lesgids, v: Telvraag) {
     nummers[i] = i + 1;
     zet(l, { nummers: [...nummers] });
     log(l, "natel", { n: i + 1 });
+    /* Het laatste getal zegt Bliepo in de zin hierna ("En 12! …"): zo klinkt het maar 1 keer (18 nov 2026, zoals Rekenmix 1). */
+    if (i === v.n - 1) break;
     void zeg(l, `${gk(i + 1, v.fruit)}.`).catch(() => {});
     await Promise.race([l.wacht(NATEL_MS), p]);
   }
@@ -310,7 +312,7 @@ async function natellen(l: Lesgids, v: Telvraag) {
     zet(l, { nummers: alle(v) });
   }
   log(l, "nageteld", { n: v.n });
-  await zegDoor(l, variant("natellenKlaar", TEL.natellenKlaar(v.n, v.fruit)));
+  await zegDoor(l, getikt ? variant("natellenKlaarSnel", TEL.natellenKlaarSnel(v.n, v.fruit)) : variant("natellenKlaar", TEL.natellenKlaar(v.n, v.fruit)));
 }
 
 /**

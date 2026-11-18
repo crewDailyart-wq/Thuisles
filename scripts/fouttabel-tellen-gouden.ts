@@ -175,7 +175,7 @@ for (const v of VRAGEN) {
 {
   const f = APPEL;
   const rijtjes: [string, string[], number][] = [
-    ["begin", TEL.begin, 2], ["natellen", TEL.natellen, 2], ["natellenKlaar", TEL.natellenKlaar(12, f), 2], ["samenHelp", TEL.samenHelp, 3], ["samenTik", TEL.samenTik(f), 2], ["samenHand", TEL.samenHand(f), 2],
+    ["begin", TEL.begin, 2], ["natellen", TEL.natellen, 2], ["natellenKlaar", TEL.natellenKlaar(12, f), 2], ["natellenKlaarSnel", TEL.natellenKlaarSnel(12, f), 2], ["samenHelp", TEL.samenHelp, 3], ["samenTik", TEL.samenTik(f), 2], ["samenHand", TEL.samenHand(f), 2],
     ["samenKlaar", TEL.samenKlaar(12, f), 2], ["samenZelf", TEL.samenZelf(12, f), 2], ["slot", TEL.slot, 2], ["kaartTik", TEL.kaartTik, 3], ["weerGekozen", TEL.weerGekozen(11, f), 3], ["aanmoedigTikken", TEL.aanmoedigTikken, 3],
     ["TELREACTIE_WARM", TELREACTIE_WARM(12, f).zinnen, 5],
     ...VARIANTEN_FOUT(f, "11").map(([naam, z]): [string, string[], number] => [naam, z, /^Eerste|^Weer (te|alleen)[^,]*$/.test(naam) ? 3 : 2]),
@@ -247,7 +247,7 @@ ${uitleg}
 ## 4. Goed
 
 - **Goed in één keer:** scherm 1 s groen, een lofzin uit het rijtje (BLIEPO-KARAKTER.md §3) en het aantal (${TELREACTIE_WARM(12, APPEL).zinnen.map((z) => `"${kaal(z)}"`).join(" / ")}), samen als 1 uiting. Begint de lofzin met "Ja", dan komt een telzin zonder "Ja". De robotzin "Ik heb ze nagekeken …" hooguit 1 keer per les. Niet 2 keer achter elkaar dezelfde telzin.
-- **Eerste vraag in één keer goed:** lofzin, "${TEL.natellen[0]}", Bliepo telt hardop 1 t/m 12 (± 1,15 s per nummer; een tik op de pijl zet alle nummers er meteen bij), "${kaal(TEL.natellenKlaar(12, APPEL)[0])}" Alles vanzelf door.
+- **Eerste vraag in één keer goed:** lofzin, "${TEL.natellen[0]}", Bliepo telt hardop 1 t/m 11 (± 1,15 s per nummer); het laatste getal zegt hij in de slotzin, zodat het maar 1 keer klinkt: "${kaal(TEL.natellenKlaar(12, APPEL)[0])}" Een tik op de pijl zet alle nummers er meteen bij: dan "${kaal(TEL.natellenKlaarSnel(12, APPEL)[0])}" Alles vanzelf door.
 - **Goed na een fout:** alleen een korte bevestiging (BLIEPO-KARAKTER.md §3.4); de nummers staan erbij; vanzelf door.
 - **Heel snel:** Bliepo zegt niets over snel (BOUWREGELS 6.10).
 - **Hetzelfde foute getal 2 keer:** de eerste zin wordt "Je koos weer 11." of een variant (niet 2 keer dezelfde zin).
@@ -270,6 +270,7 @@ ${VARIANTEN_FOUT(APPEL, "11").map(([naam, z]) => `| ${naam} | ${z.map(kaal).join
 | Begin van de les | ${TEL.begin.join(" / ")} (daarna: ${kaal(TEL.beginKijk)}) |
 | Eerste vraag goed: Bliepo telt na | ${TEL.natellen.join(" / ")} |
 | Na het natellen | ${TEL.natellenKlaar(12, APPEL).map(kaal).join(" / ")} |
+| Na het natellen, als het kind op de pijl tikte | ${TEL.natellenKlaarSnel(12, APPEL).map(kaal).join(" / ")} |
 | 2e fout: we gaan samen tellen | ${TEL.samenHelp.join(" / ")} |
 | Samen tellen: de opdracht | ${TEL.samenTik(APPEL).join(" / ")} |
 | Samen tellen: het hulphandje (aanmoediging) | ${TEL.aanmoedigTikken.join(" / ")} |

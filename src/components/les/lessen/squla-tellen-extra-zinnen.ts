@@ -131,7 +131,8 @@ export const ZIN = {
   /** Het getal staat er 1 keer (was: "En 4. Samen maakten we 4 peren."). */
   maakKlaar: (n: number, f: Fruit) => [`En ${gk(n, f)}! Nu liggen alle ${f.naam} er.`, `En ${gk(n, f)}. Samen hebben we alle ${f.naam} gemaakt.`],
   maakZelf: (n: number, f: Fruit) => [`Kijk, ik maak de rest. Zo komen er ${gk(n, f)} ${f.naam}.`, `Kijk, ik maak het af. Nu liggen er ${gk(n, f)} ${f.naam}.`],
-  lijstHelp: (f: Fruit) => [`Ik zet de rest klaar. Jij maakt de ${f.naam}.`, `De rest leg ik vast neer. De ${f.naam} zijn voor jou.`],
+  /* Met wat het kind nu doet (F16, 15.37; 18 nov 2026): was alleen "De rest leg ik vast neer. De appels zijn voor jou." */
+  lijstHelp: (f: Fruit) => [`Ik zet de rest klaar. Jij maakt de ${f.naam}: tik op de lege vakjes.`, `De rest leg ik vast neer. De ${f.naam} zijn voor jou: tik op de lege vakjes.`],
   /** Stap 10: einde. */
   slot: [`Je hebt fruit geteld en gemaakt, tot wel ${gw(10)}!`, `Wat heb jij veel fruit geteld en gemaakt: tot wel ${gw(10)}!`, `Knap, hoor! Je hebt helemaal tot ${gw(10)} geteld en gemaakt.`],
   kaartTik: ["Tik op de kaart.", "Tik maar op de kaart.", "Kijk, een kaart voor jou! Tik erop."],
@@ -254,6 +255,9 @@ export function maakFout(c: number): FoutV {
 }
 export const foutenMaak = (): Record<string, FoutV> => Object.fromEntries([0, 1, 2, 3, 5, 6, 7, 21].map((c) => [String(c), maakFout(c)]));
 
+/** Na het lijstje voorlezen (hint 1e fout) zegt Bliepo wat het kind doet (F16, 15.37; 18 nov 2026: de hint was alleen het lijstje). */
+const LIJST_HINT = ["Zet in elk vakje het goede fruit.", "Kies een fruit en tik op de vakjes."];
+
 /**
  * Stap 9: het lijstje. Draaiboek §3 D: de tutor noemt welke soort klopt en welke nog niet; de 2e keer andere woorden; de
  * 3e keer het precieze aantal (bij ons is dat de 2e fout: 2 pogingen, 15.11). `tel` = hoeveel van elke soort er staan.
@@ -272,7 +276,7 @@ export function lijstFout(tel: number[]): FoutV {
   const m = regels[eerstMis];
   const ikTel = tel[eerstMis] > 0 ? `Ik tel ${stuks(tel[eerstMis], m.f)}.` : `Ik tel nog geen ${m.f.naam}.`;
   const uitleg = [`${ikTel} Op het lijstje staan er ${gk(m.n, m.f)}.`, `${ikTel} Het moeten er ${gk(m.n, m.f)} zijn.`];
-  return metV({ code: "lijst-soort-mis", soort: "lijst-soort-mis", denkfout: "bij het lijstje klopt minstens 1 soort niet", scherm: "kop (het lijstje) en de vakjes blijven staan; vinkje even uit; Bliepo's scherm 1,5 s rood; na de zin komt het lijstje nog eens, dan is het vinkje weer aan (geen pijl)" }, 0, { eerste, hint: [lijstZin()], uitleg, weerEerste: uitleg, weerUitleg: [] });
+  return metV({ code: "lijst-soort-mis", soort: "lijst-soort-mis", denkfout: "bij het lijstje klopt minstens 1 soort niet", scherm: "kop (het lijstje) en de vakjes blijven staan; vinkje even uit; Bliepo's scherm 1,5 s rood; na de zin komt het lijstje nog eens, dan is het vinkje weer aan (geen pijl)" }, 0, { eerste, hint: LIJST_HINT.map((o) => `${lijstZin()} ${o}`), uitleg, weerEerste: uitleg, weerUitleg: [] });
 }
 
 /** De goede stand van het lijstje: soort per vakje (alle vakjes vol). */

@@ -88,7 +88,8 @@ export const ZIN = {
   nieuwTel: "Het zijn er {7}. Dat is het totaal.",
   /** Stap 12 en 14: zoek 2 delen. */
   zoekKop: { voor: "Zoek 2 delen die samen", n: 7, na: "maken." },
-  zoekOpdracht: "Maak met de plus en de min 2 delen die samen {7} zijn. Tik dan op het vinkje.",
+  /* Zonder "Tik dan op het vinkje.": een zin met "vinkje" laat het lesscherm helemaal weg (15.37; het vinkje legt het lesscherm zelf uit). */
+  zoekOpdracht: "Maak met de plus en de min 2 delen die samen {7} zijn.",
   nogKop: { voor: "Zoek nog een manier om", n: 7, na: "te splitsen." },
   nogOpdracht: "Zoek nog een manier om {7} te splitsen.",
   goedSplits: (a: number, b: number, t: number) => [`Je hebt {${t}} gesplitst in {${a}} en {${b}}.`, `{${a}} en {${b}} zijn samen {${t}}.`, `Dat klopt: {${t}} is {${a}} en {${b}}.`],

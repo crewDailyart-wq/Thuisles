@@ -99,7 +99,11 @@ export const TEL = {
   vraagEerste: "Tel ze en tik op het goede getal.",
   /** Draaiboek §3 A.1 (b): bij de eerste telvraag telt Bliepo hardop na (het kind tikt niet). */
   natellen: ["Ik tel ze hardop voor je. Tel maar mee!", "Kom, ik tel ze hardop. Tel maar mee!", "Laten we ze samen tellen. Ik tel hardop."],
-  natellenKlaar: (n: number, f: Fruit) => [`Zie je? Het zijn er ${gk(n, f)}. Je had het precies goed.`, `Zie je wel? Het zijn er ${gk(n, f)}. Jij had het goed geteld.`, `Kijk, daar heb je het: ${gk(n, f)}. Je zat precies goed.`],
+  /* Het laatste getal zegt Bliepo in deze zin, niet ook nog bij het hardop tellen: zo klinkt het maar 1 keer (18 nov 2026,
+     zoals Rekenmix 1; was "… 11. 12. Zie je? Het zijn er 12."). */
+  natellenKlaar: (n: number, f: Fruit) => [`En ${gk(n, f)}! Je had het precies goed.`, `En de laatste is ${gk(n, f)}. Jij had het goed geteld.`, `En ${gk(n, f)}! Zie je? Je zat precies goed.`],
+  /** Tikte het kind op de pijl (alle nummers staan er meteen, Bliepo telde niet hardop af), dan de oude zinnen. */
+  natellenKlaarSnel: (n: number, f: Fruit) => [`Zie je? Het zijn er ${gk(n, f)}. Je had het precies goed.`, `Zie je wel? Het zijn er ${gk(n, f)}. Jij had het goed geteld.`, `Kijk, daar heb je het: ${gk(n, f)}. Je zat precies goed.`],
   /** Draaiboek §3 A.3: na de 2e keer samen tellen. */
   samenHelp: ["Kom, we tellen ze samen.", "Weet je wat? We tellen ze samen.", "Geeft niks. We tellen ze samen.", "Ik help je even. We tellen ze samen.", "Laten we ze samen tellen en kijken."],
   samenTik: (f: Fruit) => [`Tik op elke ${f.een}. Ik tel mee.`, `Tik elke ${f.een} aan. Ik zeg het getal.`, `Tik op alle ${f.naam}. Ik tel hardop mee.`],
