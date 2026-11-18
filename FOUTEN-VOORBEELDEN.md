@@ -65,3 +65,9 @@ Elke fout die Sara vindt komt hier, met de regel die erbij hoort (BOUWREGELS.md 
 - Oorzaak: de opties `raster` (tegels links), `midden` (midden van het vlak) en `bijOpdracht` (bij de opdracht) gaven per vraag een andere plek.
 - Regel (alle gouden lessen): 1 vaste plek, rechts onder Bliepo's zin (BOUWREGELS 15.32). In `Lesscherm.tsx` negeren gouden lessen die 3 opties.
 - Controle: in elke gouden les moeten alle antwoordknoppen binnen de rechterkolom staan (x > 976 in het lesvlak); nog toe te voegen aan de speelcontrole.
+
+**F13. Gouden les Rekentaal: een witte rand om alle voorwerpen en de tafel, en pannenkoeken die boven de tafel zweven.** (Sara, 18 november 2026)
+- Wat mis was: rond pannenkoeken, bekers, appels enzovoort en rond de tafel, het kleed en de plank zat een duidelijke witte rand. De pannenkoeken stonden boven de tafel in plaats van erop; ook andere voorwerpen stonden aan de rand van het hout.
+- Oorzaak: het speelvlak `squla-rekentaal-gouden-vlak.tsx` zette sinds 12 november een lichte omtrek (`LICHT_RAND`, in code) om elke tekening, zodat de donkerblauwe lijn op de donkere achtergrond te zien bleef. Bij de nieuwe Magnific-plaatjes werd dat een witte rand. De plaatjes zelf hebben geen witte rand (gescand: 216 plaatjes in `public/voorwerpen`, geen enkel plaatje met een lichte randlaag). De pannenkoek stond in het midden van zijn vak, de ondergrond begon precies onder de voeten.
+- Regel: BOUWREGELS 15.33. Geen witte rand of halo om plaatjes; voorwerpen staan OP de ondergrond.
+- Gecontroleerd in de andere gouden lessen: de lichte omtrek bestond alleen in dit ene vlak (1 les); in de andere gouden lessen staat geen witte omtrek om voorwerp-plaatjes in code.

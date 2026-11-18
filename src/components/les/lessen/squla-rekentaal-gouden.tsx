@@ -112,7 +112,7 @@ type Staat = {
 };
 const STAAT = new WeakMap<Lesgids, Staat>();
 
-const LEEG: Omit<RTProps, "beeld"> = { indeling: null, dingen: [], ondergrond: "tafel", zwaar: undefined, geplaatst: [], licht: [], kies: null, hulphand: null };
+const LEEG: Omit<RTProps, "beeld"> = { indeling: null, dingen: [], ondergrond: "tafel", zwaar: undefined, geplaatst: [], licht: [], kies: null, hulphand: null, plaatjes: true };
 
 const st = (l: Lesgids): Staat => {
   let s = STAAT.get(l);
