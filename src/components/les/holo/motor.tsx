@@ -26,7 +26,7 @@ export function useHoloMotor<S>(
   schaal: number,
   maakKlasse: (Phaser: PhaserModule, rustig: boolean) => new () => import("phaser").Scene,
   /** `hoogte`: een hoger canvas dan 720 punten (alleen op een staand scherm; zie `Vlakbasis.staandHoogte`). Zonder: 720. */
-  opties: { invoer?: boolean; hoogte?: number } = {},
+  opties: { invoer?: boolean; hoogte?: number; /** Opt-in: wacht hier eerst op (bijvoorbeeld plaatjes laden) voordat de scène start; mislukt het, dan start hij toch. */ voor?: Promise<unknown> } = {},
 ) {
   const plek = useRef<HTMLDivElement>(null);
   const [scene, setScene] = useState<S | null>(null);
@@ -36,7 +36,7 @@ export function useHoloMotor<S>(
     let spel: import("phaser").Game | null = null;
     let weg = false;
     const rustig = window.matchMedia?.("(prefers-reduced-motion: reduce)").matches ?? false;
-    void laadPhaser().then((Phaser) => {
+    void Promise.all([laadPhaser(), opties.voor?.catch(() => null)]).then(([Phaser]) => {
       if (weg || !plek.current) return;
       /* Scherp tekenen: zoveel echte pixels als het vlak op het scherm groot is (hooguit 2×). */
       const k = Math.max(1, Math.min(2, schaal * (window.devicePixelRatio || 1)));

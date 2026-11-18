@@ -116,7 +116,36 @@ export type HoloTegelProps = {
   hand?: boolean;
   /** Opt-in (gouden extra Plussommen, 17 nov 2026): het hulphandje van Magnific in plaats van het getekende handje. */
   handPlaatje?: boolean;
+  /**
+   * Opt-in (gouden extra Plussommen, 18 nov 2026): elk hokje van een tegel is het Magnific-plaatje van een duidelijk vierkant
+   * (public/voorwerpen/tegels/tegel-N.png, kleur van getal N, dunne donkere rand, ronde nop). De code zet per tegel precies
+   * het juiste aantal hokjes neer; de gloed wordt er één keer overheen gebakken. Mislukt het laden, dan blijft het getekende
+   * hokje staan (reserve).
+   */
+  tegelPlaatje?: boolean;
 };
+
+/* ---------- de Magnific-hokjes (opt-in) ---------- */
+
+const TEGELPLAATJE_URL = (n: number) => `/voorwerpen/tegels/tegel-${n}.png`;
+type Tegelplaatjes = Record<number, HTMLImageElement>;
+let tegelPlaatjesBelofte: Promise<Tegelplaatjes | null> | null = null;
+/** Laadt de 9 hokjes één keer voor de hele pagina; `null` als er één niet laadt. */
+export function laadTegelplaatjes(): Promise<Tegelplaatjes | null> {
+  if (!tegelPlaatjesBelofte) {
+    tegelPlaatjesBelofte = Promise.all(
+      [1, 2, 3, 4, 5, 6, 7, 8, 9].map((n) => {
+        const img = new Image();
+        img.src = TEGELPLAATJE_URL(n);
+        return img.decode().then(
+          () => [n, img] as const,
+          () => null,
+        );
+      }),
+    ).then((rij) => (rij.every((r) => r) ? (Object.fromEntries(rij as [number, HTMLImageElement][]) as Tegelplaatjes) : null));
+  }
+  return tegelPlaatjesBelofte;
+}
 
 /**
  * Een nieuwe tegel bij de stukken, zonder gat: eerst alle even tegels, dan
@@ -172,6 +201,11 @@ function hex(n: number) {
   return TEGELKLEUR[n] ?? "#cccccc";
 }
 
+function tekenHokjePlaatje(c: CanvasRenderingContext2D, x: number, y: number, m: number, img: HTMLImageElement) {
+  const i = 2;
+  c.drawImage(img, x + i, y + i, m - 2 * i, m - 2 * i);
+}
+
 function tekenHokje(c: CanvasRenderingContext2D, x: number, y: number, m: number, kleur: string) {
   const i = 2.5;
   c.save();
@@ -220,7 +254,7 @@ interface TegelScene {
   verbind(melder: (g: Vlakgebeurtenis) => void, aangeraakt: () => void): void;
 }
 
-function maakTegelScene(Phaser: PhaserModule, rustig: boolean) {
+function maakTegelScene(Phaser: PhaserModule, rustig: boolean, plaatjes: { w: Tegelplaatjes | null } = { w: null }) {
   const Basis = holoBasis(Phaser, rustig);
   type Img = import("phaser").GameObjects.Image;
   type Box = import("phaser").GameObjects.Container;
@@ -260,12 +294,15 @@ function maakTegelScene(Phaser: PhaserModule, rustig: boolean) {
         const kl = hex(n);
         const kleur = Phaser.Display.Color.HexStringToColor(kl).color;
         /* één hokje (voor de torens) */
-        this.canvasPlaatje(`hk-${n}`, CEL, CEL, (c) => tekenHokje(c, 0, 0, CEL, kl));
+        /* Opt-in: het Magnific-hokje (alleen voor 1 t/m 9; de 10 en bij niet laden blijft het getekende hokje). */
+        const pl = plaatjes.w?.[n];
+        const tekenEen = (c: CanvasRenderingContext2D, x: number, y: number) => (pl ? tekenHokjePlaatje(c, x, y, CEL, pl) : tekenHokje(c, x, y, CEL, kl));
+        this.canvasPlaatje(`hk-${n}`, CEL, CEL, (c) => tekenEen(c, 0, 0));
         this.bak(`hk-${n}`, `hkg-${n}`, kleur);
         /* een hele tegel (voor de bak en onder de vinger) */
         const h = hoogte(n);
         this.canvasPlaatje(`tg-${n}`, 2 * TEKEN_C, h * TEKEN_C, (c) => {
-          for (const hk of vorm(n)) tekenHokje(c, hk.k * TEKEN_C, (h - 1 - hk.r) * TEKEN_C, TEKEN_C, kl);
+          for (const hk of vorm(n)) tekenEen(c, hk.k * TEKEN_C, (h - 1 - hk.r) * TEKEN_C);
         });
         this.bak(`tg-${n}`, `tgg-${n}`, kleur);
       }
@@ -817,11 +854,20 @@ export function HoloTegelvlak({
   golf = null,
   hand = false,
   handPlaatje = false,
+  tegelPlaatje = false,
   meld,
   schaal,
   metSom,
 }: HoloTegelProps & Vlakbasis) {
-  const { plek, scene } = useHoloMotor<TegelScene>(schaal, maakTegelScene, { invoer: true });
+  const plaatjes = useRef<{ w: Tegelplaatjes | null }>({ w: null });
+  const { plek, scene } = useHoloMotor<TegelScene>(schaal, (P, r) => maakTegelScene(P, r, plaatjes.current), {
+    invoer: true,
+    voor: tegelPlaatje
+      ? laadTegelplaatjes().then((w) => {
+          plaatjes.current.w = w;
+        })
+      : undefined,
+  });
   const boven = !!som || metSom;
   const [handGezien, setHandGezien] = useState(false);
   /* Opt-in (gouden extra Plussommen): bij elke nieuwe aanvraag van het handje (`hand` gaat aan) mag het weer komen; tot het kind
