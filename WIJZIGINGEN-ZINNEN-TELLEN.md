@@ -128,7 +128,7 @@ Voor elke situatie die terugkomt is er een rijtje zinnen. De les kiest er willek
 
 ## Niet gedaan, met reden
 
-- **Zinnen van Synthesis vertaald overnemen:** niet gedaan. BOUWREGELS 15.2 en BLIEPO-KARAKTER.md §9 zeggen: nooit letterlijk, ook niet vertaald. Alle zinnen zijn eigen woorden; alleen de toon (kort, warm, eerst zeggen wat het kind koos) lijkt op Synthesis. Wil Sara dit toch, dan moet die regel eerst aangepast worden (vraag in KEUZES-VOOR-SARA.md).
+- **Zinnen van Synthesis vertaald overnemen:** eerst niet gedaan (oude regel), daarna wel: Sara besloot op 17 november 2026 dat de tekst in het Nederlands overgenomen mag worden. Zie het stuk hieronder.
 - **De vaste rijtjes (lof, "nu is het goed", eindzinnen, groet) herschrijven:** niet gedaan. Die staan in BLIEPO-KARAKTER.md en worden door alle 15 gouden lessen gebruikt; dit is een proef met alleen Tellen. Ze wisselen al zonder herhaling.
 - **Richting noemen bij elke keuze ("te veel", "te weinig"):** niet waar er dan nog maar 1 keuze overblijft. Dan zou de hint het antwoord verklappen (15.17). Daar zegt Bliepo alleen dat het dichtbij is.
 - **"1 voor 1" (cijferafspraak) in plaats van "een voor een":** niet gedaan, want dan staat het getal 1 twee keer achter elkaar. Het is "stuk voor stuk" geworden.
@@ -140,3 +140,25 @@ Voor elke situatie die terugkomt is er een rijtje zinnen. De les kiest er willek
 
 1. **Let extra op de zinnen van de opdracht zelf** (de vraag en de opdracht, niet alleen reacties en hints): helder, kort, juf-Nederlands, geen vage zinnen. Bij Tellen nagelopen: "Hoeveel appels zie je?" en "Tel ze en tik op het goede getal." bleven; in de extra les zijn 8 opdrachtzinnen verbeterd (zie de tabel hierboven: "Tel goed en kies het fruit.", "Maak 4 peren in de vakjes.", "Dit is de laatste opdracht. Kijk, hier is een lijstje." enzovoort).
 2. **Geen disco, feest, dansen of muziek als thema in teksten.** Bij Tellen nagekeken: komt nergens voor.
+
+## Zinnen van Synthesis (Color Count), in het Nederlands (besluit Sara, 17 november 2026)
+
+Alleen de tekst, passend gemaakt voor groep 3. Geen audio, beeld of code. Ze zijn als variant toegevoegd; alleen bij nummer 8 is een zin vervangen.
+
+| Synthesis zegt (vertaald uit INSPIRATIE.md) | Bij ons nu | Waar | Wat er stond |
+|---|---|---|---|
+| "6 rode vierkanten?" + hij denkt dat je er te veel hebt geteld | 14 pruimen? Ik denk dat je er te veel hebt geteld. | gouden: eerste zin, te veel | erbij (nu 6 varianten) |
+| "6 paarse vierkanten?" + er zijn er nog die we niet hebben geteld | 12 pruimen? Je hebt ze nog niet allemaal geteld. | gouden: eerste zin, te weinig | erbij (nu 6 varianten) |
+| Probeer het nog eens; tel de rode vierkanten en tik op het getal | Probeer het nog eens. Tel de appels en tik op het getal. | gouden: hint zonder richting | erbij (nu 5) |
+| Laten we tellen | Laten we ze samen tellen. Ik tel hardop. | gouden: Bliepo telt na bij de 1e vraag | erbij (nu 3) |
+| "Daar heb je het"; je zat er precies goed op | Kijk, daar heb je het: 12. Je zat precies goed. | gouden: na het natellen | erbij (nu 3) |
+| Laten we ze tellen en kijken | Laten we ze samen tellen en kijken. | gouden en extra: 2e keer mis, samen tellen | erbij (nu 5) |
+| "Precies"; 7 paarse vierkanten | Precies, 12 appels. | gouden: zin met het aantal na lof | erbij (nu 9) |
+| Probeer deze eens; van welke kleur tel je er 8? | Probeer deze eens. Van welk fruit tel je er 7? | extra: 2e vraag | VERVANGEN: "Hier ligt ander fruit. Van welk fruit tel je er 7?" (daarvoor: "Dit is een ander rooster. …") |
+| "Dat klopt"; er zijn 8 paarse vierkanten | Dat klopt, er zijn 12 appels. | gouden: zin met het aantal na lof | erbij |
+| "9 rode vierkanten?"; laten we ze tellen | 8 appels? Ik tel er 9. | extra: eerste zin bij fruit kiezen | erbij (nu 5) |
+| Dat zijn er een paar te veel | Je maakte 6 peren. Dat zijn er een paar te veel. | extra: te veel gemaakt (alleen bij 2 of meer te veel) | erbij |
+| "Perfect"; je hebt het hele rooster gevuld | Perfect, je hebt alle vakjes gevuld. | extra: het lijstje goed | erbij (nu 6) |
+| Echt indrukwekkend; je hebt helemaal tot 10 geteld | Knap, hoor! Je hebt helemaal tot 17 geteld. | gouden en extra: slotzin | erbij (nu 3) |
+
+Niet overgenomen: "tik op de kaart om je trofee te halen" (bij ons is er geen trofee), "kies je lievelingskleur" (de Squla-les heeft die stap niet) en de lofwoorden "oké, uitstekend" (lof komt uit het vaste rijtje van alle lessen).

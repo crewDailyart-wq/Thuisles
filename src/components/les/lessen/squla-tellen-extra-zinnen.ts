@@ -89,7 +89,9 @@ export const lijstRegels = (): LijstRegel[] => LIJST.regels.map((r) => ({ soort:
  * nooit 2 keer achter elkaar) en elke situatie die terugkomt in varianten. Een lijst = varianten: de les kiest er 1 met
  * de gedeelde kiezer (nooit-dubbel.ts), nooit 2 keer achter elkaar dezelfde. "Rooster" is "vakjes" geworden
  * (WOORDEN-GROEP3.md). Getallen, antwoorden en betekenis zijn niet veranderd. Oud naast nieuw:
- * WIJZIGINGEN-ZINNEN-TELLEN.md.
+ * WIJZIGINGEN-ZINNEN-TELLEN.md. Een paar zinnen zijn de tekst van Synthesis (Color Count) in het Nederlands (besluit Sara
+ * 17 november 2026, BOUWREGELS 15.2): "Probeer deze eens. Van welk fruit tel je er 7?", "8 appels? Ik tel er 9.",
+ * "Dat zijn er een paar te veel.", "Perfect, je hebt alle vakjes gevuld.", "Je hebt helemaal tot 10 geteld".
  */
 
 export const ZIN = {
@@ -97,7 +99,7 @@ export const ZIN = {
   begin: ["Vandaag tellen we fruit dat door elkaar ligt.", "Er liggen appels, peren, pruimen en citroenen."],
   vraag1: (n: number) => `Van welk fruit zie je er ${gw(n)}?`,
   vraagEerste: "Tel goed en kies het fruit.",
-  vraag2: (n: number) => `Hier ligt ander fruit. Van welk fruit tel je er ${gw(n)}?`,
+  vraag2: (n: number) => `Probeer deze eens. Van welk fruit tel je er ${gw(n)}?`,
   /** Stap 6. */
   vraagTwee: (a: Fruit, b: Fruit) => `Nu tel je de ${a.naam} en de ${b.naam}. Hoeveel zijn het er samen?`,
   /** Stap 7: terugverwijzing naar het eerste deel van de les (draaiboek stap 7). */
@@ -113,7 +115,7 @@ export const ZIN = {
   /** Het lijstje voorlezen (bij de hint na de 1e fout; draaiboek stap 9). */
   lijstVoor: () => lijstZin(),
   /** Samen tellen (2e fout, soort kiezen). */
-  samenHelp: ["Kom, we tellen samen.", "Weet je wat? We tellen samen.", "Geeft niks. We tellen samen.", "Ik help je even. We tellen samen."],
+  samenHelp: ["Kom, we tellen samen.", "Weet je wat? We tellen samen.", "Geeft niks. We tellen samen.", "Ik help je even. We tellen samen.", "Laten we samen tellen en kijken."],
   samenSoort: (f: Fruit) => [`We tellen de ${f.naam}. Tik op elke ${f.een}. Ik tel mee.`, `We tellen de ${f.naam}. Tik elke ${f.een} aan. Ik zeg het getal.`, `Nu de ${f.naam}. Tik op elke ${f.een}. Ik tel hardop mee.`],
   samenTwee: (a: Fruit, b: Fruit) => [`Tik op elke ${a.een} en elke ${b.een}. Ik tel mee.`, `Tik alle ${a.naam} en ${b.naam} aan. Ik zeg het getal.`],
   samenHand: (f: Fruit) => [`Tik op een ${f.een} zonder nummer.`, `Zoek een ${f.een} zonder nummer en tik erop.`, `Welke ${f.een} heeft nog geen nummer? Tik erop.`],
@@ -131,7 +133,7 @@ export const ZIN = {
   maakZelf: (n: number, f: Fruit) => [`Kijk, ik maak de rest. Zo komen er ${gk(n, f)} ${f.naam}.`, `Kijk, ik maak het af. Nu liggen er ${gk(n, f)} ${f.naam}.`],
   lijstHelp: (f: Fruit) => [`Ik zet de rest klaar. Jij maakt de ${f.naam}.`, `De rest leg ik vast neer. De ${f.naam} zijn voor jou.`],
   /** Stap 10: einde. */
-  slot: [`Je hebt fruit geteld en gemaakt, tot wel ${gw(10)}!`, `Wat heb jij veel fruit geteld en gemaakt: tot wel ${gw(10)}!`],
+  slot: [`Je hebt fruit geteld en gemaakt, tot wel ${gw(10)}!`, `Wat heb jij veel fruit geteld en gemaakt: tot wel ${gw(10)}!`, `Knap, hoor! Je hebt helemaal tot ${gw(10)} geteld en gemaakt.`],
   kaartTik: ["Tik op de kaart.", "Tik maar op de kaart.", "Kijk, een kaart voor jou! Tik erop."],
   /** Aanmoediging bij het hulphandje tijdens samen tellen en samen maken (het kind moet tikken; 14.35). */
   aanmoedigTikken: ["Je bent goed bezig.", "Jij kunt dit.", "Het gaat goed zo.", "Probeer het maar.", "Toe maar, je doet het goed."],
@@ -149,7 +151,7 @@ export const TELREACTIE = (n: number, f: Fruit) => rij([`Klopt, er zijn er ${gk(
 export const TELREACTIE_ROBOT = 4;
 export const TELREACTIE_TWEE = (n: number, a: Fruit, b: Fruit) => rij([`Klopt, ${gw(n)} samen.`, `Ja, ${a.naam} en ${b.naam} zijn samen ${gw(n)}.`, `Het zijn er ${gw(n)}.`, `${gw(n)} stuks fruit, precies.`, `Ik heb ze nagekeken: samen ${gw(n)}.`], [4]);
 export const MAAKREACTIE = (n: number, f: Fruit) => rij([`Zo is het goed: ${gk(n, f)} ${f.naam}.`, `Precies, ${gk(n, f)} ${f.naam}.`, `Klopt, ${gk(n, f)} ${f.naam}.`, `Je maakte ${gk(n, f)} ${f.naam}.`, `Ik heb ze nagekeken: ${gk(n, f)} ${f.naam}.`], [4]);
-export const LIJSTREACTIE = rij(["Perfect, alle vakjes zijn vol.", "Het lijstje klopt helemaal.", "Alles staat goed. Elk vakje heeft fruit.", "Precies zoals op het lijstje.", "Ik heb alles nagekeken: het klopt."], [4]);
+export const LIJSTREACTIE = rij(["Perfect, alle vakjes zijn vol.", "Het lijstje klopt helemaal.", "Alles staat goed. Elk vakje heeft fruit.", "Precies zoals op het lijstje.", "Ik heb alles nagekeken: het klopt.", "Perfect, je hebt alle vakjes gevuld."], [4]);
 
 /* ---------- denkfouten (draaiboek Tellen §7; namen voor de voortgang) ---------- */
 
@@ -171,7 +173,7 @@ const SCHERM_SOORT = "knoppen even weg; het gekozen fruit blijft helder en heeft
 const HINT_SOORT = (n: number) => ["Tel ook het andere fruit. Een stipje op het fruit helpt je.", "Tel elk fruit apart. Zet een stipje op wat je al geteld hebt.", `We zoeken het fruit met ${gw(n)}. Tik op het fruit voor een stipje.`];
 /** De uitleg na de 2e fout (uitleg, geen opdracht). */
 const UITLEG_SOORT = ["Als je elk fruit apart telt, weet je het zeker.", "Eerst het ene fruit, dan het andere. Zo sla je niets over.", "Elk fruit apart tellen helpt. Dan vergeet je er geen."];
-const EERSTE_SOORT = (f: Fruit, c: number) => [`Je koos de ${f.naam}. Ik tel er ${gk(c, f)}.`, `${f.naam[0].toUpperCase()}${f.naam.slice(1)}? Daar tel ik er ${gk(c, f)}.`, `Je koos de ${f.naam}. Dat zijn er ${gk(c, f)}.`, `Je tikte op de ${f.naam}. Daar liggen er ${gk(c, f)} van.`];
+const EERSTE_SOORT = (f: Fruit, c: number, n: number) => [`${gw(n)} ${f.naam}? Ik tel er ${gk(c, f)}.`, `Je koos de ${f.naam}. Ik tel er ${gk(c, f)}.`, `${f.naam[0].toUpperCase()}${f.naam.slice(1)}? Daar tel ik er ${gk(c, f)}.`, `Je koos de ${f.naam}. Dat zijn er ${gk(c, f)}.`, `Je tikte op de ${f.naam}. Daar liggen er ${gk(c, f)} van.`];
 const WEER_SOORT_UITLEG = ["Elk fruit tel je apart, stuk voor stuk.", "We tellen elk fruit apart. Zo weten we het zeker."];
 
 /**
@@ -183,7 +185,7 @@ export function soortFout(x: string, v: SoortVraag): FoutV {
   const c = aantalVan(v.rooster.cellen, f);
   const verschil = c - v.n;
   const hint = HINT_SOORT(v.n);
-  const eerste = EERSTE_SOORT(f, c);
+  const eerste = EERSTE_SOORT(f, c, v.n);
   if (verschil === 1)
     return metV({ code: "soort-een-te-veel", soort: "soort-een-te-veel", denkfout: "koos een soort met 1 meer dan gevraagd (telde er 1 te veel)", scherm: SCHERM_SOORT }, v.nr, { eerste, hint, uitleg: UITLEG_SOORT, weerEerste: ["Je koos weer fruit met net te veel.", "Dit is weer fruit met net te veel."], weerUitleg: WEER_SOORT_UITLEG });
   if (verschil === -1)
@@ -236,7 +238,7 @@ export function maakFout(c: number): FoutV {
     });
   if (c > MAAK.n)
     return metV({ code: "te-veel-gemaakt", soort: "te-veel-gemaakt", denkfout: "maakte er te veel", scherm: schermMaak }, 0, {
-      eerste: [`Je maakte ${stuks(c, f)}. Dat zijn er te veel.`, `Ik tel ${stuks(c, f)}. Dat zijn er te veel.`, `Er liggen nu ${stuks(c, f)}. Zo veel hoeven er niet.`],
+      eerste: [`Je maakte ${stuks(c, f)}. Dat zijn er te veel.`, `Ik tel ${stuks(c, f)}. Dat zijn er te veel.`, `Er liggen nu ${stuks(c, f)}. Zo veel hoeven er niet.`, ...(c >= MAAK.n + 2 ? [`Je maakte ${stuks(c, f)}. Dat zijn er een paar te veel.`] : [])],
       hint: ["Tik op een peer om hem weer weg te halen.", "Tik op een peer. Dan gaat hij weer weg."],
       uitleg: ["Een stuk fruit dat je weer aantikt, gaat weg. Het getal in de opdracht zegt hoeveel er komen.", "Het getal in de opdracht zegt hoeveel peren er komen. Een peer die je aantikt, gaat weer weg."],
       weerEerste: ["Je maakte er weer te veel.", "Het zijn er weer te veel."],

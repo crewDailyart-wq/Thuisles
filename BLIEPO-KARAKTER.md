@@ -2,7 +2,7 @@
 
 Gemaakt op 8 november 2026 (derde ronde, besluit Sara: "Lofzinnen komen in BLIEPO-KARAKTER.md"); bijgewerkt in de vierde ronde naar de besluiten over OVERIGE-BOTSINGEN.md punt 1 t/m 14; **uitgebreid in de vijfde ronde (8 november 2026)** tot een grote eigen zinnenlijst, met de belangrijkste regel van Bliepo (§0) en het plan voor de naam hardop (§13). Hoort bij BOUWREGELS.md 3.11, 3.13, 3.17, 5.1, 5.10, 5.11, 6.10 en 15.9. Botst iets met BOUWREGELS.md, dan gaat BOUWREGELS.md voor. De vorige versie staat in `regels-backup-20261108/BLIEPO-KARAKTER-voor-vijfde-ronde.md`.
 
-**Sara mag alle zinnen in dit bestand aanpassen, weghalen of aanvullen.** Alle zinnen zijn in eigen woorden geschreven. Synthesis was alleen inspiratie voor het **soort** zin; geen enkele zin komt van Synthesis of van Squla, ook niet vertaald.
+**Sara mag alle zinnen in dit bestand aanpassen, weghalen of aanvullen.** Alle zinnen zijn in eigen woorden geschreven. Synthesis was alleen inspiratie voor het **soort** zin; geen enkele zin komt van Synthesis of van Squla, ook niet vertaald. *(Sinds 17 november 2026 mag de tekst van Synthesis-zinnen wel in het Nederlands worden overgenomen: besluit Sara, zie §9 en BOUWREGELS 15.2. De zinnen in dit bestand zijn daar niet door veranderd.)*
 
 **Geldt voor lessen die we vanaf nu bouwen** (eerst de gouden klokles). Bestaande lessen houden hun zinnen tot Sara akkoord geeft.
 
@@ -348,7 +348,7 @@ Voorbeeld (gouden klokles, staat in FOUTTABEL-squla-klok-gouden.md): klok op 3 u
 - "Dat heb je goed gezien" alleen bij kijkvragen; "Volgende keer gaat het nog beter" alleen na veel fouten.
 - Geen moeilijke woorden of ruimtetaal (3.13), geen "groep" of "soort ding" voor plaatjes (14.33).
 - Geen mensen of namen van mensen ("Sam en Noor" wordt "jij", 1.1). De naam van het kind zelf mag wel (§3.3).
-- Geen zinnen die letterlijk van Synthesis of Squla komen, ook niet vertaald (11.5, 15.2).
+- Geen zinnen die letterlijk van Squla komen. **Aangepast (besluit Sara, 17 november 2026; BOUWREGELS 15.2):** de tekst van Synthesis-zinnen mag in het Nederlands worden overgenomen en aangepast aan groep 3; audio, beelden en code van Synthesis niet. *(Was: "Geen zinnen die letterlijk van Synthesis of Squla komen, ook niet vertaald (11.5, 15.2).")*
 
 ---
 

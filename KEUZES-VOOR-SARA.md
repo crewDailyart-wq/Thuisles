@@ -2092,9 +2092,9 @@ http://localhost:3000/voorbeeld/les/squla-tellen-fruit-1-gouden-extra?naam=Testk
 
 **Graag een besluit (ja of nee):**
 1. Zijn de nieuwe zinnen goed zo? Dan kunnen de andere gouden lessen dezelfde aanpak krijgen (elke les apart, met jouw ja).
-2. Je schreef dat zinnen van Synthesis vertaald overgenomen mogen worden. BOUWREGELS 15.2 en BLIEPO-KARAKTER.md zeggen:
-   nooit, ook niet vertaald. Ik heb daarom alles in eigen woorden geschreven. Moet de regel aangepast worden? Advies: nee,
-   eigen woorden werkt goed.
+2. **BESLOTEN (Sara, 17 november 2026):** de tekst van Synthesis-zinnen mag in het Nederlands worden overgenomen.
+   BOUWREGELS 15.2 en BLIEPO-KARAKTER.md §9 zijn aangepast. In Tellen zijn 12 zinnen van Synthesis (Color Count)
+   verwerkt, zie WIJZIGINGEN-ZINNEN-TELLEN.md onderaan. Geen vraag meer.
 3. De vaste rijtjes (lof, "nu is het goed", eindzinnen) zijn niet veranderd: alle 15 gouden lessen gebruiken ze. Wil je
    dat ik die ook naloop? Advies: ja, maar apart.
 4. De Rekenmix-lessen gebruiken nog de oude telzinnen ("Laten we ze samen natellen.", "12. Samen telden we 12 appels.").
