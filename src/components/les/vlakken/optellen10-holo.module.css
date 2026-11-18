@@ -204,3 +204,14 @@
     animation-duration: 4s;
   }
 }
+
+/* Het Magnific-hulphandje (opt-in, gouden extra Plussommen): zelfde beweging als .hand, de vingertop staat op (--van, --naar). */
+.handPlaatje {
+  animation: handje 2.2s ease-in-out infinite;
+}
+/* In de reserve (het getekende handje) geeft .hand de maat; dit is alleen de beweging. */
+@media (prefers-reduced-motion: reduce) {
+  .handPlaatje {
+    animation-duration: 4s;
+  }
+}

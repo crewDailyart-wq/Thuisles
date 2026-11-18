@@ -23,6 +23,7 @@
 import type { Vlakbasis } from "../soort";
 import { SqulaMinVlak, type MinVlakProps } from "./squla-minsommen-vlak";
 import s from "./squla-minsommen-gouden.module.css";
+import { HulphandDom } from "../holo/hulphand-dom";
 
 export type Punt = { x: number; y: number };
 export type KaleSom = {
@@ -135,7 +136,7 @@ export function GoudenMinVlak({ kaleSom = null, machineRondje = false, weg = nul
           );
         })}
       {hand && (
-        <div key={hand.sleutel} className={`${s.hand} ${s.pak}`} style={{ left: hand.plek.x, top: hand.plek.y }} aria-hidden data-hulphand="">
+        <HulphandDom key={hand.sleutel} left={hand.plek.x} top={hand.plek.y} animatie={s.pak} handKlasse={s.hand} reserve={
           <svg viewBox="0 0 90 120" className={s.handTekening}>
             <g>
               <rect x="34" y="6" width="20" height="62" rx="10" />
@@ -146,7 +147,7 @@ export function GoudenMinVlak({ kaleSom = null, machineRondje = false, weg = nul
             </g>
             <path d="M54 66v12M66 70v14" className={s.lijn} />
           </svg>
-        </div>
+        } />
       )}
     </div>
   );

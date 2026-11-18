@@ -336,6 +336,10 @@ async function speel(P, o = {}) {
           const h = await P.ev(`!!document.querySelector("[data-hulphand]")`);
           zie(`${o.naam}: hulphandje na ${o.opdrachtWacht} ms stilte bij ${taak.soort}: ${h ? "ja" : "nee"}`);
           if (!h) fout(`geen hulphandje bij de opdracht ${taak.soort} na lange stilte`);
+          if (h && FOTO && process.env.HANDFOTO) {
+            await wacht(900);
+            await P.foto(`hand-${o.naam}-${(globalThis.__hf = (globalThis.__hf ?? 0) + 1)}`.replace(/[^a-zA-Z0-9-]+/g, "_"));
+          }
         }
       }
       const doel = await P.ev(`window.__phaser?.antwoord ?? null`);

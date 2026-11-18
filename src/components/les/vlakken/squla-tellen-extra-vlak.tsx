@@ -24,6 +24,7 @@ import type { Vlakbasis } from "../soort";
 import { voorwerpUrl } from "../voorwerpen";
 import { KLEUR, VASTE_KLEUR, type Soort } from "./squla-tellen-tekenen";
 import s from "./squla-tellen-extra.module.css";
+import { HulphandDom } from "../holo/hulphand-dom";
 
 export type ExtraCel = Soort | null;
 export type LijstRegel = { soort: Soort; n: number };
@@ -164,7 +165,7 @@ export function TelExtraVlak({ id, kolommen, cellen, nummers = [], dof = [], sti
         })}
       </div>
       {plekH && (
-        <div key={`hand-${hand}`} className={s.hand} style={{ left: plekH.x + 18, top: plekH.y + 14 }} aria-hidden data-hulphand="">
+        <HulphandDom key={`hand-${hand}`} left={plekH.x + 18} top={plekH.y + 14} animatie={s.wipPlaatje} handKlasse={s.hand} reserve={
           <svg viewBox="0 0 90 120" className={s.handTekening}>
             <g>
               <rect x="34" y="6" width="20" height="62" rx="10" />
@@ -174,7 +175,7 @@ export function TelExtraVlak({ id, kolommen, cellen, nummers = [], dof = [], sti
               <rect x="8" y="66" width="18" height="30" rx="9" />
             </g>
           </svg>
-        </div>
+        } />
       )}
     </div>
   );

@@ -39,6 +39,7 @@ import { getalkleur, hoogte, stapel, TEGELKLEUR, vorm, type Hokje } from "../teg
 import { holoBasis, TX, VLAK_B, VLAK_H, type PhaserModule } from "../holo/basis";
 import { HOLO_CANVAS, useHoloMotor } from "../holo/motor";
 import s from "./optellen10-holo.module.css";
+import { HulphandDom } from "../holo/hulphand-dom";
 
 /* ---------- maten (punten van het vlak, 980 × 720) ---------- */
 
@@ -113,6 +114,8 @@ export type HoloTegelProps = {
   golf?: { toren: number; nr: number } | null;
   /** Het handje dat laat zien hoe je een tegel naar het rooster sleept. */
   hand?: boolean;
+  /** Opt-in (gouden extra Plussommen, 17 nov 2026): het hulphandje van Magnific in plaats van het getekende handje. */
+  handPlaatje?: boolean;
 };
 
 /**
@@ -813,6 +816,7 @@ export function HoloTegelvlak({
   draai = null,
   golf = null,
   hand = false,
+  handPlaatje = false,
   meld,
   schaal,
   metSom,
@@ -820,6 +824,11 @@ export function HoloTegelvlak({
   const { plek, scene } = useHoloMotor<TegelScene>(schaal, maakTegelScene, { invoer: true });
   const boven = !!som || metSom;
   const [handGezien, setHandGezien] = useState(false);
+  /* Opt-in (gouden extra Plussommen): bij elke nieuwe aanvraag van het handje (`hand` gaat aan) mag het weer komen; tot het kind
+     de volgende tegel aanraakt. Zonder dit bleef het handje na de eerste aanraking in de hele les weg. */
+  useEffect(() => {
+    if (handPlaatje && hand) setHandGezien(false);
+  }, [handPlaatje, hand]);
   const meldRef = useRef(meld);
   useEffect(() => {
     meldRef.current = meld;
@@ -907,7 +916,28 @@ export function HoloTegelvlak({
         </button>
       )}
 
-      {hand && !handGezien && handStijl && (
+      {hand && !handGezien && handStijl && handPlaatje && (
+        <HulphandDom
+          left={0}
+          top={0}
+          animatie={s.handPlaatje}
+          versch={{ x: 50, y: 30 }}
+          handKlasse={s.hand}
+          stijl={{ ...handStijl, transformOrigin: "14% 5%" }}
+          reserve={
+            <svg style={{ width: "100%", height: "100%" }} viewBox="0 0 48 48" aria-hidden>
+              <path
+                d="M18 22V9.5a3 3 0 0 1 6 0V20l1-.2V17a3 3 0 0 1 6 0v3.5a3 3 0 0 1 5.5 1.6v2.7a3 3 0 0 1 5 2.2V33c0 7-5 12-12 12h-3c-4 0-6.5-1.7-9-5l-6-8a3.1 3.1 0 0 1 4.6-4.1L18 30z"
+                fill="#ffffff"
+                stroke="#1b2233"
+                strokeWidth="2"
+                strokeLinejoin="round"
+              />
+            </svg>
+          }
+        />
+      )}
+      {hand && !handGezien && handStijl && !handPlaatje && (
         <svg className={s.hand} style={handStijl} viewBox="0 0 48 48" aria-hidden>
           <path
             d="M18 22V9.5a3 3 0 0 1 6 0V20l1-.2V17a3 3 0 0 1 6 0v3.5a3 3 0 0 1 5.5 1.6v2.7a3 3 0 0 1 5 2.2V33c0 7-5 12-12 12h-3c-4 0-6.5-1.7-9-5l-6-8a3.1 3.1 0 0 1 4.6-4.1L18 30z"

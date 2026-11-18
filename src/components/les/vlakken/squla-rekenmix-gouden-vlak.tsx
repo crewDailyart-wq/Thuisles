@@ -19,6 +19,7 @@
 import { useEffect, useMemo, useRef } from "react";
 import type { Vlakbasis } from "../soort";
 import { holoBasis, TX, type PhaserModule } from "../holo/basis";
+import { HULPHAND_ANKER, HULPHAND_SCHAAL, laadHulphand } from "../holo/hulphand";
 import { HOLO_CANVAS, useHoloMotor } from "../holo/motor";
 import { LABELKLEUR, RM_MAAT, tekenDing } from "./squla-rekenmix-tekenen";
 import s from "./squla-tellen-gouden.module.css";
@@ -94,6 +95,7 @@ function maakScene(Phaser: PhaserModule, rustig: boolean) {
     ind: Ind | null = null;
     hand!: Img;
     handI: number | null = null;
+    nieuweHand = false;
     wachtrij: string[] = [];
 
     constructor() {
@@ -136,6 +138,18 @@ function maakScene(Phaser: PhaserModule, rustig: boolean) {
         c.stroke();
       });
       this.hand = this.plaats("rmg-hand", 0, 0).setOrigin(0.48, 0.03).setVisible(false).setDepth(10);
+      /* Het Magnific-hulphandje (17 nov 2026): zodra het plaatje geladen is, vervangt het de getekende hand (die blijft als reserve). */
+      void laadHulphand().then((img) => {
+        if (!img || !this.sys?.isActive()) return;
+        if (!this.textures.exists("rmg-hand-magnific")) this.textures.addImage("rmg-hand-magnific", img);
+        this.nieuweHand = true;
+        this.hand.setTexture("rmg-hand-magnific").setOrigin(HULPHAND_ANKER.x, HULPHAND_ANKER.y);
+        if (this.handI != null) {
+          const i = this.handI;
+          this.handI = null;
+          this.zetHand(i);
+        }
+      });
       /* Plaatjes die al gevraagd waren voor de scène klaar was, verspreid tekenen (1 per 2 beeldjes; geleerd bij Rekentaal). */
       this.bakStap();
     }
@@ -215,9 +229,10 @@ function maakScene(Phaser: PhaserModule, rustig: boolean) {
         return;
       }
       const tip = { x: pl.x + pl.m * 0.26, y: pl.y + pl.m * 0.3 };
-      const hoek = -0.65;
-      const stap = { x: -Math.sin(hoek) * 8, y: Math.cos(hoek) * 8 };
-      this.hand.setScale(0.55 / TX).setRotation(hoek).setPosition(tip.x, tip.y).setAlpha(1).setVisible(true);
+      /* De Magnific-hand wijst zelf al schuin omhoog naar links (de vingertop is het ankerpunt): geen draaiing nodig. */
+      const hoek = this.nieuweHand ? 0 : -0.65;
+      const stap = this.nieuweHand ? { x: 5, y: 5 } : { x: -Math.sin(hoek) * 8, y: Math.cos(hoek) * 8 };
+      this.hand.setScale(this.nieuweHand ? HULPHAND_SCHAAL : 0.55 / TX).setRotation(hoek).setPosition(tip.x, tip.y).setAlpha(1).setVisible(true);
       if (this.rustig) return;
       this.hand.setAlpha(0);
       this.tweens.add({ targets: this.hand, alpha: 1, duration: 300 });

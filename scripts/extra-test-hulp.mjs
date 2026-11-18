@@ -209,6 +209,7 @@ export async function speel(P, o = {}) {
       uit.stil = `hulphandje na ${Math.round((Date.now() - t0) / 100) / 10} s stilte: ${h ? "ja" : "NEE"}`;
       if (!h) uit.fouten.push("geen hulphandje na lange stilte bij een opdracht");
       await wacht(450); /* het handje verschijnt zacht (17 nov): even wachten voor de schermfoto */
+      console.log("   HANDDOM", await P.ev(`(() => { const e = document.querySelector("[data-hulphand]"); if (!e) return "geen element;  svg48=" + document.querySelectorAll("svg[viewBox='0 0 48 48']").length + " tegelsextra=" + document.querySelectorAll("[data-tegels-extra]").length + " handstijl=" + [...document.querySelectorAll("[data-tegels-extra] *")].filter((x) => (x.getAttribute("style") || "").includes("--van-x")).length; const r = e.getBoundingClientRect(); const c = getComputedStyle(e); return JSON.stringify({ r: [r.left, r.top, r.width, r.height].map(Math.round), op: c.opacity, anim: c.animationName, z: c.zIndex, img: !!e.querySelector("img"), tr: c.transform }); })()`));
       await P.foto("hulphandje");
       stilGedaan = true;
       continue;

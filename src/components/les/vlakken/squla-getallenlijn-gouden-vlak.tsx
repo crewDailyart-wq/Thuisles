@@ -31,6 +31,7 @@ import { holoBasis, TX, type PhaserModule } from "../holo/basis";
 import { HOLO_CANVAS, useHoloMotor } from "../holo/motor";
 import { maakPlaatjes } from "./squla-getallenlijn-teken";
 import s from "./squla-getallenlijn-gouden.module.css";
+import { HulphandDom } from "../holo/hulphand-dom";
 
 export type Punt = { x: number; y: number };
 export type GLWezen = "raketje" | "ufo" | "satelliet";
@@ -657,14 +658,15 @@ export function GetallenlijnGoudenVlak({ beeld, raketje = null, bogen = [], extr
           );
         })}
       {hulphand && (
-        <div
+        <HulphandDom
           key={hulphand.sleutel}
-          className={`${s.hand} ${hulphand.naar ? s.sleepGebaar : s.tikGebaar}`}
-          style={{ left: hulphand.plek.x, top: hulphand.plek.y, ...(hulphand.naar ? ({ "--dx": `${hulphand.naar.x - hulphand.plek.x}px`, "--dy": `${hulphand.naar.y - hulphand.plek.y}px` } as CSSProperties) : {}) }}
-          aria-hidden
-          data-hulphand=""
-        >
-          <svg viewBox="0 0 90 120" className={s.handTekening}>
+          left={hulphand.plek.x}
+          top={hulphand.plek.y}
+          animatie={hulphand.naar ? s.sleepGebaar : s.tikGebaar}
+          handKlasse={s.hand}
+          stijl={hulphand.naar ? ({ "--dx": `${hulphand.naar.x - hulphand.plek.x}px`, "--dy": `${hulphand.naar.y - hulphand.plek.y}px` } as CSSProperties) : undefined}
+          reserve={
+            <svg viewBox="0 0 90 120" className={s.handTekening}>
             <g>
               <rect x="34" y="6" width="20" height="62" rx="10" />
               <rect x="16" y="52" width="60" height="56" rx="18" />
@@ -674,7 +676,8 @@ export function GetallenlijnGoudenVlak({ beeld, raketje = null, bogen = [], extr
             </g>
             <path d="M54 66v12M66 70v14" className={s.lijn} />
           </svg>
-        </div>
+          }
+        />
       )}
     </div>
   );

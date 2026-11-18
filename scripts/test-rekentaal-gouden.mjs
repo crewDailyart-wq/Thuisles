@@ -303,6 +303,10 @@ async function handTijd(P, o, wat) {
   const zin = [...l].reverse().find((x) => x.wat === "opdrachtzin");
   zie(`${o.naam}: hulphandje bij ${wat}: ${h ? `ja, ${Date.now() - t0 + (o.opdrachtWacht ?? 0)} ms na het begin van de opdracht` : "nee"}${zin ? ` (zin: "${zin.zin.slice(0, 40)}")` : ""}`);
   if (!h) fout(`geen hulphandje bij ${wat} na lange stilte`);
+  if (h && FOTO && process.env.HANDFOTO) {
+    await wacht(900);
+    await P.foto(`hand-${o.naam}-${(globalThis.__hf = (globalThis.__hf ?? 0) + 1)}`.replace(/[^a-zA-Z0-9-]+/g, "_"));
+  }
 }
 
 /** De naam van een voorwerp bij een id ("g" → "de grote pannenkoek"), uit de taak van de les. */
@@ -396,6 +400,10 @@ async function speel(P, o = {}) {
         }
         zie(`${o.naam}: hulphandje bij op volgorde (${taak.vraag}): ${h ? `ja, ${Date.now() - t0 + o.opdrachtWacht} ms na het begin van de opdracht` : "nee"}`);
         if (!h) fout(`geen hulphandje bij op volgorde na lange stilte (${taak.vraag})`);
+        if (h && FOTO && process.env.HANDFOTO) {
+          await wacht(900);
+          await P.foto(`hand-${o.naam}-${(globalThis.__hf = (globalThis.__hf ?? 0) + 1)}`.replace(/[^a-zA-Z0-9-]+/g, "_"));
+        }
       }
       await zonderHand();
       await zone();

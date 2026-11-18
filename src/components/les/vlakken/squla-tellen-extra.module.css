@@ -239,3 +239,22 @@
     animation-duration: 1ms;
   }
 }
+
+/* Beweging van het Magnific-hulphandje (geen draaiing: het plaatje wijst al schuin omhoog naar links). */
+.wipPlaatje {
+  animation: handwipPlaatje 1.05s ease-in-out infinite;
+}
+@keyframes handwipPlaatje {
+  0%,
+  100% {
+    transform: translate(0, 0);
+  }
+  50% {
+    transform: translate(-6px, 8px);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .wipPlaatje {
+    animation-duration: 1ms;
+  }
+}

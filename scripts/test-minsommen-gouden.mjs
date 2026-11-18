@@ -287,6 +287,10 @@ async function speel(P, o = {}) {
           const h = await P.ev(`!!document.querySelector("[data-hulphand]")`);
           zie(`${o.naam}: hulphandje na ${o.opdrachtWacht} ms stilte bij 'tik op de plus': ${h ? "ja" : "nee"}`);
           if (!h) fout("geen hulphandje bij de plusknop na lange stilte");
+          if (h && FOTO && process.env.HANDFOTO) {
+            await wacht(900);
+            await P.foto(`hand-${o.naam}-${(globalThis.__hf = (globalThis.__hf ?? 0) + 1)}`.replace(/[^a-zA-Z0-9-]+/g, "_"));
+          }
         }
       }
       const p = await P.ev(`(() => { const b = document.querySelector('[data-ding="plus"]:not(:disabled)'); if (!b) return null; const r = b.getBoundingClientRect(); return { x: r.left + r.width / 2, y: r.top + r.height / 2 }; })()`);
@@ -305,6 +309,10 @@ async function speel(P, o = {}) {
           const h = await P.ev(`!!document.querySelector("[data-hulphand]")`);
           zie(`${o.naam}: hulphandje na ${o.opdrachtWacht} ms stilte bij 'haal weg': ${h ? "ja" : "nee"}`);
           if (!h) fout("geen hulphandje bij de opdracht na lange stilte");
+          if (h && FOTO && process.env.HANDFOTO) {
+            await wacht(900);
+            await P.foto(`hand-${o.naam}-${(globalThis.__hf = (globalThis.__hf ?? 0) + 1)}`.replace(/[^a-zA-Z0-9-]+/g, "_"));
+          }
         }
       }
       const p = await P.ev(`(() => { const b = document.querySelector('[data-ding^="weg-"]'); if (!b) return null; const r = b.getBoundingClientRect(); return { x: r.left + r.width / 2, y: r.top + r.height / 2 }; })()`);

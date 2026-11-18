@@ -23,6 +23,7 @@ import { useEffect, useRef, useState } from "react";
 import type { Vlakbasis } from "../soort";
 import { getalkleur } from "../tegels";
 import s from "./squla-splitsen-extra.module.css";
+import { HulphandDom } from "../holo/hulphand-dom";
 
 export type Knop = "min0" | "plus0" | "min1" | "plus1";
 export type Ring = "deel0" | "deel1" | "totaal" | Knop | null;
@@ -157,7 +158,7 @@ export function SplitsExtraVlak({ id, delen, totaal = null, actief = [], ring = 
         </div>
       )}
       {h && (
-        <div key={`hand-${hand}`} className={s.hand} style={{ left: h.x + 14, top: h.y + 12 }} aria-hidden data-hulphand="">
+        <HulphandDom key={`hand-${hand}`} left={h.x + 14} top={h.y + 12} animatie={s.wipPlaatje} handKlasse={s.hand} reserve={
           <svg viewBox="0 0 90 120" className={s.handTekening}>
             <g>
               <rect x="34" y="6" width="20" height="62" rx="10" />
@@ -167,7 +168,7 @@ export function SplitsExtraVlak({ id, delen, totaal = null, actief = [], ring = 
               <rect x="8" y="66" width="18" height="30" rx="9" />
             </g>
           </svg>
-        </div>
+        } />
       )}
     </div>
   );

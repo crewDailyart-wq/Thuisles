@@ -17,6 +17,7 @@
 import type { Vlakbasis } from "../soort";
 import { SqulaSplitsVlak, type SplitsProps } from "./squla-splitsen-vlak";
 import s from "./squla-splitsen-gouden.module.css";
+import { HulphandDom } from "../holo/hulphand-dom";
 
 export type Punt = { x: number; y: number };
 /** Het hulphandje: de vingertop begint bij `van` (punten van het vlak, 980 × 720) en schuift naar `naar`. */
@@ -37,14 +38,16 @@ export function GoudenSplitsVlak({ hand = null, ...rest }: GoudenSplitsProps & V
     <div className={s.wortel} style={{ transform: `scale(${KLEINER})`, transformOrigin: "0 50%" }} data-splitsen-gouden="">
       <SqulaSplitsVlak {...rest} />
       {hand && (
-        <div
+        <HulphandDom
           key={hand.sleutel}
-          className={`${s.hand} ${hand.naar ? s.sleep : s.pak}`}
-          style={{ left: hand.van.x, top: hand.van.y, ["--dx" as string]: `${hand.naar ? hand.naar.x - hand.van.x : 0}px`, ["--dy" as string]: `${hand.naar ? hand.naar.y - hand.van.y : 0}px` }}
-          aria-hidden
-          data-hulphand=""
-        >
-          <svg viewBox="0 0 90 120" className={s.handTekening}>
+          left={hand.van.x}
+          top={hand.van.y}
+          animatie={hand.naar ? s.sleep : s.pak}
+          handKlasse={s.hand}
+          versch={{ x: 22, y: 24 }}
+          stijl={{ ["--dx" as string]: `${hand.naar ? hand.naar.x - hand.van.x : 0}px`, ["--dy" as string]: `${hand.naar ? hand.naar.y - hand.van.y : 0}px` }}
+          reserve={
+            <svg viewBox="0 0 90 120" className={s.handTekening}>
             <g>
               <rect x="34" y="6" width="20" height="62" rx="10" />
               <rect x="16" y="52" width="60" height="56" rx="18" />
@@ -54,7 +57,8 @@ export function GoudenSplitsVlak({ hand = null, ...rest }: GoudenSplitsProps & V
             </g>
             <path d="M54 66v12M66 70v14" className={s.lijn} />
           </svg>
-        </div>
+          }
+        />
       )}
     </div>
   );
