@@ -64,21 +64,30 @@ export type Bron = (naam: string) => HTMLImageElement | null;
  */
 export const RT_PLAATJES = [
   "rt-pannenkoek", "rt-beker", "rt-mand", "rt-appel", "rt-meloen", "rt-aardbei", "rt-zak", "rt-glas-leeg", "rt-glas-half",
-  "rt-glas-vol", "rt-brood-kort", "rt-brood-middel", "rt-brood-lang", "rt-spaghetti-1", "rt-tafel-rij",
+  "rt-glas-vol", "rt-brood-kort", "rt-brood-middel", "rt-brood-lang", "rt-spaghetti-330", "rt-spaghetti-400", "rt-spaghetti-600", "rt-spaghetti-640", "rt-tafel-rij",
   "rt-tafel-vlak", "rt-kleed-rij", "rt-kleed-vlak", "rt-weegschaal-recht", "rt-weegschaal-links", "rt-plek", "rt-streep",
 ] as const;
 /** Breed gedeeld door hoog van elk plaatje (de plaatjes zijn nooit opgerekt: alleen gelijkmatig geschaald). */
 const RATIO: Record<string, number> = {
-  "rt-brood-kort": 4.03, "rt-brood-middel": 7.0, "rt-brood-lang": 10.43, "rt-spaghetti-1": 9.88,
+  "rt-brood-kort": 4.03, "rt-brood-middel": 7.0, "rt-brood-lang": 10.43, "rt-spaghetti-330": 9.74, "rt-spaghetti-400": 11.92, "rt-spaghetti-600": 17.53, "rt-spaghetti-640": 18.09,
   "rt-tafel-rij": 5.11, "rt-tafel-vlak": 2.44, "rt-kleed-rij": 4.13, "rt-kleed-vlak": 1.88, "rt-weegschaal": 1700 / 1265,
 };
 /** Welk plaatje bij welke lengte: gelijke dikte zoveel mogelijk (korte broodjes uit het korte plaatje, enzovoort). */
 function broodNaam(l: number) {
   return l <= 330 ? "rt-brood-kort" : l <= 540 ? "rt-brood-middel" : "rt-brood-lang";
 }
-function spaNaam() {
-  return "rt-spaghetti-1";
+/** Per lengte een eigen heel plaatje (gelijke dikte): 330, 400, 600 en 640 punten lang. */
+function spaNaam(l: number) {
+  return l <= 365 ? "rt-spaghetti-330" : l <= 500 ? "rt-spaghetti-400" : l <= 620 ? "rt-spaghetti-600" : "rt-spaghetti-640";
 }
+/** De kleur van de zachte hologram-gloed per plaatje (subtiel, bij het voorwerp passend). */
+const GLOED: Record<string, number> = {
+  "rt-pannenkoek": 0xffd27a, "rt-beker": 0xff8f85, "rt-mand": 0xffc98a, "rt-appel": 0xff8f85, "rt-meloen": 0x8fe6a0, "rt-aardbei": 0xff8f85,
+  "rt-zak": 0xb8e4ff, "rt-glas-leeg": 0x9fe3ff, "rt-glas-half": 0x9fe3ff, "rt-glas-vol": 0x9fe3ff, "rt-brood-kort": 0xffc98a,
+  "rt-brood-middel": 0xffc98a, "rt-brood-lang": 0xffc98a, "rt-spaghetti-330": 0xffe08a, "rt-spaghetti-400": 0xffe08a,
+  "rt-spaghetti-600": 0xffe08a, "rt-spaghetti-640": 0xffe08a, "rt-tafel-rij": 0xffd9a0, "rt-tafel-vlak": 0xffd9a0, "rt-kleed-rij": 0xffa8a8,
+  "rt-kleed-vlak": 0xffa8a8, "rt-weegschaal": 0x9fe8ff, "rt-plek": 0xffc98a, "rt-streep": 0xffe08a,
+};
 function glasNaam(vul: number) {
   return vul >= 0.75 ? "rt-glas-vol" : vul > 0.25 ? "rt-glas-half" : "rt-glas-leeg";
 }
@@ -88,7 +97,7 @@ const PLAAT_VAN: Record<Exclude<RekenDing["soort"], "glas" | "broodje" | "sliert
 export function plaatNaam(d: RekenDing): string {
   if (d.soort === "glas") return glasNaam(d.vul ?? 0);
   if (d.soort === "broodje") return broodNaam(d.lengte ?? 300);
-  if (d.soort === "sliert") return spaNaam();
+  if (d.soort === "sliert") return spaNaam(d.lengte ?? 300);
   return PLAAT_VAN[d.soort];
 }
 
@@ -122,7 +131,7 @@ export function maten(d: RekenDing): { b: number; h: number } {
     }
     case "sliert": {
       const l = d.lengte ?? 300;
-      return { b: l, h: l / RATIO[spaNaam()] };
+      return { b: l, h: l / RATIO[spaNaam(l)] };
     }
   }
 }
@@ -513,7 +522,7 @@ function maakScene(Phaser: PhaserModule, rustig: boolean, plaatjesAan = false) {
           c.imageSmoothingQuality = "high";
           c.drawImage(img, (b - w) / 2, h - hh, w, hh);
         });
-        return sl;
+        return this.gloedPlaatje(sl, plaatNaam(d));
       }
       const sl = `rt-${d.soort}-${Math.round(b)}-${Math.round(h)}-${d.vul ?? ""}`;
       const vak = tekenVak(d);
@@ -630,6 +639,13 @@ function maakScene(Phaser: PhaserModule, rustig: boolean, plaatjesAan = false) {
     weegBeelden: { recht: Img; scheef: Img } | null = null;
     weegP = 0;
 
+    /** De zachte hologram-gloed van Synthesis, 1 keer in het plaatje gebakken (nooit per beeld uitrekenen); geen witte rand. */
+    gloedPlaatje(sl: string, naam: string): string {
+      const doel = `${sl}-g`;
+      this.bak(sl, doel, GLOED[naam] ?? 0x9fe3ff);
+      return doel;
+    }
+
     heelGrondPlaatje(naam: string, b: number): string {
       const sl = `rtg-${naam}-${Math.round(b)}`;
       const img = this.bron(naam)!;
@@ -638,7 +654,7 @@ function maakScene(Phaser: PhaserModule, rustig: boolean, plaatjesAan = false) {
         c.imageSmoothingQuality = "high";
         c.drawImage(img, 0, 0, b, h);
       });
-      return sl;
+      return this.gloedPlaatje(sl, naam);
     }
 
     /** Een ondergrond neerzetten (x = linkerkant, y = bovenkant). Geeft de hoogte terug. */
@@ -664,6 +680,7 @@ function maakScene(Phaser: PhaserModule, rustig: boolean, plaatjesAan = false) {
           c.imageSmoothingQuality = "high";
           c.drawImage(img, 0, 0, W_B, W_H);
         });
+        this.gloedPlaatje(sl, "rt-weegschaal");
       }
     }
 
@@ -686,7 +703,7 @@ function maakScene(Phaser: PhaserModule, rustig: boolean, plaatjesAan = false) {
           c.imageSmoothingQuality = "high";
           c.drawImage(img, 0, 0, sb, sh);
         });
-        const streep = this.plaats(sl, 110, (ys[0] + ys[ys.length - 1]) / 2).setDepth(1);
+        const streep = this.plaats(this.gloedPlaatje(sl, "rt-streep"), 110, (ys[0] + ys[ys.length - 1]) / 2).setDepth(1);
         this.achter.push(streep);
         this.tover(streep);
       } else if (p.indeling === "weegschaal") {
@@ -695,8 +712,8 @@ function maakScene(Phaser: PhaserModule, rustig: boolean, plaatjesAan = false) {
         this.heelRij(rij, DX - 310, voet, 620);
         this.heelWeegPlaatjes();
         const linksZwaar = p.zwaar === p.dingen[0]?.id;
-        const recht = this.plaats("rtw-recht", DX, W_T + W_H / 2).setDepth(1);
-        const scheef = this.plaats("rtw-links", DX, W_T + W_H / 2).setDepth(1).setAlpha(0);
+        const recht = this.plaats("rtw-recht-g", DX, W_T + W_H / 2).setDepth(1);
+        const scheef = this.plaats("rtw-links-g", DX, W_T + W_H / 2).setDepth(1).setAlpha(0);
         if (!linksZwaar) scheef.setFlipX(true);
         this.achter.push(recht, scheef);
         this.tover(recht);
@@ -717,7 +734,7 @@ function maakScene(Phaser: PhaserModule, rustig: boolean, plaatjesAan = false) {
             c.imageSmoothingQuality = "high";
             c.drawImage(plek, 0, 0, zijde, zijde);
           });
-          const o = this.plaats(sl, PLEK_X[i], VOLG_ONDER_HEEL - zijde / 2 + 14).setDepth(1);
+          const o = this.plaats(this.gloedPlaatje(sl, "rt-plek"), PLEK_X[i], VOLG_ONDER_HEEL - zijde / 2 + 14).setDepth(1);
           this.achter.push(o);
           this.tover(o);
         });
