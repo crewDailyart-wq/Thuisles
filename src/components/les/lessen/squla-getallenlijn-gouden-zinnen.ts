@@ -259,8 +259,12 @@ export const ZIN = {
     if (v.soort === "dichtst") return [`Welk getal ligt het dichtst bij de ${w(v.n!)}?`];
     return ["Welk getal hoort ongeveer bij het raketje?"];
   },
-  /** Op volgorde: het hulphandje wijst het eerste lege vak aan (nooit de goede kaart, 15.17). */
-  ordenHand: "Hier komt een kaart.",
+  /**
+   * Op volgorde: het hulphandje wijst het eerste lege vak aan (nooit de goede kaart, 15.17). De zin komt in Bliepo's
+   * tekstvak terwijl de les op het kind wacht, dus hij zegt wat het kind doet (F16, Sara 18 november 2026; BOUWREGELS
+   * 15.37). Eerst: "Hier komt een kaart."
+   */
+  ordenHand: "Sleep een kaart naar dit vak.",
 
   /** 2e fout: samen voordoen (draaiboek §3 E.3 en F.3: de getallen vastzetten, samen springen, 1 per keer). */
   samen: (v: Vraag) => (v.soort === "orden" ? "Kom, we leggen ze samen." : v.soort === "dichtst" ? "Kom, we zetten de getallen op de lijn." : "Kom, we springen samen."),
