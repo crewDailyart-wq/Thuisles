@@ -82,6 +82,8 @@ const bekend = (v: Vraag, c: number, z: string): string | null => {
   /* Hints (hoe je zoekt, waar je kijkt). */
   if ((m = z.match(/^Lees de bordjes vanaf maandag, vooraan\.$/))) return b.wagons[0] === 0 ? null : "maandag staat niet vooraan";
   if ((m = z.match(/^Waar staat (\w+)\?$/)) || (m = z.match(/^Zeg de dagen op tot (\w+)\.$/))) return D(m[1]) === d ? null : "andere dag dan de vraag";
+  /* F16 (18 nov 2026, BOUWREGELS 15.37): de hint eindigt met wat het kind doet; alleen bij "Tik op de wagon van …". */
+  if (/^Tik dan op die wagon\.$/.test(z)) return v.soort === "tik" ? null : "past niet";
   if (/^De week begint vooraan met maandag\.$/.test(z)) return b.wagons[0] === 0 ? null : "maandag staat niet vooraan";
   if ((m = z.match(/^Na (\w+) is de dag erachter\.$/)) || (m = z.match(/^Welke dag komt na (\w+)\?$/)) || (m = z.match(/^Zeg de dagen op, vanaf (\w+)\.$/))) return D(m[1]) === d && v.soort === "na" ? null : "past niet bij de vraag";
   if ((m = z.match(/^Vóór (\w+) is de dag ervoor\.$/)) || (m = z.match(/^Welke dag komt vóór (\w+)\?$/)) || (m = z.match(/^Zeg de dagen op tot (\w+)\.$/))) return D(m[1]) === d && v.soort === "voor" ? null : "past niet bij de vraag";

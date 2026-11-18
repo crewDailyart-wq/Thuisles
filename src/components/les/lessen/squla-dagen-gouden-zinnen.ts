@@ -323,7 +323,7 @@ export function dagFout(v: Vraag, c: number): Fout {
 
   /* Tik op de wagon van … (de hele trein). */
   if (v.soort === "tik") {
-    const hint = kies2([`Lees de bordjes vanaf maandag, vooraan. Waar staat ${naam(d)}?`, `De week begint vooraan met maandag. Zeg de dagen op tot ${naam(d)}.`], v.nr);
+    const hint = kies2([`Lees de bordjes vanaf maandag, vooraan. Waar staat ${naam(d)}?`, `De week begint vooraan met maandag. Zeg de dagen op tot ${naam(d)}. Tik dan op die wagon.`], v.nr);
     const uitleg = kies2(["De wagons staan op volgorde van de week. Maandag staat vooraan.", "Elke dag heeft een eigen wagon, met de naam op het bordje."], v.nr);
     /* "Vlak naast" alleen als er dan nog 2 wagons over zijn: een wagon aan het eind heeft maar 1 buur (15.17). */
     if (code === "dag-ernaast" && c > 0 && c < 6)
