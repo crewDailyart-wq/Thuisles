@@ -66,16 +66,28 @@ import {
   ZIN,
   blok,
   buurPlek,
+  foutStuk,
   foutenVan,
   gat,
+  hintNoemtHuis,
   huisFout,
   huisReactie,
   metNaam,
+  opnieuwZin,
   vooruit,
   type Fout,
   type Rijtje,
   type Vraag,
 } from "./squla-huisnummers-gouden-zinnen";
+import { maakKiezer } from "./nooit-dubbel";
+
+/**
+ * NOOIT 2 KEER HETZELFDE (Sara, 18 november 2026; zelfde aanpak als de proefles Tellen en de les Splitsen): alle zinnen in
+ * varianten (ZIN en de fouttabel) kiest de les met de gedeelde kiezer. Nooit dezelfde zin 2 keer achter elkaar, ook niet
+ * over vragen heen. "Je koos 9." en "Je koos 27." tellen als dezelfde zin.
+ */
+const KIEZER = maakKiezer();
+const variant = (sleutel: string, zinnen: readonly string[], mag?: (z: string) => boolean) => KIEZER.kies(sleutel, zinnen, mag);
 
 const LES_ID = "squla-huisnummers-gouden";
 
@@ -286,7 +298,7 @@ async function zegOpdracht(l: Lesgids, zinnen: string[], melding: Promise<unknow
 }
 
 /** Het hulphandje na ± 6 s stilte (gerekend vanaf het einde van de opdrachtzin), met 1 korte zin (alleen de 1e keer per opdracht). */
-function handKlok(l: Lesgids, plek: () => { plek: Punt; naar?: Punt | null } | null, zin: string) {
+function handKlok(l: Lesgids, plek: () => { plek: Punt; naar?: Punt | null } | null, zin: () => string) {
   let gezegd = false;
   let weg = false;
   let klok: ReturnType<typeof setTimeout> | undefined;
@@ -300,7 +312,7 @@ function handKlok(l: Lesgids, plek: () => { plek: Punt; naar?: Punt | null } | n
       zet(l, { hulphand: { ...p, sleutel: `hand-${Date.now()}` } });
       if (!gezegd) {
         gezegd = true;
-        void zeg(l, `${AANMOEDIG_TIKKEN[Math.floor(Math.random() * AANMOEDIG_TIKKEN.length)]} ${zin}`).catch(() => {});
+        void zeg(l, `${variant("aanmoedig", AANMOEDIG_TIKKEN)} ${zin()}`).catch(() => {});
       }
     }, AANWIJZING_MS);
   };
@@ -321,13 +333,12 @@ function handKlok(l: Lesgids, plek: () => { plek: Punt; naar?: Punt | null } | n
   };
 }
 
-/** Wat Bliepo zegt bij een fout, uit de fouttabel (zelfde regels als de andere gouden lessen). */
-function foutZinnen(l: Lesgids, f: Fout, poging: 1 | 2, eerder: Fout | null): string[] {
-  const eerste = f.eerste || kies(l, ONDUIDELIJK, poging === 2 ? [ONDUIDELIJK_NOG_1_KEER] : []);
-  if (poging === 1) return [eerste, f.hint];
-  /* "Weer" alleen als Bliepo de 1e keer al zei wat er mis was. */
-  const zelfde = eerder !== null && eerder.soort === f.soort && !eerder.noot && !f.noot && f.weer.length > 0 && f.code !== "onduidelijk";
-  return zelfde ? f.weer : [eerste, f.uitleg];
+/**
+ * Wat Bliepo zegt bij een antwoord dat niet goed is, uit de fouttabel. Elke zin heeft varianten (18 november 2026); welke
+ * het wordt, staat in `foutStuk` (zinnenbestand), zodat het fouttabel-script precies dezelfde keuze naspeelt.
+ */
+function foutZinnen(l: Lesgids, f: Fout, v: Vraag, poging: 1 | 2, eerder: Fout | null, x: number, zelfdeAntwoord: boolean): string[] {
+  return foutStuk(variant, f, v, poging, eerder, { x, zelfdeAntwoord, onduidelijk: () => kies(l, ONDUIDELIJK, poging === 2 ? [ONDUIDELIJK_NOG_1_KEER] : []) });
 }
 
 /* ---------- het beeld ---------- */
@@ -402,7 +413,7 @@ async function typAntwoord(l: Lesgids, v: Vraag, zinnen: string[]): Promise<numb
 async function sleepAntwoord(l: Lesgids, v: Vraag, zinnen: string[]): Promise<number> {
   zet(l, { sleepbaar: true });
   const gelegd = l.wachtOpVlak<{ soort: string; n: number }>("gelegd");
-  const hand = handKlok(l, () => ({ plek: plekNaast(huisMidden(v.huizen, gat(v))) }), ZIN.sleepHand);
+  const hand = handKlok(l, () => ({ plek: plekNaast(huisMidden(v.huizen, gat(v))) }), () => variant("sleepHand", ZIN.sleepHand));
   const zo = zegOpdracht(l, zinnen, gelegd);
   void zo.then(() => hand.opnieuw(), () => {});
   const g = await gelegd;
@@ -426,7 +437,7 @@ async function samenDoen(l: Lesgids, v: Vraag, losse: number[]) {
   const s = st(l);
   const g = gat(v);
   zet(l, { ...LEEG });
-  await zegDoor(l, ZIN.samen, ZIN.samenBegin(v));
+  await zegDoor(l, variant("samen", ZIN.samen), variant("samenBegin", ZIN.samenBegin(v)));
   const plekken = v.huizen.map((_, i) => i).filter((i) => (vooruit(v) ? i < g : i > g));
   for (const i of vooruit(v) ? plekken : plekken.reverse()) {
     zet(l, { licht: i });
@@ -437,7 +448,7 @@ async function samenDoen(l: Lesgids, v: Vraag, losse: number[]) {
   if (v.soort !== "sleep") zet(l, { huizen: ingevuld(v) });
   zet(l, { licht: g });
   speelLesgeluid("tik");
-  await zegDoor(l, ZIN.samenGat(v));
+  await zegDoor(l, variant("samenGat", ZIN.samenGat(v)));
   zet(l, { licht: null });
 
   let zelf = false;
@@ -448,10 +459,10 @@ async function samenDoen(l: Lesgids, v: Vraag, losse: number[]) {
     zet(l, { sleepbaar: true });
     haak(l, { soort: "sleepSamen", goed: String(v.goed), vraag: v.id });
     zetTestAntwoord(String(v.goed));
-    const hand = handKlok(l, () => ({ plek: plekNaast(van), naar: plekNaast(naar) }), ZIN.samenHand(v));
+    const hand = handKlok(l, () => ({ plek: plekNaast(van), naar: plekNaast(naar) }), () => variant("samenHand", ZIN.samenHand(v)));
     let eersteTik: (() => void) | null = null;
     const gedaan = new Promise<void>((r) => (eersteTik = r));
-    void zegOpdracht(l, [ZIN.samenStap(v)], gedaan).then(() => hand.opnieuw(), () => {});
+    void zegOpdracht(l, [variant("samenStap", ZIN.samenStap(v))], gedaan).then(() => hand.opnieuw(), () => {});
     try {
       let mis = 0;
       for (;;) {
@@ -479,10 +490,10 @@ async function samenDoen(l: Lesgids, v: Vraag, losse: number[]) {
     zet(l, { tikHuis: g });
     haak(l, { soort: "huisTik", goed: `huis-${v.goed}`, vraag: v.id });
     zetTestAntwoord(`huis-${v.goed}`);
-    const hand = handKlok(l, () => ({ plek: plekNaast(huisMidden(v.huizen, g)) }), ZIN.samenHand(v));
+    const hand = handKlok(l, () => ({ plek: plekNaast(huisMidden(v.huizen, g)) }), () => variant("samenHand", ZIN.samenHand(v)));
     let eersteTik: (() => void) | null = null;
     const gedaan = new Promise<void>((r) => (eersteTik = r));
-    void zegOpdracht(l, [ZIN.samenStap(v)], gedaan).then(() => hand.opnieuw(), () => {});
+    void zegOpdracht(l, [variant("samenStap", ZIN.samenStap(v))], gedaan).then(() => hand.opnieuw(), () => {});
     try {
       const t = await Promise.race([l.wachtOpVlak("huisTik"), l.wacht(VANGNET_MS).then(() => null)]);
       (eersteTik as (() => void) | null)?.();
@@ -501,7 +512,7 @@ async function samenDoen(l: Lesgids, v: Vraag, losse: number[]) {
   zet(l, { huizen: ingevuld(v), losse: [], goed: ++s.goed });
   speelLesgeluid("goed");
   bliepoScherm("goed");
-  await zegDoor(l, zelf ? ZIN.samenZelf(v) : ZIN.samenKlaar(v));
+  await zegDoor(l, zelf ? variant("samenZelf", ZIN.samenZelf(v)) : variant("samenKlaar", ZIN.samenKlaar(v)));
 }
 
 /* ---------- een vraag ---------- */
@@ -522,7 +533,7 @@ async function speelVraag(l: Lesgids, v: Vraag, i: number): Promise<Uitkomst> {
     await l.wacht(150);
   } else zet(l, { losse });
   /* De zin van de oude les vóór de vraag: de eerste keer per soort; bij terugtellen elke keer (dan weet het kind dat we terug lopen). */
-  if (ZIN.aanloop(v) && (v.soort === "terug" || !s.gezien.has(v.soort))) await zegDoor(l, ZIN.aanloop(v));
+  if (ZIN.aanloop(v).length && (v.soort === "terug" || !s.gezien.has(v.soort))) await zegDoor(l, variant("aanloop", ZIN.aanloop(v)));
   s.gezien.add(v.soort);
   /* Terugtellen: Bliepo loopt eerst terug langs de huizen (de reeks van de oude les). */
   if (v.soort === "terug") await loopTerug(l, v);
@@ -561,17 +572,18 @@ async function speelVraag(l: Lesgids, v: Vraag, i: number): Promise<Uitkomst> {
     s.opRij = 0;
     const f = fouten[String(x)] ?? huisFout(x, v);
     legDenkfoutVast(l, { vraag: v.id, antwoord: String(x), denkfout: f.code, poging });
-    const fz = foutZinnen(l, f, poging, eerder).filter(Boolean);
-    if (poging === 2 && x === eersteX && fz[0] === f.eerste) fz[0] = ZIN.weerGekozen(x, v);
+    /* Hetzelfde antwoord 2 keer: "Je koos weer …" (of "weer" van de denkfout); nooit 2 keer dezelfde eerste zin. */
+    const fz = foutZinnen(l, f, v, poging, eerder, x, x === eersteX).filter(Boolean);
     log(l, "reactie", { soort: `fout${poging}`, vraag: v.id, x, denkfout: f.code, zin: fz.join(" ") });
     /* Het invulvak gaat leeg weg, een gesleept huis glijdt terug (geen schudden, geen rood). */
     zet(l, { typ: null, ...(v.losse ? { losTerug: ++s.terug } : {}) });
     if (poging === 1) {
-      /* 1e fout: het rondje om het buurhuis dat de hint noemt (nooit om het antwoord, 15.17). */
-      zet(l, { licht: buurPlek(v) });
+      /* 1e fout: het rondje om het buurhuis als de hint dat huis noemt (7.8; nooit om het antwoord, 15.17). */
+      if (hintNoemtHuis(fz.at(-1) ?? "")) zet(l, { licht: buurPlek(v) });
       await zegDoor(l, ...fz);
       zet(l, { licht: null });
-      zinnen = ZIN.opnieuw(v);
+      /* De vraag in andere woorden, zonder een getal dat Bliepo net al noemde. */
+      zinnen = [opnieuwZin(variant, v, fz)];
       eerder = f;
       eersteX = x;
       continue;
@@ -610,7 +622,7 @@ const gouden: Lesdraaiboek = {
     await l.wacht(600);
     st(l).naamKeer = 1;
     st(l).naamVraag = 0;
-    await zegDoor(l, NAAM_GROET, ZIN.begin);
+    await zegDoor(l, NAAM_GROET, variant("begin", ZIN.begin));
 
     /* De 17 vragen van squla-huisnummers. */
     for (const [i, v] of VRAGEN.entries()) {
@@ -620,12 +632,12 @@ const gouden: Lesdraaiboek = {
 
     /* Stap 10. Einde: slotzin, kaart, eindzin uit het rijtje en wat het kind met de kaart doet (geen pijl). */
     zet(l, { ...LEEG, huizen: null, beeld: "einde", losse: [] });
-    await zegDoor(l, ZIN.slot);
+    await zegDoor(l, variant("slot", ZIN.slot));
     log(l, "kaart");
     l.verderWeg?.();
     const tik = l.kaart();
     speelLesgeluid("kaart");
-    await zeg(l, `${veelFouten(l) ? EINDE_VEEL_FOUTEN : kies(l, EINDE)} ${ZIN.kaartTik}`);
+    await zeg(l, `${veelFouten(l) ? EINDE_VEEL_FOUTEN : kies(l, EINDE)} ${variant("kaartTik", ZIN.kaartTik)}`);
     await tik;
   },
 };

@@ -20,9 +20,15 @@
  * Leesbare versie: FOUTTABEL-squla-huisnummers-gouden.md (maak hem opnieuw met
  * `npx tsx scripts/fouttabel-huisnummers-gouden.ts`; dat script doet ook de reken- en verklapcontrole).
  * Huisnummers staan wit op een donker bordje; in de zinnen dus {n:wit} (BOUWREGELS 2.2: de kleur van het voorwerp).
+ *
+ * 18 november 2026 (Sara: Bliepo klinkt als een warme juf; zelfde aanpak als de proefles Tellen en de les Splitsen):
+ * elke zin is nagelopen en waar een zin terugkomt, staat er een rijtje versies. De les kiest met de gedeelde kiezer
+ * (nooit-dubbel.ts): nooit 2 keer achter elkaar dezelfde zin. Een getal klinkt nooit 2 keer vlak achter elkaar, en een
+ * hint eindigt niet meer met een vraag die er meteen daarna nog eens komt. Oud naast nieuw: WIJZIGINGEN-ZINNEN-HUISNUMMERS.md.
  */
 
 import type { Rijtje } from "./squla-klok-gouden-zinnen";
+import { deeltStuk } from "./nooit-dubbel";
 
 export {
   BEVESTIG,
@@ -108,13 +114,37 @@ export const blok = (v: Vraag) => (v.nr <= 5 ? 0 : v.nr <= 11 ? 1 : 2);
 
 const plekWoord = (v: Vraag) => (v.soort === "sleep" ? "de lege plek" : "het vraagteken");
 
+/** Zonder kleurcode: {12:wit} wordt 12. */
+const kaal = (z: string) => z.replace(/\{([^}:]+):[a-zA-Z]+\}/g, "$1");
+/** De getallen in een zin. */
+export const getallenIn = (z: string) => (kaal(z).match(/\d+/g) ?? []).map(Number);
+/** Noemen 2 zinnen hetzelfde getal? (Sara, 18 nov 2026: een getal klinkt nooit 2 keer vlak achter elkaar.) */
+export const deeltGetal = (a: string, b: string) => getallenIn(a).some((n) => getallenIn(b).includes(n));
+/** Past zin `z` achter de zinnen `eerder`: geen getal en geen stuk van 4 woorden dat er net al was. */
+export const pastNa =
+  (...eerder: string[]) =>
+  (z: string) =>
+    eerder.every((a) => !deeltGetal(a, z) && !deeltStuk(a, z, 4));
+
+/**
+ * WARME ZINNEN IN VARIANTEN (Sara, 18 november 2026; zelfde aanpak als de proefles Tellen en de les Splitsen). Waar een
+ * zin in de les terugkomt, staat hier een rijtje; de les kiest met de gedeelde kiezer (nooit-dubbel.ts): nooit 2 keer
+ * achter elkaar dezelfde zin, ook niet over vragen heen. Oud naast nieuw: WIJZIGINGEN-ZINNEN-HUISNUMMERS.md.
+ */
 export const ZIN = {
   /** Stap 1: openen. Eigen beginzin van de les (BOUWREGELS 4.3); geen startvraag (draaiboek §0). Samen met de groet 1 stuk. */
-  begin: "In deze straat mist steeds 1 huisnummer. Jij zoekt welk nummer daar hoort.",
-  /** Een nieuw blok met grotere getallen (draaiboek §2 stap 2 en 4: "nu tellen we met grotere getallen"). */
-  blok: ["", "Nu komen er grotere huisnummers.", "En nu de huisnummers tot 50."],
-  /** De zinnen van de oude les vóór de vraag; alleen de eerste keer per soort (LESRECEPT: dezelfde zin niet steeds helemaal). */
-  aanloop: (v: Vraag): string => (v.soort === "tussen" ? "Kijk, op 1 bordje staat een vraagteken." : v.soort === "sleep" ? "Er mist 1 huis in de straat." : v.soort === "terug" ? "Nu lopen we terug." : ""),
+  begin: ["Vandaag zoeken we huisnummers. In elke straat ontbreekt er 1.", "We gaan samen huisnummers zoeken. In elke straat ontbreekt 1 nummer."],
+  /** Een nieuw blok met grotere getallen (draaiboek §2 stap 2 en 4: "nu tellen we met grotere getallen", "we gaan een stukje verder"). */
+  blok: ["", "Nu komen er grotere huisnummers.", "We gaan nog een stukje verder. Nu komen de huisnummers tot 50."],
+  /** De zinnen van de oude les vóór de vraag; alleen de eerste keer per soort (bij terugtellen elke keer, dus daar 3 versies). */
+  aanloop: (v: Vraag): string[] =>
+    v.soort === "tussen"
+      ? ["Kijk, op 1 bordje staat een vraagteken."]
+      : v.soort === "sleep"
+        ? ["Er ontbreekt 1 huis in de straat."]
+        : v.soort === "terug"
+          ? ["Nu lopen we terug.", "We lopen terug door de straat.", "Kom, we lopen terug langs de huizen."]
+          : [],
   /** De vraag van de oude les; overal dezelfde zin voor dezelfde soort vraag (3.11). */
   vraag: (v: Vraag): string[] => {
     const typ = isTyp(v) ? ["Typ het nummer."] : [];
@@ -124,78 +154,121 @@ export const ZIN = {
     if (v.soort === "sleep") return ["Sleep het goede huis naar de lege plek."];
     return ["Welk huisnummer komt dan?", ...typ];
   },
-  /** Een nieuwe poging na de hint: de vraag in andere woorden (draaiboek §3 A.2: "de vraag in andere woorden"; 3.23). */
+  /**
+   * Een nieuwe poging na de hint: de vraag in andere woorden (draaiboek §3 A.2: "probeer het nog eens; tik op 34"; 3.23).
+   * 3 versies per soort: 1 met het buurhuis en 2 zonder getal, voor als de hint dat getal net al noemde. Bij typen zit
+   * "typ" in de zin zelf (1 zin in plaats van 2).
+   */
   opnieuw: (v: Vraag): string[] => {
-    const typ = isTyp(v) ? ["Typ het nummer."] : [];
-    if (v.soort === "na") return [`Welk nummer komt er na ${w(buur(v))}?`, ...typ];
-    if (v.soort === "voor") return [`Welk nummer komt er voor ${w(buur(v))}?`, ...typ];
-    if (v.soort === "tussen") return ["Welk nummer hoort er bij het vraagteken?", ...typ];
-    if (v.soort === "sleep") return ["Sleep nu het goede huis naar de lege plek."];
-    return [`Welk nummer komt er voor ${w(buur(v))}?`, ...typ];
+    const b = w(buur(v));
+    if (v.soort === "sleep") return ["Sleep nu het goede huis naar de lege plek.", "Welk huis hoort op de lege plek? Sleep het erheen."];
+    const bordje = "Welk nummer komt er op het bordje met het vraagteken?";
+    if (isTyp(v)) return [vooruit(v) ? `Typ het nummer dat na ${b} komt.` : `Typ het nummer dat voor ${b} komt.`, "Typ het nummer bij het vraagteken.", "Typ het nummer dat op het bordje hoort."];
+    if (v.soort === "na") return [`Welk nummer komt er na ${b}?`, "Welk nummer hoort bij het vraagteken?", bordje];
+    if (v.soort === "tussen") return ["Welk nummer hoort er bij het vraagteken?", "Welk nummer hoort ertussen?", bordje];
+    return [`Welk nummer komt er voor ${b}?`, "Welk nummer hoort bij het vraagteken?", bordje];
   },
   /** Typen: het vinkje zonder nummer telt niet als fout (draaiboek §2 stap 6: "vinkje zonder keuze"). */
   typEerst: "Typ eerst een nummer.",
   /** 2e fout: Bliepo doet het samen voor (draaiboek §3 C.5 en D.3: hij telt zelf, 1 stap per keer, het vakje licht op). */
-  samen: "Kom, we tellen samen.",
-  samenBegin: (v: Vraag) => (vooruit(v) ? "Ik tel langs de huizen." : "Ik tel terug, van rechts naar links."),
+  samen: ["Kom, we tellen samen.", "Weet je wat? We tellen samen.", "Geeft niks. We tellen samen.", "Ik help je even. We tellen samen.", "Laten we samen tellen en kijken."],
+  samenBegin: (v: Vraag): string[] =>
+    vooruit(v)
+      ? ["Ik tel langs de huizen.", "Ik wijs elk huis aan en zeg het nummer.", "Ik tel hardop langs de huizen. Tel maar mee!"]
+      : ["Ik tel terug, van rechts naar links.", "Ik loop terug en zeg elk nummer.", "Ik tel hardop terug. Tel maar mee!"],
   samenTel: (n: number) => `${w(n)}.`,
-  /** Bij het gat: het nummer komt op het bordje en Bliepo zegt waarom (nu pas het antwoord in beeld, 15.11). */
-  samenGat: (v: Vraag) => {
+  /**
+   * Bij het gat: het nummer komt op het bordje (nu pas het antwoord in beeld, 15.11). Het nummer klinkt 1 keer (was:
+   * "En dan 8. Na 7 komt 8."), en de buur die Bliepo net telde, noemt hij niet nog een keer.
+   */
+  samenGat: (v: Vraag): string[] => {
     const g = w(v.goed);
-    if (v.soort === "na") return `En dan ${g}. Na ${w(buur(v))} komt ${g}.`;
-    if (v.soort === "voor" || v.soort === "terug") return `En dan ${g}. Voor ${w(buur(v))} komt ${g}.`;
-    if (v.soort === "tussen") return `En dan ${g}. ${g} hoort tussen ${w(v.goed - 1)} en ${w(v.goed + 1)}.`;
-    return `En dan ${g}. Hier hoort huis ${g}.`;
+    if (v.soort === "sleep") return [`En dan ${g}! Dat huis zoeken we.`, `En dan komt ${g}. Dat huis ontbreekt nog.`, `En daarna ${g}. Dat huis hoort op de lege plek.`];
+    const waar = v.soort === "na" ? "erna" : v.soort === "tussen" ? "ertussen" : "ervoor";
+    return [`En dan ${g}! Dat is het nummer dat we zoeken.`, `En dan komt ${g}. Dat nummer hoort op het bordje.`, `En daarna ${g}. Dat nummer komt ${waar}.`];
   },
-  /** De kleine stap van het kind (15.11): het huis met het nieuwe nummer aantikken, of het huis naar de lege plek slepen. */
-  samenStap: (v: Vraag) => (v.soort === "sleep" ? `Sleep jij huis ${w(v.goed)} naar de lege plek?` : `Tik jij op het huis met ${w(v.goed)}?`),
-  samenHand: (v: Vraag) => (v.soort === "sleep" ? `Sleep huis ${w(v.goed)} hierheen.` : `Tik op het huis met ${w(v.goed)}.`),
-  samenKlaar: (v: Vraag) => (v.soort === "sleep" ? `Ja, huis ${w(v.goed)} staat op zijn plek.` : `Ja, dat is huis ${w(v.goed)}.`),
+  /**
+   * De kleine stap van het kind (15.11): het huis met het nieuwe nummer aantikken, of het huis naar de lege plek slepen.
+   * Bij tikken zonder getal (Bliepo zei het net); bij slepen met het getal: het kind kiest uit 3 huizen.
+   */
+  samenStap: (v: Vraag): string[] =>
+    v.soort === "sleep"
+      ? [`Sleep jij huis ${w(v.goed)} naar de lege plek?`, `Nu jij. Sleep huis ${w(v.goed)} naar de lege plek.`]
+      : ["Tik jij op het huis met het nieuwe nummer?", "Nu jij. Tik op het huis met het nieuwe nummer.", "Zie je het nieuwe nummer? Tik op dat huis."],
+  samenHand: (v: Vraag): string[] =>
+    v.soort === "sleep" ? [`Sleep huis ${w(v.goed)} hierheen.`, `Pak huis ${w(v.goed)} en sleep het naar de lege plek.`] : [`Tik op het huis met ${w(v.goed)}.`, "Tik op het huis met het nieuwe nummer."],
+  samenKlaar: (v: Vraag): string[] =>
+    v.soort === "sleep"
+      ? [`Ja, huis ${w(v.goed)} staat op zijn plek.`, `Precies, daar hoort huis ${w(v.goed)}.`, `Samen is het gelukt: huis ${w(v.goed)} staat erbij.`]
+      : [`Ja, dat is huis ${w(v.goed)}.`, `Precies, daar staat huis ${w(v.goed)}.`, `Samen is het gelukt: dat is huis ${w(v.goed)}.`],
   /** Na het vangnet (Bliepo deed de stap zelf): geen "Ja" alsof het kind het deed (keuring Meer-minder, 10 nov). */
-  samenZelf: (v: Vraag) => (v.soort === "sleep" ? `Kijk, huis ${w(v.goed)} staat nu op zijn plek.` : `Kijk, hier staat huis ${w(v.goed)}.`),
-  /** Bij een opdracht (slepen): het hulphandje wijst de lege plek aan, niet het goede huis (15.17). */
-  sleepHand: "Hier moet een huis staan.",
-  /** Hetzelfde foute antwoord 2 keer: niet 2 keer dezelfde eerste zin (geleerd bij Tellen). */
-  weerGekozen: (x: number, v: Vraag) => (v.soort === "sleep" ? `Je sleepte weer huis ${w(x)}.` : isTyp(v) ? `Je typte weer ${w(x)}.` : `Je koos weer ${w(x)}.`),
+  samenZelf: (v: Vraag): string[] =>
+    v.soort === "sleep" ? [`Kijk, huis ${w(v.goed)} staat nu op zijn plek.`, `Kijk, ik zet huis ${w(v.goed)} op de lege plek.`] : [`Kijk, hier staat huis ${w(v.goed)}.`, `Kijk, dit is huis ${w(v.goed)}.`],
+  /**
+   * Bij een opdracht (slepen): het hulphandje wijst de lege plek aan, niet het goede huis (15.17). Elke versie zegt ook
+   * wat het kind doet (15.37): de zin komt in Bliepo's tekstvak terwijl de les op het kind wacht.
+   */
+  sleepHand: ["Hier moet een huis staan. Welk huis past hier?", "Sleep het goede huis naar deze plek.", "Kijk, deze plek is leeg. Sleep het goede huis erheen."],
+  /** Hetzelfde antwoord 2 keer (en geen "weer" van de denkfout): niet 2 keer dezelfde eerste zin (geleerd bij Tellen). */
+  weerGekozen: (x: number, v: Vraag): string[] =>
+    v.soort === "sleep"
+      ? [`Je sleepte weer huis ${w(x)}.`, `Weer huis ${w(x)}, zie ik.`, `Daar is huis ${w(x)} weer.`]
+      : isTyp(v)
+        ? [`Je typte weer ${w(x)}.`, `Weer ${w(x)}, zie ik.`, `Daar is ${w(x)} weer.`]
+        : [`Je koos weer ${w(x)}.`, `Je tikte weer op ${w(x)}.`, `Weer ${w(x)}, zie ik.`],
   /** Stap 10: einde. */
-  slot: "Je weet nu welk huisnummer erna, ervoor en ertussen komt.",
-  kaartTik: "Tik op de kaart.",
+  slot: ["Je weet nu welk huisnummer erna, ervoor en ertussen komt.", "Knap, hoor! Je weet welk huisnummer erna, ervoor en ertussen komt.", "Wat heb jij goed geteld: verder en terug, tot wel 50!"],
+  kaartTik: ["Tik op de kaart.", "Tik maar op de kaart.", "Kijk, een kaart voor jou! Tik erop."],
 };
 
+/** Het begin van een nieuwe poging (draaiboek §3 A.2: "probeer het nog eens" / "nog een keer"). */
+export const OPNIEUW_BEGIN = ["Probeer het nog eens.", "Toe maar, probeer het nog eens.", "Kom, we proberen het nog eens.", "Nog 1 keer."];
+
 /** Aanmoediging bij het hulphandje (het kind moet slepen of tikken, niet nadenken; 14.35, geleerd bij Tellen). */
-export const AANMOEDIG_TIKKEN = ["Je bent goed bezig.", "Jij kunt dit."];
+export const AANMOEDIG_TIKKEN = ["Je bent goed bezig.", "Jij kunt dit.", "Het gaat goed zo.", "Probeer het maar.", "Toe maar, je doet het goed."];
 
 /**
- * Reactie na de lof (BLIEPO-KARAKTER.md §4 Huisnummers, zin 56 t/m 60, plus zinnen zonder "Ja").
- * De robotzin (laatste) hooguit 1 keer per les.
+ * Reactie na de lof (BLIEPO-KARAKTER.md §4 Huisnummers, zin 56 t/m 60, plus zinnen zonder "Ja"; 18 nov 2026: 3 warme
+ * zinnen erbij, naar Synthesis "precies" en "dat klopt" + het getal). De robotzin (laatste) hooguit 1 keer per les.
  */
 export function huisReactie(v: Vraag): Rijtje {
   const g = w(v.goed);
   const stap = vooruit(v) ? "Ja, er komt steeds 1 bij." : "Ja, er gaat steeds 1 af.";
   const plek =
     v.soort === "na" ? `Ja, na nummer ${w(buur(v))} komt nummer ${g}.` : v.soort === "tussen" || v.soort === "sleep" ? `Ja, het huis tussen ${w(v.goed - 1)} en ${w(v.goed + 1)} heeft nummer ${g}.` : `Ja, voor nummer ${w(buur(v))} komt nummer ${g}.`;
-  return rij([`Ja, het huisnummer is ${g}.`, plek, stap, `Het huisnummer is ${g}.`, `Nummer ${g} past precies.`, `Nagekeken: nummer ${g} hoort hier.`], [5]);
+  return rij([`Ja, het huisnummer is ${g}.`, plek, stap, `Het huisnummer is ${g}.`, `Nummer ${g} past precies.`, `Precies, nummer ${g}.`, `Dat klopt, het is nummer ${g}.`, `Op het bordje hoort ${g}.`, `Nagekeken: nummer ${g} hoort hier.`], [REACTIE_ROBOT]);
 }
 export const REACTIE_JA = [0, 1, 2];
-export const REACTIE_ROBOT = 5;
+export const REACTIE_ROBOT = 8;
 
 /* ---------- denkfouten (draaiboek Huisnummers §7; namen voor de voortgang) ---------- */
 
 export const DENKFOUTEN = ["staat-al", "een-te-veel", "verkeerde-richting", "buiten-de-rij", "cijfers-omgedraaid", "tien-ernaast", "verkeerde-rij", "alleen-tientalcijfer", "te-ver", "onduidelijk"] as const;
 export type Denkfoutnaam = (typeof DENKFOUTEN)[number];
 
+/** Alle versies van wat Bliepo bij 1 fout antwoord kan zeggen; de les kiest er steeds 1 (nooit 2 keer dezelfde). */
+export type Varianten = {
+  /** De eerste zin (leeg bij "onduidelijk": dan een zin uit BLIEPO-KARAKTER.md §10). */
+  eerste: string[];
+  hint: string[];
+  /** Uitleg na de 2e fout (daarna meteen samen tellen; dan mag het antwoord in beeld, 15.11). */
+  uitleg: string[];
+  /** Dezelfde denkfout 2 keer (en de 1e keer zei Bliepo al wat er mis was): "weer …" en een andere uitleg. */
+  weerEerste: string[];
+  weerUitleg: string[];
+};
+
 export type Fout = {
   code: Denkfoutnaam;
   /** Welke uitleg bij de 2e fout hoort (dezelfde soort 2 keer = "weer"). */
   soort: string;
   denkfout: string;
-  /** Bliepo's eerste zin (leeg bij "onduidelijk": dan een zin uit BLIEPO-KARAKTER.md §10). */
+  /** De eerste versie van elke zin (voor de leesbare fouttabel); de les kiest uit `v`. */
   eerste: string;
   hint: string;
-  /** Uitleg na de 2e fout (daarna meteen samen tellen; dan mag het antwoord in beeld, 15.11). */
   uitleg: string;
-  /** Dezelfde denkfout 2 keer (en de 1e keer zei Bliepo al wat er mis was): anders uitleggen. */
   weer: string[];
+  v: Varianten;
   scherm: string;
   /** Welke keuzes de eerste zin en de hint nog toelaten (verklapcontrole van het script, 15.17). Bij typen: leeg (dan zijn er altijd veel over). */
   over: number[];
@@ -207,23 +280,41 @@ export type Fout = {
   noot?: string;
 };
 
-/** De hint: hoe je telt, vanaf het buurhuis (een rood rondje om dat huis). 3 versies, zodat het niet steeds hetzelfde is. */
-export function hintVan(v: Vraag): string {
+/**
+ * De hints: hoe je telt, vanaf het buurhuis (een rood rondje om dat huis als de hint het noemt). 5 versies; geen enkele
+ * eindigt met een vraag (de vraag zelf komt er meteen achteraan, 3.23), en 2 versies noemen geen getal, voor als de
+ * eerste zin dat getal net al zei.
+ */
+export function hintsVan(v: Vraag): string[] {
   const r = w(buur(v));
   const plek = plekWoord(v);
-  const k = v.nr % 3;
-  if (vooruit(v)) {
-    if (v.soort === "na") return [`Kijk naar het huis links van het vraagteken. Begin bij ${r} en tel 1 verder.`, `Begin bij ${r}. Welk nummer zeg je daarna?`, `Zeg de nummers hardop tot ${r}. Welk nummer zeg je dan?`][k];
-    return [`Kijk naar het huis links van ${plek}. Begin bij ${r} en tel 1 verder.`, `Er komt steeds 1 bij. Begin bij ${r}. Welk nummer zeg je daarna?`, `Zeg de nummers hardop tot ${r}. Welk nummer zeg je dan?`][k];
-  }
-  return [`Kijk naar het huis rechts van ${plek}. Begin bij ${r} en tel 1 terug.`, `Er gaat steeds 1 af. Begin bij ${r} en tel 1 terug.`, `Tel terug vanaf ${r}. Welk nummer zeg je dan?`][k];
+  if (vooruit(v))
+    return [
+      `Kijk naar het huis links van ${plek}. Tel vanaf dat huis verder.`,
+      `Begin bij ${r} en tel 1 verder.`,
+      "Zeg de nummers hardop, van links naar rechts. Tel dan gewoon verder.",
+      `Kijk naar huis ${r}. We zoeken het nummer dat erna komt.`,
+      `Er komt steeds 1 bij. Kijk naar huis ${r} en tel verder.`,
+    ];
+  return [
+    `Kijk naar het huis rechts van ${plek}. Tel vanaf dat huis terug.`,
+    `Begin bij ${r} en tel 1 terug.`,
+    "Zeg de nummers hardop, van rechts naar links. Zo tel je terug.",
+    `Kijk naar huis ${r}. We zoeken het nummer dat ervoor komt.`,
+    `Er gaat steeds 1 af. Kijk naar huis ${r} en tel terug.`,
+  ];
 }
+/** De eerste versie van de hint (voor de leesbare fouttabel). */
+export const hintVan = (v: Vraag): string => hintsVan(v)[0];
+/** Noemt deze hint het buurhuis? Dan krijgt dat huis het rode rondje (7.8: een rondje alleen als Bliepo iets noemt). */
+export const hintNoemtHuis = (hint: string) => /\bhuis\b|begin bij/i.test(kaal(hint));
 
 const SCHERM_KIES = "Bliepo's scherm 1,5 s rood (geen fout-geluidje); de knoppen weg; een rood rondje om het huis dat Bliepo noemt (het buurhuis, nooit het antwoord); dan de vraag in andere woorden en dezelfde keuzes terug (geen pijl)";
 const SCHERM_TYP = "Bliepo's scherm 1,5 s rood (geen fout-geluidje); het invulvak wordt leeg; een rood rondje om het buurhuis; dan de vraag in andere woorden en het lege invulvak terug";
 const SCHERM_SLEEP = "Bliepo's scherm 1,5 s rood (geen fout-geluidje); het huis glijdt terug naar beneden (geen schudden, geen rood); een rood rondje om het buurhuis; dan de opdracht opnieuw";
 
-const kies3 = <T,>(lijst: T[], v: Vraag) => lijst[v.nr % lijst.length];
+type Ruw = Omit<Fout, "eerste" | "hint" | "uitleg" | "weer">;
+const maak = (d: Ruw): Fout => ({ ...d, eerste: d.v.eerste[0] ?? "", hint: d.v.hint[0], uitleg: d.v.uitleg[0] ?? "", weer: d.v.weerEerste.length ? [d.v.weerEerste[0], d.v.weerUitleg[0]] : [] });
 
 /**
  * De fouttabel van 1 fout antwoord. Bliepo zegt alleen wat zeker is (BOUWREGELS 15.9): het nummer staat al in de straat,
@@ -239,8 +330,11 @@ export function huisFout(x: number, v: Vraag): Fout {
     wordt wel bewaard. Zo blijven er altijd 2 keuzes over.
   */
   const X = w(x);
-  const zinnen = v.soort === "sleep" ? [`Huis ${X} past niet op deze plek.`, `Huis ${X} hoort hier niet.`] : [`Je koos ${X}. Dat nummer hoort hier niet.`, `${X} past hier niet.`];
-  return { ...f, eerste: kies3(zinnen, v), over: (v.opties ?? v.losse ?? []).filter((k) => k !== x), weer: [], noot: "wat er mis is niet genoemd: dan bleef er maar 1 keuze over" };
+  const eerste =
+    v.soort === "sleep"
+      ? [`Huis ${X} past niet op deze plek.`, `Huis ${X} hoort hier niet.`, `Je sleepte huis ${X}. Dat huis past hier niet.`, `Kijk, huis ${X} past hier niet.`]
+      : [`Je koos ${X}. Dat nummer hoort hier niet.`, `${X} past hier niet.`, `${X}? Dat nummer past niet bij het vraagteken.`];
+  return maak({ ...f, v: { ...f.v, eerste, weerEerste: [], weerUitleg: [] }, over: (v.opties ?? v.losse ?? []).filter((k) => k !== x), noot: "wat er mis is niet genoemd: dan bleef er maar 1 keuze over" });
 }
 
 function huisFoutRuw(x: number, v: Vraag): Fout {
@@ -253,174 +347,266 @@ function huisFoutRuw(x: number, v: Vraag): Fout {
   const typ = isTyp(v);
   const sleep = v.soort === "sleep";
   const koos = sleep ? `Je sleepte huis ${X}.` : typ ? `Je typte ${X}.` : `Je koos ${X}.`;
+  /** "9?" (bij slepen "Huis 9?"): Bliepo herhaalt wat het kind koos, zoals Synthesis ("39? heel dichtbij"). */
+  const vraagt = sleep ? `Huis ${X}?` : `${X}?`;
+  /** "koos", "typte" of "sleepte". */
+  const ww = typ ? "typte" : sleep ? "sleepte" : "koos";
   const scherm = typ ? SCHERM_TYP : sleep ? SCHERM_SLEEP : SCHERM_KIES;
-  const hint = hintVan(v);
+  const hint = hintsVan(v);
   const eigen = eigenInvulling(v);
   const tiental = Math.floor(v.goed / 10);
+  const T = w(tiental);
+  const B = w(buur(v));
+  const plek = plekWoord(v);
   const over = (zelf: (k: number) => boolean) => (typ ? [] : andere.filter(zelf));
   const rond = v.goed % 10 === 0 || v.goed % 10 === 9;
 
   if (bekend.includes(x))
-    return {
+    return maak({
       code: "staat-al",
       soort: "staat-al",
       denkfout: "koos een nummer dat al in de straat staat (keek naar het buurhuis, of telde de verkeerde kant op)",
-      eerste: kies3([`${X} staat al in de straat.`, `Huis ${X} is er al.`, `Kijk, ${X} staat er al.`], v),
-      hint,
-      uitleg: "Elk nummer staat maar 1 keer in de straat.",
-      weer: [`Je ${typ ? "typte" : sleep ? "sleepte" : "koos"} weer een nummer dat er al staat.`, "Het nummer dat we zoeken, staat er nog niet."],
+      v: {
+        eerste: [`${X} staat al in de straat.`, `Huis ${X} is er al.`, `Kijk, ${X} staat er al.`, `${koos} Dat nummer zie je al in de straat.`, `${vraagt} Dat huis staat er al.`],
+        hint,
+        uitleg: ["Elk nummer staat maar 1 keer in de straat.", "In een straat heeft elk huis een eigen nummer.", "Een nummer dat er al staat, komt niet nog een keer."],
+        weerEerste: [`Je ${ww} weer een nummer dat er al staat.`, "Kijk maar: dit nummer staat er ook al.", "Weer een nummer dat er al staat, zie ik."],
+        weerUitleg: ["Het nummer dat we zoeken, staat er nog niet.", "We zoeken een nummer dat je nog niet ziet."],
+      },
       scherm,
       over: over((k) => !bekend.includes(k)),
       eigen,
       bron: eigen ? "eigen invulling (draaiboek §8: niet in Counting On)" : "draaiboek §3 C.2 (een andere zin per soort fout)",
-    };
+    });
   /* Keuring 10 nov: "De nummers hier beginnen met een 2" alleen als ALLE nummers in de straat zo beginnen (bij 30, 31 → 29 niet). */
   const alleTiental = bekend.every((n) => Math.floor(n / 10) === tiental);
   if (x > 9 && Number([...String(x)].reverse().join("")) === v.goed)
-    return {
+    return maak({
       code: "cijfers-omgedraaid",
       soort: "cijfers",
       denkfout: `de cijfers andersom (${x} voor ${v.goed})`,
-      eerste: alleTiental ? `${koos} De nummers hier beginnen met een ${w(tiental)}.` : `${koos} Kijk goed welk cijfer vooraan hoort.`,
-      hint,
-      uitleg: "De 2 cijfers staan andersom.",
-      weer: ["Je draaide de cijfers weer om.", alleTiental ? `Het eerste cijfer is hier steeds een ${w(tiental)}.` : "Kijk welk cijfer vooraan hoort."],
+      v: {
+        /* Geen versie zegt dát de cijfers andersom staan: dan wist het kind het antwoord (15.17). Dat komt pas bij de uitleg. */
+        eerste: alleTiental
+          ? [`${koos} De nummers hier beginnen met een ${T}.`, `${vraagt} In deze straat begint elk nummer met een ${T}.`, `${koos} Kijk naar de buren: die beginnen met een ${T}.`]
+          : [`${koos} Kijk goed welk cijfer vooraan hoort.`, `${vraagt} Kijk nog eens welk cijfer vooraan staat.`, `${koos} Let goed op het eerste cijfer.`],
+        hint,
+        uitleg: ["De cijfers staan andersom.", "Je hebt de goede cijfers, maar ze staan omgedraaid."],
+        weerEerste: ["Je hebt de cijfers weer omgedraaid.", "De cijfers staan weer andersom.", "Weer andersom, zie ik."],
+        weerUitleg: alleTiental ? [`Het eerste cijfer is hier steeds een ${T}.`, `Kijk naar de buren: vooraan staat steeds een ${T}.`] : ["Kijk welk cijfer vooraan hoort.", "Kijk naar de buren. Welk cijfer staat daar vooraan?"],
+      },
       scherm,
       over: over((k) => Math.floor(k / 10) === tiental),
       eigen: true,
       bron: "draaiboek §7 `cijfers-omgedraaid` (gezien bij zoeken, Synthesis zei er niets over); de zin is eigen invulling",
-    };
+    });
   if (typ && x === tiental)
-    return {
+    return maak({
       code: "alleen-tientalcijfer",
       soort: "tiental",
       denkfout: `typte alleen het eerste cijfer (${x} voor ${v.goed})`,
-      eerste: `${koos} De huisnummers hier hebben 2 cijfers.`,
-      hint,
-      uitleg: "Een huisnummer hier heeft 2 cijfers, net als de buren.",
-      weer: ["Je typte weer maar 1 cijfer.", "Kijk naar de bordjes: daar staan steeds 2 cijfers."],
+      v: {
+        /* Zonder het getypte cijfer erbij: "Je typte 2. De huisnummers hier hebben 2 cijfers." zei 2 keer 2. */
+        eerste: ["Je typte 1 cijfer. De huisnummers hier hebben er 2.", "Ik zie maar 1 cijfer. Op de bordjes staan er steeds 2.", `${X}? Dat is nog maar het begin van het nummer.`],
+        hint,
+        uitleg: ["Een huisnummer hier heeft 2 cijfers, net als de buren.", "Kijk naar de buren: elk nummer heeft 2 cijfers.", "Er hoort nog een cijfer achter.", "Het nummer is nog niet af."],
+        weerEerste: ["Je typte weer maar 1 cijfer.", "Weer maar 1 cijfer, zie ik.", "Ik zie weer maar 1 cijfer."],
+        weerUitleg: ["Kijk naar de bordjes: daar staan steeds 2 cijfers.", "Elk bordje in deze straat heeft 2 cijfers.", "Er hoort nog een cijfer achter."],
+      },
       scherm,
       over: [],
       eigen: true,
       bron: "draaiboek §7 `alleen-tientalcijfer` (gezien bij zoeken); de zin is eigen invulling",
-    };
-  if (Math.abs(x - v.goed) === 10 && rond)
-    return {
+    });
+  if (Math.abs(x - v.goed) === 10 && rond) {
+    const klein = x < v.goed ? "klein" : "groot";
+    const gk = x < v.goed ? "groter" : "kleiner";
+    const Na = vooruit(v) ? "Na" : "Voor";
+    return maak({
       code: "verkeerde-rij",
-      soort: "rij",
+      /* "Weer te klein" klopt alleen als het de 1e keer ook te klein was (18 nov: was 1 soort voor klein, groot en 10 ernaast). */
+      soort: `rij-${klein}`,
       denkfout: x < v.goed ? `koos het tiental eronder (${x} voor ${v.goed})` : `koos het tiental erboven (${x} voor ${v.goed})`,
-      /* Keuring 10 nov: altijd over het buurhuis van de vraag ("Na 39", "Voor 30"), zodat de zin bij elke soort vraag klopt. */
-      eerste: `${vooruit(v) ? "Na" : "Voor"} ${w(buur(v))} komt een ${x < v.goed ? "groter" : "kleiner"} nummer dan ${X}.`,
-      hint,
-      uitleg: `Het nummer dat we zoeken, begint met een ${w(tiental)}.`,
-      weer: [x < v.goed ? `Je ${typ ? "typte" : "koos"} weer een te klein nummer.` : `Je ${typ ? "typte" : "koos"} weer een te groot nummer.`, "Kijk goed naar het eerste cijfer."],
+      v: {
+        /* Keuring 10 nov: altijd over het buurhuis van de vraag ("Na 39", "Voor 30"), zodat de zin bij elke soort vraag klopt. */
+        eerste: [`${Na} ${B} komt een ${gk} nummer dan ${X}.`, `${vraagt} ${Na} ${B} komt een ${gk} nummer.`, `${koos} Dat nummer is te ${klein}.`],
+        hint,
+        uitleg: [`Het nummer dat we zoeken, begint met een ${T}.`, `Let op het eerste cijfer. Dat is hier een ${T}.`],
+        weerEerste: [`Je ${ww} weer een te ${klein} nummer.`, `Dat nummer is weer te ${klein}.`, `Weer te ${klein}, zie ik.`],
+        weerUitleg: ["Kijk goed naar het eerste cijfer.", "Let op het cijfer vooraan."],
+      },
       scherm,
       over: over((k) => (x < v.goed ? k > x : k < x)),
       eigen: v.soort !== "na",
       bron: "draaiboek §3 C.2 `verkeerde-rij` (Synthesis: alleen \"dat klopt niet helemaal\", geen woord over het tiental) en §3 C.5 (tiental-hulp)",
-    };
+    });
+  }
   if (Math.abs(x - v.goed) === 10)
-    return {
+    return maak({
       code: "tien-ernaast",
-      soort: "rij",
+      soort: "tien",
       denkfout: `zit er 10 naast (${x} voor ${v.goed})`,
-      eerste: `${X} begint met een ${w(Math.floor(x / 10))}. De huizen ernaast beginnen met een ${w(tiental)}.`,
-      hint,
-      uitleg: "Je zit er 10 naast.",
-      weer: [`Je ${sleep ? "sleepte" : "koos"} weer een nummer met een ander cijfer vooraan.`, `Kijk naar het eerste cijfer van de buren.`],
+      v: {
+        eerste: [`${X} begint met een ${w(Math.floor(x / 10))}. De huizen ernaast beginnen met een ${T}.`, `${koos} Kijk naar de buren: die beginnen met een ${T}.`, `${vraagt} De huizen ernaast beginnen met een ${T}.`],
+        hint,
+        uitleg: ["Je zit er 10 naast.", "Dat scheelt precies 10."],
+        weerEerste: [`Je ${ww} weer een nummer met een ander cijfer vooraan.`, "Weer een ander cijfer vooraan, zie ik.", "Vooraan staat weer een ander cijfer dan bij de buren."],
+        weerUitleg: ["Kijk naar het eerste cijfer van de buren.", "De buren laten zien welk cijfer vooraan hoort."],
+      },
       scherm,
       over: over((k) => Math.floor(k / 10) === tiental),
       eigen: true,
       bron: "draaiboek §3 A.2 `tien-ernaast` (\"je zit er 10 onder\", bij zoeken); hier eigen invulling",
-    };
+    });
   if (x === (vooruit(v) ? v.goed + 1 : v.goed - 1))
-    return {
+    return maak({
       code: "een-te-veel",
       soort: "over",
       denkfout: vooruit(v) ? "telde 2 verder in plaats van 1 (sloeg een huis over)" : "telde 2 terug in plaats van 1 (sloeg een huis over)",
-      eerste: kies3([`Met ${X} sla je een huis over.`, `${X} ligt 1 huis te ver.`, `Bij ${X} ga je een huis te ver.`], v),
-      hint,
-      uitleg: vooruit(v) ? "Er komt steeds 1 bij, niet 2." : "Er gaat steeds 1 af, niet 2.",
-      weer: ["Je sloeg weer een huis over.", vooruit(v) ? "Tel elk huis mee: steeds 1 verder." : "Tel elk huis mee: steeds 1 terug."],
+      v: {
+        /* "Je ging een beetje te ver" is de zin van Synthesis (draaiboek §3 C.2), in het Nederlands. */
+        eerste: [`Met ${X} sla je een huis over.`, `${X} ligt 1 huis te ver.`, `Bij ${X} ga je een huis te ver.`, `${koos} Je ging een beetje te ver.`, `${vraagt} Dat is net 1 huis te ver.`],
+        hint,
+        uitleg: [vooruit(v) ? "Er komt steeds 1 bij, niet 2." : "Er gaat steeds 1 af, niet 2.", "Elk huis telt mee. We slaan er geen over.", "We zoeken het huis er vlak naast."],
+        weerEerste: ["Je hebt weer een huis overgeslagen.", "Weer een huis te ver, zie ik.", "Dat is weer net te ver."],
+        weerUitleg: vooruit(v) ? ["We tellen elk huis mee: steeds 1 verder.", "We gaan maar 1 huis verder, niet meer."] : ["We tellen elk huis mee: steeds 1 terug.", "We gaan maar 1 huis terug, niet meer."],
+      },
       scherm,
       over: over((k) => (vooruit(v) ? k < x : k > x)),
       eigen,
       bron: eigen ? "eigen invulling; lijkt op draaiboek §3 C.2 (\"je ging een beetje te ver\")" : "draaiboek §3 C.2 `een-te-veel` (\"je ging een beetje te ver\")",
-    };
-  if (!vooruit(v) && x > max)
-    return {
+    });
+  if (!vooruit(v) && x > max) {
+    const terug = v.soort === "terug";
+    return maak({
       code: "verkeerde-richting",
       soort: "richting",
       denkfout: `telde verder in plaats van terug (${x} komt na ${max})`,
-      eerste: v.soort === "terug" ? `${X} komt na ${w(max)}. We lopen terug.` : `${X} komt na ${w(max)}. We zoeken het nummer ervoor.`,
-      hint,
-      uitleg: "Terug tellen gaat naar de kleinere nummers.",
-      weer: ["Je telde weer verder in plaats van terug.", "Bij terug tellen wordt het nummer steeds kleiner."],
+      v: {
+        eerste: terug
+          ? [`${X} komt na ${w(max)}. We lopen terug.`, `${koos} Dat nummer komt pas na ${w(max)}.`, `${vraagt} Zo tel je verder, maar wij tellen terug.`]
+          : [`${X} komt na ${w(max)}. We zoeken het nummer ervoor.`, `${koos} Dat nummer komt pas na ${w(max)}.`, `${vraagt} Zo tel je verder, maar we zoeken het nummer ervoor.`],
+        hint,
+        uitleg: ["Terug tellen gaat naar de kleinere nummers.", terug ? "Als we terug lopen, worden de nummers kleiner." : "Het nummer ervoor is altijd kleiner."],
+        weerEerste: ["Je hebt weer verder geteld in plaats van terug.", "Weer de andere kant op, zie ik.", "Dat is weer verder tellen."],
+        weerUitleg: ["Bij terug tellen wordt het nummer steeds kleiner.", "We gaan naar links. Daar staan de kleinere nummers."],
+      },
       scherm,
       over: over((k) => k < x),
       eigen: true,
       bron: "eigen invulling (terugtellen en ervoor zitten niet in Counting On, draaiboek §8)",
-    };
+    });
+  }
   /*
     Keuring 10 nov: staat het gat aan het begin of eind van de straat (erna, ervoor, terug), dan is "aan het begin/eind van
     de straat" en "het vraagteken staat midden in de straat" niet waar. Alleen bij typen kan het kind zo'n nummer kiezen.
   */
   const midden = gat(v) > 0 && gat(v) < v.huizen.length - 1;
   if (!midden && vooruit(v) && x < min)
-    return {
+    return maak({
       code: "verkeerde-richting",
       soort: "richting-terug",
       denkfout: `telde terug in plaats van verder (${x} komt voor ${min})`,
-      eerste: `${X} komt voor ${w(min)}. We zoeken het nummer erna.`,
-      hint,
-      uitleg: "Verder tellen gaat naar de grotere nummers.",
-      weer: [`Je ${typ ? "typte" : "koos"} weer een nummer van vóór de straat.`, "Bij verder tellen wordt het nummer steeds groter."],
+      v: {
+        eerste: [`${X} komt voor ${w(min)}. We zoeken het nummer erna.`, `${koos} Dat nummer komt al voor ${w(min)}.`, `${vraagt} Zo tel je terug, maar we zoeken het nummer erna.`],
+        hint,
+        uitleg: ["Verder tellen gaat naar de grotere nummers.", "Het nummer erna is altijd groter."],
+        weerEerste: [`Je ${ww} weer een nummer dat voor de straat komt.`, "Weer de andere kant op, zie ik.", "Dat is weer terug tellen."],
+        weerUitleg: ["Bij verder tellen wordt het nummer steeds groter.", "We gaan naar rechts. Daar staan de grotere nummers."],
+      },
       scherm,
       over: over((k) => k > x),
       eigen: true,
       bron: "eigen invulling (alleen bij typen; draaiboek §3 C.2: een zin per soort fout)",
-    };
+    });
   if (!midden && (vooruit(v) ? x > v.goed : x < v.goed))
-    return {
+    return maak({
       code: "te-ver",
       soort: "te-ver",
       denkfout: vooruit(v) ? `telde te ver door (${x} in plaats van ${v.goed})` : `telde te ver terug (${x} in plaats van ${v.goed})`,
-      eerste: `${X} ligt te ver van ${w(buur(v))} af.`,
-      hint,
-      uitleg: vooruit(v) ? `Na ${w(buur(v))} komt het nummer dat 1 groter is.` : `Voor ${w(buur(v))} komt het nummer dat 1 kleiner is.`,
-      weer: [`Je ${typ ? "typte" : "koos"} weer een nummer dat te ver weg ligt.`, vooruit(v) ? "Tel maar 1 stap verder." : "Tel maar 1 stap terug."],
+      v: {
+        eerste: [`${X} ligt te ver van ${B} af.`, `${koos} Zo ver hoeven we niet te tellen.`, `${vraagt} Dat is te ver geteld.`],
+        hint,
+        uitleg: vooruit(v) ? [`Na ${B} komt het nummer dat 1 groter is.`, "Het nummer dat we zoeken, komt er meteen na.", "We gaan maar een klein stukje verder."] : [`Voor ${B} komt het nummer dat 1 kleiner is.`, "Het nummer dat we zoeken, komt er meteen voor.", "We gaan maar een klein stukje terug."],
+        weerEerste: [`Je ${ww} weer een nummer dat te ver weg ligt.`, "Dat is weer te ver.", "Weer te ver, zie ik."],
+        weerUitleg: vooruit(v) ? ["We tellen maar 1 stap verder.", "We gaan maar 1 huis verder."] : ["We tellen maar 1 stap terug.", "We gaan maar 1 huis terug."],
+      },
       scherm,
       over: over((k) => (vooruit(v) ? k < x : k > x)),
       eigen: v.soort !== "na",
       bron: "draaiboek §3 C.2 (\"je ging een beetje te ver\")",
-    };
-  if (x < min || x > max)
-    return {
+    });
+  if (x < min || x > max) {
+    const be = x < min ? "begin" : "eind";
+    const ding = sleep ? "huis" : "nummer";
+    return maak({
       code: "buiten-de-rij",
       soort: x < min ? "buiten-begin" : "buiten-eind",
       denkfout: x < min ? `koos een nummer van vóór de straat (${x} komt voor ${min})` : `koos een nummer van na de straat (${x} komt na ${max})`,
-      eerste: `${sleep ? "Huis " : ""}${X} komt ${x < min ? `voor ${w(min)}, aan het begin` : `na ${w(max)}, aan het eind`} van de straat.`,
-      hint,
-      uitleg: `${plekWoord(v) === "de lege plek" ? "De lege plek" : "Het vraagteken"} staat midden in de straat.`,
-      weer: [`Je ${sleep ? "sleepte" : "koos"} weer een nummer van het ${x < min ? "begin" : "eind"}.`, "Kijk alleen naar de huizen naast het gat."],
+      v: {
+        eerste: [
+          `${sleep ? "Huis " : ""}${X} komt ${x < min ? `voor ${w(min)}, aan het begin` : `na ${w(max)}, aan het eind`} van de straat.`,
+          `${koos} Dat ${ding} komt ${x < min ? `al voor ${w(min)}` : `pas na ${w(max)}`}.`,
+          `${vraagt} Dat hoort helemaal aan het ${be} van de straat.`,
+        ],
+        hint,
+        uitleg: [`${plek === "de lege plek" ? "De lege plek" : "Het vraagteken"} staat midden in de straat.`, "We zoeken een nummer dat tussen de andere huizen past."],
+        weerEerste: [`Je ${ww} weer een ${ding} dat aan het ${be} hoort.`, `Dat ${ding} hoort weer aan het ${be} van de straat.`, `Weer een ${ding} van het ${be}, zie ik.`],
+        weerUitleg: [`Kijk alleen naar de huizen naast ${plek}.`, `De buren van ${plek} helpen je.`],
+      },
       scherm,
       over: over((k) => (x < min ? k > min : k < max)),
       eigen: true,
       bron: "eigen invulling (ertussen en slepen zitten niet in Counting On, draaiboek §8)",
-    };
-  return {
+    });
+  }
+  return maak({
     code: "onduidelijk",
     soort: "onduidelijk",
     denkfout: "niet duidelijk (geen reden verzonnen)",
-    eerste: "",
-    hint,
-    uitleg: "We tellen samen langs de huizen.",
-    weer: [],
+    /* Geen eigen uitleg: "We tellen samen langs de huizen." zei hetzelfde als "Kom, we tellen samen." erna (15.29). */
+    v: { eerste: [], hint, uitleg: [], weerEerste: [], weerUitleg: [] },
     scherm,
     over: typ ? [] : andere,
     eigen,
     bron: "BLIEPO-KARAKTER.md §10",
-  };
+  });
+}
+
+/* ---------- welke versie Bliepo zegt (zuiver: de les en het fouttabel-script gebruiken precies dit) ---------- */
+
+/** De kiezer van de les (nooit-dubbel.ts): een zin uit `zinnen`, nooit 2 keer achter elkaar dezelfde binnen 1 `sleutel`. */
+export type Variant = (sleutel: string, zinnen: readonly string[], mag?: (z: string) => boolean) => string;
+
+/**
+ * Wat Bliepo zegt bij een antwoord dat niet goed is.
+ *   1e keer: eerste zin (wat het kind koos) + hint. De hint noemt geen getal dat de eerste zin net noemde.
+ *   2e keer: eerste zin + uitleg; of, bij 2 keer dezelfde denkfout, "weer …" + een andere uitleg; of, bij hetzelfde
+ *   antwoord 2 keer, "Je koos weer …" + uitleg. Daarna telt Bliepo samen met het kind.
+ * `onduidelijk` = een zin uit het vaste rijtje (BLIEPO-KARAKTER.md §10) als de denkfout niet duidelijk is.
+ */
+export function foutStuk(variant: Variant, f: Fout, v: Vraag, poging: 1 | 2, eerder: Fout | null, o: { x: number; zelfdeAntwoord: boolean; onduidelijk: () => string }): string[] {
+  if (f.code === "onduidelijk") {
+    const e = o.zelfdeAntwoord && poging === 2 ? variant("weerGekozen", ZIN.weerGekozen(o.x, v)) : o.onduidelijk();
+    return poging === 1 ? [e, variant("hint", f.v.hint, pastNa(e))] : [e];
+  }
+  if (poging === 1) {
+    const e = variant("eerste", f.v.eerste);
+    return [e, variant("hint", f.v.hint, pastNa(e))];
+  }
+  /* "Weer" alleen als Bliepo de 1e keer al zei wat er mis was. */
+  if (eerder !== null && eerder.soort === f.soort && eerder.code !== "onduidelijk" && !eerder.noot && !f.noot && f.v.weerEerste.length > 0) {
+    const weer = variant("weer", f.v.weerEerste);
+    return [weer, variant("uitleg", f.v.weerUitleg, pastNa(weer))];
+  }
+  const e = o.zelfdeAntwoord ? variant("weerGekozen", ZIN.weerGekozen(o.x, v)) : variant("eerste", f.v.eerste);
+  return [e, variant("uitleg", f.v.uitleg, pastNa(e))];
+}
+
+/** De nieuwe poging na de hint: "Probeer het nog eens." + de vraag in andere woorden, zonder een getal dat net al klonk. */
+export function opnieuwZin(variant: Variant, v: Vraag, net: string[]): string {
+  const geenGetal = (z: string) => net.every((a) => !deeltGetal(a, z));
+  return `${variant("opnieuwBegin", OPNIEUW_BEGIN, geenGetal)} ${variant("opnieuw", ZIN.opnieuw(v), geenGetal)}`;
 }
 
 /** De meest voorkomende foute antwoorden bij typen (bij typen kan alles; de rest is `onduidelijk`). */
