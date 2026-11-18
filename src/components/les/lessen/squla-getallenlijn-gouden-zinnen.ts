@@ -18,6 +18,11 @@
  *     hun eerste zinnen, hints en fouttabel zijn "eigen invulling, niet van Synthesis" (BOUWREGELS 15.22 punt 5;
  *     gemarkeerd met `eigen: true`). Wel van Synthesis: samen springen met bogen en het tellen van de sprongen.
  *
+ * 18 november 2026 (Sara: Bliepo als warme juf, zoals de proefles Tellen): elke zin die terugkomt heeft varianten; de les
+ * kiest met de gedeelde kiezer (nooit-dubbel.ts) nooit 2 keer achter elkaar dezelfde. Bij de 1e keer noemt Bliepo alleen
+ * de kant ("verder", "te ver"), nooit "vlak vóór" of "1 streepje" (15.17). Oud naast nieuw:
+ * WIJZIGINGEN-ZINNEN-GETALLENLIJN.md. Geen andere les gebruikt dit bestand.
+ *
  * Leesbare versie: FOUTTABEL-squla-getallenlijn-kat-1-gouden.md (maak hem opnieuw met
  * `npx tsx scripts/fouttabel-getallenlijn-gouden.ts`; dat script doet ook de reken-, verklap- en waarheidscontrole).
  * De getallen op de lijn zijn wit; in de zinnen dus {n:wit} (BOUWREGELS 2.2: de kleur van het voorwerp; een getal op de
@@ -207,151 +212,244 @@ export function sprongStart(v: Vraag): number {
 /* ---------- vaste zinnen van het verloop (draaiboek Getallenlijn §2; eigen woorden) ---------- */
 
 const raketWoord = (v: Vraag) => (v.soort === "wie" ? NAAM[v.goed as Wezen] : "het raketje");
+/** "Die" of "dat" voor een ding: de ufo, de satelliet = die; het raketje = dat. */
+const die = (z: Wezen) => (z === "raketje" ? "Dat" : "Die");
+/** Volgt deze vraag op een vraag van dezelfde soort? Dan klinkt de vraag net anders (nooit 2 keer precies dezelfde zin). */
+const vervolg = (v: Vraag) => VRAGEN[v.nr - 2]?.soort === v.soort;
 
+/**
+ * ALLE ZINNEN IN VARIANTEN (Sara, 18 november 2026: Bliepo als warme juf, zoals de proefles Tellen). Elke situatie die
+ * terugkomt heeft een rijtje; de les kiest er steeds 1 met de gedeelde kiezer (nooit-dubbel.ts): nooit 2 keer achter
+ * elkaar dezelfde zin, ook niet over vragen heen. Een rijtje van rijtjes (string[][]) = varianten die uit meer stukken
+ * bestaan (elk stuk is 1 zin in het tekstvak). De vragen zelf hebben geen varianten: dezelfde soort vraag heet overal
+ * hetzelfde (BOUWREGELS 3.11). Oud naast nieuw: WIJZIGINGEN-ZINNEN-GETALLENLIJN.md.
+ */
 export const ZIN = {
   /**
    * Stap 3: "laten zien wat je weet?" (draaiboek: ja = proef, nee = uitleg). Groet en startvraag zijn 1 stuk (Sara,
-   * 10 nov). Uitlegdeel en persoonlijke vraag (BOUWREGELS 4.4); Ja = beginnen, Nee = samen oefenen.
+   * 10 nov). Uitlegdeel en persoonlijke vraag (BOUWREGELS 4.4); Ja = beginnen, Nee = samen oefenen. De vraag is die van
+   * Synthesis ("wil je laten zien wat je nog weet?"); "Weet jij al hoe dat gaat?" was vaag (BOUWREGELS 15.36). Niet
+   * langer dan de eerste versie (79 tekens): met de groet erboven moet het in het tekstvak passen (15.30).
    */
-  start: "In deze les zoek je bij welk getal het raketje staat. Weet jij al hoe dat gaat?",
-  proefBegin: "Laat maar zien!",
-  proefGoed: "Dat gaat goed. We gaan verder.",
-  proefLastig: ["Dit is nog lastig.", "We oefenen eerst samen."],
+  start: [
+    "We zoeken bij welk getal het raketje staat. Wil je laten zien wat je al kunt?",
+    "Vandaag zoeken we het getal bij het raketje. Wil je het eerst zelf proberen?",
+  ],
+  proefBegin: ["Laat maar zien!", "Toe maar, laat maar zien!", "Fijn! Laat maar zien wat je kunt."],
+  proefGoed: ["Dat gaat goed! We gaan verder.", "Je kunt het al goed. We gaan door.", "Dat gaat al heel goed. Kom, we gaan verder."],
+  proefLastig: [
+    ["Dit is nog een beetje lastig. Geeft niks!", "We oefenen eerst samen."],
+    ["Dit kan lastig zijn. Dat geeft niks.", "We doen samen een stapje terug."],
+    ["Dat is nog best moeilijk, hè?", "Kom, we oefenen eerst samen."],
+  ],
   /** Stap 4: de uitleg (4.5: samen beginnen, 1 ding uitleggen en laten zien, kleine stap, vraag, waarom, minder hulp). */
-  samenBeginnen: "Fijn, ik help je op weg.",
-  uitlegLijn: ["Dit is een getallenlijn.", "Bij elk streepje hoort een getal."],
-  uitlegStart: "Het raketje begint bij de {0:wit}.",
-  uitlegSpring: ["Laat het raketje springen tot de {3:wit}.", "Tik steeds op het getal ernaast."],
-  uitlegSpringHand: "Tik op dit getal.",
-  /** Springen: een sprong overslaan (draaiboek §3 B.3: "dat was geen sprong van 1"; B.5: "het hele stuk in één sprong"). */
-  uitlegOverslaan: ["Dat is te ver voor 1 sprong.", "Het raketje springt steeds 1 streepje."],
-  uitlegHeleStuk: ["Je wilde het hele stuk in 1 keer.", "Het raketje springt steeds 1 streepje."],
-  uitlegSpringZelf: "Kijk, zo springt het raketje: steeds 1 streepje verder.",
+  samenBeginnen: ["Fijn, ik help je op weg.", "Goed dat je het zegt. Ik help je.", "Dan doen we het eerst samen. Ik help je."],
+  uitlegLijn: [
+    ["Dit is een getallenlijn.", "Bij elk streepje hoort een getal."],
+    ["Kijk, dit is een getallenlijn.", "Elk streepje heeft zijn eigen getal."],
+  ],
+  uitlegStart: ["Het raketje begint bij de {0:wit}.", "Kijk, hier begint het raketje: bij de {0:wit}."],
+  /** De opdracht zegt wat het kind doet en waar (15.36; was: "Tik steeds op het getal ernaast."). */
+  uitlegSpring: [
+    ["Laat het raketje springen tot de {3:wit}.", "Tik steeds op het volgende getal."],
+    ["We laten het raketje springen tot de {3:wit}.", "Tik steeds op het getal dat daarna komt."],
+  ],
+  uitlegSpringHand: ["Tik op dit getal.", "Tik maar op dit getal.", "Hier springt het raketje heen. Tik erop."],
+  /**
+   * Springen: een sprong overslaan (draaiboek §3 B.3: "dat was geen sprong van 1"; B.5: "het hele stuk in één sprong").
+   * De les wacht daarna op het kind: elke variant eindigt daarom met wat het kind doet (F16, BOUWREGELS 15.37; was:
+   * "Het raketje springt steeds 1 streepje.", dat is geen opdracht).
+   */
+  uitlegOverslaan: [
+    ["Dat is te ver voor 1 sprong.", "Tik op het getal vlak naast het raketje."],
+    ["Zo ver springt het raketje niet in 1 keer.", "Tik op het volgende getal."],
+  ],
+  uitlegOverslaanWeer: [
+    ["Het raketje springt steeds 1 streepje. Tik op het volgende getal."],
+    ["Elke sprong is 1 streepje. Tik op het getal vlak naast het raketje."],
+  ],
+  uitlegHeleStuk: [
+    ["Je wilde het hele stuk in 1 keer doen.", "Het raketje maakt kleine sprongen. Tik op het volgende getal."],
+    ["Jij wilt al naar het eind! Dat is te ver.", "Tik eerst op het getal vlak naast het raketje."],
+  ],
+  uitlegSpringZelf: ["Kijk, zo springt het raketje: steeds 1 streepje verder.", "Kijk, ik laat het zien. Het raketje springt steeds 1 streepje verder."],
   uitlegVraag: "Hoeveel sprongen maakte het raketje?",
   uitlegVraagOpnieuw: "Hoeveel bogen zie je?",
-  /** Stap 5 van 4.5: bevestigen en uitleggen waarom. */
-  uitlegWaarom: "Het raketje sprong {3:wit} keer vanaf de {0:wit}. Daarom staat het bij de {3:wit}.",
+  /** Stap 5 van 4.5: bevestigen en uitleggen waarom. Het getal 3 staat er 1 keer in (was: "… sprong 3 keer vanaf de 0. Daarom staat het bij de 3."). */
+  uitlegWaarom: [
+    "Het raketje sprong {3:wit} keer vanaf de {0:wit}. Daarom staat het nu bij dat getal.",
+    "Elke boog is 1 sprong. Het raketje sprong {3:wit} keer vanaf de {0:wit}.",
+    "Het raketje maakte {3:wit} sprongen vanaf de {0:wit}. Kijk maar naar de bogen.",
+  ],
+  /** 2e keer mis bij de uitlegvraag: samen de bogen tellen. */
+  uitlegSamen: ["Kom, we tellen de bogen samen.", "Weet je wat? We tellen de bogen samen.", "Geeft niks. We tellen de bogen samen.", "Ik help je even. We tellen de bogen samen."],
   uitlegSamenTel: (k: number) => `${w(k)}.`,
-  uitlegSamenKlaar: "Dat zijn {3:wit} sprongen.",
+  /** Na "1. 2. 3.": het getal niet nog een keer (was: "Dat zijn 3 sprongen."). */
+  uitlegSamenKlaar: ["Zoveel sprongen maakte het raketje.", "Zo vaak sprong het raketje.", "Zoveel bogen zijn het. Elke boog is 1 sprong."],
+  uitlegSamenStap: ["Tik jij op de {3:wit}?", "Tik jij de {3:wit} aan?"],
+  uitlegSamenHand: ["Tik op de {3:wit}.", "Tik maar op de {3:wit}."],
+  /** Na de kleine stap (het kind tikte de 3 aan); na het vangnet zonder "Ja". */
+  uitlegSamenNa: ["Ja, zo ver sprong het raketje.", "Ja, daar staat het raketje nu.", "Precies, tot daar sprong het raketje."],
+  uitlegSamenZelf: ["Kijk, zo ver sprong het raketje.", "Kijk, daar staat het raketje nu."],
   /** Stap 6 van 4.5: met minder hulp verder. */
-  nuJij: "Nu jij. Kijk goed naar de getallen naast het raketje.",
+  nuJij: ["Nu jij! Kijk goed naar de getallen naast het raketje.", "Nu mag jij het proberen. De getallen naast het raketje helpen je.", "Probeer jij het nu maar. Kijk goed naar de getallen naast het raketje."],
 
-  /** De vraag van de oude les; dezelfde soort vraag = dezelfde schooltermen (3.11); niet 2 keer na elkaar precies hetzelfde (F7). */
+  /**
+   * De vraag van de oude les; dezelfde soort vraag = dezelfde schooltermen (3.11). Niet 2 keer na elkaar precies
+   * dezelfde zin (F7): volgt een vraag op een vraag van dezelfde soort, dan klinkt hij net anders ("nu", "ook deze",
+   * "En …"), zoals een juf dat doet.
+   */
   vraag: (v: Vraag): string[] => {
     if (v.vraagzin) return v.vraagzin;
     if (v.soort === "bij") return [v.nr === 2 ? "Bij welk getal staat het raketje nu?" : "Bij welk getal staat het raketje?"];
-    if (v.soort === "natien") return [`Het raketje vliegt verder dan de ${w(10)}.`, `Welk getal komt na ${w(10)}?`];
+    /* Het getal 10 staat er 1 keer in (was: "… verder dan de 10. Welk getal komt na 10?"). */
+    if (v.soort === "natien") return [`Het raketje vliegt verder dan de ${w(10)}.`, "Welk getal komt daarna?"];
     if (v.soort === "meer") return [...v.meer!.verhaal, `Wat is meer: ${ster(v.meer!.a)} of ${ster(v.meer!.b)}?`];
-    if (v.soort === "orden") return ["Zet de getallen op volgorde.", "Van klein naar groot."];
-    if (v.soort === "wie") return [`Wat staat er bij ${w(v.n!)}?`, "Tik erop."];
-    if (v.soort === "dichtst") return [`Welk getal ligt het dichtst bij ${w(v.n!)}?`];
-    return ["Bij welk getal staat het raketje ongeveer?"];
+    if (v.soort === "orden") return [vervolg(v) ? "Zet ook deze getallen op volgorde." : "Zet de getallen op volgorde.", "Van klein naar groot."];
+    if (v.soort === "wie") return [`${vervolg(v) ? "En wat" : "Wat"} staat er bij ${w(v.n!)}?`, "Tik erop."];
+    if (v.soort === "dichtst") return [`${vervolg(v) ? "En welk" : "Welk"} getal ligt het dichtst bij ${w(v.n!)}?`];
+    return [vervolg(v) ? "Bij welk getal staat het raketje nu ongeveer?" : "Bij welk getal staat het raketje ongeveer?"];
   },
   /** Op volgorde, de eerste keer: hoe het werkt (3.15: 1 keer per les uitleggen). */
   ordenHoe: "Sleep een kaart naar een vak. Of tik op een kaart.",
-  /** Een nieuwe poging na de hint: de vraag in andere woorden (3.23). */
+  /** Een nieuwe poging na de hint: de vraag in andere woorden (3.23). Zo staat er altijd een vraag of opdracht (F16). */
   opnieuw: (v: Vraag): string[] => {
-    if (v.soort === "bij") return ["Welk getal hoort bij het raketje?"];
-    if (v.soort === "natien") return [`Welk getal komt er na ${w(10)}?`];
-    if (v.soort === "meer") return [`Welk getal is meer: ${w(v.meer!.a)} of ${w(v.meer!.b)}?`];
-    if (v.soort === "orden") return ["Zet de kaarten nu op volgorde."];
-    if (v.soort === "wie") return [`Tik op wat er bij ${w(v.n!)} staat.`];
-    if (v.soort === "dichtst") return [`Welk getal ligt het dichtst bij de ${w(v.n!)}?`];
-    return ["Welk getal hoort ongeveer bij het raketje?"];
+    if (v.soort === "bij") return ["Welk getal hoort bij het raketje?", "Bij welk getal staat het raketje, denk je?"];
+    if (v.soort === "natien") return [`Welk getal komt er na ${w(10)}?`, `Wat komt er na de ${w(10)}?`];
+    if (v.soort === "meer") return [`Welk getal is meer: ${w(v.meer!.a)} of ${w(v.meer!.b)}?`, `Wat is meer, denk je: ${w(v.meer!.a)} of ${w(v.meer!.b)}?`];
+    if (v.soort === "orden") return ["Zet de kaarten nu op volgorde.", "Zet de kaarten van klein naar groot.", "Probeer het nog eens. Zet de kaarten op volgorde."];
+    if (v.soort === "wie") return [`Tik op wat er bij ${w(v.n!)} staat.`, `Wat staat er bij de ${w(v.n!)}? Tik erop.`];
+    if (v.soort === "dichtst") return [`Welk getal ligt het dichtst bij de ${w(v.n!)}?`, `Welk getal ligt het dichtst bij de ${w(v.n!)}, denk je?`];
+    return ["Welk getal hoort ongeveer bij het raketje?", "Bij welk getal staat het raketje ongeveer, denk je?"];
   },
   /**
    * Op volgorde: het hulphandje wijst het eerste lege vak aan (nooit de goede kaart, 15.17). De zin komt in Bliepo's
    * tekstvak terwijl de les op het kind wacht, dus hij zegt wat het kind doet (F16, Sara 18 november 2026; BOUWREGELS
    * 15.37). Eerst: "Hier komt een kaart."
    */
-  ordenHand: "Sleep een kaart naar dit vak.",
+  ordenHand: ["Sleep een kaart naar dit vak.", "Sleep maar een kaart naar dit vak.", "Hier mag een kaart liggen. Sleep hem erheen."],
 
   /** 2e fout: samen voordoen (draaiboek §3 E.3 en F.3: de getallen vastzetten, samen springen, 1 per keer). */
-  samen: (v: Vraag) => (v.soort === "orden" ? "Kom, we leggen ze samen." : v.soort === "dichtst" ? "Kom, we zetten de getallen op de lijn." : "Kom, we springen samen."),
-  samenBegin: (v: Vraag) => {
+  samen: (v: Vraag): string[] =>
+    v.soort === "orden"
+      ? ["Kom, we leggen ze samen.", "Weet je wat? We leggen ze samen.", "Geeft niks. We leggen ze samen neer.", "Ik help je even. We leggen ze samen."]
+      : v.soort === "dichtst"
+        ? ["Kom, we zetten de getallen op de lijn.", "Weet je wat? We zetten de getallen op de lijn.", "Geeft niks. We zetten ze samen op de lijn.", "Ik help je even. We zetten de getallen op de lijn."]
+        : ["Kom, we springen samen.", "Weet je wat? We springen samen.", "Geeft niks. We springen samen.", "Ik help je even. We springen samen over de lijn."],
+  /** Bij "ongeveer" eerst: alle streepjes komen erbij. */
+  samenStreepjes: ["Ik zet alle streepjes erbij.", "Kijk, ik zet alle streepjes erbij."],
+  samenBegin: (v: Vraag): string[] => {
     const s = sprongStart(v);
-    if (v.soort === "ongeveer") return [`Ik zet alle streepjes erbij.`, `Ik begin bij de ${w(s)}.`];
-    if (v.soort === "dichtst") return [`Hier is de ${w(v.n!)}.`];
-    if (v.soort === "meer") return [`Hier staat de ${w(s)}.`];
-    return [`Ik begin bij de ${w(s)}.`];
+    /* Het rondje staat om het getal waar de sprongen beginnen: Bliepo noemt dat getal (was: "Hier is de 20."). */
+    if (v.soort === "dichtst") return [`We springen van de ${w(s)} naar de ${w(v.n!)}.`, `Kijk, we springen van de ${w(s)} naar de ${w(v.n!)}.`];
+    if (v.soort === "meer") return [`Hier staat de ${w(s)}.`, `Kijk, hier is de ${w(s)}.`];
+    return [`Ik begin bij de ${w(s)}.`, `We beginnen bij de ${w(s)}.`, `Kijk, we starten bij de ${w(s)}.`];
   },
   samenSprong: (k: number) => `${w(k)}.`,
   samenTelSprong: (k: number) => `${w(k)}.`,
-  /** Bij het doel: het getal komt erbij (nu pas het antwoord in beeld, 15.11). */
-  samenDoel: (v: Vraag) => {
+  /** Bij het doel: het getal komt erbij (nu pas het antwoord in beeld, 15.11). Elk getal staat er 1 keer in. */
+  samenDoel: (v: Vraag): string[] => {
     const n = Number(v.goed);
-    if (v.soort === "bij" || v.soort === "natien" || v.soort === "ongeveer") return `Hier staat het raketje: bij de ${w(n)}.`;
-    if (v.soort === "wie") return `Bij de ${w(v.n!)} staat ${NAAM[v.goed as Wezen]}.`;
-    if (v.soort === "meer") return `De ${w(v.meer!.b)} komt 1 verder. Dus ${w(v.meer!.b)} is meer.`;
+    if (v.soort === "bij" || v.soort === "natien" || v.soort === "ongeveer") return [`Hier staat het raketje: bij de ${w(n)}.`, `En hier staat het raketje: bij de ${w(n)}.`, `Kijk, bij de ${w(n)} staat het raketje.`];
+    if (v.soort === "wie") return [`Bij de ${w(v.n!)} staat ${NAAM[v.goed as Wezen]}.`, `Kijk, bij de ${w(v.n!)} staat ${NAAM[v.goed as Wezen]}.`, `Hier is de ${w(v.n!)}. Daar staat ${NAAM[v.goed as Wezen]}.`];
+    /* Was: "De 14 komt 1 verder. Dus 14 is meer." (het getal 2 keer achter elkaar). */
+    if (v.soort === "meer") return [`De ${w(v.meer!.b)} komt 1 sprong verder. Dat getal is dus meer.`, `Daarna komt ${w(v.meer!.b)}. Wat later komt, is meer.`];
     if (v.soort === "dichtst") {
+      /* De 2 getallen zijn net gezegd ("We springen van de 18 naar de 20."): hier alleen het aantal sprongen. */
       const d = Math.abs(n - v.n!);
-      return `Van ${w(n)} naar de ${w(v.n!)}: maar ${d} ${d === 1 ? "sprong" : "sprongen"}. De andere getallen liggen verder weg.`;
+      return d === 1 ? ["Dat is maar 1 sprong. De andere getallen liggen verder weg.", "Het is maar 1 sprong. Dichterbij kan niet."] : [`Dat zijn maar ${d} sprongen. De andere getallen liggen verder weg.`, `Het zijn maar ${d} sprongen. Dat is het dichtst bij.`];
     }
-    return "";
+    return [];
   },
-  samenOrden: (a: number, b: number) => `Na ${w(a)} komt ${w(b)}.`,
-  /** De kleine stap van het kind (15.11). */
-  samenStap: (v: Vraag) => {
-    if (v.soort === "orden") return `Sleep jij de ${w(Number(v.goed.split(",").at(-1)))} naar het laatste vak?`;
-    if (v.soort === "wie") return `Tik jij op ${NAAM[v.goed as Wezen]}?`;
-    return `Tik jij op de ${w(Number(v.goed))}?`;
+  /** Op volgorde: de 1e kaart "Na 5 komt 6.", daarna "En dan komt 7." (was 2 keer "Na … komt …": het getal 2 keer achter elkaar). */
+  samenOrden: (a: number, b: number, eerste: boolean): string[] => (eerste ? [`Na ${w(a)} komt ${w(b)}.`, `Eerst de ${w(b)}: die komt na ${w(a)}.`] : [`En dan komt ${w(b)}.`, `Daarna komt ${w(b)}.`]),
+  /**
+   * De kleine stap van het kind (15.11). Het getal is net gezegd ("Hier staat het raketje: bij de 6."), dus de vraag
+   * noemt het niet nog een keer; bij "meer" en "dichtst" stonden er 2 getallen in de zin ervoor, daar wel.
+   */
+  samenStap: (v: Vraag): string[] => {
+    if (v.soort === "orden") {
+      const n = w(Number(v.goed.split(",").at(-1)));
+      return [`Sleep jij de ${n} naar het laatste vak?`, `Nu de ${n} nog. Sleep jij hem naar het laatste vak?`];
+    }
+    if (v.soort === "wie") return ["Tik jij erop?", "Wil jij erop tikken?"];
+    if (v.soort === "meer" || v.soort === "dichtst") return [`Tik jij op de ${w(Number(v.goed))}?`, `Tik jij de ${w(Number(v.goed))} aan?`];
+    return ["Tik jij op dat getal?", "Tik jij dat getal aan?"];
   },
-  samenHand: (v: Vraag) => {
-    if (v.soort === "orden") return `Sleep de ${w(Number(v.goed.split(",").at(-1)))} hierheen.`;
-    if (v.soort === "wie") return `Tik op ${NAAM[v.goed as Wezen]}.`;
-    return `Tik op de ${w(Number(v.goed))}.`;
+  samenHand: (v: Vraag): string[] => {
+    if (v.soort === "orden") {
+      const n = w(Number(v.goed.split(",").at(-1)));
+      return [`Sleep de ${n} hierheen.`, `Sleep de ${n} maar hierheen.`];
+    }
+    if (v.soort === "wie") return [`Tik op ${NAAM[v.goed as Wezen]}.`, `Tik maar op ${NAAM[v.goed as Wezen]}.`];
+    return [`Tik op de ${w(Number(v.goed))}.`, `Tik maar op de ${w(Number(v.goed))}.`];
   },
-  samenKlaar: (v: Vraag) => {
+  samenKlaar: (v: Vraag): string[] => {
     const n = Number(v.goed);
-    if (v.soort === "orden") return `Ja, nu staan ze op volgorde.`;
-    if (v.soort === "wie") return `Ja, ${NAAM[v.goed as Wezen]} staat bij de ${w(v.n!)}.`;
-    if (v.soort === "meer") return `Ja, ${w(n)} is meer.`;
-    if (v.soort === "dichtst") return `Ja, ${w(n)} ligt het dichtst bij.`;
-    return `Ja, dat is de ${w(n)}.`;
+    if (v.soort === "orden") return ["Ja, nu staan ze op volgorde.", "Ja, zo gaan ze van klein naar groot.", "Precies, nu liggen ze goed."];
+    if (v.soort === "wie") return [`Ja, ${NAAM[v.goed as Wezen]} staat bij de ${w(v.n!)}.`, `Precies, daar staat ${NAAM[v.goed as Wezen]}.`];
+    if (v.soort === "meer") return [`Ja, ${w(n)} is meer.`, `Precies, ${w(n)} is meer dan ${w(v.meer!.a)}.`];
+    if (v.soort === "dichtst") return [`Ja, ${w(n)} ligt het dichtst bij.`, `Precies, ${w(n)} ligt het dichtst bij de ${w(v.n!)}.`];
+    if (v.soort === "natien") return [`Ja, dat is de ${w(n)}.`, `Ja, na de ${w(10)} komt de ${w(n)}.`, "Precies, daar staat het raketje."];
+    return [`Ja, dat is de ${w(n)}.`, `Ja, bij de ${w(n)} staat het raketje.`, "Precies, daar staat het raketje."];
   },
   /** Na het vangnet (Bliepo deed de stap zelf): geen "Ja" alsof het kind het deed (keuring Meer-minder, 10 nov). */
-  samenZelf: (v: Vraag) => {
+  samenZelf: (v: Vraag): string[] => {
     const n = Number(v.goed);
-    if (v.soort === "orden") return "Kijk, nu staan ze op volgorde.";
-    if (v.soort === "wie") return `Kijk, hier staat ${NAAM[v.goed as Wezen]}.`;
-    return `Kijk, hier is de ${w(n)}.`;
+    if (v.soort === "orden") return ["Kijk, nu staan ze op volgorde.", "Ik leg de laatste kaart neer. Nu staan ze op volgorde."];
+    if (v.soort === "wie") return [`Kijk, hier staat ${NAAM[v.goed as Wezen]}.`, `Ik wijs het even aan. Hier staat ${NAAM[v.goed as Wezen]}.`];
+    return [`Kijk, hier is de ${w(n)}.`, `Ik wijs hem even aan. Hier is de ${w(n)}.`];
   },
   /** Hetzelfde foute antwoord 2 keer: niet 2 keer dezelfde eerste zin (geleerd bij Tellen). */
-  weerGekozen: (x: string, v: Vraag) => (v.soort === "orden" ? "Je legde ze weer zo neer." : v.soort === "wie" ? `Je tikte weer op ${NAAM[x as Wezen]}.` : `Je koos weer ${w(Number(x))}.`),
+  weerGekozen: (x: string, v: Vraag): string[] =>
+    v.soort === "orden"
+      ? ["Je legde ze weer zo neer.", "Ze liggen weer net zo, zie ik."]
+      : v.soort === "wie"
+        ? [`Je tikte weer op ${NAAM[x as Wezen]}.`, `Weer ${NAAM[x as Wezen]}, zie ik.`]
+        : [`Je koos weer ${w(Number(x))}.`, `Je tikte weer op ${w(Number(x))}.`, `Weer ${w(Number(x))}, zie ik.`],
   /** Stap 7.5: einde. */
-  slot: "Je weet nu waar het raketje staat op de getallenlijn.",
-  kaartTik: "Tik op de kaart.",
+  slot: ["Je weet nu waar het raketje staat op de getallenlijn.", "Goed gewerkt! Je kent de getallenlijn al goed.", "Knap, hoor! Jij vindt het raketje op de getallenlijn."],
+  kaartTik: ["Tik op de kaart.", "Tik maar op de kaart.", "Kijk, een kaart voor jou! Tik erop."],
   raketWoord,
 };
 
 /** Aanmoediging bij het hulphandje (het kind moet slepen of tikken, niet nadenken; 14.35, geleerd bij Tellen). */
-export const AANMOEDIG_TIKKEN = ["Je bent goed bezig.", "Jij kunt dit."];
+export const AANMOEDIG_TIKKEN = ["Je bent goed bezig.", "Jij kunt dit.", "Het gaat goed zo.", "Probeer het maar.", "Toe maar, je doet het goed."];
+
+/** De woorden die in dezelfde zin wisselen (voor de kiezer: "Je tikte weer op de ufo." = "Je tikte weer op het raketje."). */
+export const WISSELWOORDEN = ["het raketje", "de ufo", "de satelliet"];
 
 /**
  * Reactie na de lof (BLIEPO-KARAKTER.md §4 Getallenlijn, zin 26 t/m 30, plus zinnen zonder "Ja").
- * Index 0 en 1 beginnen met "Ja", 2 en 3 niet, 4 is de robotzin (hooguit 1 keer per les).
+ * Index 0 en 1 beginnen met "Ja", 2 en 3 niet, 4 is de robotzin (hooguit 1 keer per les), 5 en 6 zijn erbij sinds
+ * 18 november 2026 ("Precies" is van Synthesis; "Dat klopt").
  */
 export function lijnReactie(v: Vraag): Rijtje {
   const g = Number(v.goed);
   const G = w(g);
-  if (v.soort === "bij") return rij([`Ja, het raketje staat bij de ${G}.`, `Ja, na de ${w(g - 1)} komt de ${G}.`, `Het raketje staat bij de ${G}.`, `Na de ${w(g - 1)} komt de ${G}.`, `Nagekeken: het raketje staat precies bij de ${G}.`], [4]);
-  if (v.soort === "natien") return rij([`Ja, na de ${w(10)} komt de ${w(11)}.`, "Ja, de lijn gaat gewoon door.", `Na de ${w(10)} komt de ${w(11)}.`, `De lijn gaat door: ${w(11)}.`, `Nagekeken: na de ${w(10)} komt echt de ${w(11)}.`], [4]);
-  if (v.soort === "meer") return rij([`Ja, ${G} is meer dan ${w(v.meer!.a)}.`, `Ja, ${G} zeg je later als je telt.`, `${G} is meer dan ${w(v.meer!.a)}.`, `${G} komt na ${w(v.meer!.a)}.`, `Nagekeken: ${G} is meer.`], [4]);
+  if (v.soort === "bij")
+    return rij([`Ja, het raketje staat bij de ${G}.`, `Ja, na de ${w(g - 1)} komt de ${G}.`, `Het raketje staat bij de ${G}.`, `Na de ${w(g - 1)} komt de ${G}.`, `Nagekeken: het raketje staat precies bij de ${G}.`, `Precies, het raketje staat bij de ${G}.`, `Dat klopt: na de ${w(g - 1)} komt de ${G}.`], [4]);
+  if (v.soort === "natien")
+    return rij([`Ja, na de ${w(10)} komt de ${w(11)}.`, "Ja, de lijn gaat gewoon door.", `Na de ${w(10)} komt de ${w(11)}.`, `De lijn gaat door: ${w(11)}.`, `Nagekeken: na de ${w(10)} komt echt de ${w(11)}.`, `Precies, na de ${w(10)} komt de ${w(11)}.`, `Dat klopt: de lijn telt gewoon verder.`], [4]);
+  if (v.soort === "meer")
+    return rij([`Ja, ${G} is meer dan ${w(v.meer!.a)}.`, `Ja, ${G} zeg je later als je telt.`, `${G} is meer dan ${w(v.meer!.a)}.`, `${G} komt na ${w(v.meer!.a)}.`, `Nagekeken: ${G} is meer.`, `Precies, ${G} is meer dan ${w(v.meer!.a)}.`, `Dat klopt: ${G} komt later als je telt.`], [4]);
   if (v.soort === "orden") {
     const r = v.goed.split(",").map((n) => w(Number(n))).join(", ");
-    return rij([`Ja, van klein naar groot: ${r}.`, "Ja, er komt steeds 1 bij.", `Van klein naar groot: ${r}.`, "Er komt steeds 1 bij.", `Nagekeken: ${r}. Klopt!`], [4]);
+    return rij([`Ja, van klein naar groot: ${r}.`, "Ja, er komt steeds 1 bij.", `Van klein naar groot: ${r}.`, "Er komt steeds 1 bij.", `Nagekeken: ${r}. Klopt!`, "Precies, er komt steeds 1 bij.", `Dat klopt: ${r}.`], [4]);
   }
   if (v.soort === "wie") {
     const z = v.goed as Wezen;
-    return rij([`Ja, ${NAAM[z]} staat bij de ${w(v.n!)}.`, `Ja, daar is de ${w(v.n!)}.`, `${Naam(z)} staat bij de ${w(v.n!)}.`, `Bij de ${w(v.n!)} staat ${NAAM[z]}.`, `Nagekeken: ${NAAM[z]} staat bij de ${w(v.n!)}.`], [4]);
+    return rij([`Ja, ${NAAM[z]} staat bij de ${w(v.n!)}.`, `Ja, daar is de ${w(v.n!)}.`, `${Naam(z)} staat bij de ${w(v.n!)}.`, `Bij de ${w(v.n!)} staat ${NAAM[z]}.`, `Nagekeken: ${NAAM[z]} staat bij de ${w(v.n!)}.`, `Precies, ${NAAM[z]} staat bij de ${w(v.n!)}.`, `Dat klopt: bij de ${w(v.n!)} staat ${NAAM[z]}.`], [4]);
   }
   if (v.soort === "dichtst") {
     const d = Math.abs(g - v.n!);
-    return rij([`Ja, ${G} ligt maar ${d} van de ${w(v.n!)} af.`, `Ja, ${G} ligt het dichtst bij de ${w(v.n!)}.`, `${G} ligt maar ${d} van de ${w(v.n!)} af.`, `${G} ligt het dichtst bij de ${w(v.n!)}.`, `Nagekeken: ${G} ligt het dichtst bij.`], [4]);
+    /* "maar 2 sprongen van de 20 af" (was: "maar 2 van de 20 af"; de les telt overal in sprongen). */
+    const ver = `${d} ${d === 1 ? "sprong" : "sprongen"}`;
+    return rij([`Ja, ${G} ligt maar ${ver} van de ${w(v.n!)} af.`, `Ja, ${G} ligt het dichtst bij de ${w(v.n!)}.`, `${G} ligt maar ${ver} van de ${w(v.n!)} af.`, `${G} ligt het dichtst bij de ${w(v.n!)}.`, `Nagekeken: ${G} ligt het dichtst bij.`, `Precies, ${G} ligt het dichtst bij de ${w(v.n!)}.`, `Dat klopt: ${G} ligt maar ${ver} van de ${w(v.n!)} af.`], [4]);
   }
   const a = anker(v);
   const kant = g > a ? "na" : "voor";
-  return rij([`Ja, het raketje staat ongeveer bij de ${G}.`, `Ja, vlak ${kant} de ${w(a)}.`, `Het raketje staat ongeveer bij de ${G}.`, `Vlak ${kant} de ${w(a)} staat de ${G}.`, `Nagekeken: ongeveer ${G}. Klopt!`], [4]);
+  return rij([`Ja, het raketje staat ongeveer bij de ${G}.`, `Ja, vlak ${kant} de ${w(a)}.`, `Het raketje staat ongeveer bij de ${G}.`, `Vlak ${kant} de ${w(a)} staat de ${G}.`, `Nagekeken: ongeveer ${G}. Klopt!`, `Precies, het raketje staat ongeveer bij de ${G}.`, `Dat klopt: vlak ${kant} de ${w(a)} staat de ${G}.`], [4]);
 }
 export const REACTIE_JA = [0, 1];
 export const REACTIE_ROBOT = 4;
@@ -391,11 +489,11 @@ export type Fout = {
   /** Bliepo's eerste zin (leeg bij "onduidelijk": dan een zin uit BLIEPO-KARAKTER.md §10). */
   eerste: string;
   hint: string;
-  /** Uitleg na de 2e fout (daarna meteen samen voordoen; dan mag het antwoord in beeld, 15.11). */
+  /** Uitleg na de 2e fout: de hele reactie (daarna meteen samen voordoen; dan mag het antwoord in beeld, 15.11). */
   uitleg: string;
   /** Dezelfde denkfout 2 keer (en de 1e keer zei Bliepo al wat er mis was): anders uitleggen. */
   weer: string[];
-  /** Wat Bliepo bij de hint aanwijst met het rode rondje (alleen wat hij noemt, nooit het antwoord; 7.8, 15.17). */
+  /** Wat Bliepo bij de hint aanwijst met het rode rondje (alleen als hij het getal ook noemt, nooit het antwoord; 7.8, 15.17). */
   licht: Licht;
   scherm: string;
   /** Welke keuzes de eerste zin en de hint nog toelaten (verklapcontrole van het script, 15.17). */
@@ -404,201 +502,298 @@ export type Fout = {
   eigen: boolean;
   /** Waar Synthesis deze reactie heeft (draaiboek). */
   bron: string;
-  /** Waarom er na de eerste zin maar 1 keuze over is (alleen bij 2 keuzes). */
+  /** Waarom Bliepo geen richting noemt, of waarom er na de eerste zin maar 1 keuze over is (alleen bij 2 keuzes). */
   noot?: string;
+  /** Alle varianten (18 november 2026); `eerste`, `hint`, `uitleg` en `weer` hierboven zijn er 1 van (voor de fouttabel). */
+  v?: Varianten;
 };
+
+/**
+ * Alle varianten bij 1 fout antwoord; de les kiest er steeds 1 (nooit 2 keer achter elkaar dezelfde).
+ *   eerste      1e keer: wat het kind koos (met de richting als dat niets verklapt);
+ *   hint        1e keer: hoe je zoekt, nooit het antwoord; daarna komt de vraag in andere woorden terug;
+ *   uitleg      2e keer met een ander antwoord: de hele reactie (elk getal staat er hooguit 1 keer in);
+ *   uitlegLos   2e keer met hetzelfde antwoord: komt na "Je koos weer …", dus zonder dat getal;
+ *   weerEerste / weerUitleg   2 keer dezelfde denkfout (en Bliepo noemde hem de 1e keer al).
+ */
+export type Varianten = { eerste: string[]; hint: string[]; uitleg: string[]; uitlegLos: string[]; weerEerste: string[]; weerUitleg: string[] };
+
+/** Zonder kleurcode: {12:wit} wordt 12. */
+export const kaal = (z: string) => z.replace(/\{([^}:]+):[a-zA-Z]+\}/g, "$1");
+/** De getallen in een zin. */
+export const getallenIn = (z: string) => (kaal(z).match(/\d+/g) ?? []).map(Number);
+/** Noemen 2 zinnen hetzelfde getal? (Een getal klinkt niet 2 keer achter elkaar.) */
+export const deeltGetal = (a: string, b: string) => {
+  const A = new Set(getallenIn(a));
+  return getallenIn(b).some((n) => A.has(n));
+};
+/** Woorden waarmee Bliepo zegt dat het bijna goed was. Alleen als er dan nog 2 keuzes dichtbij zijn (15.17). */
+export const NABIJ = /dichtbij|bijna|iets (te ver|verder)/i;
+/** Zo lang mag 1 reactie (eerste zin + hint, of de uitleg) zijn: dan past hij in het tekstvak (15.30). */
+export const MAX_REACTIE = 125;
+
+/** Hoe lang een stuk tekst op het scherm is (zonder de kleurcodes). */
+export const lengte = (...zinnen: string[]) => kaal(zinnen.join(" ")).length;
+/**
+ * Alleen de varianten die met de rest van de reactie in het tekstvak passen (een harde eis: die haal je vooraf uit de
+ * lijst, want de kiezer laat "nooit 2 keer dezelfde" voorgaan op een wens). Past er geen, dan de kortste.
+ */
+export const passend = (zinnen: readonly string[], ...rest: string[]): string[] => {
+  const over = zinnen.filter((z) => lengte(...rest, z) <= MAX_REACTIE);
+  return over.length ? over : [[...zinnen].sort((a, b) => lengte(a) - lengte(b))[0]];
+};
+/** Alleen de varianten die geen getal uit de zin ervoor herhalen (ook een harde eis; is er geen, dan allemaal). */
+export const zonderGetalUit = (zinnen: readonly string[], ervoor: string): string[] => {
+  const over = zinnen.filter((z) => !deeltGetal(ervoor, z));
+  return over.length ? over : [...zinnen];
+};
+/** De kiezer van de les (nooit-dubbel.ts): kiest 1 zin uit een rijtje, nooit 2 keer achter elkaar dezelfde. */
+export type Kies = (sleutel: string, zinnen: readonly string[], mag?: (z: string) => boolean) => string;
+/** Het begin van een zin (de eerste 2 woorden), om niet 2 keer achter elkaar "Je koos …" te zeggen. */
+const begin = (z: string) => kaal(z).toLowerCase().replace(/\d+/g, "#").split(/[.!?,:]/)[0].trim().split(/\s+/).slice(0, 2).join(" ");
+
+/**
+ * Wat Bliepo zegt bij een antwoord dat niet goed is, uit de varianten. De les en het fouttabel-script gebruiken allebei
+ * deze functie, zodat het script precies naspeelt wat de les doet.
+ *   1e keer: eerste zin (wat het kind koos) + hint. De hint past in het tekstvak en herhaalt geen getal uit de eerste zin.
+ *   2e keer: de uitleg (1 reactie, elk getal hooguit 1 keer); of, bij 2 keer dezelfde denkfout, "weer" + een andere
+ *   uitleg; of, bij hetzelfde antwoord 2 keer, "Je koos weer …" + de uitleg zonder dat getal.
+ */
+export function foutReactie(kies: Kies, f: Fout, poging: 1 | 2, eerder: Fout | null, zelfdeAntwoord: boolean, eersteZin: string, weerGekozen: string[]): string[] {
+  const v = f.v!;
+  if (poging === 1) {
+    const eerste = kies("eerste", v.eerste);
+    return [eerste, kies("hint", passend(zonderGetalUit(v.hint, eerste), eerste))];
+  }
+  /* "Weer" alleen als Bliepo de 1e keer al zei wat er mis was. */
+  if (eerder !== null && eerder.soort === f.soort && !eerder.noot && !f.noot && v.weerEerste.length > 0) {
+    const weer = kies("weer", v.weerEerste);
+    return [weer, kies("weerUitleg", passend(zonderGetalUit(v.weerUitleg, weer), weer))];
+  }
+  /* Hetzelfde antwoord 2 keer: "Je koos weer …" en de uitleg zonder dat getal. */
+  if (zelfdeAntwoord) {
+    const weer = kies("weerGekozen", weerGekozen);
+    return [weer, kies("uitlegLos", passend(zonderGetalUit(v.uitlegLos, weer), weer))];
+  }
+  /* Een ander antwoord: de uitleg, liefst met een ander begin dan de eerste zin bij deze vraag ("Je koos …" 2 keer). */
+  return [kies("uitleg", passend(v.uitleg), (z) => begin(z) !== begin(eersteZin))];
+}
 
 const SCHERM_KIES = "Bliepo's scherm 1,5 s rood (geen fout-geluidje); de knoppen weg; een rood rondje om het getal dat Bliepo noemt (nooit om het antwoord); dan de vraag in andere woorden en dezelfde keuzes terug (geen pijl)";
 const SCHERM_WIE = "Bliepo's scherm 1,5 s rood (geen fout-geluidje); het vinkje gaat weg; een rood rondje om het getal op de lijn dat Bliepo noemt; dan de vraag in andere woorden (geen pijl)";
 const SCHERM_ORDEN = "Bliepo's scherm 1,5 s rood (geen fout-geluidje); de kaarten blijven even liggen, met een rood rondje om de kaart die Bliepo noemt (nooit om het antwoord); daarna glijden ze terug (geen schudden, geen rood) en komt de opdracht opnieuw";
 
-const kies3 = <T,>(lijst: T[], v: Vraag) => lijst[v.nr % lijst.length];
+/** De vaste variant voor de fouttabel (per vraag een andere, zodat de tabel ze allemaal laat zien). */
+const vast = <T,>(lijst: T[], v: { nr: number }) => lijst[v.nr % lijst.length];
 
-/** De hint: hoe je zoekt, vanaf een getal dat je ziet (een rood rondje om dat getal). 2 à 3 versies per soort (LESRECEPT, Tellen). */
-export function hintVan(v: Vraag): string {
-  const A = w(anker(v));
-  const n = v.n ?? Number(v.goed);
-  if (v.soort === "bij") return kies3([`Begin bij de ${A} en tel 1 streepje verder.`, `Zoek de ${A} op de lijn. Welk getal komt daarna?`, `Kijk naar de ${A}. Tel vanaf daar de streepjes tot het raketje.`], v);
-  if (v.soort === "natien") return `Het raketje is al voorbij de ${A}. Tel vanaf de ${A} nog 1 streepje verder.`;
-  if (v.soort === "meer") return kies3(["Het getal dat je later zegt als je telt, is meer.", "Op de getallenlijn staat het getal dat meer is, verder naar rechts."], v);
-  if (v.soort === "orden") return kies3(["Zoek steeds het kleinste getal dat nog over is.", "Er komt steeds 1 bij. Sla geen getal over."], v);
-  if (v.soort === "wie") return kies3([`Begin bij de ${A} en tel streepje voor streepje ${n > anker(v) ? "verder" : "terug"} tot de ${w(n)}.`, `Zoek eerst de ${A}. Tel dan de streepjes ${n > anker(v) ? "verder" : "terug"} tot de ${w(n)}.`], v);
-  if (v.soort === "dichtst") return kies3([`Tel bij elk getal hoeveel sprongen het naar de ${w(n)} is. Hoe minder sprongen, hoe dichterbij.`, `Hoe minder sprongen naar de ${w(n)}, hoe dichterbij.`], v);
-  return kies3([`Kijk welk getal op de lijn het dichtst bij het raketje staat.`, `Zoek het getal op de lijn dat vlak bij het raketje staat.`], v);
+/**
+ * Het getal waar de hint vanaf telt bij "bij welk getal": het grootste getal op de lijn vóór het raketje dat geen keuze
+ * is die nog over is (en niet het getal dat het kind koos). Zou de hint een keuze noemen ("Kijk naar de 5." terwijl 5 en 6 nog over zijn), dan valt die keuze
+ * af en blijft er maar 1 over (15.17). Het getal dat het kind zelf koos mag wel: dat is al afgevallen.
+ */
+export function hintAnker(v: Vraag, over: string[], x?: string): number {
+  if (v.soort !== "bij") return anker(v);
+  const g = Number(v.goed);
+  /* Ook niet het getal dat het kind net koos: dat zegt Bliepo al in de eerste zin (een getal klinkt niet 2 keer achter elkaar). */
+  const kan = (v.labels ?? []).filter((n) => n < g && !over.includes(String(n)) && String(n) !== x);
+  return kan.length ? Math.max(...kan) : anker(v);
 }
 
+/** Hints zonder getal en zonder richting bij "bij welk getal" (ook voor als Bliepo geen richting mag noemen). */
+const HINT_BIJ_KAAL = ["Kijk recht onder het raketje. Tel de streepjes vanaf een getal dat je ziet.", "Zoek een getal dat je ziet. Tel vanaf daar de streepjes tot het raketje.", "Probeer het nog eens. Tel de streepjes tot het raketje."];
+
+/**
+ * De hints: hoe je zoekt, vanaf een getal dat je ziet (een rood rondje om dat getal als Bliepo het noemt). Een hint zegt
+ * nooit hoeveel streepjes het is (was: "Begin bij de 5 en tel 1 streepje verder.": dat is bijna het antwoord, 15.17). Elk
+ * rijtje heeft een hint zonder getal, zodat een getal niet 2 keer achter elkaar klinkt.
+ */
+export function hintsVan(v: Vraag, over: string[] = [], x?: string): string[] {
+  const n = v.n ?? Number(v.goed);
+  if (v.soort === "bij") {
+    const A = w(hintAnker(v, over, x));
+    return [`Kijk naar de ${A}. Tel vanaf daar de streepjes tot het raketje.`, `Zoek de ${A} op de lijn. Tel vanaf daar de streepjes tot het raketje.`, `Begin bij de ${A}. Tel de streepjes tot je bij het raketje bent.`, "Probeer het nog eens. Tel de streepjes vanaf een getal dat je ziet.", "Zoek een getal dat je ziet. Tel vanaf daar de streepjes tot het raketje."];
+  }
+  const A = w(anker(v));
+  if (v.soort === "natien") return [`Het raketje is al voorbij de ${A}. Tel vanaf daar de streepjes.`, `Zoek de ${A} op de lijn. Tel de streepjes tot het raketje.`, `Na de ${A} gaat de lijn gewoon door. Tel verder vanaf dat getal.`, "Probeer het nog eens. Tel de streepjes vanaf het laatste getal dat je ziet."];
+  if (v.soort === "meer") return ["Het getal dat je later zegt als je telt, is meer.", "Op de getallenlijn staat het getal dat meer is, verder naar rechts.", "Tel maar in je hoofd. Welk getal zeg je later?"];
+  if (v.soort === "orden") return ["Zoek steeds het kleinste getal dat nog over is.", "Er komt steeds 1 bij. Sla geen getal over.", "Tel maar hardop verder. Welk getal komt dan?"];
+  if (v.soort === "wie") {
+    const kant = n > anker(v) ? "verder" : "terug";
+    /* Zonder het getal van de vraag: dat staat al in de eerste zin en komt daarna terug in de vraag (niet 2 keer achter elkaar). */
+    return [`Zoek eerst de ${A}. Tel dan de streepjes ${kant}.`, `Begin bij de ${A}. Tel streepje voor streepje ${kant}.`, `Kijk naar de ${A}. Tel vanaf daar de streepjes ${kant}.`];
+  }
+  if (v.soort === "dichtst") return ["Tel bij elk getal de sprongen. Hoe minder sprongen, hoe dichterbij.", "Hoe minder sprongen, hoe dichterbij. Tel ze bij elk getal.", "Welk getal heeft de minste sprongen nodig? Tel ze maar."];
+  return ["Kijk welk getal op de lijn het dichtst bij het raketje staat.", "Zoek het getal op de lijn dat vlak bij het raketje staat.", "Het raketje staat vlak bij een getal op de lijn. Zoek dat getal."];
+}
+/** De vaste hint van een vraag (voor de fouttabel). */
+export const hintVan = (v: Vraag): string => vast(hintsVan(v), v);
+
 /** Wat het rondje bij de hint aanwijst: het getal waar je vanaf telt (nooit het antwoord). */
-function hintLicht(v: Vraag): Licht {
+function hintLicht(v: Vraag, over: string[], x?: string): Licht {
   /* Bij "ongeveer" noemt de hint geen getal (een rondje om de 10 zou bijna het antwoord aanwijzen): geen rondje. */
-  if (v.soort === "bij" || v.soort === "natien" || v.soort === "wie") return { soort: "getal", n: anker(v) };
+  if (v.soort === "bij" || v.soort === "natien" || v.soort === "wie") return { soort: "getal", n: hintAnker(v, over, x) };
   return null;
 }
 
-/**
- * De fouttabel van 1 fout antwoord. Bliepo zegt alleen wat zeker is (BOUWREGELS 15.9): het getal staat vóór of na het
- * raketje, het staat niet op deze lijn, je slaat een streepje over, het ding staat vóór of na het getal, hoeveel stapjes
- * het van het doel af ligt. Hij noemt nooit het antwoord en nooit beide buren van het antwoord (Huisnummers, 10 nov).
- */
-export function lijnFout(x: string, v: Vraag): Fout {
-  const f = lijnFoutRuw(x, v);
-  if (v.soort === "orden" || v.soort === "wie" || v.opties.length <= 2 || f.over.length > 1) return f;
-  /*
-    Verklapcontrole (15.17, geleerd bij Huisnummers): zou de eerste zin + hint maar 1 keuze overlaten (bij 17 / 18 / 8
-    sluit "17 staat vóór het raketje, tel verder" ook de 8 uit), dan zegt Bliepo niet welke kant het op moet, alleen dat
-    het raketje daar niet staat, en de hint geeft ook geen richting (LESRECEPT, geleerd bij Tellen). De denkfout wordt wel
-    bewaard. Zo blijven er altijd 2 keuzes over.
-  */
-  const X = w(Number(x));
+type Ruw = { x: string; code: Denkfoutnaam; soort: string; denkfout: string; licht?: Licht; scherm: string; over: string[]; bron: string; noot?: string } & Varianten;
+
+/** Van de varianten naar 1 rij van de fouttabel. */
+function maak(v: Vraag, d: Ruw): Fout {
+  const kanWeer = !d.noot && d.weerEerste.length > 0;
   return {
-    ...f,
-    eerste: kies3([`Bij de ${X} staat het raketje niet.`, `Het raketje staat niet bij de ${X}.`], v),
-    hint: "Kijk recht onder het raketje. Tel de streepjes vanaf een getal dat je ziet.",
-    over: v.opties.filter((k) => k !== x),
-    weer: [],
-    noot: "welke kant niet genoemd: dan bleef er maar 1 keuze over",
+    code: d.code,
+    soort: d.soort,
+    denkfout: d.denkfout,
+    eerste: vast(d.eerste, v),
+    hint: vast(d.hint, v),
+    uitleg: vast(d.uitleg, v),
+    weer: kanWeer ? [vast(d.weerEerste, v), vast(d.weerUitleg, v)] : [],
+    licht: d.licht === undefined ? hintLicht(v, d.over, d.x) : d.licht,
+    scherm: d.scherm,
+    over: d.over,
+    eigen: eigenInvulling(v),
+    bron: d.bron,
+    ...(d.noot ? { noot: d.noot } : {}),
+    v: { eerste: d.eerste, hint: d.hint, uitleg: d.uitleg, uitlegLos: d.uitlegLos, weerEerste: kanWeer ? d.weerEerste : [], weerUitleg: kanWeer ? d.weerUitleg : [] },
   };
 }
 
-function lijnFoutRuw(x: string, v: Vraag): Fout {
-  const keuzes = v.soort === "orden" ? [] : v.opties;
-  const andere = keuzes.filter((k) => k !== x);
-  const hint = hintVan(v);
-  const licht = hintLicht(v);
-  const eigen = eigenInvulling(v);
+/**
+ * De fouttabel van 1 fout antwoord. Bliepo zegt alleen wat zeker is (BOUWREGELS 15.9): het raketje staat verder of minder
+ * ver dan het gekozen getal, het getal staat niet op deze lijn, het ding staat vóór of na het getal, hoeveel sprongen het
+ * van het doel af ligt. Bij de 1e keer noemt hij nooit het antwoord, nooit "vlak vóór" of "1 streepje" (dan weet je het
+ * antwoord), en "bijna" of "dichtbij" alleen als er dan nog 2 keuzes dichtbij zijn (15.17). Sinds 18 november 2026 heeft
+ * elke zin varianten (`v`); de vaste velden (`eerste`, `hint`, …) zijn er 1 van.
+ */
+export function lijnFout(x: string, v: Vraag): Fout {
+  const andere = (v.soort === "orden" ? [] : v.opties).filter((k) => k !== x);
   const g = Number(v.goed);
 
   if (v.soort === "bij") {
     const X = Number(x);
-    const opLijn = X >= v.van! && X <= v.tot!;
-    if (!opLijn)
-      return {
+    const Xw = w(X);
+    const opLijn = (n: number) => n >= v.van! && n <= v.tot!;
+    const bron = "eigen invulling (draaiboek §8: \"bij welk getal staat het\" zit niet in Count the Jumps)";
+    if (!opLijn(X)) {
+      const over = andere.filter((k) => opLijn(Number(k)));
+      return maak(v, {
+      x,
         code: "tiental-vergeten",
         soort: "tiental",
         denkfout: `alleen het laatste cijfer (${X} voor ${g})`,
-        eerste: `${w(X)} staat niet op deze lijn. Deze lijn begint bij de ${w(v.van!)}.`,
-        hint,
-        uitleg: "Het getal bij het raketje heeft 2 cijfers, net als de getallen ernaast.",
-        weer: ["Je koos weer een getal dat niet op de lijn staat.", "Kijk naar de getallen vlak naast het raketje."],
-        licht,
         scherm: SCHERM_KIES,
-        over: andere.filter((k) => Number(k) >= v.van! && Number(k) <= v.tot!),
-        eigen,
-        bron: "eigen invulling (draaiboek §8: \"bij welk getal staat het\" zit niet in Count the Jumps)",
-      };
-    if (X === g - 1)
-      return {
-        code: "streepje-ervoor",
-        soort: "ervoor",
-        denkfout: `koos het getal van het streepje vóór het raketje (${X} voor ${g})`,
-        eerste: kies3([`${w(X)} staat vlak vóór het raketje.`, `Bij de ${w(X)} is het raketje nog niet.`, `${w(X)} is het streepje vóór het raketje.`], v),
-        hint,
-        uitleg: `Het raketje staat 1 streepje verder dan de ${w(X)}.`,
-        weer: ["Je koos weer het streepje vóór het raketje.", "Kijk recht onder het raketje."],
-        licht,
-        scherm: SCHERM_KIES,
-        over: andere.filter((k) => Number(k) > X),
-        eigen,
-        bron: "eigen invulling; lijkt op draaiboek §3 C.4 (\"we willen weten hoe ver\")",
-      };
-    if (X === g + 1)
-      return {
-        code: "streepje-erna",
-        soort: "erna",
-        denkfout: `koos het getal van het streepje na het raketje (${X} voor ${g})`,
-        eerste: kies3([`${w(X)} staat vlak na het raketje.`, `Zo ver als de ${w(X)} is het raketje nog niet.`, `${w(X)} is het streepje na het raketje.`], v),
-        hint,
-        uitleg: `Het raketje staat 1 streepje vóór de ${w(X)}.`,
-        weer: ["Je koos weer het streepje na het raketje.", "Kijk recht onder het raketje."],
-        licht,
-        scherm: SCHERM_KIES,
-        over: andere.filter((k) => Number(k) < X),
-        eigen,
-        bron: "eigen invulling; lijkt op draaiboek §3 B.3 (\"geen sprong van 1\")",
-      };
-    if (X > g)
-      return {
-        code: "te-ver",
-        soort: "te-ver",
-        denkfout: `keek te ver naar rechts (${X} voor ${g})`,
-        eerste: `${w(X)} ligt verder dan het raketje.`,
-        hint,
-        uitleg: "Recht onder het raketje hoort het getal dat we zoeken.",
-        weer: ["Je koos weer een getal dat te ver ligt.", "Kijk recht onder het raketje."],
-        licht,
-        scherm: SCHERM_KIES,
-        over: andere.filter((k) => Number(k) < X),
-        eigen,
-        bron: "eigen invulling",
-      };
-    return {
-      code: "niet-ver-genoeg",
-      soort: "niet-ver",
-      denkfout: `keek niet ver genoeg (${X} voor ${g})`,
-      eerste: `Het raketje staat verder dan de ${w(X)}.`,
-      hint,
-      uitleg: "Recht onder het raketje hoort het getal dat we zoeken.",
-      weer: ["Je koos weer een getal vóór het raketje.", "Kijk recht onder het raketje."],
-      licht,
+        over,
+        bron,
+        eerste: [`${Xw} staat niet op deze lijn. Deze lijn begint bij de ${w(v.van!)}.`, `Je koos ${Xw}. Dat getal staat niet op deze lijn.`, `${Xw}? Dat getal vind ik niet op deze lijn.`, `Je tikte op ${Xw}. Deze lijn begint pas bij de ${w(v.van!)}.`],
+        hint: hintsVan(v, over, x),
+        uitleg: [`${Xw} staat niet op deze lijn. Het getal bij het raketje heeft 2 cijfers.`, "Het getal bij het raketje heeft 2 cijfers, net als de getallen ernaast."],
+        uitlegLos: ["Het getal bij het raketje heeft 2 cijfers, net als de getallen ernaast.", "Dat getal staat niet op deze lijn."],
+        weerEerste: ["Je koos weer een getal dat niet op de lijn staat.", "Dat getal staat weer niet op de lijn.", "Weer een getal dat niet op de lijn staat, zie ik."],
+        weerUitleg: ["Het getal bij het raketje heeft 2 cijfers.", "De getallen naast het raketje hebben 2 cijfers."],
+      });
+    }
+    /* Vóór het raketje (X < g) of erna (X > g). De richting mag alleen als er dan nog 2 keuzes over zijn. */
+    const voor = X < g;
+    const naast = Math.abs(X - g) === 1;
+    const overRichting = andere.filter((k) => (voor ? Number(k) > X : Number(k) < X));
+    const verklapt = overRichting.length <= 1;
+    const over = verklapt ? andere : overRichting;
+    /* "Bijna": alleen als het er 1 naast zit en er in die richting nog 2 keuzes dichtbij (hooguit 2 verder) zijn. */
+    const bijnaMag = !verklapt && naast && overRichting.filter((k) => Math.abs(Number(k) - X) <= 2).length >= 2;
+    const eersteRichting = voor
+      ? [`Het raketje staat verder dan de ${Xw}.`, `Je koos ${Xw}. Het raketje staat verder.`, `${Xw}? Het raketje is al verder.`, `Je tikte op ${Xw}. Daar is het raketje al voorbij.`, ...(bijnaMag ? [`Bijna! Het raketje staat net iets verder dan de ${Xw}.`, `${Xw}? Dat is heel dichtbij. Het raketje staat iets verder.`] : [])]
+      : [`${Xw} ligt verder dan het raketje.`, `Je koos ${Xw}. Zo ver is het raketje nog niet.`, `${Xw}? Daar is het raketje nog niet.`, `Je tikte op ${Xw}. Dat is te ver.`, ...(bijnaMag ? [`Bijna! ${Xw} is net iets te ver.`, `${Xw}? Dat is heel dichtbij. Maar het is iets te ver.`] : [])];
+    /* Zonder richting (15.17, geleerd bij Huisnummers): alleen dat het raketje daar niet staat. */
+    const eersteKaal = [`Bij de ${Xw} staat het raketje niet.`, `Het raketje staat niet bij de ${Xw}.`, `Je koos ${Xw}. Daar staat het raketje niet.`, `${Xw}? Daar staat het raketje niet.`, `Je tikte op ${Xw}. Het raketje staat ergens anders.`];
+    const recht = "Recht onder het raketje hoort het getal dat we zoeken.";
+    return maak(v, {
+      x,
+      code: naast ? (voor ? "streepje-ervoor" : "streepje-erna") : voor ? "niet-ver-genoeg" : "te-ver",
+      soort: naast ? (voor ? "ervoor" : "erna") : voor ? "niet-ver" : "te-ver",
+      denkfout: naast ? `koos het getal van het streepje ${voor ? "vóór" : "na"} het raketje (${X} voor ${g})` : voor ? `keek niet ver genoeg (${X} voor ${g})` : `keek te ver naar rechts (${X} voor ${g})`,
       scherm: SCHERM_KIES,
-      over: andere.filter((k) => Number(k) > X),
-      eigen,
-      bron: "eigen invulling",
-    };
+      over,
+      bron: naast ? (voor ? "eigen invulling; lijkt op draaiboek §3 C.4 (\"we willen weten hoe ver\")" : "eigen invulling; lijkt op draaiboek §3 B.3 (\"geen sprong van 1\")") : "eigen invulling",
+      ...(verklapt ? { noot: "welke kant niet genoemd: dan bleef er maar 1 keuze over" } : {}),
+      eerste: verklapt ? eersteKaal : eersteRichting,
+      hint: verklapt ? HINT_BIJ_KAAL : hintsVan(v, over, x),
+      /* Bij de 2e keer mag "vlak vóór" en "het volgende streepje": het antwoord komt daarna toch in beeld (15.11). Niet
+         "1 streepje verder dan de 1": dan klinkt het getal 2 keer achter elkaar. */
+      uitleg: naast
+        ? voor
+          ? [`Het raketje staat bij het streepje na de ${Xw}.`, `${Xw} staat vlak vóór het raketje. Het raketje staat bij het volgende streepje.`, `Vlak na de ${Xw} staat het raketje.`]
+          : [`Het raketje staat bij het streepje vóór de ${Xw}.`, `${Xw} staat vlak na het raketje. Het raketje staat bij het streepje ervoor.`, `Vlak vóór de ${Xw} staat het raketje.`]
+        : voor
+          ? [`Het raketje staat verder dan de ${Xw}. ${recht}`, `Bij de ${Xw} staat het raketje niet. We zoeken het getal recht onder het raketje.`]
+          : [`${Xw} ligt verder dan het raketje. ${recht}`, `Zo ver als de ${Xw} is het raketje niet. We zoeken het getal recht onder het raketje.`],
+      uitlegLos: naast ? (voor ? ["Het raketje staat bij het volgende streepje.", "Dat getal staat vlak vóór het raketje."] : ["Het raketje staat bij het streepje ervoor.", "Dat getal staat vlak na het raketje."]) : [recht, voor ? "Het raketje staat verder dan dat getal." : "Dat getal ligt verder dan het raketje."],
+      weerEerste: voor ? ["Je koos weer een getal vóór het raketje.", "Dat is weer vóór het raketje.", "Weer een getal vóór het raketje, zie ik."] : ["Je koos weer een getal dat te ver ligt.", "Dat is weer te ver.", "Weer te ver, zie ik."],
+      weerUitleg: naast ? [voor ? "Het raketje staat bij het volgende streepje." : "Het raketje staat bij het streepje ervoor.", recht] : [recht, voor ? "Het raketje staat verder." : "Het raketje staat minder ver."],
+    });
   }
 
   if (v.soort === "natien") {
     const X = Number(x);
-    if (X === g + 1)
-      return {
+    const Xw = w(X);
+    if (X > g)
+      return maak(v, {
+      x,
         code: "streepje-overgeslagen",
         soort: "over",
         denkfout: `sloeg een streepje over (${X} na 10)`,
-        eerste: `Met ${w(X)} sla je een streepje over.`,
-        hint,
-        uitleg: `Na de ${w(10)} komt eerst het getal dat 1 groter is.`,
-        weer: ["Je sloeg weer een streepje over.", "Elk streepje telt mee."],
-        licht,
         scherm: SCHERM_KIES,
-        over: andere.filter((k) => Number(k) < X),
-        eigen,
+        over: andere.filter((k) => Number(k) < X && Number(k) > 10),
         bron: "eigen invulling; lijkt op draaiboek §3 B.3 (\"dat was geen sprong van 1\")",
-      };
+        /* De vraag zegt al "verder dan de 10": de 1 valt daardoor af en na deze keuze is er nog 1 getal over. Bliepo zegt
+           daarom alleen dat het te ver is, niet dat het 1 streepje scheelt (was: "Met 12 sla je een streepje over."). */
+        noot: "de vraag zegt al \"verder dan de 10\": na deze keuze is er nog 1 getal over; Bliepo noemt alleen de kant, niet hoeveel",
+        eerste: [`Zo ver als ${Xw} is het raketje nog niet.`, `Je koos ${Xw}. Zo ver is het raketje nog niet.`, `${Xw}? Daar is het raketje nog niet.`, `Je tikte op ${Xw}. Dat is te ver.`],
+        hint: hintsVan(v),
+        uitleg: [`Met ${Xw} sla je een streepje over.`, `Je koos ${Xw}. Dan sla je een streepje over.`, `Na de ${w(10)} komt eerst het getal dat 1 groter is.`],
+        uitlegLos: ["Dan sla je een streepje over.", `Na de ${w(10)} komt eerst het getal dat 1 groter is.`],
+        weerEerste: [],
+        weerUitleg: [],
+      });
     if (X < 10)
-      return {
+      return maak(v, {
+      x,
         code: "tiental-vergeten",
         soort: "tiental",
         denkfout: `alleen het laatste cijfer (${X} voor ${g})`,
-        eerste: `${w(X)} staat vooraan op de lijn, vlak na de ${w(0)}.`,
-        hint,
-        uitleg: "Na de 10 komen getallen met 2 cijfers.",
-        weer: ["Je koos weer een getal van vooraan op de lijn.", `Het raketje is al voorbij de ${w(10)}.`],
-        licht,
         scherm: SCHERM_KIES,
         over: andere.filter((k) => Number(k) > 10),
-        eigen,
         bron: "eigen invulling",
-      };
+        eerste: [`${Xw} staat vooraan op de lijn, vlak na de ${w(0)}.`, `Je koos ${Xw}. Dat getal staat vooraan op de lijn.`, `${Xw}? Dat staat helemaal vooraan op de lijn.`],
+        hint: hintsVan(v),
+        uitleg: [`Na de ${w(10)} komen getallen met 2 cijfers.`, `${Xw} staat vooraan op de lijn. Het raketje is al veel verder.`],
+        uitlegLos: [`Na de ${w(10)} komen getallen met 2 cijfers.`, "Dat getal staat vooraan. Het raketje is al veel verder."],
+        weerEerste: ["Je koos weer een getal van vooraan op de lijn.", "Dat staat weer vooraan op de lijn."],
+        weerUitleg: [`Het raketje is al voorbij de ${w(10)}.`, `Na de ${w(10)} komen getallen met 2 cijfers.`],
+      });
   }
 
   if (v.soort === "meer") {
     const X = Number(x);
+    const Xw = w(X);
     const ander = X === v.meer!.a ? v.meer!.b : v.meer!.a;
     if (X < ander)
-      return {
+      return maak(v, {
+      x,
         code: "kleiner-gekozen",
         soort: "kleiner",
         denkfout: `groter en kleiner verwisseld (${X} is minder dan ${ander})`,
-        eerste: `${w(X)} zeg je eerder als je telt.`,
-        hint,
-        uitleg: "Hoe verder je komt als je telt, hoe meer het is.",
-        weer: [],
         licht: null,
         scherm: "Bliepo's scherm 1,5 s rood (geen fout-geluidje); de knoppen weg; geen rondje (op de lijn staan alleen 10, 15 en 20); dan de vraag in andere woorden",
         over: andere,
-        eigen,
         bron: "eigen invulling (draaiboek §8: niet in Count the Jumps)",
         noot: "2 keuzes: na 1 fout blijft er altijd 1 over; Bliepo noemt alleen de regel, niet het antwoord",
-      };
+        eerste: [`${Xw} zeg je eerder als je telt.`, `Je koos ${Xw}. Dat getal zeg je eerder als je telt.`, `${Xw}? Dat komt eerder als je telt.`],
+        hint: hintsVan(v),
+        uitleg: ["Hoe verder je komt als je telt, hoe meer het is.", `${Xw} zeg je eerder als je telt. Wat later komt, is meer.`],
+        uitlegLos: ["Hoe verder je komt als je telt, hoe meer het is.", "Wat je later zegt als je telt, is meer."],
+        weerEerste: [],
+        weerUitleg: [],
+      });
   }
 
   if (v.soort === "orden") {
@@ -607,114 +802,136 @@ function lijnFoutRuw(x: string, v: Vraag): Fout {
     const p = xs.findIndex((n, i) => n !== goed[i]);
     const kaarten = xs.slice(1);
     const aflopend = kaarten.every((n, i) => i === 0 || kaarten[i - 1] > n);
+    const hint = hintsVan(v);
+    /* Bij slepen "legde", niet "zette" of "koos" (BLIEPO-KARAKTER §2). */
     if (aflopend)
-      return {
+      return maak(v, {
+      x,
         code: "volgorde-omgedraaid",
         soort: "omgedraaid",
         denkfout: "zette de kaarten van groot naar klein",
-        eerste: `Na ${w(xs[0])} zette je ${w(xs[1])}, het grootste getal.`,
-        hint,
-        uitleg: "Van klein naar groot: het kleinste vooraan, dan steeds 1 groter.",
-        weer: ["Je zette ze weer van groot naar klein.", "Het kleinste getal komt vooraan."],
         licht: { soort: "vak", i: 1 },
         scherm: SCHERM_ORDEN,
         over: [],
-        eigen,
         bron: "eigen invulling (draaiboek §8: op volgorde zetten zit niet in Count the Jumps)",
-      };
+        eerste: [`Na ${w(xs[0])} legde je ${w(xs[1])}, het grootste getal.`, `Je legde ${w(xs[1])} vlak na ${w(xs[0])}. Dat is het grootste getal.`, `Na ${w(xs[0])} komt bij jou meteen ${w(xs[1])}, het grootste getal.`],
+        hint,
+        uitleg: ["Van klein naar groot: het kleinste vooraan, dan steeds 1 groter.", `Je legde het grootste getal vlak na ${w(xs[0])}. Het kleinste komt eerst.`, "Je legde ze van groot naar klein. We gaan van klein naar groot."],
+        uitlegLos: ["We gaan van klein naar groot.", "Het kleinste getal komt eerst. Dan steeds 1 groter."],
+        weerEerste: ["Je legde ze weer van groot naar klein.", "Ze liggen weer van groot naar klein.", "Weer van groot naar klein, zie ik."],
+        weerUitleg: ["Het kleinste getal komt eerst.", "We beginnen met het kleinste getal."],
+      });
     const a = xs[p - 1];
     const b = xs[p];
     if (b > a)
-      return {
+      return maak(v, {
+      x,
         code: "getal-overgeslagen",
         soort: "overgeslagen",
         denkfout: `sloeg na ${a} een getal over (${b})`,
-        eerste: `Na ${w(a)} zette je ${w(b)}.`,
-        hint,
-        uitleg: `Na ${w(a)} komt het getal dat 1 groter is.`,
-        weer: ["Je sloeg weer een getal over.", "Er komt steeds 1 bij."],
         licht: { soort: "vak", i: p },
         scherm: SCHERM_ORDEN,
         over: [],
-        eigen,
         bron: "eigen invulling; lijkt op draaiboek §3 B.3 (\"spring steeds 1\")",
-      };
-    return {
+        eerste: [`Na ${w(a)} legde je ${w(b)}.`, `Je legde ${w(b)} na ${w(a)}.`, `Na ${w(a)} komt bij jou ${w(b)}.`],
+        hint,
+        uitleg: [`Tussen ${w(a)} en ${w(b)} hoort nog een getal.`, `Je legde ${w(b)} na ${w(a)}. Daar hoort nog een getal tussen.`, `Na ${w(a)} komt het getal dat 1 groter is.`],
+        uitlegLos: ["Er hoort nog een getal tussen.", "Elk getal is 1 groter dan het getal ervoor."],
+        /* Zonder "weer": de 1e keer zei Bliepo alleen waar het misging ("Na 5 legde je 7."), niet dat er een getal was overgeslagen. */
+        weerEerste: ["Je sloeg een getal over.", "Er is een getal overgeslagen.", "Ik mis een getal in de rij."],
+        weerUitleg: ["Er komt steeds 1 bij.", "Elk getal is 1 groter dan het getal ervoor."],
+      });
+    return maak(v, {
+      x,
       code: "kleiner-erna",
       soort: "kleiner-erna",
       denkfout: `zette na ${a} een kleiner getal (${b})`,
-      eerste: `Na ${w(a)} zette je ${w(b)}. Dat is kleiner.`,
-      hint,
-      uitleg: "Van klein naar groot: elk getal is groter dan het getal ervoor.",
-      weer: ["Je zette weer een kleiner getal erna.", "Elk volgend getal is groter."],
       licht: { soort: "vak", i: p },
       scherm: SCHERM_ORDEN,
       over: [],
-      eigen,
       bron: "eigen invulling",
-    };
+      eerste: [`Na ${w(a)} legde je ${w(b)}. Dat is kleiner.`, `Je legde ${w(b)} na ${w(a)}. Maar dat getal is kleiner.`],
+      hint,
+      uitleg: ["Van klein naar groot: elk getal is groter dan het getal ervoor.", `Na ${w(a)} legde je een kleiner getal. Elk volgend getal is groter.`],
+      uitlegLos: ["Elk volgend getal is groter.", "Elk getal is groter dan het getal ervoor."],
+      weerEerste: ["Je legde weer een kleiner getal erna.", "Er ligt weer een kleiner getal achter."],
+      weerUitleg: ["Elk volgend getal is groter.", "We gaan van klein naar groot."],
+    });
   }
 
   if (v.soort === "wie") {
+    const z = x as Wezen;
     const p = plekVan(v, x)!;
     const n = v.n!;
     const voor = p < n;
-    return {
+    const kant = voor ? "vóór" : "na";
+    const d = Math.abs(n - p);
+    const ver = `${d} ${d === 1 ? "streepje" : "streepjes"}`;
+    return maak(v, {
+      x,
       code: voor ? "ding-ervoor" : "ding-erna",
       soort: voor ? "ervoor" : "erna",
-      denkfout: `tikte op ${NAAM[x as Wezen]}, ${x === "raketje" ? "dat" : "die"} bij ${p} staat (${voor ? "vóór" : "na"} de ${n})`,
-      eerste: `${Naam(x as Wezen)} staat ${voor ? "vóór" : "na"} de ${w(n)}.`,
-      hint,
-      uitleg: `${Naam(x as Wezen)} staat bij de ${w(p)}. Dat is ${Math.abs(n - p)} ${Math.abs(n - p) === 1 ? "streepje" : "streepjes"} ${voor ? "vóór" : "na"} de ${w(n)}.`,
-      weer: [`Je tikte weer op iets ${voor ? "vóór" : "na"} de ${w(n)}.`, `De ${w(anker(v))} helpt je tellen.`],
-      licht,
+      denkfout: `tikte op ${NAAM[z]}, ${x === "raketje" ? "dat" : "die"} bij ${p} staat (${kant} de ${n})`,
       scherm: SCHERM_WIE,
       over: andere.filter((k) => (voor ? plekVan(v, k)! > p : plekVan(v, k)! < p)),
-      eigen,
       bron: "eigen invulling (draaiboek §8: \"wat staat er bij\" zit niet in Count the Jumps)",
-    };
+      eerste: [`${Naam(z)} staat ${kant} de ${w(n)}.`, `Je tikte op ${NAAM[z]}. ${die(z)} staat ${kant} de ${w(n)}.`, voor ? `${Naam(z)}? ${die(z)} staat nog vóór de ${w(n)}.` : `${Naam(z)}? ${die(z)} staat al voorbij de ${w(n)}.`],
+      hint: hintsVan(v),
+      uitleg: [`${Naam(z)} staat bij de ${w(p)}. Dat is ${ver} ${kant} de ${w(n)}.`, `Je tikte op ${NAAM[z]}. ${die(z)} staat ${ver} ${kant} de ${w(n)}.`],
+      uitlegLos: [`${die(z)} staat bij de ${w(p)}. Dat is ${ver} ${kant} de ${w(n)}.`, `${die(z)} staat ${ver} ${kant} de ${w(n)}.`],
+      weerEerste: [`Je tikte weer op iets ${kant} de ${w(n)}.`, `Dat staat weer ${kant} de ${w(n)}.`, `Weer iets ${kant} de ${w(n)}, zie ik.`],
+      weerUitleg: [`De ${w(anker(v))} helpt je tellen.`, `Vanaf de ${w(anker(v))} kun je de streepjes tellen.`],
+    });
   }
 
   if (v.soort === "dichtst") {
     const X = Number(x);
+    const Xw = w(X);
     const d = Math.abs(X - v.n!);
-    return {
+    return maak(v, {
+      x,
       code: "verder-weg",
       soort: `verder-${X}`,
       denkfout: `koos een getal dat verder weg ligt (${X}: ${d} sprongen van ${v.n})`,
-      eerste: kies3([`Van ${w(X)} naar de ${w(v.n!)} zijn het ${d} sprongen.`, `${w(X)} ligt ${d} sprongen van de ${w(v.n!)} af.`], v),
-      hint,
-      uitleg: `We tellen de sprongen op de getallenlijn.`,
-      weer: [],
       licht: { soort: "bordje", n: X },
       scherm: "Bliepo's scherm 1,5 s rood (geen fout-geluidje); de knoppen weg; een rood rondje om het bordje met het getal dat Bliepo noemt; dan de vraag in andere woorden en dezelfde keuzes terug",
       over: andere,
-      eigen,
       bron: "eigen invulling; het tellen van de stapjes lijkt op draaiboek §3 E.3 (het verschil samen uitrekenen)",
-    };
+      eerste: [`Van ${Xw} naar de ${w(v.n!)} zijn het ${d} sprongen.`, `${Xw} ligt ${d} sprongen van de ${w(v.n!)} af.`, `Je koos ${Xw}. Dat ligt ${d} sprongen van de ${w(v.n!)} af.`],
+      hint: hintsVan(v),
+      uitleg: [`Van ${Xw} naar de ${w(v.n!)} is het ver: ${d} sprongen.`, `${Xw} ligt ${d} sprongen van de ${w(v.n!)} af. Dat is niet het dichtst bij.`, "We tellen de sprongen op de getallenlijn."],
+      uitlegLos: ["We tellen de sprongen op de getallenlijn.", "Dat getal ligt verder weg."],
+      weerEerste: [],
+      weerUitleg: [],
+    });
   }
 
   if (v.soort === "ongeveer") {
     const X = Number(x);
-    let eerste: string;
-    if (X - 15 === 1 || X - 10 === 1) eerste = `${w(X)} ligt vlak na de ${w(X - 1)}.`;
-    else if (20 - X === 1 || 15 - X === 1) eerste = `${w(X)} ligt vlak vóór de ${w(X + 1)}.`;
-    else if (X > 10 && X < 15) eerste = `${w(X)} ligt tussen de ${w(10)} en de ${w(15)}.`;
-    else eerste = `${w(X)} ligt tussen de ${w(15)} en de ${w(20)}.`;
-    return {
+    const Xw = w(X);
+    let plek: string;
+    if (X - 15 === 1 || X - 10 === 1) plek = `ligt vlak na de ${w(X - 1)}`;
+    else if (20 - X === 1 || 15 - X === 1) plek = `ligt vlak vóór de ${w(X + 1)}`;
+    else if (X > 10 && X < 15) plek = `ligt tussen de ${w(10)} en de ${w(15)}`;
+    else plek = `ligt tussen de ${w(15)} en de ${w(20)}`;
+    const A = w(anker(v));
+    return maak(v, {
+      x,
       code: "ander-stuk",
       soort: `stuk-${X}`,
       denkfout: `koos een getal in een ander stuk van de lijn (${X} voor ${g})`,
-      eerste,
-      hint,
-      uitleg: `Het raketje staat vlak bij de ${w(anker(v))}.`,
-      weer: [],
-      licht,
+      /* De hint noemt geen getal: geen rondje. */
+      licht: null,
       scherm: SCHERM_KIES,
       over: andere,
-      eigen,
       bron: "eigen invulling (draaiboek §8: schatten zit niet in Count the Jumps)",
-    };
+      eerste: [`${Xw} ${plek}.`, `Je koos ${Xw}. Dat getal ${plek}.`, `${Xw}? Dat ${plek}.`],
+      hint: hintsVan(v),
+      uitleg: [`Het raketje staat vlak bij de ${A}.`, `Het raketje staat vlak bij de ${A}. Daar ligt ${Xw} niet.`],
+      uitlegLos: [`Het raketje staat vlak bij de ${A}.`, `Dat getal ligt niet vlak bij de ${A}. Het raketje wel.`],
+      weerEerste: [],
+      weerUitleg: [],
+    });
   }
 
   return {
@@ -722,13 +939,13 @@ function lijnFoutRuw(x: string, v: Vraag): Fout {
     soort: "onduidelijk",
     denkfout: "niet duidelijk (geen reden verzonnen)",
     eerste: "",
-    hint,
+    hint: hintVan(v),
     uitleg: "We springen samen over de lijn.",
     weer: [],
-    licht,
+    licht: hintLicht(v, andere),
     scherm: SCHERM_KIES,
     over: andere,
-    eigen,
+    eigen: eigenInvulling(v),
     bron: "BLIEPO-KARAKTER.md §10",
   };
 }
@@ -757,33 +974,48 @@ export const UITLEG_VRAAG = { id: "uitleg-sprongen-3", goed: "3", opties: ["2", 
 
 /** De fouttabel van de uitlegvraag. 4 = de getallen 0, 1, 2 en 3 geteld in plaats van de sprongen (draaiboek §7, gezien en benoemd). */
 export function uitlegFout(x: string): Fout {
+  const scherm = "Bliepo's scherm 1,5 s rood; de knoppen weg; een rood rondje om de 0 (het begin) als Bliepo de 0 noemt; de bogen blijven staan; dan de vraag in andere woorden";
+  const vraag = { nr: 0 };
+  const rij = (d: { code: Denkfoutnaam; soort: string; denkfout: string; over: string[]; bron: string } & Varianten): Fout => ({
+    code: d.code,
+    soort: d.soort,
+    denkfout: d.denkfout,
+    eerste: vast(d.eerste, vraag),
+    hint: vast(d.hint, vraag),
+    uitleg: vast(d.uitleg, vraag),
+    weer: [vast(d.weerEerste, vraag), vast(d.weerUitleg, vraag)],
+    licht: { soort: "getal", n: 0 },
+    scherm,
+    over: d.over,
+    eigen: false,
+    bron: d.bron,
+    v: { eerste: d.eerste, hint: d.hint, uitleg: d.uitleg, uitlegLos: d.uitlegLos, weerEerste: d.weerEerste, weerUitleg: d.weerUitleg },
+  });
   if (x === "4")
-    return {
+    return rij({
       code: "getallen-tellen-ipv-sprongen",
       soort: "getallen",
       denkfout: "telde de getallen (0, 1, 2 en 3) in plaats van de sprongen",
-      eerste: "Je telde de getallen {0:wit}, {1:wit}, {2:wit} en {3:wit}. Dat zijn er {4:wit}.",
-      hint: "Maar we tellen de sprongen. Elke boog is 1 sprong.",
-      uitleg: "De {0:wit} is het begin. Daar sprong het raketje nog niet.",
-      weer: ["Je telde weer de getallen.", "Alleen de bogen tellen mee."],
-      licht: { soort: "getal", n: 0 },
-      scherm: "Bliepo's scherm 1,5 s rood; de knoppen weg; een rood rondje om de 0 (het begin); de bogen blijven staan; dan de vraag in andere woorden",
       over: ["2", "3"],
-      eigen: false,
       bron: "draaiboek §3 C.3 en §7 `getallen-tellen-ipv-sprongen` (Synthesis benoemt dit: \"dat zijn 2 getallen, maar hoeveel sprongen?\")",
-    };
-  return {
+      eerste: ["Je telde de getallen {0:wit}, {1:wit}, {2:wit} en {3:wit}. Dat zijn er {4:wit}.", "{4:wit}? Zoveel getallen zijn het: {0:wit}, {1:wit}, {2:wit} en {3:wit}."],
+      hint: ["Maar we tellen de sprongen, niet de getallen.", "We zoeken hoeveel sprongen het zijn. Kijk naar de bogen."],
+      uitleg: ["De {0:wit} is het begin. Daar sprong het raketje nog niet.", "Bij de {0:wit} begon het raketje. Daar sprong het nog niet."],
+      uitlegLos: ["Het begin telt niet mee. Daar sprong het raketje nog niet.", "Alleen de bogen tellen mee."],
+      weerEerste: ["Je telde weer de getallen.", "Dat zijn weer de getallen.", "Weer de getallen geteld, zie ik."],
+      weerUitleg: ["Alleen de bogen tellen mee.", "Elke boog is 1 sprong."],
+    });
+  return rij({
     code: "te-weinig-bogen",
     soort: "te-weinig",
     denkfout: "telde een boog te weinig",
-    eerste: "Er zijn meer bogen dan {2:wit}.",
-    hint: "Tel elke boog, van de {0:wit} tot het raketje.",
-    uitleg: "Elke boog is 1 sprong.",
-    weer: ["Je telde weer te weinig bogen.", "Bij elke sprong hoort 1 boog."],
-    licht: { soort: "getal", n: 0 },
-    scherm: "Bliepo's scherm 1,5 s rood; de knoppen weg; een rood rondje om de 0 (het begin); de bogen blijven staan; dan de vraag in andere woorden",
     over: ["3", "4"],
-    eigen: false,
     bron: "draaiboek §3 D.4 en §7 `een-te-weinig` (Synthesis: hulpvraag \"hoeveel sprongen?\")",
-  };
+    eerste: ["Er zijn meer bogen dan {2:wit}.", "Je koos {2:wit}. Ik zie meer bogen.", "{2:wit}? Ik tel meer bogen."],
+    hint: ["Tel elke boog, van de {0:wit} tot het raketje.", "Wijs de bogen stuk voor stuk aan en tel ze.", "Begin bij de {0:wit}. Tel de bogen tot het raketje."],
+    uitleg: ["Er zijn meer bogen dan {2:wit}. Elke boog is 1 sprong.", "Je koos {2:wit}. Er zijn meer bogen."],
+    uitlegLos: ["Elke boog is 1 sprong.", "Er zijn meer bogen."],
+    weerEerste: ["Je telde weer te weinig bogen.", "Dat zijn er weer te weinig.", "Weer te weinig bogen, zie ik."],
+    weerUitleg: ["Bij elke sprong hoort 1 boog.", "Elke boog telt mee."],
+  });
 }
