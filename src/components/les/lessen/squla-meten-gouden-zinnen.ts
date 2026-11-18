@@ -244,8 +244,12 @@ export const ZIN = {
     if (v.thema === "matten") return ["Zijn de matten even groot, of is er 1 groter?"];
     return ["Hoeveel blaadjes liggen er op de tafel?"];
   },
-  /** Op volgorde: het hulphandje wijst een leeg vak aan (nooit het goede plaatje, 15.17). */
-  ordenHand: "Hier komt een plaatje.",
+  /**
+   * Op volgorde: het hulphandje wijst een leeg vak aan (nooit het goede plaatje, 15.17). De zin komt in Bliepo's tekstvak
+   * terwijl de les op het kind wacht, dus hij zegt wat het kind doet (F16, Sara 18 november 2026; BOUWREGELS 15.37).
+   * Eerst: "Hier komt een plaatje."
+   */
+  ordenHand: "Sleep een plaatje naar dit vak.",
 
   /** 2e fout: samen voordoen (draaiboek §3 G: samen tellen; op volgorde en kiezen: eigen invulling). */
   samen: (v: Vraag) =>

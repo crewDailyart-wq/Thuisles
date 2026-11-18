@@ -46,6 +46,8 @@ import { GoudenMetenVlak, kaartenVan, losseVan, omPunten, puntenVan, schilderijV
 import { zetTestAntwoord } from "./squla-hulp";
 import { speelLesgeluid } from "@/lib/lesgeluiden";
 import { bliepoScherm } from "@/lib/bliepo-scherm";
+import { stopPraten, zegEnWacht } from "@/lib/stem";
+import { metUitspraak } from "../voorkeuren";
 import { bewaarUitkomst } from "@/app/lesuitkomstacties";
 import {
   AANMOEDIG_TIKKEN,
@@ -435,13 +437,25 @@ async function tweeAntwoord(l: Lesgids, v: Vraag, c: Ctx, zinnen: string[], voor
   s.tweeUitgelegd = true;
   log(l, "vraag", { zin: z.join(" "), opties: c.kaarten.map((k) => k.id) });
   l.verderWeg?.();
+  /*
+    F16 (Sara, 18 november 2026; BOUWREGELS 15.37): Bliepo leest de kaartjes voor, maar de VRAAG blijft in zijn tekstvak
+    staan. Eerst kwam elke kaartzin in het tekstvak ("Het schilderij met de zon is het kleinst.") en bleef de laatste
+    staan terwijl de les op het kind wachtte: dan stond er geen vraag meer. De kaartzin staat al op het kaartje zelf
+    (dat oplicht als Bliepo het leest), dus hij hoeft niet ook in het tekstvak (15.31).
+  */
+  let leest = false;
+  let stopLezen: (() => void) | null = null;
+  const gestopt = new Promise<void>((r) => (stopLezen = r));
   void (async () => {
     await zeg(l, z.join(" ")).catch(() => {});
     if (voorlezen)
       for (const k of c.kaarten) {
         if (klaar) break;
+        if (!k.zeg) continue;
         pasM(l, { licht: [k.id] });
-        await zeg(l, k.zeg ?? "").catch(() => {});
+        leest = true;
+        await Promise.race([zegEnWacht([metUitspraak(k.zeg, l.naam)]), gestopt]);
+        leest = false;
       }
     if (!klaar) {
       pasM(l, { licht: [] });
@@ -462,6 +476,8 @@ async function tweeAntwoord(l: Lesgids, v: Vraag, c: Ctx, zinnen: string[], voor
     test();
   }
   klaar = true;
+  (stopLezen as (() => void) | null)?.();
+  if (leest) stopPraten();
   pasM(l, { licht: [] });
   zetKies(false);
   zetTestAntwoord(null);
