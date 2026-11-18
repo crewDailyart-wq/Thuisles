@@ -35,6 +35,7 @@ import { korteDubbel, opnameDubbel } from "./dubbel-controle.mjs";
 import { DUBBELE_TEKST_METER, dubbeleTekstFouten } from "./dubbele-tekst-controle.mjs";
 import { onthoudGoed, zonderAlGoed } from "./controlegeheugen.mjs";
 import { ZWEEF_METER } from "./zweef-controle.mjs";
+import { VRAAG_METER, vraagFouten } from "./vraag-aanwezig-controle.mjs";
 
 /* F7-meter (10 nov 2026): de tekst van Bliepo en de pijl elke 100 ms, en elke tik. */
 const F7_METER = `
@@ -73,7 +74,8 @@ for (const sig of ["SIGINT", "SIGTERM", "SIGHUP"]) process.on(sig, () => process
 async function startChrome() {
   const map = mkdtempSync(join(tmpdir(), "speelcontrole-"));
   const poort = 9450 + (process.pid % 40) * 8 + (poortTeller++ % 8);
-  const proces = spawn(CHROME, ["--headless=new", `--remote-debugging-port=${poort}`, `--user-data-dir=${map}`, "--no-first-run", "--mute-audio", "--use-angle=metal", "--enable-gpu", "--ignore-gpu-blocklist", "about:blank"], { stdio: "ignore" });
+  /* ZICHTBAAR=1: Chrome met een venster (om mee te kijken); anders zonder venster. */
+  const proces = spawn(CHROME, [...(process.env.ZICHTBAAR ? ["--new-window", "--window-size=1440,1000", "--no-default-browser-check"] : ["--headless=new"]), `--remote-debugging-port=${poort}`, `--user-data-dir=${map}`, "--no-first-run", "--mute-audio", "--use-angle=metal", "--enable-gpu", "--ignore-gpu-blocklist", "about:blank"], { stdio: "ignore" });
   ALLE_CHROMES.add(proces);
   for (let i = 0; i < 50; i++) {
     try {
@@ -113,6 +115,12 @@ function verbind(url) {
 const SNEL = `
   HTMLMediaElement.prototype.play = function () { const t = this; setTimeout(() => { t.dispatchEvent(new Event("playing")); t.dispatchEvent(new Event("ended")); }, 80); return Promise.resolve(); };
   if (window.speechSynthesis) window.speechSynthesis.speak = (u) => setTimeout(() => { u.onstart && u.onstart(new Event("start")); setTimeout(() => { u.onend && u.onend(new Event("end")); }, 80); }, 20);
+`;
+
+/* TRAAGSTEM=1: Bliepo praat in gewoon tempo (nepstem zonder geluid: 0,4 s plus 25 ms per letter), om de les te zien zoals een kind hem ziet. */
+const TRAAG = `
+  HTMLMediaElement.prototype.play = function () { const t = this; setTimeout(() => { t.dispatchEvent(new Event("playing")); setTimeout(() => t.dispatchEvent(new Event("ended")), 1500); }, 80); return Promise.resolve(); };
+  if (window.speechSynthesis) window.speechSynthesis.speak = (u) => setTimeout(() => { u.onstart && u.onstart(new Event("start")); setTimeout(() => { u.onend && u.onend(new Event("end")); }, 400 + String(u.text || "").length * 25); }, 20);
 `;
 
 /* Wat er nu in beeld staat en wat een kind kan tikken. */
@@ -206,7 +214,7 @@ async function speel(c, id) {
           else if (m.params.response.status < 400) stemTel.ruth++;
         }
       });
-    } else await c.stuur("Page.addScriptToEvaluateOnNewDocument", { source: SNEL }, s);
+    } else await c.stuur("Page.addScriptToEvaluateOnNewDocument", { source: process.env.TRAAGSTEM ? TRAAG : SNEL }, s);
     /*
       F7=1 (Sara, 10 november 2026; FOUTEN-VOORBEELDEN.md F7): meet elke 100 ms de tekst van Bliepo en of de pijl er staat,
       en noteer elke tik. Komt dezelfde tekst terug nadat hij weg was, zonder dat er ertussen getikt is, dan is dat fout F7.
@@ -215,6 +223,10 @@ async function speel(c, id) {
     /* F11 (17 nov 2026, 15.31): bij elke gouden les: staat dezelfde tekst ooit 2 keer tegelijk op het scherm? */
     const f11 = id.includes("gouden") || !!process.env.F11;
     if (f11) await c.stuur("Page.addScriptToEvaluateOnNewDocument", { source: DUBBELE_TEKST_METER }, s);
+    /* F16 (18 nov 2026, 15.37): bij elke gouden les: wacht de les op het kind, dan staat er een vraag of opdracht in beeld (scripts/vraag-aanwezig-controle.mjs). */
+    const f16 = id.includes("gouden") || !!process.env.F16;
+    if (f16) await c.stuur("Page.addScriptToEvaluateOnNewDocument", { source: VRAAG_METER }, s);
+    let f16Fotos = 0;
     /* F14 (18 nov 2026, 15.34): in de gouden les Rekentaal zweeft niets: elk voorwerp staat OP zijn ondergrond (scripts/zweef-controle.mjs). */
     const zweefMeter = id === "squla-rekentaal-gouden" || !!process.env.ZWEEF;
     if (zweefMeter) await c.stuur("Page.addScriptToEvaluateOnNewDocument", { source: ZWEEF_METER }, s);
@@ -453,6 +465,24 @@ async function speel(c, id) {
         break;
       }
       if (z.kaart && (await klik(`(b) => /af te vinken|kaart/i.test(b.getAttribute("aria-label") || "")`))) continue;
+      /* Staat de start-aanwijzing er ("Tik op het scherm. Dan begint Bliepo.", BOUWREGELS 15.37), dan tikt de speler 1 keer echt op het scherm, zoals een kind (links in het midden, waar niets te kiezen valt). */
+      if (await ev(`[...document.querySelectorAll("[data-start-tik]")].some((e) => e.getBoundingClientRect().width > 3)`)) {
+        await tikPunt({ x: 6, y: Math.round(APPARAAT.h / 2) });
+        continue;
+      }
+      if (f16) {
+        /* Een foto van elk moment waarop de les wachtte zonder vraag of opdracht. */
+        const n16 = FOTOMAP ? Number(await ev(`(window.__f16 ?? []).length`)) || 0 : 0;
+        if (n16 > f16Fotos) {
+          f16Fotos = n16;
+          const { data } = await c.stuur("Page.captureScreenshot", { format: "jpeg", quality: 70 }, s);
+          mkdirSync(join(FOTOMAP, id), { recursive: true });
+          writeFileSync(join(FOTOMAP, id, `f16-${String(n16).padStart(2, "0")}.jpg`), Buffer.from(data, "base64"));
+          appendFileSync(join(FOTOMAP, id, "schermen.txt"), `f16-${String(n16).padStart(2, "0")}.jpg\tF16: ${JSON.stringify((await ev(`window.__f16[${n16 - 1}]`)) ?? {})}\n`);
+        }
+        /* De speler wacht met antwoorden tot de meter dit moment beoordeeld heeft (alleen als er geen opdracht staat; met RUSTIG=1 altijd). */
+        if (!z.knoppen.some((b) => b.k === "verder") && (await ev(`window.__f16Klaar ? window.__f16Klaar(${process.env.RUSTIG ? "true" : "false"}) : true`)) === false) continue;
+      }
       const knoppen = z.knoppen.filter((b) => !["opnieuw", "terug"].includes(b.k) && !b.wolk);
       if (FOTOMAP && (knoppen.length || z.kaart) && !z.praat) {
         const sleutel = z.tekst + "|" + knoppen.map((b) => b.t).join(",");
@@ -543,6 +573,12 @@ async function speel(c, id) {
       const zw = JSON.parse((await ev(`JSON.stringify({ f: window.__zweef ?? [], n: window.__zweefMetingen ?? 0 })`)) ?? "{}");
       for (const f of zw.f ?? []) fouten.add(`zweeft: ${f}`);
       console.log(`  ZWEEF ${id}: ${(zw.f ?? []).length} keer iets dat zweeft of ernaast staat (${zw.n ?? 0} metingen)`);
+    }
+    if (f16) {
+      const r16 = JSON.parse((await ev(`JSON.stringify({ f: window.__f16 ?? [], n: window.__f16Beoordeeld ?? 0 })`)) ?? "{}");
+      const vf = vraagFouten(r16.f);
+      for (const f of vf) fouten.add(f);
+      console.log(`  F16 ${id}: ${vf.length} keer wachten zonder vraag of opdracht in beeld (${r16.n ?? 0} wachtmomenten beoordeeld${process.env.RUSTIG ? ", rustig" : ""})`);
     }
     if (f11) {
       const dt = dubbeleTekstFouten(JSON.parse((await ev(`JSON.stringify(window.__dubbeleTekst ?? [])`)) ?? "[]"));

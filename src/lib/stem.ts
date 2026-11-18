@@ -214,11 +214,34 @@ let keuzeBrowserBezig = false;
 const leestijd = (zin: string) => 900 + zin.length * 55;
 /** Heeft het kind op deze pagina nog nergens getikt? Dan laat Chrome geen geluid toe. */
 const geenGebaar = () => typeof navigator !== "undefined" && !!navigator.userActivation && !navigator.userActivation.hasBeenActive;
+/*
+  Wacht een zin van Bliepo op de eerste tik van het kind (Chrome laat nog geen geluid toe)? Het lesscherm laat dan een
+  korte start-aanwijzing zien, zodat het kind weet wat het moet doen (F16, Sara 18 november 2026; BOUWREGELS 15.37).
+  Alleen met de optie heel uitpraten; zonder die optie is dit altijd false.
+*/
+let wachtOpTik = 0;
+/** De beurt (volgnummer van de zin) waarin het wachten begon: gaat de les intussen verder met een andere zin, dan wacht er niets meer. */
+let wachtBeurt = -1;
+const tikLuisteraars = new Set<() => void>();
+export const wachtOpEersteTik = (): boolean => wachtOpTik > 0 && wachtBeurt === beurt && geenGebaar();
+export function abonneerEersteTik(f: () => void): () => void {
+  tikLuisteraars.add(f);
+  return () => {
+    tikLuisteraars.delete(f);
+  };
+}
+const zetWachtOpTik = (d: number) => {
+  wachtOpTik = Math.max(0, wachtOpTik + d);
+  for (const f of tikLuisteraars) f();
+};
 /** Eén keer iets doen bij de eerste tik of toets van het kind (alleen met de optie heel uitpraten). */
 function naEersteGebaar(f: () => void): void {
   const soorten = ["pointerdown", "keydown", "touchend"] as const;
+  wachtBeurt = beurt;
+  zetWachtOpTik(1);
   const op = () => {
     for (const t of soorten) window.removeEventListener(t, op, true);
+    zetWachtOpTik(-1);
     /* Even later: was de tik een antwoord (bijvoorbeeld Ja of Nee), dan is de les intussen verder en zegt Bliepo het oude stuk niet meer. */
     setTimeout(f, 150);
   };

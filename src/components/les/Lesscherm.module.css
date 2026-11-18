@@ -817,3 +817,45 @@ a.knop {
 .wortel[data-squla] :global(.bliepo-tekst-woord):has(> [data-somvast]) {
   white-space: nowrap;
 }
+
+/* ---------- F16 (Sara, 18 november 2026; BOUWREGELS 15.37): de start-aanwijzing ----------
+   Alleen zolang Bliepo's eerste zin op de eerste tik van het kind wacht (gouden lessen, rechtstreekse link of herladen).
+   Los boven het speelvlak (niets verspringt als hij weggaat); een tik gaat er dwars doorheen. */
+.startTik {
+  position: absolute;
+  left: 0;
+  right: 300px;
+  bottom: 20px;
+  z-index: 9;
+  display: flex;
+  justify-content: center;
+  pointer-events: none;
+}
+.startTik span {
+  padding: 12px 30px;
+  border-radius: 999px;
+  background: rgba(10, 22, 48, 0.9);
+  border: 2px solid #ffd45c;
+  color: #fff;
+  font-size: 30px;
+  font-weight: 700;
+  line-height: 1.2;
+  animation: startTikPuls 1.6s ease-in-out infinite;
+}
+[data-staand] .startTik {
+  right: 0;
+}
+@keyframes startTikPuls {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .startTik span {
+    animation: none;
+  }
+}

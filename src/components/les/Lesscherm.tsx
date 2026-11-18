@@ -14,8 +14,8 @@
  */
 
 import { MERKNAAM } from "@/lib/merk";
-import { useCallback, useEffect, useMemo, useRef, useState, type CSSProperties, type ReactNode } from "react";
-import { meldStemOnderweg, stopPraten, zegNaElkaar, zetLesStem } from "@/lib/stem";
+import { useCallback, useEffect, useMemo, useRef, useState, useSyncExternalStore, type CSSProperties, type ReactNode } from "react";
+import { abonneerEersteTik, meldStemOnderweg, stopPraten, wachtOpEersteTik, zegNaElkaar, zetLesStem } from "@/lib/stem";
 import { speelLesgeluid, zetLesgeluiden } from "@/lib/lesgeluiden";
 import { GeluidjesKnop } from "./GeluidjesKnop";
 import { wachtOpBliepo } from "@/lib/bliepo-in-beeld";
@@ -52,6 +52,8 @@ const ONTWERP: "nieuw" | "oud" = "nieuw";
 
 /* ---------- vaste maten van het speelvlak ---------- */
 
+/** F16 (15.37): wat er staat zolang Bliepo's eerste zin op de eerste tik van het kind wacht. */
+const START_TIK_ZIN = "Tik op het scherm. Dan begint Bliepo.";
 const B = 1280;
 const H = 720;
 const CEL = 66;
@@ -512,6 +514,14 @@ function Lesscherm({
   const [handGezien, setHandGezien] = useState(false);
   /* Voorkeuren uit de les "Jouw instellingen"; pas na het laden gelezen (geen localStorage op de server). */
   const [voorkeuren, setVoorkeuren] = useState<Lesvoorkeuren | null>(null);
+
+  /*
+    F16 (Sara, 18 november 2026; BOUWREGELS 15.37): wacht Bliepo's eerste zin op de eerste tik van het kind (rechtstreekse
+    link of herladen: Chrome laat dan nog geen geluid toe), dan staat er een korte start-aanwijzing in beeld. Alleen in
+    lessen met stemHeelUitpraten (de gouden lessen); in alle andere lessen verandert er niets.
+  */
+  const wachtOpTik = useSyncExternalStore(abonneerEersteTik, wachtOpEersteTik, () => false);
+  const startTik = les.stemHeelUitpraten === true && wachtOpTik;
 
   /* Het vaste speelvlak zo groot als het scherm toelaat. */
   /* De nagebouwde lessen: alleen de bewaarde stem van Ruth, nooit de browserstem; de naam gaat mee voor het naamfragment (28 okt 2026). */
@@ -1310,6 +1320,12 @@ function Lesscherm({
       >
         {/* naam en pauze */}
         {!pilBoven && !squlaMidden && pilBalk}
+        {/* F16: de start-aanwijzing (zie wachtOpTik hierboven); verdwijnt bij de eerste tik, dan begint Bliepo te praten. */}
+        {startTik && (
+          <div className={s.startTik} data-start-tik="">
+            <span>{START_TIK_ZIN}</span>
+          </div>
+        )}
         {!nieuw && tekstblok}
         {tegelsLinks && <div className={s.synthKolom}>{maakTekstblok("knoppen")}</div>}
         {keuzesMidden !== null && <div className={s.keuzesMidden} style={{ top: keuzesMidden }} data-keuzes-midden="">{maakTekstblok("knoppen")}</div>}
