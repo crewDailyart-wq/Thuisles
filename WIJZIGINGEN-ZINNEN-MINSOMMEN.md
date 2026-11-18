@@ -83,6 +83,10 @@ Net als bij Tellen: voor elke situatie die terugkomt is er een rijtje zinnen. De
 | Slot en "Tik op de kaart." | 3 elk |
 | Lof, korte bevestiging, eindzin | het vaste rijtje uit BLIEPO-KARAKTER.md (wisselt al zonder herhaling) |
 
+## Past het in het tekstvak?
+
+Met varianten kan een reactie langer worden dan vroeger. De les kiest daarom alleen varianten waarmee de hele reactie niet langer is dan de langste reactie van de eerste versie (die paste). Het fouttabel-script rekent na dat er altijd zo'n variant is.
+
 ## De fouttabel is strenger geworden
 
 Het script `scripts/fouttabel-minsommen-gouden.ts` loopt nu ELKE variant na, niet alleen de vaste zin:

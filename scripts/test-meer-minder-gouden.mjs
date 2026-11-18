@@ -438,6 +438,8 @@ async function controleer(P, naam) {
     if (j >= 0 && m[j].pijl) knipper++;
   }
   const over = Math.max(0, ...m.map((r) => r.plek?.over ?? 0));
+  /* Welke tekst het langst was (18 nov 2026: met de varianten kan een reactie langer worden; zo zie je meteen welke). */
+  if (over > 2) zie(`   langste tekst (${over} px te lang): "${(m.find((r) => (r.plek?.over ?? 0) === over)?.tekst ?? []).join(" ").slice(0, 200)}"`);
   /* Overlap (Sara 10 nov): Bliepo mag nooit over de tekst, de knoppen of de pijl vallen; tekst nooit buiten het vak. */
   const doos = (r, b) => (r ? { l: r[0], t: r[1], r: r[0] + (b ?? 0), o: r[1] + r[2] } : null);
   const raakt = (a, c) => a && c && a.l < c.r - 1 && c.l < a.r - 1 && a.t < c.o - 1 && c.t < a.o - 1;

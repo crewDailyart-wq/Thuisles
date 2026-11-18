@@ -409,7 +409,7 @@ export function minFout(v: Minvraag, x: number): Fout {
         : [`Je koos ${X}: daar begint de som mee. Bij min gaat er iets af. Dan blijft er minder over.`, `${X} is het eerste getal van de som. Er ${gaan} er nog ${B} af. Dan blijft er minder over.`],
       uitlegLos: machine ? [`De machine haalt er ${B} af, dus er komen er minder uit.`, `Er ${gaan} er nog ${B} af. Dan komen er minder uit.`] : ["Bij min gaat er iets af. Dan blijft er minder over.", `Er ${gaan} er nog ${B} af. Dan blijft er minder over.`],
       weerEerste: ["Je koos weer het getal waar je mee begint.", "Dat is weer het getal waar we mee beginnen."],
-      weerUitleg: [`Er ${gaan} er ${B} af, dus het wordt minder.`, `Er ${gaan} er nog ${B} af. Dan blijft er minder over.`],
+      weerUitleg: [`Er ${gaan} er ${B} af, dus het wordt minder.`, `Er ${gaan} er nog ${B} af. Het wordt minder.`],
     });
   /* Het getal dat eraf gaat (draaiboek §7 `aftrekgetal-als-antwoord`, gezien: 2 bij 5 − 2, 4 bij 10 − 4). */
   if (x === b)

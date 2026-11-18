@@ -110,6 +110,16 @@ const lengte = (...zinnen: string[]) => zinnen.join(" ").replace(/\{([^}:]+):[a-
 /** De langste reacties van de eerste versie pasten: eerste zin + hint ± 90 tekens, uitleg + "we doen het samen" ± 110. */
 const MAX_HINT = 90;
 const MAX_UITLEG = 110;
+/** Wat er bij de 2e keer over is voor de uitleg, als de kortste "we doen het samen" er nog achter moet. */
+const RUIMTE_UITLEG = MAX_UITLEG - 1 - Math.min(...ZIN.samen.map((z) => z.length));
+/**
+ * Alleen de varianten die met de rest van de reactie in het tekstvak passen (een harde eis: die haal je vooraf uit de
+ * lijst, want de kiezer laat "nooit 2 keer dezelfde" voorgaan op een wens). Past er geen, dan de kortste.
+ */
+const passend = (zinnen: readonly string[], max: number, ...rest: string[]): string[] => {
+  const over = zinnen.filter((z) => lengte(...rest, z) <= max);
+  return over.length ? over : [[...zinnen].sort((a, b) => lengte(a) - lengte(b))[0]];
+};
 
 /* ---------- staat per les ---------- */
 
@@ -345,17 +355,17 @@ function foutZinnen(l: Lesgids, f: Fout, x: string, kleur: string, poging: 1 | 2
   }
   if (poging === 1) {
     const eerste = variant("eerste", f.v.eerste);
-    return [eerste, variant("hint", f.v.hint, (z) => !deeltStuk(eerste, z) && lengte(eerste, z) <= MAX_HINT)];
+    return [eerste, variant("hint", passend(f.v.hint, MAX_HINT, eerste), (z) => !deeltStuk(eerste, z))];
   }
   /* "Weer" alleen als Bliepo de 1e keer al zei wat er mis was (niet na alleen "… dichtbij."). */
   if (eerder !== null && eerder.soort === f.soort && !eerder.noot && !f.noot) {
     const weer = variant("weer", f.v.weerEerste);
-    return [weer, variant("weerUitleg", f.v.weerUitleg, (z) => !deeltStuk(weer, z))];
+    return [weer, variant("weerUitleg", passend(f.v.weerUitleg, RUIMTE_UITLEG, weer), (z) => !deeltStuk(weer, z))];
   }
   /* Hetzelfde getal 2 keer: "Je koos weer …" en de uitleg zonder getal. */
   if (x === eersteX) return [variant("weerGekozen", ZIN.weerGekozen(Number(x), kleur)), variant("uitlegLos", f.v.uitlegLos)];
   /* Een ander getal: de uitleg, liefst met een ander begin dan de eerste zin bij deze vraag ("Je koos …" 2 keer). */
-  return [variant("uitleg", f.v.uitleg, (z) => beginVan(z) !== beginVan(eersteZin))];
+  return [variant("uitleg", passend(f.v.uitleg, RUIMTE_UITLEG), (z) => beginVan(z) !== beginVan(eersteZin))];
 }
 
 /* ---------- het beeld ---------- */
@@ -558,7 +568,7 @@ async function introVraag(l: Lesgids, q: IntroVraag, stippen: number): Promise<n
       continue;
     }
     /* 2e fout: uitleg, dan samen voordoen: het kind doet de kleine stap (1 keer op de plus). */
-    await zegDoor(l, ...f.tweede, variant("samen", ZIN.samen, (z) => lengte(...f.tweede, z) <= MAX_UITLEG));
+    await zegDoor(l, ...f.tweede, variant("samen", passend(ZIN.samen, MAX_UITLEG, ...f.tweede)));
     const n = await tikPlus(l, stippen, 1, q.samen.opdracht, q.id, false);
     speelLesgeluid("goed");
     bliepoScherm("goed");
@@ -647,7 +657,7 @@ async function minVraag(l: Lesgids, v: Minvraag, i: number): Promise<Uitkomst> {
       continue;
     }
     /* 2e fout (15.11): uitleg, dan samen voordoen; het kind haalt zelf weg. */
-    await zegDoor(l, ...fz, variant("samen", ZIN.samen, (z) => !fz.some((y) => deeltStuk(y, z)) && lengte(...fz, z) <= MAX_UITLEG));
+    await zegDoor(l, ...fz, variant("samen", passend(ZIN.samen, MAX_UITLEG, ...fz), (z) => !fz.some((y) => deeltStuk(y, z))));
     await samenVoordoen(l, v);
     return noteer(l, v.id, "samen");
   }

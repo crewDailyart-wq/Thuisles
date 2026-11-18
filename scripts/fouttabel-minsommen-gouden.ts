@@ -70,6 +70,15 @@ const verklap = (v: Minvraag, a: string, f: Fout): string | null => {
   for (const z of f.v.hint) if (RICHTING.test(kaal(z))) return `hint met richting: "${kaal(z)}"`;
   /* Met richting: elke eerste zin geeft echt die richting of is neutraal; de uitleg heeft geen "dichtbij/bijna" (hooguit 1 keer per vraag). */
   for (const z of [...f.v.uitleg, ...f.v.uitlegLos, ...f.v.weerEerste, ...f.v.weerUitleg]) if (f.v.eerste.some((e) => zelfdeKern(z, e)) && zelfdeKern(z, z)) return `"${kaal(z)}" zegt nog eens dichtbij/bijna`;
+  /* De reactie past in het tekstvak (15.30): bij elke eerste zin is er een hint waarmee het samen hooguit 90 tekens is, en
+     bij de 2e keer een uitleg die met de kortste "we doen het samen" hooguit 110 tekens is (zo lang waren de langste reacties van de
+     eerste versie; de les kiest alleen varianten die passen). */
+  const len = (...z: string[]) => kaal(z.join(" ")).length;
+  for (const e of f.v.eerste) if (!f.v.hint.some((h) => len(e, h) <= 90)) return `te lang: geen hint past bij "${kaal(e)}" (${Math.min(...f.v.hint.map((h) => len(e, h)))} tekens)`;
+  const kortSamen = [...ZIN.samen].sort((a, b) => a.length - b.length)[0];
+  const past2 = (eersten: string[], uitleg: string[]) => eersten.find((e) => !uitleg.some((u) => len(e, u, kortSamen) <= 110));
+  const mis = past2([""], f.v.uitleg) ?? past2(f.v.weerEerste, f.v.weerUitleg) ?? past2(ZIN.weerGekozen(x, "wit"), f.v.uitlegLos);
+  if (mis !== undefined) return `te lang: bij de 2e keer past geen uitleg achter "${kaal(mis)}"`;
   /* Te veel mag nooit "meer" zeggen en omgekeerd. */
   const fouteKant = f.soort === "te-veel" ? /\bmeer\b|te weinig/i : f.soort === "te-weinig" ? /\bminder\b|te veel|zo veel/i : null;
   if (fouteKant) for (const [naam, lijst] of alle) for (const z of lijst) if (fouteKant.test(kaal(z))) return `${naam}: "${kaal(z)}" wijst de verkeerde kant op`;
@@ -145,6 +154,7 @@ for (const q of INTRO_VRAGEN) {
     if (kaal(`${f.eerste} ${f.hint}`).toLowerCase().includes(stam)) fouten.push(`${q.id} ${a}: eerste zin of hint noemt het goede antwoord ("${stam}")`);
     if (!f.hint || !f.eerste || f.tweede.length < 2) fouten.push(`${q.id} ${a}: fouttabel niet compleet`);
   }
+  for (const f of Object.values(q.fouten)) if (!ZIN.samen.some((s) => kaal([...f.tweede, s].join(" ")).length <= 110)) fouten.push(`${q.id}: de uitleg bij de 2e keer is te lang voor het tekstvak`);
   for (const [naam, zinnen] of reacties(q)) {
     const d = dubbel(zinnen);
     if (d.length) fouten.push(`${naam}: ${[...new Set(d)].join(", ")} komt 2 keer voor in 1 reactie`);
