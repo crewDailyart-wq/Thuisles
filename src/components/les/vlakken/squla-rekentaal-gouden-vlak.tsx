@@ -57,50 +57,39 @@ export type RTProps = {
 /* ---------- de Magnific-plaatjes (Bliepo-stijl; de getekende voorwerpen hieronder blijven als reserve) ---------- */
 
 export type Bron = (naam: string) => HTMLImageElement | null;
-/** Alle plaatjes van deze les (bestandsnamen in public/voorwerpen, zonder .png). */
+/**
+ * Alle plaatjes van deze les (bestandsnamen in public/voorwerpen, zonder .png): ELK voorwerp, de tafel, het kleed, de
+ * weegschaal, de plekken en de startstreep is 1 HEEL plaatje uit Magnific (18 november 2026, Sara: scherp, glanzend, niets
+ * samengesteld of opgerekt). Laadt er 1 niet, dan tekent de les alles met de getekende reserve.
+ */
 export const RT_PLAATJES = [
-  "pannenkoek", "beker-rood", "glas-sap-leeg", "glas-sap-half", "glas-sap-vol", "mand-leeg", "appel", "watermeloen", "aardbei",
-  "zak-meel", "stokbrood-lang", "spaghetti-sliert", "picknickkleed", "tafel-hout", "weegschaal-paal", "weegschaal-schaal",
-  "weegschaal-balkstuk", "weegschaal-knop",
+  "rt-pannenkoek", "rt-beker", "rt-mand", "rt-appel", "rt-meloen", "rt-aardbei", "rt-zak", "rt-glas-leeg", "rt-glas-half",
+  "rt-glas-vol", "rt-brood-kort", "rt-brood-middel", "rt-brood-lang", "rt-spaghetti-1", "rt-tafel-rij",
+  "rt-tafel-vlak", "rt-kleed-rij", "rt-kleed-vlak", "rt-weegschaal-recht", "rt-weegschaal-links", "rt-plek", "rt-streep",
 ] as const;
-const PLAAT_VAN: Record<RekenDing["soort"], string> = {
-  pannenkoek: "pannenkoek", beker: "beker-rood", glas: "glas-sap-leeg", mand: "mand-leeg", appel: "appel", meloen: "watermeloen",
-  aardbei: "aardbei", zak: "zak-meel", broodje: "stokbrood-lang", sliert: "spaghetti-sliert",
+/** Breed gedeeld door hoog van elk plaatje (de plaatjes zijn nooit opgerekt: alleen gelijkmatig geschaald). */
+const RATIO: Record<string, number> = {
+  "rt-brood-kort": 4.03, "rt-brood-middel": 7.0, "rt-brood-lang": 10.43, "rt-spaghetti-1": 9.88,
+  "rt-tafel-rij": 5.11, "rt-tafel-vlak": 2.44, "rt-kleed-rij": 4.13, "rt-kleed-vlak": 1.88, "rt-weegschaal": 1700 / 1265,
 };
+/** Welk plaatje bij welke lengte: gelijke dikte zoveel mogelijk (korte broodjes uit het korte plaatje, enzovoort). */
+function broodNaam(l: number) {
+  return l <= 330 ? "rt-brood-kort" : l <= 540 ? "rt-brood-middel" : "rt-brood-lang";
+}
+function spaNaam() {
+  return "rt-spaghetti-1";
+}
 function glasNaam(vul: number) {
-  return vul >= 0.75 ? "glas-sap-vol" : vul > 0.25 ? "glas-sap-half" : "glas-sap-leeg";
+  return vul >= 0.75 ? "rt-glas-vol" : vul > 0.25 ? "rt-glas-half" : "rt-glas-leeg";
 }
-/** Het plaatje van een voorwerp tekenen in zijn vak (zelfde vak als de getekende versie). Geeft false als het plaatje niet geladen is. */
-function tekenPlaat(c: C, d: RekenDing, bron: Bron): boolean {
-  const naam = d.soort === "glas" ? glasNaam(d.vul ?? 0) : PLAAT_VAN[d.soort];
-  const img = bron(naam);
-  if (!img) return false;
-  const vak = tekenVak(d);
-  if (d.soort === "broodje" || d.soort === "sliert") {
-    if (d.soort === "sliert") c.drawImage(img, 0, 0, vak.b, vak.h);
-    else drieDelig(c, img, 0, 0, vak.b, vak.h, 0.2);
-    return true;
-  }
-  /* Past in het vak met behoud van de verhouding; midden onderaan (pannenkoek in het midden). */
-  const k = Math.min(vak.b / img.naturalWidth, vak.h / img.naturalHeight);
-  const w = img.naturalWidth * k;
-  const h = img.naturalHeight * k;
-  c.drawImage(img, (vak.b - w) / 2, vak.h - h, w, h);
-  return true;
-}
-/** Lang plaatje: linkerdeel en rechterdeel (gespiegeld) blijven, het midden rekt mee. */
-function drieDelig(c: C, img: HTMLImageElement, x: number, y: number, b: number, h: number, kapDeel: number) {
-  const W = img.naturalWidth;
-  const H = img.naturalHeight;
-  const bron = W * kapDeel;
-  const kap = Math.min((h * W) / H * kapDeel, b / 2.2);
-  c.drawImage(img, bron, 0, W - 2 * bron, H, x + kap - 0.5, y, b - 2 * kap + 1, h);
-  c.drawImage(img, 0, 0, bron, H, x, y, kap, h);
-  c.save();
-  c.translate(x + b, y);
-  c.scale(-1, 1);
-  c.drawImage(img, 0, 0, bron, H, 0, 0, kap, h);
-  c.restore();
+const PLAAT_VAN: Record<Exclude<RekenDing["soort"], "glas" | "broodje" | "sliert">, string> = {
+  pannenkoek: "rt-pannenkoek", beker: "rt-beker", mand: "rt-mand", appel: "rt-appel", meloen: "rt-meloen", aardbei: "rt-aardbei", zak: "rt-zak",
+};
+export function plaatNaam(d: RekenDing): string {
+  if (d.soort === "glas") return glasNaam(d.vul ?? 0);
+  if (d.soort === "broodje") return broodNaam(d.lengte ?? 300);
+  if (d.soort === "sliert") return spaNaam();
+  return PLAAT_VAN[d.soort];
 }
 
 const NAVY = PALET.navy;
@@ -127,10 +116,14 @@ export function maten(d: RekenDing): { b: number; h: number } {
       return { b: 80 * m, h: 90 * m };
     case "zak":
       return { b: 150 * m, h: 175 * m };
-    case "broodje":
-      return { b: d.lengte ?? 300, h: 70 };
-    case "sliert":
-      return { b: d.lengte ?? 300, h: 44 };
+    case "broodje": {
+      const l = d.lengte ?? 300;
+      return { b: l, h: l / RATIO[broodNaam(l)] };
+    }
+    case "sliert": {
+      const l = d.lengte ?? 300;
+      return { b: l, h: l / RATIO[spaNaam()] };
+    }
   }
 }
 /** De tekening zelf is zoveel punten groot (het "viewBox" van het oude vlak); de maat schaalt haar. */
@@ -175,6 +168,25 @@ const VOLG_ONDER = 668;
 const VOLG_X = [160, 420, 680];
 const PLEK_X = [200, 420, 640];
 
+/* ---------- de plaatjes-versie ("heel", alles uit Magnific): maten in punten van het vlak ---------- */
+/** Zolang de plaatjes geladen zijn (de scène zet dit na het laden); plekVan rekent er dan mee. */
+let HEEL = true;
+const W_T = 60; // bovenkant van het weegschaalplaatje
+const W_S = 0.39; // punten per pixel van het weegschaalplaatje (1700 breed)
+const W_B = 1700 * W_S;
+const W_H = 1265 * W_S;
+const W_AFSTAND = 218; // schaal tot het midden
+/** De bovenkant van de schaal (waar het voorwerp op staat), gemeten in het plaatje: recht, laag, hoog. */
+const W_RIM = { recht: 796 * W_S, laag: 979 * W_S, hoog: 742 * W_S };
+const ZINK = 5; // het voorwerp staat een klein stukje IN de schaal
+const VOLG_ONDER_HEEL = 615;
+/** Waar het oppervlak van een ondergrond begint en eindigt (deel van de hoogte van het plaatje), gemeten in het plaatje. */
+const BAND: Record<string, [number, number]> = {
+  "rt-tafel-rij": [0.02, 0.72], "rt-kleed-rij": [0.04, 0.96], "rt-tafel-vlak": [0.14, 0.88], "rt-kleed-vlak": [0.04, 0.96],
+};
+const VOET: Record<string, number> = { "rt-tafel-rij": 0.45, "rt-kleed-rij": 0.6 };
+const ysOnder = (n: number) => (n === 2 ? [330, 470] : HEEL ? [285, 400, 515] : [270, 400, 530]);
+
 /** Waar een voorwerp staat: `x` = midden, `y` = onderkant, `b` en `h` = de maat. Bij de weegschaal: na het kantelen. */
 export type Plek = { x: number; y: number; b: number; h: number };
 export function plekVan(p: Pick<RTProps, "indeling" | "dingen" | "zwaar" | "geplaatst">, id: string): Plek | null {
@@ -188,20 +200,26 @@ export function plekVan(p: Pick<RTProps, "indeling" | "dingen" | "zwaar" | "gepl
     return { x: xs[i], y: 540, b, h };
   }
   if (p.indeling === "onder") {
-    const ys = n === 2 ? [330, 470] : [270, 400, 530];
+    const ys = ysOnder(n);
     return { x: 120 + b / 2, y: ys[i] + h / 2, b, h };
   }
   if (p.indeling === "weegschaal") {
     const links = i === 0;
     const linksZwaar = p.zwaar === p.dingen[0]?.id;
+    if (HEEL) {
+      /* De eindstand: de zware kant staat laag. De voet staat een klein stukje in de schaal. */
+      const laag = links === linksZwaar;
+      return { x: links ? DX - W_AFSTAND : DX + W_AFSTAND, y: W_T + (laag ? W_RIM.laag : W_RIM.hoog) + ZINK, b, h };
+    }
     const dl = linksZwaar ? ZAK : -ZAK;
     return { x: links ? DX - ARM : DX + ARM, y: DY + HANG - 4 + (links ? dl : -dl), b, h };
   }
   const k = (p.geplaatst ?? []).indexOf(id);
-  return k >= 0 ? { x: PLEK_X[k], y: VOLG_ONDER - 4, b, h } : { x: VOLG_X[i], y: VOLG_BOVEN, b, h };
+  const onder = HEEL ? VOLG_ONDER_HEEL : VOLG_ONDER - 4;
+  return k >= 0 ? { x: PLEK_X[k], y: onder, b, h } : { x: VOLG_X[i], y: VOLG_BOVEN, b, h };
 }
 /** De plek van de lege plaats `k` op de plank (voor het hulphandje). */
-export const plankPlek = (k: number): Punt => ({ x: PLEK_X[k], y: VOLG_ONDER - 40 });
+export const plankPlek = (k: number): Punt => ({ x: PLEK_X[k], y: (HEEL ? VOLG_ONDER_HEEL + 4 : VOLG_ONDER) - 40 });
 
 /* ---------- de tekeningen (zelfde vormen en kleuren als de SVG van het oude vlak) ---------- */
 
@@ -356,8 +374,7 @@ function tekenSliert(c: C, b: number) {
   pad(c, d, { lijn: NAVY, dik: 17, rond: true });
   pad(c, d, { lijn: "#ffd36b", dik: 8, rond: true });
 }
-function tekenDing(c: C, d: RekenDing, bron?: Bron) {
-  if (bron && tekenPlaat(c, d, bron)) return;
+function tekenDing(c: C, d: RekenDing) {
   switch (d.soort) {
     case "pannenkoek":
       return tekenPannenkoek(c);
@@ -383,6 +400,8 @@ function tekenDing(c: C, d: RekenDing, bron?: Bron) {
 }
 /** Rand om een tekening (lijnen mogen iets buiten het vak, zoals in de SVG). */
 const RAND = 10;
+/** De startstreep (rt-streep): breed gedeeld door hoog. */
+const SB_RATIO = 56 / 1400;
 
 /**
  * De LICHTE RAND (Sara, 12 november 2026): de donkerblauwe lijnen van de tekeningen zijn in de donkere ruimte slecht te
@@ -456,31 +475,51 @@ function maakScene(Phaser: PhaserModule, rustig: boolean, plaatjesAan = false) {
 
     preload() {
       this.load.image("rt-rondje", "/rondje/rondje-rood-2.png");
-      if (plaatjesAan) for (const n of RT_PLAATJES) this.load.image(`rtp-${n}`, `/voorwerpen/${n}.png?v=1`);
+      if (plaatjesAan) for (const n of RT_PLAATJES) this.load.image(`rtp-${n}`, `/voorwerpen/${n}.png?v=2`);
     }
 
-    /** Een geladen Magnific-plaatje (null als hij niet geladen is of de les het niet aanzet: dan de getekende reserve). */
+    /** Een geladen Magnific-plaatje (null als hij niet geladen is of de les het niet aanzet). */
     bron: Bron = (naam) => (plaatjesAan && this.textures.exists(`rtp-${naam}`) ? (this.textures.get(`rtp-${naam}`).getSourceImage() as HTMLImageElement) : null);
+
+    /** Alleen als ALLE plaatjes geladen zijn tekent de les met de Magnific-plaatjes; anders met de getekende reserve. */
+    heelBepaald: boolean | null = null;
+    get heel(): boolean {
+      if (this.heelBepaald === null) {
+        this.heelBepaald = plaatjesAan && RT_PLAATJES.every((n) => this.textures.exists(`rtp-${n}`));
+        HEEL = this.heelBepaald;
+      }
+      return this.heelBepaald;
+    }
 
     /** Een plaatje 1 keer bakken met de lichte rand om de vorm (zie metLichteRand); de ruimte eromheen komt erbij, het midden blijft. */
     randPlaatje(sl: string, b: number, h: number, teken: (c: C) => void, ruimte = LICHT_RUIMTE) {
       this.canvasPlaatje(sl, b + 2 * ruimte, h + 2 * ruimte, (c) => {
         c.translate(ruimte, ruimte);
-        /* Met de Magnific-plaatjes GEEN lichte rand (Sara, 18 november 2026: nooit een witte rand om plaatjes; alleen de dunne donkere rand uit de plaatjes zelf). */
-        if (plaatjesAan) teken(c);
-        else metLichteRand(c, teken);
+        /* De getekende reserve van voor 18 november: met de lichte rand om de vorm (besluit Sara 12 november). */
+        metLichteRand(c, teken);
       });
     }
 
-    /** Het plaatje van een voorwerp (1 keer getekend per soort en maat). */
+    /** Het plaatje van een voorwerp (1 keer getekend per soort en maat). Een heel Magnific-plaatje past in zijn vak, gelijkmatig geschaald, midden onderaan. */
     plaatje(d: RekenDing): string {
       const { b, h } = maten(d);
+      const img = this.heel ? this.bron(plaatNaam(d)) : null;
+      if (img) {
+        const sl = `rtp-${plaatNaam(d)}-${Math.round(b)}-${Math.round(h)}`;
+        const k = Math.min(b / img.naturalWidth, h / img.naturalHeight);
+        const w = img.naturalWidth * k;
+        const hh = img.naturalHeight * k;
+        this.canvasPlaatje(sl, b, h, (c) => {
+          c.imageSmoothingQuality = "high";
+          c.drawImage(img, (b - w) / 2, h - hh, w, hh);
+        });
+        return sl;
+      }
       const sl = `rt-${d.soort}-${Math.round(b)}-${Math.round(h)}-${d.vul ?? ""}`;
-      const bron = this.bron;
       const vak = tekenVak(d);
       this.randPlaatje(sl, b, h, (c) => {
         c.scale(b / vak.b, h / vak.h);
-        tekenDing(c, d, bron);
+        tekenDing(c, d);
       }, RAND);
       return sl;
     }
@@ -490,60 +529,31 @@ function maakScene(Phaser: PhaserModule, rustig: boolean, plaatjesAan = false) {
      * van een groot plaatje (het kleed) later geen hapering geeft (HARDE REGEL 7). Het eerste beeld wacht hier niet op.
      */
     bakVooruit(dingen: RekenDing[]) {
-      const taken: (() => void)[] = [
-        () => this.weegPlaatjes(),
-        ...(["tafel", "kleed"] as const).flatMap((g) => [
-          [800, plaatjesAan ? 170 : g === "kleed" ? 150 : 110],
-          [740, 300],
-          [740, 420],
-          [620, plaatjesAan || g === "kleed" ? 110 : 80],
-          [800, plaatjesAan || g === "kleed" ? 120 : 60],
-        ].map(([b, h]) => () => void this.grondPlaatje(g, b, h))),
-        ...dingen.map((d) => () => void this.plaatje(d)),
-      ];
-      taken.forEach((t, i) => this.time.delayedCall(300 + i * 34, t));
+      const taken: (() => void)[] = this.heel
+        ? [
+            () => this.heelWeegPlaatjes(),
+            ...(["rt-tafel-rij", "rt-kleed-rij"] as const).flatMap((g) => [800, 700, 620].map((b) => () => void this.heelGrondPlaatje(g, b))),
+            () => void this.heelGrondPlaatje("rt-tafel-vlak", 740),
+            () => void this.heelGrondPlaatje("rt-kleed-vlak", 740),
+            ...dingen.map((d) => () => void this.plaatje(d)),
+          ]
+        : [
+            () => this.weegPlaatjes(),
+            ...(["tafel", "kleed"] as const).flatMap((g) => [
+              [800, g === "kleed" ? 150 : 110],
+              [740, 300],
+              [740, 420],
+              [620, g === "kleed" ? 110 : 80],
+              [800, g === "kleed" ? 120 : 60],
+            ].map(([b, h]) => () => void this.grondPlaatje(g, b, h))),
+            ...dingen.map((d) => () => void this.plaatje(d)),
+          ];
+      taken.forEach((x, i) => this.time.delayedCall(300 + i * 34, x));
     }
 
     grondPlaatje(soort: "tafel" | "kleed", b: number, h: number): string {
       const sl = `rt-grond-${soort}-${b}-${h}`;
-      const kleed = this.bron("picknickkleed");
-      const hout = this.bron("tafel-hout");
       this.randPlaatje(sl, b, h, (c) => {
-        if (soort === "kleed" && kleed) {
-          /* Het kleed: het midden van het geblokte plaatje (zonder rand), 2 keer vergroot, met een ronde hoek en een donkere lijn. */
-          c.save();
-          c.beginPath();
-          c.roundRect(0, 0, b, h, 14);
-          c.clip();
-          const k = 1.6;
-          const bw = Math.min(b / k, kleed.naturalWidth - 150);
-          const bh = Math.min(h / k, kleed.naturalHeight - 150);
-          c.drawImage(kleed, (kleed.naturalWidth - bw) / 2, (kleed.naturalHeight - bh) / 2, bw, bh, 0, 0, b, h);
-          c.restore();
-          c.beginPath();
-          c.roundRect(0, 0, b, h, 14);
-          c.strokeStyle = NAVY;
-          c.lineWidth = LIJN;
-          c.stroke();
-          return;
-        }
-        if (soort === "tafel" && hout) {
-          /* De tafel: de houten planken uit het plaatje, in repen onder elkaar. */
-          c.save();
-          c.beginPath();
-          c.roundRect(0, 0, b, h, 10);
-          c.clip();
-          const sx = 50, sy = 9, sb = 183, sh = 50;
-          const reep = h / Math.max(1, Math.round(h / 90));
-          for (let y = 0; y < h; y += reep) c.drawImage(hout, sx, sy, sb, sh, 0, y, b, Math.min(reep, h - y) + 0.5);
-          c.restore();
-          c.beginPath();
-          c.roundRect(0, 0, b, h, 10);
-          c.strokeStyle = NAVY;
-          c.lineWidth = LIJN;
-          c.stroke();
-          return;
-        }
         if (soort === "tafel") {
           c.beginPath();
           c.roundRect(0, 0, b, Math.min(h, 34), 10);
@@ -588,25 +598,6 @@ function maakScene(Phaser: PhaserModule, rustig: boolean, plaatjesAan = false) {
     }
 
     weegPlaatjes() {
-      const [paalP, schaalP, balkP, knopP] = ["weegschaal-paal", "weegschaal-schaal", "weegschaal-balkstuk", "weegschaal-knop"].map((n) => this.bron(n));
-      if (paalP && schaalP && balkP && knopP) {
-        this.randPlaatje("rt-paal", 200, 420, (c) => {
-          const h = 406;
-          const w = (h * paalP.naturalWidth) / paalP.naturalHeight;
-          c.drawImage(paalP, 100 - w / 2, 10, w, h);
-        });
-        /* Een schaal met de touwtjes; (0, 0) van de groep = de lijn bovenop de schaal. */
-        this.randPlaatje("rt-schaal", 240, HANG + 90, (c) => {
-          c.translate(120, HANG + 6);
-          pad(c, `M-92 0 L0 ${-HANG} L92 0`, { lijn: "#d6d8e1", dik: 3 });
-          const w = 200;
-          const h = (w * schaalP.naturalHeight) / schaalP.naturalWidth;
-          c.drawImage(schaalP, -w / 2, -22, w, h);
-        });
-        this.randPlaatje("rt-balk", 2 * ARM + 34, 28, (c) => drieDelig(c, balkP, 5, 3, 2 * ARM + 24, 22, 0.14));
-        this.randPlaatje("rt-spil", 40, 40, (c) => c.drawImage(knopP, 20 - 20.5, 20 - 20, 41, 40));
-        return;
-      }
       /* De paal en de voet (vast). */
       this.randPlaatje("rt-paal", 200, 420, (c) => {
         c.translate(100 - DX, -200);
@@ -631,6 +622,163 @@ function maakScene(Phaser: PhaserModule, rustig: boolean, plaatjesAan = false) {
       this.randPlaatje("rt-spil", 40, 40, (c) => ovaal(c, 20, 20, 15, 15, PALET.koraal, NAVY, 5));
     }
 
+    /* ---------- de plaatjes-versie: alles HEEL uit Magnific ---------- */
+
+    gronden: { naam: string; x0: number; x1: number; top: number; bottom: number }[] = [];
+    /** Weegschaal: de schalen (x, de stand van de bovenkant van de schaal bij recht en aan het eind) en het voorwerp erop. */
+    schalen: { x: number; recht: number; eind: number; doos: Box | null }[] = [];
+    weegBeelden: { recht: Img; scheef: Img } | null = null;
+    weegP = 0;
+
+    heelGrondPlaatje(naam: string, b: number): string {
+      const sl = `rtg-${naam}-${Math.round(b)}`;
+      const img = this.bron(naam)!;
+      const h = b / RATIO[naam];
+      this.canvasPlaatje(sl, b, h, (c) => {
+        c.imageSmoothingQuality = "high";
+        c.drawImage(img, 0, 0, b, h);
+      });
+      return sl;
+    }
+
+    /** Een ondergrond neerzetten (x = linkerkant, y = bovenkant). Geeft de hoogte terug. */
+    heelGrond(naam: string, x: number, y: number, b: number): number {
+      const h = b / RATIO[naam];
+      const o = this.plaats(this.heelGrondPlaatje(naam, b), x + b / 2, y + h / 2).setDepth(0);
+      this.achter.push(o);
+      this.tover(o);
+      const [b0, b1] = BAND[naam];
+      this.gronden.push({ naam, x0: x, x1: x + b, top: y + b0 * h, bottom: y + b1 * h });
+      return h;
+    }
+
+    /** Een rij-ondergrond waar de voeten op de lijn `voetY` staan. */
+    heelRij(naam: string, x: number, voetY: number, b: number) {
+      this.heelGrond(naam, x, voetY - VOET[naam] * (b / RATIO[naam]), b);
+    }
+
+    heelWeegPlaatjes() {
+      for (const [n, sl] of [["rt-weegschaal-recht", "rtw-recht"], ["rt-weegschaal-links", "rtw-links"]] as const) {
+        const img = this.bron(n)!;
+        this.canvasPlaatje(sl, W_B, W_H, (c) => {
+          c.imageSmoothingQuality = "high";
+          c.drawImage(img, 0, 0, W_B, W_H);
+        });
+      }
+    }
+
+    /** Het tafereel met de Magnific-plaatjes: de voorwerpen staan ECHT OP het hout, het kleed of in de schaal. */
+    bouwHeel(p: RTProps) {
+      const n = p.dingen.length;
+      const tafel = p.ondergrond === "tafel";
+      const rij = tafel ? "rt-tafel-rij" : "rt-kleed-rij";
+      if (p.indeling === "rij") this.heelRij(rij, 20, 540, 800);
+      else if (p.indeling === "onder") {
+        const ys = ysOnder(n);
+        const naam = tafel ? "rt-tafel-vlak" : "rt-kleed-vlak";
+        this.heelGrond(naam, 60, ys[0] - (tafel ? 80 : 70), 740);
+        /* De startstreep (heel plaatje): de slierten en broodjes beginnen er allemaal bij. */
+        const sh = ys[ys.length - 1] - ys[0] + 90;
+        const sb = sh * (SB_RATIO);
+        const sl = `rtp-streep-${Math.round(sh)}`;
+        const img = this.bron("rt-streep")!;
+        this.canvasPlaatje(sl, sb, sh, (c) => {
+          c.imageSmoothingQuality = "high";
+          c.drawImage(img, 0, 0, sb, sh);
+        });
+        const streep = this.plaats(sl, 110, (ys[0] + ys[ys.length - 1]) / 2).setDepth(1);
+        this.achter.push(streep);
+        this.tover(streep);
+      } else if (p.indeling === "weegschaal") {
+        /* De tafel (of het kleed) waar de voet van de weegschaal op staat. */
+        const voet = W_T + W_H;
+        this.heelRij(rij, DX - 310, voet, 620);
+        this.heelWeegPlaatjes();
+        const linksZwaar = p.zwaar === p.dingen[0]?.id;
+        const recht = this.plaats("rtw-recht", DX, W_T + W_H / 2).setDepth(1);
+        const scheef = this.plaats("rtw-links", DX, W_T + W_H / 2).setDepth(1).setAlpha(0);
+        if (!linksZwaar) scheef.setFlipX(true);
+        this.achter.push(recht, scheef);
+        this.tover(recht);
+        this.weegBeelden = { recht, scheef };
+        const stand = (links: boolean) => (links === linksZwaar ? W_RIM.laag : W_RIM.hoog);
+        this.schalen = p.dingen.slice(0, 2).map((d, i) => ({ x: i === 0 ? DX - W_AFSTAND : DX + W_AFSTAND, recht: W_RIM.recht, eind: stand(i === 0), doos: null as Box | null }));
+      } else {
+        /* Op volgorde: boven de voorwerpen op het kleed (of de tafel), onder een houten plank met 3 plekken. */
+        this.heelRij(rij, 20, VOLG_BOVEN, 800);
+        this.heelRij("rt-tafel-rij", 70, VOLG_ONDER_HEEL, 700);
+        const plek = this.bron("rt-plek")!;
+        const opMaat = [...p.dingen].sort((x, y) => maten(x).b * maten(x).h - maten(y).b * maten(y).h);
+        opMaat.forEach((d, i) => {
+          const { b, h } = maten(d);
+          const zijde = Math.max(70, Math.min(96, Math.max(b, h) * 0.5 + 34));
+          const sl = `rtp-plek-${Math.round(zijde)}`;
+          this.canvasPlaatje(sl, zijde, zijde, (c) => {
+            c.imageSmoothingQuality = "high";
+            c.drawImage(plek, 0, 0, zijde, zijde);
+          });
+          const o = this.plaats(sl, PLEK_X[i], VOLG_ONDER_HEEL - zijde / 2 + 14).setDepth(1);
+          this.achter.push(o);
+          this.tover(o);
+        });
+      }
+      /* De voorwerpen. */
+      p.dingen.forEach((d, i) => {
+        const pl = plekVan(p.indeling === "weegschaal" ? { ...p, zwaar: undefined, dingen: p.dingen } : p, d.id);
+        if (!pl) return;
+        /* Op de weegschaal: eerst recht (het voorwerp zakt of stijgt daarna mee met zijn schaal). */
+        const y = p.indeling === "weegschaal" ? W_T + W_RIM.recht + ZINK : pl.y;
+        const x = p.indeling === "weegschaal" ? (i === 0 ? DX - W_AFSTAND : DX + W_AFSTAND) : pl.x;
+        const doos = this.add.container(x, y).setDepth(5);
+        doos.add(this.plaats(this.plaatje(d), 0, -pl.h / 2));
+        doos.setData("h", pl.h);
+        this.dozen.set(d.id, doos);
+        if (this.schalen[i]) this.schalen[i].doos = doos;
+        this.tover(doos, { vertraging: 80 + i * 70 });
+      });
+      if (p.indeling === "weegschaal") {
+        /* Eerst recht, dan rustig naar de zware kant (na 0,45 s, 0,9 s lang): het plaatje wisselt zacht en de voorwerpen gaan met hun schaal mee. */
+        this.kantel(450);
+      }
+      this.zetLicht(this.licht);
+    }
+
+    /** De weegschaal laten kantelen: eerst recht, dan na `wacht` ms 0,9 s lang naar de zware kant (ook voor de zweefcontrole). */
+    kantel(wacht: number) {
+      if (this.rustig) {
+        this.zetWeegP(1);
+        return;
+      }
+      this.zetWeegP(0);
+      const stap = { p: 0 };
+      this.tweens.add({ targets: stap, p: 1, delay: wacht, duration: 900, ease: "Sine.easeInOut", onUpdate: () => this.zetWeegP(stap.p), onComplete: () => this.zetWeegP(1) });
+    }
+
+    /** De weegschaal op stand `q` (0 = recht, 1 = helemaal gekanteld): plaatjes, en elk voorwerp staat op zijn schaal. */
+    zetWeegP(q: number) {
+      this.weegP = q;
+      const w = this.weegBeelden;
+      if (w) {
+        w.scheef.setAlpha(Math.min(1, q * 2));
+        w.recht.setAlpha(q < 0.5 ? 1 : Math.max(0, (1 - q) * 2));
+      }
+      for (const s of this.schalen) if (s.doos) s.doos.y = W_T + s.recht + (s.eind - s.recht) * q + ZINK;
+    }
+
+    /** Voor de zweefcontrole (scripts/zweef-controle.mjs): waar staat elk voorwerp en waar is zijn ondergrond. */
+    meet() {
+      const sleutel = (id: string) => this.p?.dingen.find((d) => d.id === id);
+      return {
+        beeld: this.beeld,
+        indeling: this.p?.indeling ?? null,
+        heel: this.heel,
+        weegP: this.weegP,
+        dingen: [...this.dozen.entries()].map(([id, doos]) => ({ id, soort: sleutel(id)?.soort ?? "", x: doos.x, voet: doos.y, b: sleutel(id) ? maten(sleutel(id)!).b : 0 })),
+        gronden: this.gronden,
+        schalen: this.schalen.map((s) => ({ x: s.x, bovenkant: W_T + s.recht + (s.eind - s.recht) * this.weegP, doos: s.doos ? [...this.dozen.entries()].find(([, d]) => d === s.doos)?.[0] ?? null : null })),
+      };
+    }
+
     weegschaal(p: RTProps) {
       this.weegPlaatjes();
       const paal = this.plaats("rt-paal", DX, 410).setDepth(1);
@@ -646,7 +794,7 @@ function maakScene(Phaser: PhaserModule, rustig: boolean, plaatjesAan = false) {
       const naar: { doos: Box; dy: number }[] = [];
       for (const [x, dy, d] of schalen) {
         const schaal = this.add.container(x, DY + HANG).setDepth(2);
-        schaal.add(this.plaats("rt-schaal", 0, -HANG - 6 + (this.bron("weegschaal-schaal") ? HANG + 90 : HANG + 50) / 2));
+        schaal.add(this.plaats("rt-schaal", 0, -HANG - 6 + (HANG + 50) / 2));
         this.achter.push(schaal);
         this.tover(schaal);
         naar.push({ doos: schaal, dy });
@@ -673,6 +821,9 @@ function maakScene(Phaser: PhaserModule, rustig: boolean, plaatjesAan = false) {
 
     zetBeeld(p: RTProps) {
       const nieuw = p.beeld !== this.beeld;
+      const w = window as unknown as { __rtMeet?: () => unknown; __rtKantel?: () => void };
+      w.__rtMeet = () => this.meet();
+      w.__rtKantel = () => this.kantel(0);
       this.p = p;
       if (!nieuw) return;
       this.beeld = p.beeld;
@@ -681,14 +832,21 @@ function maakScene(Phaser: PhaserModule, rustig: boolean, plaatjesAan = false) {
       this.achter = [];
       this.dozen.clear();
       this.balk = null;
+      this.gronden = [];
+      this.schalen = [];
+      this.weegBeelden = null;
       if (!p.indeling) return;
+      if (this.heel) {
+        this.bouwHeel(p);
+        return;
+      }
       const n = p.dingen.length;
       /* De ondergrond (zoals het oude vlak, 60 punten naar links). */
       /* Met de plaatjes staan de voorwerpen ECHT OP het hout of het kleed (Sara, 18 november 2026): de ondergrond begint hoger, de voeten staan er een stuk in. */
-      const op = plaatjesAan;
+      const op = false;
       if (p.indeling === "rij") this.ondergrond(p.ondergrond, 20, op ? 490 : p.ondergrond === "kleed" ? 510 : 540, 800, op ? 170 : p.ondergrond === "kleed" ? 150 : 110);
       else if (p.indeling === "onder") {
-        const ys = n === 2 ? [330, 470] : [270, 400, 530];
+        const ys = ysOnder(n);
         const top = ys[0] - 80;
         const bodem = ys[ys.length - 1] + 80;
         this.ondergrond(p.ondergrond, 60, top, 740, bodem - top);
@@ -711,22 +869,7 @@ function maakScene(Phaser: PhaserModule, rustig: boolean, plaatjesAan = false) {
       else {
         this.ondergrond(p.ondergrond, 20, op || p.ondergrond === "kleed" ? VOLG_BOVEN - 30 : VOLG_BOVEN, 800, op || p.ondergrond === "kleed" ? 120 : 60);
         /* De plank met 3 lege plekken die van klein naar groot gaan (zoals het oude vlak). */
-        const houtP = this.bron("tafel-hout");
         this.randPlaatje("rt-plank", 770, 32, (c) => {
-          if (houtP) {
-            c.save();
-            c.beginPath();
-            c.roundRect(4, 4, 760, 22, 8);
-            c.clip();
-            c.drawImage(houtP, 50, 9, 183, 50, 4, 4, 760, 22);
-            c.restore();
-            c.beginPath();
-            c.roundRect(4, 4, 760, 22, 8);
-            c.strokeStyle = NAVY;
-            c.lineWidth = LIJN;
-            c.stroke();
-            return;
-          }
           c.beginPath();
           c.roundRect(4, 4, 760, 22, 8);
           c.fillStyle = "#c98b52";

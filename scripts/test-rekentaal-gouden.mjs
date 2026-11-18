@@ -22,6 +22,7 @@ import { spawn, execFileSync } from "node:child_process";
 import { mkdtempSync, rmSync, existsSync, mkdirSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
+import { controleerZweven, controleerWeegschaal, METING } from "./zweef-controle.mjs";
 
 const BASIS = "http://localhost:3000";
 const LES = process.env.LES ?? "squla-rekentaal-gouden";
@@ -366,6 +367,24 @@ async function speel(P, o = {}) {
       if (r && ((r.ding ?? -1) > 0 || r.rand > 0)) fout(`het speelvlak loopt onder het tekstvak (${JSON.stringify(r)}, ${taak.vraag})`);
       globalThis.__zone = r;
     };
+    /* Niets zweeft (BOUWREGELS 15.34): elk voorwerp staat OP zijn ondergrond, in elke vraag en bij elke stand van de weegschaal. */
+    const zweef = async (wat) => {
+      const m = await P.ev(METING);
+      if (!m) return;
+      let fouten = [];
+      let n = 1;
+      if (m.indeling === "weegschaal") {
+        await P.ev(`window.__rtKantel && window.__rtKantel()`);
+        const r = await controleerWeegschaal(P.ev, wat);
+        fouten = r.fouten;
+        n = r.metingen;
+      } else fouten = await controleerZweven(P.ev, wat);
+      await wacht(200);
+      /* Daarna nog eens in rust. */
+      fouten.push(...(await controleerZweven(P.ev, `${wat} (in rust)`)));
+      if (fouten.length) for (const x of [...new Set(fouten)]) fout(`zweeft: ${x}`);
+      else zie(`${wat}: niets zweeft (${n} metingen${m.indeling === "weegschaal" ? ", ook tijdens het kantelen" : ""})`);
+    };
     const fotoSoort = async (wat) => {
       if (!FOTO || gefotografeerd.has(wat)) return;
       gefotografeerd.add(wat);
@@ -407,6 +426,7 @@ async function speel(P, o = {}) {
       }
       await zonderHand();
       await zone();
+      if (taak.poging === 1) await zweef(taak.vraag);
       await fotoSoort(`${taak.vraag}-${taak.poging}-vraag`);
       if (taak.soort === "volgorde" && o.vangnetVolgorde) {
         zie(`${o.naam}: niets doen bij op volgorde (vangnet na 45 s)`);
@@ -431,6 +451,7 @@ async function speel(P, o = {}) {
           await wacht(450);
         }
         await fotoSoort(`${taak.vraag}-gezet`);
+        await zweef(`${taak.vraag} (gezet)`);
         await controleerKnop();
         await wacht(200);
       } else {

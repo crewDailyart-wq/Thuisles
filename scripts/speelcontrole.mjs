@@ -34,6 +34,7 @@ import { kiesLessen } from "./lessenkeuze.mjs";
 import { korteDubbel, opnameDubbel } from "./dubbel-controle.mjs";
 import { DUBBELE_TEKST_METER, dubbeleTekstFouten } from "./dubbele-tekst-controle.mjs";
 import { onthoudGoed, zonderAlGoed } from "./controlegeheugen.mjs";
+import { ZWEEF_METER } from "./zweef-controle.mjs";
 
 /* F7-meter (10 nov 2026): de tekst van Bliepo en de pijl elke 100 ms, en elke tik. */
 const F7_METER = `
@@ -214,6 +215,9 @@ async function speel(c, id) {
     /* F11 (17 nov 2026, 15.31): bij elke gouden les: staat dezelfde tekst ooit 2 keer tegelijk op het scherm? */
     const f11 = id.includes("gouden") || !!process.env.F11;
     if (f11) await c.stuur("Page.addScriptToEvaluateOnNewDocument", { source: DUBBELE_TEKST_METER }, s);
+    /* F14 (18 nov 2026, 15.34): in de gouden les Rekentaal zweeft niets: elk voorwerp staat OP zijn ondergrond (scripts/zweef-controle.mjs). */
+    const zweefMeter = id === "squla-rekentaal-gouden" || !!process.env.ZWEEF;
+    if (zweefMeter) await c.stuur("Page.addScriptToEvaluateOnNewDocument", { source: ZWEEF_METER }, s);
     await c.stuur("Page.navigate", { url: `${BASIS}/voorbeeld/les/${id}?naam=Testkind` }, s);
     const begin = Date.now();
     let stilSinds = null;
@@ -534,6 +538,11 @@ async function speel(c, id) {
       if (await ev(`(() => { const lijst = [...document.querySelectorAll("[data-zin], [data-getal], [data-signaal]")].filter((b) => { const r = b.getBoundingClientRect(); return r.width > 3 && r.height > 3 && !b.disabled; }); if (!lijst.length) return false; lijst[${stappen} % lijst.length].click(); return true; })()`)) continue;
       if (await klik(`(b) => b.getAttribute("data-knop") === "weetniet"`)) continue;
       await klik(`(b) => !["opnieuw","terug"].includes(b.getAttribute("data-knop") || "") && b.tagName === "BUTTON"`);
+    }
+    if (zweefMeter) {
+      const zw = JSON.parse((await ev(`JSON.stringify({ f: window.__zweef ?? [], n: window.__zweefMetingen ?? 0 })`)) ?? "{}");
+      for (const f of zw.f ?? []) fouten.add(`zweeft: ${f}`);
+      console.log(`  ZWEEF ${id}: ${(zw.f ?? []).length} keer iets dat zweeft of ernaast staat (${zw.n ?? 0} metingen)`);
     }
     if (f11) {
       const dt = dubbeleTekstFouten(JSON.parse((await ev(`JSON.stringify(window.__dubbeleTekst ?? [])`)) ?? "[]"));
