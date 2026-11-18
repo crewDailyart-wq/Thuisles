@@ -59,3 +59,9 @@ Elke fout die Sara vindt komt hier, met de regel die erbij hoort (BOUWREGELS.md 
 - Oorzaak: de les zette de opdracht als kop in het speelvlak en liet Bliepo dezelfde zin zeggen; het tekstvak van Bliepo toont elke gesproken zin, ook als die al elders in beeld staat. Alleen de les met `vraagBoven` (geld) liet de zin al weg; de nieuwe lessen niet. De oude controles keken alleen naar uitspraak (F8) en naar tekst die terugkomt (F7), niet naar twee blokken tegelijk.
 - Regel (algemeen, voor ALLE opdrachten van alle gouden lessen): de opdracht staat op 1 plek; Bliepo's tekstvak toont die zin niet nog een keer, Bliepo spreekt hem wel (BOUWREGELS 15.31). Zijn andere zinnen (reacties, hints, uitleg) blijven in het tekstvak.
 - Controle: `scripts/dubbele-tekst-controle.mjs`, ingebouwd in `node scripts/speelcontrole.mjs` (GOED en ALLEFOUT, elke gouden les) en in `scripts/extra-test-hulp.mjs`: dezelfde zin 2 keer tegelijk zichtbaar in de DOM langer dan 0,4 s is een fout (F11).
+
+**F12. Antwoordknoppen staan op verschillende plekken in dezelfde les.** (Sara, 18 november 2026)
+- Wat mis was: in de gouden les Plussommen extra stonden de antwoorden bij "Welk getal is dit?" links naast het speelvlak en bij de volgende vragen rechts onder Bliepo.
+- Oorzaak: de opties `raster` (tegels links), `midden` (midden van het vlak) en `bijOpdracht` (bij de opdracht) gaven per vraag een andere plek.
+- Regel (alle gouden lessen): 1 vaste plek, rechts onder Bliepo's zin (BOUWREGELS 15.32). In `Lesscherm.tsx` negeren gouden lessen die 3 opties.
+- Controle: in elke gouden les moeten alle antwoordknoppen binnen de rechterkolom staan (x > 976 in het lesvlak); nog toe te voegen aan de speelcontrole.
