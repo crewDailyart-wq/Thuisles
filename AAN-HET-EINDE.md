@@ -39,3 +39,7 @@ Deze lijst wordt bijgehouden. Wat klaar is, krijgt een vinkje; niets verdwijnt z
 
 ## Online zetten
 - [ ] Alleen als Sara "zet online" zegt, en pas na de volle controle (`npm run bewaak`, speelcontrole, vloeiend). Niets gaat online zonder die woorden.
+
+## Toegevoegd 18 november 2026
+- **Eigen tegels in Magnific** (Sara): de blokjes (tegels) in Plussommen extra, Tellen extra e.d. lijken te veel op Synthesis. Maak eigen aantrekkelijke kinder-tegels in Magnific (Bliepo-stijl), eerst een proefvel laten zien. Raakt `optellen10-holo-tegels.tsx` (nu door de handje-helpers aangepast): pas doen als die klaar zijn.
+- **Vaste plek antwoordknoppen** (15.32): per gouden les met schermfoto's controleren dat álle antwoorden rechts onder Bliepo's zin staan; automatische controle (x in rechterkolom) toevoegen aan speelcontrole. Alleen Plussommen extra is bekeken.
