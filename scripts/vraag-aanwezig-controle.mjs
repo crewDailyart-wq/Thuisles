@@ -106,7 +106,7 @@ export const VRAAG_METER = `
     };
     /* Voor de begincontrole (zie onderaan dit bestand): wat staat er nu, en staat er een vraag of opdracht bij? */
     window.__f16Stand = () => { const s = stand(); return { tekst: s.t, knoppen: s.k, pijl: s.pijl, einde: s.einde, praat: s.praat, opdracht: s.t.some(heeftOpdracht), start: s.start, getikt: !!(navigator.userActivation && navigator.userActivation.hasBeenActive) }; };
-    let sleutel = "", sinds = nu(), beoordeeld = false, laatste = null, opdrachtGezien = 0;
+    let sleutel = "", sinds = nu(), beoordeeld = false, laatste = null, opdrachtGezien = 0, geteld = null;
     const actie = () => { sinds = nu(); beoordeeld = false; };
     for (const soort of ["pointerdown", "click", "keydown", "input"]) document.addEventListener(soort, actie, true);
     /* Wat Bliepo zei (voor de melding): de browserstem en de zinnen die bij Ruth worden opgehaald. */
@@ -142,7 +142,8 @@ export const VRAAG_METER = `
     window.__f16Klaar = (rustig) => {
       const s = laatste ?? stand();
       if (!s.wacht || beoordeeld) return true;
-      if (!rustig && s.t.some(heeftOpdracht)) return true;
+      /* Niet rustig: staat de vraag of opdracht er nu, dan mag de speler meteen (1 keer geteld per stand). */
+      if (!rustig && s.t.some(heeftOpdracht)) { if (geteld !== sleutel) { geteld = sleutel; window.__f16Gezien = (window.__f16Gezien || 0) + 1; } return true; }
       return nu() - sinds > 9000;
     };
   })();

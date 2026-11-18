@@ -575,10 +575,10 @@ async function speel(c, id) {
       console.log(`  ZWEEF ${id}: ${(zw.f ?? []).length} keer iets dat zweeft of ernaast staat (${zw.n ?? 0} metingen)`);
     }
     if (f16) {
-      const r16 = JSON.parse((await ev(`JSON.stringify({ f: window.__f16 ?? [], n: window.__f16Beoordeeld ?? 0 })`)) ?? "{}");
+      const r16 = JSON.parse((await ev(`JSON.stringify({ f: window.__f16 ?? [], n: window.__f16Beoordeeld ?? 0, g: window.__f16Gezien ?? 0 })`)) ?? "{}");
       const vf = vraagFouten(r16.f);
       for (const f of vf) fouten.add(f);
-      console.log(`  F16 ${id}: ${vf.length} keer wachten zonder vraag of opdracht in beeld (${r16.n ?? 0} wachtmomenten beoordeeld${process.env.RUSTIG ? ", rustig" : ""})`);
+      console.log(`  F16 ${id}: ${vf.length} keer wachten zonder vraag of opdracht in beeld (${r16.n ?? 0} wachtmomenten van 3 s beoordeeld${process.env.RUSTIG ? ", rustig" : `, ${r16.g ?? 0} keer stond de vraag er al toen de speler antwoordde`})`);
     }
     if (f11) {
       const dt = dubbeleTekstFouten(JSON.parse((await ev(`JSON.stringify(window.__dubbeleTekst ?? [])`)) ?? "[]"));
