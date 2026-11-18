@@ -91,11 +91,21 @@ const blijft = (n: number) => (n === 1 ? "blijft" : "blijven");
 const blokjes = (n: number) => (n === 1 ? "blokje" : "blokjes");
 const stippen = (n: number) => (n === 1 ? "stip" : "stippen");
 
-/* ---------- vaste zinnen van het verloop (draaiboek Minsommen §2; eigen woorden) ---------- */
+/* ---------- vaste zinnen van het verloop (draaiboek Minsommen §2) ----------
+ *
+ * Sara, 18 november 2026 (zoals de proefles Tellen): Bliepo klinkt als een warme juf. Elke zin is nagelopen (kort, gewone
+ * woorden, lief, nooit "fout", een getal nooit 2 keer achter elkaar) en elke situatie die terugkomt heeft varianten.
+ * Een lijst = varianten: de les kiest er 1 met de gedeelde kiezer (nooit-dubbel.ts), nooit 2 keer achter elkaar
+ * dezelfde, ook niet over vragen heen. Getal, antwoord en betekenis zijn niet veranderd. De vraagzinnen ("Hoeveel
+ * blokjes komen eruit?", "Hoeveel is 8 − 5?") zijn gelijk gebleven (3.11). Oud naast nieuw: WIJZIGINGEN-ZINNEN-MINSOMMEN.md.
+ * Een deel is de tekst van Synthesis (Dot Destruction) in het Nederlands, passend gemaakt voor groep 3 (besluit Sara
+ * 17 november 2026, BOUWREGELS 15.2): "We begonnen met 10 en haalden er 4 weg.", "Deze is best lastig.", "Je hebt goed
+ * gewerkt vandaag!", "Precies, …", "Dat klopt: …".
+ */
 
 export const ZIN = {
   /** Stap 1: openen. Eigen beginzin van de les (BOUWREGELS 4.3); geen startvraag (draaiboek §0). Samen met de groet 1 stuk. */
-  begin: "In deze les maak je minsommen. Er gaat steeds iets af, en jij kiest hoeveel er overblijft.",
+  begin: ["Vandaag gaan we minsommen maken. Er gaat steeds iets af, en jij kiest hoeveel er overblijft.", "We gaan samen minsommen maken. Er gaat steeds iets af, en jij kiest hoeveel er overblijft."],
   /** De vraag bij de machine: de eerste keer helemaal (de zinnen van de oude les), daarna korter (LESRECEPT.md). */
   machineVraag: (v: Minvraag, kort: boolean): string[] => {
     const [ka, kb] = kleurenVan(v);
@@ -105,33 +115,49 @@ export const ZIN = {
   },
   /** Bord en midden: de vraag van de oude les. */
   somVraag: (v: Minvraag) => [`Hoeveel is ${g(v.a)} ${MIN} ${g(v.b)}?`],
-  /** Een nieuwe poging na de hint (een nieuwe antwoordpoging mag de vraag opnieuw stellen, 3.23), iets anders gezegd. */
-  opnieuw: (v: Minvraag): string[] => (v.soort === "machine" ? ["Hoeveel blokjes komen er dan uit?"] : [`Wat is ${g(v.a)} ${MIN} ${g(v.b)}?`]),
+  /** Een nieuwe poging na de hint (een nieuwe antwoordpoging mag de vraag opnieuw stellen, 3.23), iets anders gezegd. Varianten. */
+  opnieuw: (v: Minvraag): string[] =>
+    v.soort === "machine"
+      ? ["Hoeveel blokjes komen er dan uit?", "Hoeveel blokjes komen er dus uit?", "Kijk nog eens. Hoeveel blokjes komen er nu uit?"]
+      : [`Wat is ${g(v.a)} ${MIN} ${g(v.b)}?`, `Hoeveel is ${g(v.a)} ${MIN} ${g(v.b)} dan?`, `Reken het nog eens uit. Wat is ${g(v.a)} ${MIN} ${g(v.b)}?`],
   /** Eerste keer het schoolbord: een korte overgang (wat het kind ziet verandert). */
-  bordEerst: "Nu staan de minsommen op het schoolbord.",
+  bordEerst: ["Nu staan de minsommen op het schoolbord.", "Kijk, nu staan de minsommen op het schoolbord."],
   /** 2e fout: Bliepo doet het samen voor (draaiboek §3 E: samen in de machine; het kind haalt zelf weg). */
-  samen: "Kom, we doen het samen.",
-  samenStippen: (v: Minvraag) => {
+  samen: ["Kom, we doen het samen.", "Weet je wat? We doen het samen.", "Geeft niks. We doen het samen.", "Ik help je even. We doen het samen.", "Deze is best lastig. We doen het samen."],
+  samenStippen: (v: Minvraag): string[] => {
     const [ka] = kleurenVan(v, true);
-    return v.soort === "machine" ? `Kijk: ${g(v.a, ka)} stippen, net zoveel als de blokjes.` : `Kijk: ${g(v.a, ka)} stippen.`;
+    const A = g(v.a, ka);
+    return v.soort === "machine"
+      ? [`Kijk: ${A} stippen, net zoveel als de blokjes.`, `Kijk, hier zijn ${A} stippen. Net zoveel als de blokjes.`, `We beginnen met ${A} stippen. Net zoveel als de blokjes.`]
+      : [`Kijk: ${A} stippen.`, `Kijk, hier zijn ${A} stippen.`, `We beginnen met ${A} stippen.`];
   },
-  samenWeg: (v: Minvraag) => {
+  /** De opdracht bij het samen voordoen. Het getal staat er 1 keer (was: "Haal er 3 weg. Tik op 3 stippen."). */
+  samenWeg: (v: Minvraag): string[] => {
     const [, kb] = kleurenVan(v, true);
-    return v.b === 1 ? `Haal er ${g(1, kb)} weg. Tik op ${g(1, kb)} stip.` : `Haal er ${g(v.b, kb)} weg. Tik op ${g(v.b, kb)} stippen.`;
+    const B = g(v.b, kb);
+    return v.b === 1 ? [`Haal er ${B} weg. Tik op een stip.`, `Nu halen we er ${B} weg. Tik maar op een stip.`, `Er gaat er ${B} af. Tik op een stip.`] : [`Haal er ${B} weg. Tik op de stippen.`, `Nu halen we er ${B} weg. Tik maar op de stippen.`, `Er gaan er ${B} af. Tik op de stippen.`];
   },
-  samenHand: "Tik op een stip om hem weg te halen.",
+  samenHand: ["Tik op een stip om hem weg te halen.", "Tik op een stip. Dan gaat hij weg.", "Tik maar op een stip om hem weg te halen."],
   /** Bliepo telt hardop mee bij het weghalen (draaiboek §3 F). */
   samenTel: (v: Minvraag, k: number) => `${g(k, kleurenVan(v, true)[1])}.`,
-  samenKlaar: (v: Minvraag) => {
+  /** De uitkomst na het samen voordoen. De uitkomst staat er 1 keer (was: "Er blijven 6 stippen over. 10 − 4 = 6."); de hele som met de uitkomst staat bovenaan in beeld. */
+  samenKlaar: (v: Minvraag): string[] => {
     const [ka, kb] = kleurenVan(v, true);
     const u = v.a - v.b;
-    return `Er ${u === 1 ? "blijft" : "blijven"} ${g(u, ka)} ${stippen(u)} over. ${g(v.a, ka)} ${MIN} ${g(v.b, kb)} = ${g(u, ka)}.`;
+    const A = g(v.a, ka);
+    const B = g(v.b, kb);
+    const U = g(u, ka);
+    return [
+      `${A} ${MIN} ${B} = ${U}. Kijk maar: zoveel ${blijft(u)} er over.`,
+      `We begonnen met ${A} en haalden er ${B} weg. Er ${blijft(u)} er ${U} over.`,
+      `Er ${blijft(u)} ${U} ${stippen(u)} over. Zoveel is ${A} ${MIN} ${B}.`,
+    ];
   },
   /** Hetzelfde foute antwoord 2 keer: niet 2 keer dezelfde eerste zin (geleerd bij Tellen). */
-  weerGekozen: (x: number, k: string) => `Je koos weer ${g(x, k)}.`,
+  weerGekozen: (x: number, k: string) => [`Je koos weer ${g(x, k)}.`, `Je tikte weer op ${g(x, k)}.`, `Weer ${g(x, k)}, zie ik.`],
   /** Stap 19: einde. */
-  slot: "Je weet nu hoeveel er overblijft bij een minsom.",
-  kaartTik: "Tik op de kaart.",
+  slot: ["Je weet nu hoeveel er overblijft bij een minsom.", "Je hebt goed gewerkt vandaag! Nu weet je hoe een minsom gaat.", "Knap, hoor! Je hebt een heleboel minsommen gemaakt."],
+  kaartTik: ["Tik op de kaart.", "Tik maar op de kaart.", "Kijk, een kaart voor jou! Tik erop."],
 };
 
 /* ---------- de uitleg aan het begin: de stippenmachine (draaiboek Minsommen stap 1 t/m 7; ronde 34, 12 november 2026) ---------- */
@@ -165,29 +191,29 @@ export type IntroVraag = {
   samen: { opdracht: string[]; klaar: string[] };
 };
 
-const HINT_PLUS = "Kijk wat de plusknop met de stippen doet: komen ze erbij of gaan ze eraf?";
+const HINT_PLUS = "Kijk wat de plusknop doet. Komen er stippen bij, of gaan ze eraf?";
 
 export const INTRO = {
   /** Stap 1 van het draaiboek: waar de machine voor dient. Komt na de groet en de beginzin van de les. */
-  begin: "Eerst leer je mijn stippenmachine kennen. Hij helpt je straks bij het aftrekken.",
+  begin: ["Kijk, dit is mijn stippenmachine. Hij helpt ons straks bij het aftrekken.", "Eerst laat ik je mijn stippenmachine zien. Hij helpt ons straks bij het aftrekken."],
   /** Stap 1: de eerste opdracht (knop 1 keer uitleggen, 3.15). */
   plusEerst: ["Tik op de plusknop onder de machine."],
   /** Het hulphandje bij de plusknop (na de aanmoediging). */
   plusHand: ["Tik op de plusknop.", "Tik maar op de plus.", "Probeer de plusknop maar."],
   /** Stap 2: de eerste stip en de teller. */
-  eersteStip: `Je deed er ${g(1, K)} stip bij. Bovenaan staat het totaal: zoveel stippen zijn er nu.`,
-  /** Stap 3: meer stippen. */
-  meer: [`Doe er nog ${g(2, K)} stippen bij en kijk goed naar het totaal.`],
+  eersteStip: `Je hebt er ${g(1, K)} stip bij gedaan. Bovenaan staat het totaal: zoveel stippen zijn er nu.`,
+  /** Stap 3: meer stippen. De zin zegt waar het kind tikt (15.36, 15.37; was: "Doe er nog 2 stippen bij en kijk goed naar het totaal."). */
+  meer: [`Tik nog ${g(2, K)} keer op de plusknop. Kijk goed naar het totaal.`],
   /** Na de uitleg, vóór de eerste minsom van de les. */
-  einde: "Nu gaan we juist aftrekken. Dan gaat er iets af.",
+  einde: ["Nu doen we het andersom. We gaan aftrekken: dan gaat er iets af.", "Nu gaan we het andersom doen. Bij aftrekken gaat er iets af."],
 };
 
 /** Stap 4 (het totaal) en stap 7 (hoe heet dit): de 2 keuzevragen van het begin. */
 export const INTRO_VRAGEN: IntroVraag[] = [
   {
     id: "intro-totaal",
-    vraag: ["Wat doet het totaal elke keer als er een stip bij komt?"],
-    opnieuw: ["Wat gebeurt er dan met het totaal?"],
+    vraag: ["Wat gebeurt er met het totaal als er een stip bij komt?"],
+    opnieuw: ["Wordt het totaal dan groter of kleiner?"],
     keuzes: ["Het wordt groter.", "Het wordt kleiner."],
     goed: "Het wordt groter.",
     goedReactie: [`Er komt steeds ${g(1, K)} stip bij, dus het totaal wordt groter.`, "Elke nieuwe stip maakt het totaal groter.", "Meer stippen geven een groter totaal."],
@@ -202,14 +228,14 @@ export const INTRO_VRAGEN: IntroVraag[] = [
       },
     },
     samen: {
-      opdracht: [`Doe er nog ${g(1, K)} stip bij en kijk naar het totaal.`],
+      opdracht: [`Tik nog ${g(1, K)} keer op de plusknop en kijk naar het totaal.`],
       klaar: [`Eerst was het ${g(3, K)}, nu is het ${g(4, K)}. Het totaal wordt groter.`],
     },
   },
   {
     id: "intro-optellen",
-    vraag: ["Wat heet het als je steeds stippen erbij doet?"],
-    opnieuw: ["Wat heet dat, als je zo stippen erbij doet?"],
+    vraag: ["Hoe heet het als je er steeds stippen bij doet?"],
+    opnieuw: ["Hoe noem je dat, als je er stippen bij doet?"],
     keuzes: ["Optellen", "Aftrekken", "Delen"],
     goed: "Optellen",
     goedReactie: ["Erbij doen heet optellen.", "Stippen erbij doen is optellen.", "Met de plusknop tel je steeds op."],
@@ -232,14 +258,14 @@ export const INTRO_VRAGEN: IntroVraag[] = [
       },
     },
     samen: {
-      opdracht: [`Doe er nog ${g(1, K)} stip bij.`],
+      opdracht: [`Tik nog ${g(1, K)} keer op de plusknop.`],
       klaar: [`Er komt ${g(1, K)} stip bij. Erbij doen heet optellen.`],
     },
   },
 ];
 
 /** Aanmoediging bij het hulphandje (het kind moet tikken, niet nadenken; 14.35, geleerd bij Tellen). */
-export const AANMOEDIG_TIKKEN = ["Je bent goed bezig.", "Jij kunt dit."];
+export const AANMOEDIG_TIKKEN = ["Je bent goed bezig.", "Jij kunt dit.", "Het gaat goed zo.", "Probeer het maar.", "Toe maar, je doet het goed."];
 
 /**
  * Reactie na de lof (BLIEPO-KARAKTER.md §4 Aftrekken, zin 17 t/m 20, plus zinnen zonder "Ja" voor na een lofzin met
@@ -254,12 +280,12 @@ export function minReactie(v: Minvraag): { rij: Rijtje; ja: number[]; robot: num
   const U = g(u, ka);
   if (v.soort === "machine")
     return {
-      rij: rij([`Ja, ${A} min ${B} is ${U}.`, `Ja, er ${v.b === 1 ? "gaat" : "gaan"} er ${B} af. Er komen er ${U} uit.`, `${A} ${MIN} ${B} = ${U}.`, `Er ${u === 1 ? "komt" : "komen"} ${U} ${blokjes(u)} uit.`, `Ik heb het nagekeken: ${A} min ${B} is ${U}.`], [4]),
+      rij: rij([`Ja, ${A} min ${B} is ${U}.`, `Ja, er ${v.b === 1 ? "gaat" : "gaan"} er ${B} af. Er komen er ${U} uit.`, `${A} ${MIN} ${B} = ${U}.`, `Er ${u === 1 ? "komt" : "komen"} ${U} ${blokjes(u)} uit.`, `Ik heb het nagekeken: ${A} min ${B} is ${U}.`, `Precies, ${A} ${MIN} ${B} = ${U}.`, `Dat klopt, er ${u === 1 ? "komt" : "komen"} ${U} ${blokjes(u)} uit.`], [4]),
       ja: [0, 1],
       robot: 4,
     };
   return {
-    rij: rij([`Ja, ${A} min ${B} is ${U}.`, `Ja, van de ${A} ${blijft(u)} er ${U} over.`, `${A} ${MIN} ${B} = ${U}.`, `Van de ${A} ${blijft(u)} er ${U} over.`, `Ik heb het nagekeken: ${A} min ${B} is ${U}.`], [4]),
+    rij: rij([`Ja, ${A} min ${B} is ${U}.`, `Ja, van de ${A} ${blijft(u)} er ${U} over.`, `${A} ${MIN} ${B} = ${U}.`, `Van de ${A} ${blijft(u)} er ${U} over.`, `Ik heb het nagekeken: ${A} min ${B} is ${U}.`, `Precies, ${A} ${MIN} ${B} = ${U}.`, `Dat klopt: ${A} min ${B} is ${U}.`], [4]),
     ja: [0, 1],
     robot: 4,
   };
@@ -291,8 +317,29 @@ export type Fout = {
   beperking: Beperking;
   /** Waarom de richting niet genoemd wordt (zou het antwoord verklappen, BOUWREGELS 15.17). */
   noot?: string;
-  /** De eerste zin bij de 2e fout, als die anders moet (anders zegt Bliepo met de uitleg 2 keer hetzelfde). */
+  /** De eerste zin bij de 2e fout, als die anders moet (eerste versie; sinds 18 november 2026 is `uitleg` de hele reactie). */
   kort?: string;
+  /** Alle varianten (18 november 2026); `eerste`, `hint`, `uitleg` en `weer` hierboven zijn er 1 van (voor de fouttabel). */
+  v?: Varianten;
+};
+
+/**
+ * Alle varianten bij 1 fout antwoord; de les kiest er steeds 1 (nooit 2 keer achter elkaar dezelfde).
+ *   eerste      1e fout: wat het kind koos (met de richting als dat niets verklapt);
+ *   hint        1e fout: hoe je het uitrekent, nooit het antwoord;
+ *   uitleg      2e fout met een ander getal: de hele reactie (het gekozen getal staat er hooguit 1 keer in);
+ *   uitlegLos   2e fout met hetzelfde getal: komt na "Je koos weer …", dus zonder getal;
+ *   weerEerste / weerUitleg   2 keer dezelfde denkfout (en Bliepo noemde hem de 1e keer al).
+ */
+export type Varianten = { eerste: string[]; hint: string[]; uitleg: string[]; uitlegLos: string[]; weerEerste: string[]; weerUitleg: string[] };
+
+/** Woorden die een richting geven (meer of minder dan het gekozen getal); verboden als Bliepo de richting niet noemt (15.17). */
+export const RICHTINGWOORDEN_MIN = /\bmeer\b|\bminder\b|te veel|te weinig|zo veel|niet verder|precies \{?\d/i;
+/** Woorden waarmee Bliepo zegt dat het bijna goed was. Bij 1 vraag komt zo'n woord hooguit 1 keer (geleerd bij Tellen). */
+const KERN = /dichtbij|bijna|scheelt/gi;
+export const zelfdeKern = (a: string, b: string) => {
+  const A = new Set((a.match(KERN) ?? []).map((w) => w.toLowerCase()));
+  return (b.match(KERN) ?? []).some((w) => A.has(w.toLowerCase()));
 };
 
 const SCHERM = {
@@ -307,6 +354,7 @@ export const overNa = (keuzes: number[], x: number, b: Beperking) => keuzes.filt
 /**
  * De fouttabel van 1 fout antwoord. Draaiboek §6 en §7: het begingetal, het getal dat eraf gaat, 1 te veel of te
  * weinig (gezien bij Synthesis). De hint zegt HOE je het uitrekent (terugtellen vanaf het begingetal), nooit het antwoord.
+ * Sinds 18 november 2026 heeft elke zin varianten (`v`); de vaste velden (`eerste`, `hint`, …) zijn er 1 van.
  */
 export function minFout(v: Minvraag, x: number): Fout {
   const { a, b, nr } = v;
@@ -317,65 +365,107 @@ export function minFout(v: Minvraag, x: number): Fout {
   const X = g(x, ka);
   const scherm = SCHERM[v.soort];
   const machine = v.soort === "machine";
+  const gaan = b === 1 ? "gaat" : "gaan";
+  const vast = <T,>(l: T[]): T => l[nr % l.length];
   /* Hints zonder richting (mogen altijd): alleen hoe je het uitrekent; het rondje staat om het getal dat eraf gaat. */
   const hint = machine
-    ? [`Begin bij ${A} en tel ${B} terug.`, `Tel ${B} terug vanaf ${A}.`, `Denk aan ${A} blokjes en haal er in je hoofd ${B} weg.`][nr % 3]
-    : [`Begin bij ${A} en tel ${B} terug.`, `Tel ${B} terug vanaf ${A}.`, `Steek ${A} vingers op en doe er ${B} weg.`][nr % 3];
-  const metRichting = (code: Denkfoutnaam, soort: string, denkfout: string, eerste: string, beperking: Beperking, uitleg: string, weer: string[], kort: string): Fout => {
-    if (overNa(v.keuzes, x, beperking).length <= 1)
-      return { code, soort, denkfout, eerste: `Je koos ${X}.`, hint, uitleg, weer: [], rondje: "eraf", scherm, beperking: {}, noot: "richting niet genoemd: dan bleef er maar 1 keuze over", ...(kort === "" ? { kort } : {}) };
-    return { code, soort, denkfout, eerste, hint, uitleg, weer, rondje: "eraf", scherm, beperking, kort };
+    ? [`Begin bij ${A} en tel ${B} terug.`, `Tel ${B} terug vanaf ${A}.`, `Denk aan ${A} blokjes. Haal er in je hoofd ${B} weg.`, `Probeer het nog eens. Tel ${B} terug vanaf ${A}.`]
+    : [`Begin bij ${A} en tel ${B} terug.`, `Tel ${B} terug vanaf ${A}.`, `Steek ${A} vingers op. Doe er ${B} weg.`, "Probeer het nog eens. Je mag je vingers gebruiken."];
+  /* ZONDER richting (als de richting maar 1 keuze zou overlaten, 15.17). Waar voor elk fout antwoord van deze les: alle
+     foute keuzes liggen 1 of 2 naast het goede antwoord. */
+  const dichtbij = [`Je koos ${X}. Je zit er dichtbij.`, `Je koos ${X}. Dat scheelt niet veel.`, `Bijna! ${X} is het net niet.`, `${X}? Dat is heel dichtbij.`, `Je tikte op ${X}. Het scheelt maar een klein beetje.`];
+  const maak = (d: { code: Denkfoutnaam; soort: string; denkfout: string; beperking: Beperking } & Varianten): Fout => {
+    const verklapt = overNa(v.keuzes, x, d.beperking).length <= 1;
+    const eerste = verklapt ? dichtbij : d.eerste;
+    return {
+      code: d.code,
+      soort: d.soort,
+      denkfout: d.denkfout,
+      eerste: vast(eerste),
+      hint: vast(d.hint),
+      uitleg: vast(d.uitleg),
+      weer: verklapt ? [] : [vast(d.weerEerste), vast(d.weerUitleg)],
+      rondje: "eraf",
+      scherm,
+      beperking: verklapt ? {} : d.beperking,
+      ...(verklapt ? { noot: "richting niet genoemd: dan bleef er maar 1 keuze over" } : {}),
+      v: { eerste, hint: d.hint, uitleg: d.uitleg, uitlegLos: d.uitlegLos, weerEerste: d.weerEerste, weerUitleg: d.weerUitleg },
+    };
   };
 
   /* Het begingetal: alsof er niets af gaat (draaiboek §7 `begingetal-als-antwoord`, gezien: 5 bij 5 − 1). */
   if (x === a)
-    return metRichting(
-      "begingetal-als-antwoord",
-      "begin",
-      "koos het getal waarmee de som begint (alsof er niets af gaat)",
-      machine ? `Je koos ${X}: zoveel blokjes gaan erin. Er ${b === 1 ? "gaat" : "gaan"} er nog ${B} af.` : `Je koos ${X}: daar begint de som mee. Er ${b === 1 ? "gaat" : "gaan"} er nog ${B} af.`,
-      { minderDan: a },
-      machine ? `De machine haalt er ${B} af, dus er komen er minder uit.` : `Bij min gaat er iets af. Dan blijft er minder over dan ${A}.`,
-      ["Je koos weer het getal waar je mee begint.", `Er ${b === 1 ? "gaat" : "gaan"} er ${B} af, dus het wordt minder.`],
-      machine ? `Je koos ${X}: zoveel gaan erin.` : `Je koos ${X}: daar begint de som mee.`,
-    );
+    return maak({
+      code: "begingetal-als-antwoord",
+      soort: "begin",
+      denkfout: "koos het getal waarmee de som begint (alsof er niets af gaat)",
+      beperking: { minderDan: a },
+      eerste: machine
+        ? [`Je koos ${X}: zoveel blokjes gaan erin. Er ${gaan} er nog ${B} af.`, `${X}? Zoveel blokjes gaan erin. Er ${gaan} er nog ${B} af.`, `Je tikte op ${X}. Zoveel gaan erin. Er ${gaan} er nog ${B} af.`]
+        : [`Je koos ${X}: daar begint de som mee. Er ${gaan} er nog ${B} af.`, `${X}? Daar begint de som mee. Er ${gaan} er nog ${B} af.`, `Je tikte op ${X}. Daar begint de som mee. Er ${gaan} er nog ${B} af.`],
+      hint,
+      uitleg: machine
+        ? [`Je koos ${X}: zoveel gaan erin. De machine haalt er ${B} af, dus er komen er minder uit.`, `${X} blokjes gaan erin. Er ${gaan} er nog ${B} af. Dan komen er minder uit.`]
+        : [`Je koos ${X}: daar begint de som mee. Bij min gaat er iets af. Dan blijft er minder over.`, `${X} is het eerste getal van de som. Er ${gaan} er nog ${B} af. Dan blijft er minder over.`],
+      uitlegLos: machine ? [`De machine haalt er ${B} af, dus er komen er minder uit.`, `Er ${gaan} er nog ${B} af. Dan komen er minder uit.`] : ["Bij min gaat er iets af. Dan blijft er minder over.", `Er ${gaan} er nog ${B} af. Dan blijft er minder over.`],
+      weerEerste: ["Je koos weer het getal waar je mee begint.", "Dat is weer het getal waar we mee beginnen."],
+      weerUitleg: [`Er ${gaan} er ${B} af, dus het wordt minder.`, `Er ${gaan} er nog ${B} af. Dan blijft er minder over.`],
+    });
   /* Het getal dat eraf gaat (draaiboek §7 `aftrekgetal-als-antwoord`, gezien: 2 bij 5 − 2, 4 bij 10 − 4). */
   if (x === b)
-    return metRichting(
-      "aftrekgetal-als-antwoord",
-      "eraf",
-      "koos het getal dat eraf gaat in plaats van wat overblijft",
-      machine ? `Je koos ${X}: zoveel blokjes haalt de machine eraf.` : `Je koos ${X}: dat getal gaat eraf.`,
-      {},
-      machine ? `De machine haalt er ${B} af. De vraag is hoeveel er nog uit komen.` : `${B} gaat eraf. De vraag is hoeveel er overblijft.`,
-      ["Je koos weer het getal dat eraf gaat.", "We zoeken wat er overblijft."],
-      /* Ronde 33 punt 2 (Sara 12 nov): "Je koos 3. 3 gaat eraf. …" zegt 2 keer hetzelfde getal: bij de 2e fout alleen de uitleg. */
-      "",
-    );
+    return maak({
+      code: "aftrekgetal-als-antwoord",
+      soort: "eraf",
+      denkfout: "koos het getal dat eraf gaat in plaats van wat overblijft",
+      beperking: {},
+      eerste: machine
+        ? [`Je koos ${X}: zoveel blokjes haalt de machine eraf.`, `${X}? Zoveel blokjes haalt de machine eraf.`, `Je tikte op ${X}. Dat zijn de blokjes die eraf gaan.`]
+        : [`Je koos ${X}: dat getal gaat eraf.`, `${X}? Dat is het getal dat eraf gaat.`, `Je tikte op ${X}. Zoveel halen we eraf.`],
+      hint,
+      /* Ronde 33 punt 2 (Sara 12 nov): het getal staat er maar 1 keer in (niet "Je koos 3. 3 gaat eraf. …"). */
+      uitleg: machine
+        ? [`De machine haalt er ${B} af. De vraag is hoeveel er nog uit komen.`, `${X} blokjes gaan eraf. We zoeken hoeveel er uit komen.`]
+        : [`${B} gaat eraf. De vraag is hoeveel er overblijft.`, `${X} is het getal dat eraf gaat. We zoeken wat er overblijft.`],
+      uitlegLos: machine ? ["Zoveel blokjes gaan eraf. De vraag is hoeveel er nog uit komen.", "Zoveel haalt de machine eraf. We zoeken hoeveel er uit komen."] : ["Dat getal gaat eraf. De vraag is hoeveel er overblijft.", "Zoveel halen we eraf. We zoeken wat er overblijft."],
+      weerEerste: ["Je koos weer het getal dat eraf gaat.", "Dat is weer het getal dat eraf gaat."],
+      weerUitleg: ["We zoeken wat er overblijft.", "De vraag is hoeveel er overblijft."],
+    });
   if (x > u)
-    return metRichting(
-      x === u + 1 ? "een-te-veel" : "te-veel",
-      "te-veel",
-      x === u + 1 ? "1 te veel (misschien het begingetal meegeteld bij het terugtellen)" : "te veel over (te weinig teruggeteld)",
-      `${A} ${MIN} ${B} is minder dan ${X}.`,
-      { minderDan: x },
-      /* Keuring 10 nov: bij de machine het woord van de vraag ("komen eruit", 3.11); 2 versies, zodat het kind niet 15 keer hetzelfde hoort (5.10). */
-      machine ? [`Er komen minder blokjes uit dan ${X}.`, `Er komen er minder dan ${X} uit.`][nr % 2] : [`Er blijven minder over dan ${X}.`, `Er blijft minder dan ${X} over.`][nr % 2],
-      ["Je koos weer te veel.", `Tel precies ${B} terug.`],
-      "",
-    );
+    return maak({
+      code: x === u + 1 ? "een-te-veel" : "te-veel",
+      soort: "te-veel",
+      denkfout: x === u + 1 ? "1 te veel (misschien het begingetal meegeteld bij het terugtellen)" : "te veel over (te weinig teruggeteld)",
+      beperking: { minderDan: x },
+      /* Bij de machine het woord van de vraag ("komen eruit", 3.11; keuring 10 nov). */
+      eerste: machine
+        ? [`Je koos ${X}. Dat is iets te veel.`, `Bijna! ${X} is iets te veel.`, `${X}? Er komen er minder uit.`, `${A} ${MIN} ${B} is minder dan ${X}.`, `Je tikte op ${X}. Zo veel blokjes komen er niet uit.`]
+        : [`Je koos ${X}. Dat is iets te veel.`, `Bijna! ${X} is iets te veel.`, `${X}? Er blijft minder over.`, `${A} ${MIN} ${B} is minder dan ${X}.`, `Je tikte op ${X}. Zo veel blijft er niet over.`],
+      hint,
+      uitleg: machine
+        ? [`Er komen minder blokjes uit dan ${X}.`, `Er komen er minder dan ${X} uit.`, `Je koos ${X}. Er komen minder blokjes uit.`, `${X}? Dat is te veel.`]
+        : [`Er blijven minder over dan ${X}.`, `Er blijft minder dan ${X} over.`, `Je koos ${X}. Er blijft minder over.`, `${X}? Dat is te veel.`],
+      uitlegLos: machine ? ["Er komen minder blokjes uit.", "Dat is te veel."] : ["Er blijft minder over.", "Dat is te veel."],
+      weerEerste: ["Je koos weer te veel.", "Dat is weer iets te veel.", "Weer iets te veel, zie ik."],
+      weerUitleg: [`Tel precies ${B} terug.`, `We tellen precies ${B} terug.`],
+    });
   if (x < u)
-    return metRichting(
-      x === u - 1 ? "een-te-weinig" : "te-weinig",
-      "te-weinig",
-      x === u - 1 ? "1 te weinig (1 te ver teruggeteld)" : "te weinig over (te ver teruggeteld)",
-      `${A} ${MIN} ${B} is meer dan ${X}.`,
-      { meerDan: x },
-      machine ? [`Er komen meer blokjes uit dan ${X}.`, `Er komen er meer dan ${X} uit.`][nr % 2] : [`Er blijven meer over dan ${X}.`, `Er blijft meer dan ${X} over.`][nr % 2],
-      ["Je koos weer te weinig.", `Tel precies ${B} terug, niet verder.`],
-      "",
-    );
-  return { code: "onduidelijk", soort: "onduidelijk", denkfout: "niet duidelijk (geen reden verzonnen)", eerste: "", hint, uitleg: "We rekenen het samen uit.", weer: [], rondje: "eraf", scherm, beperking: {} };
+    return maak({
+      code: x === u - 1 ? "een-te-weinig" : "te-weinig",
+      soort: "te-weinig",
+      denkfout: x === u - 1 ? "1 te weinig (1 te ver teruggeteld)" : "te weinig over (te ver teruggeteld)",
+      beperking: { meerDan: x },
+      eerste: machine
+        ? [`Je koos ${X}. Dat is iets te weinig.`, `Bijna! ${X} is nog iets te weinig.`, `${X}? Er komen er meer uit.`, `${A} ${MIN} ${B} is meer dan ${X}.`, `Je tikte op ${X}. Er komen meer blokjes uit.`]
+        : [`Je koos ${X}. Dat is iets te weinig.`, `Bijna! ${X} is nog iets te weinig.`, `${X}? Er blijft meer over.`, `${A} ${MIN} ${B} is meer dan ${X}.`, `Je tikte op ${X}. Er blijft nog meer over.`],
+      hint,
+      uitleg: machine
+        ? [`Er komen meer blokjes uit dan ${X}.`, `Er komen er meer dan ${X} uit.`, `Je koos ${X}. Er komen meer blokjes uit.`, `${X}? Dat is te weinig.`]
+        : [`Er blijven meer over dan ${X}.`, `Er blijft meer dan ${X} over.`, `Je koos ${X}. Er blijft meer over.`, `${X}? Dat is te weinig.`],
+      uitlegLos: machine ? ["Er komen meer blokjes uit.", "Dat is te weinig."] : ["Er blijft meer over.", "Dat is te weinig."],
+      weerEerste: ["Je koos weer te weinig.", "Dat is weer iets te weinig.", "Weer iets te weinig, zie ik."],
+      weerUitleg: [`Tel precies ${B} terug, niet verder.`, `We tellen ${B} terug, niet verder.`],
+    });
+  return { code: "onduidelijk", soort: "onduidelijk", denkfout: "niet duidelijk (geen reden verzonnen)", eerste: "", hint: hint[0], uitleg: "We rekenen het samen uit.", weer: [], rondje: "eraf", scherm, beperking: {} };
 }
 
 /** De fouttabel van een vraag: elk fout antwoord. */
