@@ -16,7 +16,9 @@
  * `npx tsx scripts/fouttabel-rekenmix3-gouden.ts`). {7:rood} = een getal in de kleur van het ding.
  */
 
-import { ZIN as ZIN4, BAL, KNIKKER, gk, type Ding } from "./squla-rekenmix4-gouden-zinnen";
+import { ZIN as ZIN4, BAL, KNIKKER, gk, type Ding, type Variant, deeltGetal4, eindigtMetOpdracht4, hard4, herhaling4, past4, woordenVan4 } from "./squla-rekenmix4-gouden-zinnen";
+import { deeltStuk } from "./nooit-dubbel";
+export { deeltStuk as deeltStuk3 };
 
 export {
   AANMOEDIG_TIKKEN,
@@ -38,7 +40,20 @@ export {
   metNaam,
   type Ding,
   type Rijtje,
+  type Variant,
+  kaal4,
+  past4,
+  herhaling4,
+  hard4,
+  deeltGetal4,
+  eindigtMetOpdracht4,
+  woordenVan4,
+  zinnenIn4,
+  MAX_STUK_4,
 } from "./squla-rekenmix4-gouden-zinnen";
+
+/** Wisselwoorden voor de kiezer ("Je koos weer 3 ballen" = "Je koos weer 3 knikkers"). */
+export const WISSEL_3 = ["bal", "ballen", "knikker", "knikkers", "doos", "zak", "elke", "elk"];
 
 export type Houder = "doos" | "zak";
 export type Vraag3 = { nr: number; id: string; ding: Ding; houder: Houder; tot: number; buiten: number; binnen: number; keuzes: number[] };
@@ -208,3 +223,186 @@ export const dichtbijAnders = (_x: number, v: Vraag3) => splitsFout(v.keuzes.fin
 export const zonderDichtbij = (x: number, v: Vraag3) => splitsFout(x, v).eerste;
 
 export const foutenVan = (v: Vraag3): Record<string, Fout> => Object.fromEntries(v.keuzes.filter((k) => k !== v.binnen).map((k) => [String(k), splitsFout(k, v)]));
+
+/* =====================================================================================================================
+ * DE ZINNEN VAN 18 NOVEMBER 2026: Bliepo als warme juf, in varianten (Sara; zelfde aanpak als de proefles Tellen, de les
+ * Splitsen en de andere gouden lessen). Oud naast nieuw: WIJZIGINGEN-ZINNEN-REKENMIX34.md.
+ *
+ * Alleen voor de gouden les Rekenmix 3 (squla-rekenmix3-gouden.tsx) en het fouttabel-script. Alles hierboven (ZIN,
+ * SPLITSREACTIE, splitsFout, foutenVan, plekken) blijft zoals het was; de denkfout (code, soort) komt nog uit splitsFout.
+ * De oude zinnen zijn telkens 1 van de varianten. De les kiest met de gedeelde kiezer (nooit-dubbel.ts): nooit dezelfde
+ * zin 2 keer achter elkaar, ook niet over vragen heen. Getallen, antwoorden, keuzes en de betekenis zijn niet veranderd.
+ * De vraag ("Er zijn 6 ballen. Hoeveel zitten er in de doos?") blijft gelijk (3.11, 15.36). Na de hint komt de vraag terug
+ * (logica-controle, F16): "Hoeveel zitten er in de doos?" is daar nog steeds 1 van de versies.
+ * EIGEN INVULLING, NIET VAN SYNTHESIS (Synthesis heeft geen les "wat zit er in de doos"); alleen de algemene zinnen
+ * "Ik help je even", "Precies" en "Kijk, daar …" komen van Synthesis, in het Nederlands.
+ * ===================================================================================================================== */
+
+/** "1 bal", maar "4 ballen". */
+const n3 = (n: number, d: Ding) => `${gk(n, d)} ${n === 1 ? d.een : d.naam}`;
+/** "er ligt 1", maar "er liggen 3". */
+const ligt = (n: number) => (n === 1 ? "ligt" : "liggen");
+/** "zit" of "zitten" (nu), "zat" of "zaten" (toen). */
+const zitNu = (n: number) => (n === 1 ? "zit" : "zitten");
+const Hoofd3 = (t: string) => t.charAt(0).toUpperCase() + t.slice(1);
+
+export const RM3 = {
+  /** Stap 1: openen (samen met de groet 1 stuk). Vraag 1 is een doos met ballen. De eerste versie is de oude zin. */
+  begin: ["In deze les zoek je wat er verstopt zit.", "Vandaag zoeken we wat er in de doos verstopt zit.", "Kijk, we gaan zoeken wat er in de doos verstopt zit."],
+  /** De vraag, zoals de oude les (overal gelijk; 3.11). De eerste keer met wat het kind moet doen (3.15). */
+  vraag: (v: Vraag3, eerste = false): string[] => ZIN.vraag(v, eerste),
+  /**
+   * De vraag terug na de hint (F16, 15.37): "Hoeveel zitten er in de doos?" (de oude zin van de logica-controle) of een
+   * andere versie. Noemt nooit een getal. Niet als de hint zelf al een vraag is.
+   */
+  opnieuw: (v: Vraag3): string[] => [`Hoeveel zitten er in ${de(v.houder)}?`, `Hoeveel zitten er dan in ${de(v.houder)}?`, `Hoeveel ${v.ding.naam} zijn er verstopt, denk je?`],
+  /** Na de 2e keer: samen tellen. */
+  samenHelp: (v: Vraag3) => ["Kom, we tellen ze samen.", "Geeft niks. We tellen ze samen.", "Ik help je even. We tellen samen.", `Weet je wat? We kijken samen in ${de(v.houder)}.`],
+  /** Samen tellen na de 2e fout (in delen, zodat de les er rustig tussen kan wachten). */
+  samenBuiten: (v: Vraag3) => [`Buiten ${de(v.houder)} ${ligt(v.buiten)} er ${n3(v.buiten, v.ding)}.`, `Kijk, buiten ${de(v.houder)} ${ligt(v.buiten)} ${n3(v.buiten, v.ding)}.`],
+  /** Bij 1 ding in de doos: enkelvoud ("Nu komt de knikker uit de zak."). */
+  samenKomen: (v: Vraag3) =>
+    v.binnen === 1
+      ? [`Nu komt de ${v.ding.een} uit ${de(v.houder)}.`, `Kijk, de ${v.ding.een} komt uit ${de(v.houder)}.`, `${Hoofd3(de(v.houder))} gaat open. Daar is hij!`]
+      : [`Nu komen de ${v.ding.naam} uit ${de(v.houder)}.`, `Kijk, de ${v.ding.naam} komen uit ${de(v.houder)}.`, `${Hoofd3(de(v.houder))} gaat open. Daar zijn ze!`],
+  samenTik: (v: Vraag3) =>
+    v.binnen === 1
+      ? [`Tik op de ${v.ding.een} uit ${de(v.houder)}. Ik tel verder.`, `Tik de nieuwe ${v.ding.een} aan. Ik tel door.`]
+      : [`Tik op elke ${v.ding.een} uit ${de(v.houder)}. Ik tel verder.`, `Tik de ${v.ding.naam} uit ${de(v.houder)} aan. Ik tel door.`, `Tik op de nieuwe ${v.ding.naam}. Ik tel verder.`],
+  samenHand: (v: Vraag3) => [`Tik op een ${v.ding.een} zonder nummer.`, `Zoek een ${v.ding.een} zonder nummer en tik erop.`, `Welke ${v.ding.een} heeft nog geen nummer? Tik erop.`],
+  /**
+   * Klaar met samen tellen. Het laatste getal (het totaal) zegt Bliepo hier, niet ook nog los ervoor; daarna wat er in de
+   * doos zat (keuring K3: niet meer "4. In de doos zaten er 4.", het getal 2 keer achter elkaar).
+   */
+  samenKlaar: (v: Vraag3) => [`En ${gk(v.tot, v.ding)}! Er ${zat(v)} ${n3(v.binnen, v.ding)} in ${de(v.houder)}.`, `En de laatste is ${gk(v.tot, v.ding)}. In ${de(v.houder)} ${zat(v)} er ${gk(v.binnen, v.ding)}.`, `En ${gk(v.tot, v.ding)}! Dus in ${de(v.houder)} ${zat(v)} er ${gk(v.binnen, v.ding)}.`],
+  /** Vangnet: 20 s geen tik, dan telt Bliepo de rest zelf (geen "Ja", geen "samen"; begint met "Kijk,"). */
+  samenZelf: (v: Vraag3) => [`Kijk, ik tel de rest. In ${de(v.houder)} ${zat(v)} er ${gk(v.binnen, v.ding)}.`, `Kijk, ik tel even verder. Er ${zat(v)} ${n3(v.binnen, v.ding)} in ${de(v.houder)}.`],
+  /** Bij de eerste vraag goed in 1 keer: samen nakijken (zoals natellen bij Tellen). */
+  natellen: (v: Vraag3) => ["Laten we samen kijken wat er verstopt zit.", `Kom, we kijken samen in ${de(v.houder)}.`, "Ik tel hardop verder. Tel maar mee!"],
+  /** Na het hardop tellen: het laatste getal (het totaal) zegt Bliepo hier, niet ook nog los ervoor. */
+  natellenKlaar: (v: Vraag3) => [`En ${gk(v.tot, v.ding)}! In ${de(v.houder)} ${zat(v)} er ${gk(v.binnen, v.ding)}. Je had het precies goed.`, `En ${gk(v.tot, v.ding)}! Er ${zat(v)} ${n3(v.binnen, v.ding)} verstopt. Jij had het goed.`],
+  /** Als het kind op de pijl tikte (alle nummers staan er meteen): Bliepo noemde nog geen getal. De eerste is de oude zin. */
+  natellenKlaarSnel: (v: Vraag3) => [`Zie je? In ${de(v.houder)} ${zat(v)} er ${gk(v.binnen, v.ding)}. Je had het precies goed.`, `Kijk, daar ${zat(v) === "zat" ? "is" : "zijn"} ze: ${n3(v.binnen, v.ding)}. Jij had het goed.`],
+  /** Stap 10: einde. De eerste versie is de oude zin. */
+  slot: ["Je vond alles wat er verstopt zat.", "Knap, hoor! Je vond alles wat er verstopt zat.", "Wat goed gezocht! Niets bleef verstopt voor jou."],
+  kaartTik: ["Tik op de kaart.", "Tik maar op de kaart.", "Kijk, een kaart voor jou! Tik erop."],
+  /** Hetzelfde getal 2 keer gekozen: niet 2 keer dezelfde eerste zin. */
+  weerGekozen: (x: number, d: Ding) => [`Je koos weer ${gk(x, d)}.`, `Je tikte weer op ${gk(x, d)}.`, `Weer ${gk(x, d)}, zie ik.`],
+  aanmoedigTikken: ["Je bent goed bezig.", "Jij kunt dit.", "Het gaat goed zo.", "Probeer het maar.", "Toe maar, je doet het goed."],
+};
+
+/**
+ * De zin met wat er in de doos zat, na de lof. 0 en 1 beginnen met "Ja" (SPLITSREACTIE_JA). De eerste 5 zijn de oude
+ * zinnen, iets natuurlijker ("Ja, er zaten 4 ballen in de doos." in plaats van "Ja, er zaten er 4 in de doos.").
+ */
+export const SPLITSREACTIE_3 = (v: Vraag3): string[] => [
+  `Ja, er ${zat(v)} ${n3(v.binnen, v.ding)} in ${de(v.houder)}.`,
+  `Ja, ${gk(v.buiten, v.ding)} en ${gk(v.binnen, v.ding)} is samen ${gk(v.tot, v.ding)}.`,
+  `Dat klopt: er ${zat(v)} ${n3(v.binnen, v.ding)} verstopt.`,
+  `In ${de(v.houder)} ${zat(v)} er ${gk(v.binnen, v.ding)}.`,
+  `Er ${zat(v)} ${n3(v.binnen, v.ding)} in ${de(v.houder)}.`,
+  `Precies, ${gk(v.buiten, v.ding)} buiten en ${gk(v.binnen, v.ding)} in ${de(v.houder)}.`,
+  `Precies, zoveel ${zat(v)} er verstopt.`,
+  `Dat klopt: zoveel ${v.ding.naam} ${zat(v)} er in ${de(v.houder)}.`,
+];
+
+/* ---------- de fout-varianten (18 nov 2026) ---------- */
+
+export type Varianten3 = { eerste: string[]; hint: string[]; uitleg: string[]; weerEerste: string[]; weerUitleg: string[] };
+export type Fout3 = Fout & { v: Varianten3 };
+
+/**
+ * Alle varianten bij 1 antwoord dat niet goed is (dezelfde denkfout als splitsFout). Bliepo noemt wat het kind koos maar
+ * 1 keer, noemt wat er klopt ("Met 5 in de doos zijn er 7 ballen") en wijst nooit naar het goede getal (15.17).
+ */
+export function variantenVan3(x: number, v: Vraag3): Varianten3 {
+  const d = v.ding;
+  const X = gk(x, d);
+  const T = gk(v.tot, d);
+  const B = gk(v.buiten, d);
+  const S = gk(v.buiten + x, d);
+  const h = de(v.houder);
+  const f = splitsFout(x, v);
+  if (f.code === "buiten-genoemd")
+    return {
+      eerste: [`${X} ${ligt(x)} er buiten.`, `Die ${X} zie je al.`, `${n3(x, d)} ${ligt(x)} er buiten ${h}.`, `${X}? Die ${ligt(x)} buiten ${h}.`, `Je tikte op ${X}. Die zie je al buiten ${h}.`],
+      hint: [`Zoek wat er in ${h} zit.`, "Het gaat om wat je niet ziet.", "Denk aan wat verstopt zit.", "Kijk naar het vraagteken. Dat deel zoeken we."],
+      uitleg: [`De rest zit verstopt in ${h}.`, `In ${h} ${zitNu(v.binnen)} nog meer ${d.naam}.`, `Je zoekt de ${d.naam} die je niet ziet.`, "Er zit nog meer verstopt."],
+      weerEerste: [`Dat zijn weer de ${d.naam} die buiten liggen.`, `Weer de ${d.naam} van buiten, zie ik.`],
+      weerUitleg: [`De ${d.naam} in ${h} zie je niet.`, `We zoeken wat er in ${h} zit.`],
+    };
+  if (f.code === "totaal-genoemd")
+    return {
+      eerste: [`${X} is het totaal.`, `${X} zijn er samen.`, `Je koos ${X}. Dat zijn ze allemaal.`, `${X}? Dat zijn alle ${d.naam} samen.`, `Je tikte op ${X}. Zoveel zijn het er samen.`],
+      hint: ["Een deel ligt buiten.", "Zoek alleen wat verstopt zit.", `Niet alle ${d.naam} zitten in ${h}.`, `Kijk ook naar de ${d.naam} buiten ${h}.`],
+      uitleg: [`Een deel van de ${d.naam} ligt buiten ${h}.`, `Niet alle ${d.naam} zitten in ${h}. Een deel ligt ernaast.`, `De ${d.naam} buiten ${h} zitten er niet in.`],
+      weerEerste: [`Dat zijn weer alle ${d.naam} samen.`, `Weer alle ${d.naam}, zie ik.`],
+      weerUitleg: ["Een deel ligt aan de buitenkant.", `Alleen wat in ${h} zit, telt.`],
+    };
+  const groot = x > v.binnen;
+  return {
+    eerste: [`Je koos ${X}. Samen met de ${d.naam} buiten is dat ${S}.`, `Met ${X} in ${h} zijn er ${S} ${d.naam}.`, `${X} in ${h} maakt samen ${S}.`, `${X}? Dan heb je er samen ${S}.`, `Je tikte op ${X}. Met de ${d.naam} buiten erbij is dat ${S}.`],
+    hint: [`Hoeveel moet erbij tot ${T}?`, `Begin bij ${B} en tel door tot ${T}.`, `Tel verder vanaf ${B}.`, `Buiten ${ligt(v.buiten)} er ${B}. Tel door tot ${T}.`],
+    uitleg: groot
+      ? [`Dan zijn het er meer dan ${T}.`, `Dan kom je boven de ${T} uit.`, `Dat zijn er te veel. Samen zijn het er ${T}.`, `Er zijn maar ${T} ${d.naam}.`]
+      : [`Dan zijn het er minder dan ${T}.`, `Dan kom je niet tot ${T}.`, `Dat zijn er te weinig. Samen zijn het er ${T}.`, `Er zijn wel ${T} ${d.naam}.`],
+    weerEerste: groot ? ["Je zat weer te hoog.", "Ook nu zijn het er samen te veel."] : ["Je zat weer te laag.", "Ook nu zijn het er samen te weinig."],
+    weerUitleg: [`Het moeten er ${T} zijn.`, `Buiten en in ${h} samen is ${T}.`],
+  };
+}
+
+/** De fouttabel van een vraag met alle varianten (splitsFout hierboven + `v`). */
+export const fouten3 = (v: Vraag3): Record<string, Fout3> => Object.fromEntries(v.keuzes.filter((k) => k !== v.binnen).map((k) => [String(k), { ...splitsFout(k, v), v: variantenVan3(k, v) }]));
+
+const VW3 = new Map<string, Set<string>>();
+/** De woorden van de vraag zelf (die mogen in een reactie terugkomen). */
+export const vraagWoorden3 = (v: Vraag3) => VW3.get(v.id) ?? VW3.set(v.id, new Set(woordenVan4(ZIN.vraag(v).join(" ")))).get(v.id)!;
+/** Een klein geheugen: dezelfde vraag + dezelfde zinnen geven altijd dezelfde lijst (sneller; verandert niets). */
+const GEHEUGEN3 = new Map<string, string[]>();
+const onthoud3 = (sleutel: string, maak: () => string[]) => GEHEUGEN3.get(sleutel) ?? GEHEUGEN3.set(sleutel, maak()).get(sleutel)!;
+/** Past zin `z` achter `a` in 1 reactie? Geen getal, geen stuk van 2 woorden en geen woord 2 keer; als `stuk`: ook samen in het tekstvak. */
+const na3 = (v: Vraag3, a: string, stuk: boolean) => (z: string) => !deeltGetal4(a, z) && !deeltStuk(a, z) && herhaling4([a, z], vraagWoorden3(v)) === null && (!stuk || past4(a, z));
+/** De vragen die na eerste zin + hint passen (15.37, F16). */
+export const opnieuwNa3 = (v: Vraag3, eerste: string, hint: string) => onthoud3(`o|${v.id}|${eerste}|${hint}`, () => RM3.opnieuw(v).filter((z) => past4(hint, z) && !deeltGetal4(`${eerste} ${hint}`, z) && herhaling4([eerste, hint, z], vraagWoorden3(v)) === null));
+/** De hints die na deze eerste zin passen, en waarachter de vraag nog past (of die zelf al een vraag zijn). */
+export const hintsNa3 = (f: Fout3, v: Vraag3, eerste: string) => onthoud3(`h|${v.id}|${f.v.hint.join("|")}|${eerste}`, () => f.v.hint.filter((h) => na3(v, eerste, false)(h) && (eindigtMetOpdracht4(h) || opnieuwNa3(v, eerste, h).length > 0)));
+/** De uitleggen (of "weer"-uitleggen) die na deze eerste zin passen. */
+export const uitlegNa3 = (lijst: readonly string[], v: Vraag3, eerste: string) => onthoud3(`u|${v.id}|${lijst.join("|")}|${eerste}`, () => lijst.filter(na3(v, eerste, true)));
+const ofAlles3 = (l: string[], alles: readonly string[]) => (l.length ? l : [...alles]);
+
+/**
+ * Wat Bliepo zegt bij een antwoord dat niet goed is. De les en het fouttabel-script gebruiken precies deze functie.
+ *   1e keer: eerste zin (wat het kind koos) + hint. Daarna komt de vraag terug (opnieuw3), als de hint geen vraag is.
+ *   2e keer: hetzelfde getal: "Je koos weer …" + uitleg; dezelfde denkfout met een ander getal: "weer …" + een andere
+ *   uitleg; anders een andere eerste zin + uitleg. Daarna tellen we samen.
+ * Harde eisen (vooraf uit de lijst): het stuk past in het tekstvak, geen getal en geen woord 2 keer in 1 reactie.
+ */
+export function foutReactie3(variant: Variant, f: Fout3, v: Vraag3, o: { x: number; poging: 1 | 2; eerder: Fout | null; eersteX: number | null; eersteZin: string; onduidelijk: () => string }): string[] {
+  if (f.code === "onduidelijk") {
+    const e = o.onduidelijk();
+    return o.poging === 1 ? [e, variant("hint", ofAlles3(hintsNa3(f, v, e), f.v.hint))] : [e, variant("uitleg", ofAlles3(uitlegNa3(f.v.uitleg, v, e), f.v.uitleg))];
+  }
+  if (o.poging === 1) {
+    const e = variant("eerste", hard4(f.v.eerste, (z) => hintsNa3(f, v, z).length > 0));
+    return [e, variant("hint", ofAlles3(hintsNa3(f, v, e), f.v.hint))];
+  }
+  if (o.x === o.eersteX) {
+    const e = variant("weerGekozen", hard4(RM3.weerGekozen(o.x, v.ding), (z) => uitlegNa3(f.v.uitleg, v, z).length > 0));
+    return [e, variant("uitleg", ofAlles3(uitlegNa3(f.v.uitleg, v, e), f.v.uitleg))];
+  }
+  if (o.eerder !== null && o.eerder.soort === f.soort && f.v.weerEerste.length) {
+    const weer = variant("weer", hard4(f.v.weerEerste, (z) => uitlegNa3(f.v.weerUitleg, v, z).length > 0));
+    return [weer, variant("weerUitleg", ofAlles3(uitlegNa3(f.v.weerUitleg, v, weer), f.v.weerUitleg))];
+  }
+  const e = variant("eerste", hard4(f.v.eerste, (z) => z !== o.eersteZin && uitlegNa3(f.v.uitleg, v, z).length > 0));
+  return [e, variant("uitleg", ofAlles3(uitlegNa3(f.v.uitleg, v, e), f.v.uitleg))];
+}
+
+/**
+ * De vraag terug na de hint (F16, 15.37): past samen met de hint in het tekstvak en herhaalt geen getal of woord uit de
+ * eerste zin en de hint. Is de hint zelf al een vraag ("Hoeveel moet erbij tot 6?"), dan niets.
+ */
+export function opnieuw3(variant: Variant, v: Vraag3, eerste: string, hint: string): string {
+  if (eindigtMetOpdracht4(hint)) return "";
+  return variant("opnieuw", ofAlles3(opnieuwNa3(v, eerste, hint), RM3.opnieuw(v)));
+}
