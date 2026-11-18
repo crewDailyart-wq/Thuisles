@@ -414,10 +414,11 @@ async function plaatjeVraag(l: Lesgids, v: Rmvraag, eersteVraag: boolean): Promi
     if (poging === 2 && x === eersteX && fz[0] === f.eerste) fz[0] = weerGekozen(v);
     log(l, "reactie", { soort: `fout${poging}`, vraag: v.id, x, denkfout: f.code, zin: fz.join(" ") });
     if (poging === 1) {
-      /* 1e fout: de vraag verdwijnt; de eerste zin (vanzelf door), dan mag het kind opnieuw kiezen, met de hint (een vraag: geen pijl). */
+      /* 1e fout: de vraag verdwijnt; de eerste zin (vanzelf door), dan mag het kind opnieuw kiezen, met de hint (een vraag: geen pijl).
+         Na de hint komt de vraag terug, zodat het kind weet wat het moet doen (F16, BOUWREGELS 15.37). */
       zet(l, { vinkje: null });
       await zegDoor(l, fz[0]);
-      zinnen = fz.slice(1);
+      zinnen = [...fz.slice(1), ZIN.opnieuw(v)];
       eerder = f;
       eersteX = x;
     } else {

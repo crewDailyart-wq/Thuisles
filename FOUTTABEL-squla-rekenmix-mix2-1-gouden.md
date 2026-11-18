@@ -4,7 +4,7 @@ Gemaakt op 12 november 2026, **uit de code** met `npx tsx scripts/fouttabel-reke
 
 **Welke gouden les deze vragen volgen (BOUWREGELS 15.25):** alle 15 vragen vergelijken hoeveel er op een boterham of spiesje zit (meer, minder, evenveel, de meeste, de minste; zonder getal), dus ze volgen de **gouden les Meer-minder**: tik op een plaatje (alleen een vinkje) en dan op het vinkje van het lesscherm. **Eigen invulling, niet van Synthesis:** de hints, de uitleg en deze tabel (More or Less heeft geen plaatjes zonder getal).
 
-**Zo werkt het bij een fout — 2 POGINGEN (BOUWREGELS 15.9 en 15.11):** 1e fout = Bliepo's scherm 1,5 s rood, de eerste zin hieronder, dan de hint en de plaatjes terug. De eerste zin zegt wat er klopt van het gekozen plaatje en sluit alleen dat plaatje uit; de hint noemt geen richting. 2e fout = de eerste zin en de uitleg (geen opdracht), "Kom, we tellen ze samen." (of een andere versie), Bliepo wijst elk plaatje aan en zegt hoeveel erop zit, en het kind tikt het goede plaatje; de les gaat door. Dezelfde denkfout 2 keer: "weer"-zinnen.
+**Zo werkt het bij een fout — 2 POGINGEN (BOUWREGELS 15.9 en 15.11):** 1e fout = Bliepo's scherm 1,5 s rood, de eerste zin hieronder, dan de hint, de vraag nog 1 keer (F16, BOUWREGELS 15.37: "Op welke boterham zit meer kaas?") en de plaatjes terug. De eerste zin zegt wat er klopt van het gekozen plaatje en sluit alleen dat plaatje uit; de hint noemt geen richting. 2e fout = de eerste zin en de uitleg (geen opdracht), "Kom, we tellen ze samen." (of een andere versie), Bliepo wijst elk plaatje aan en zegt hoeveel erop zit, en het kind tikt het goede plaatje; de les gaat door. Dezelfde denkfout 2 keer: "weer"-zinnen.
 
 ## 1. Denkfouten
 

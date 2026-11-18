@@ -109,11 +109,25 @@ const vergelijking = (v: Vraag2) => (v.wat === "meer" ? "meer" : v.wat === "mind
 
 export const ZIN = {
   begin: "In deze les kijk je hoeveel er op een boterham of een spiesje zit.",
-  /** De vraag (zoals de oude les). De eerste keer met wat het kind moet doen (de knoppen 1 keer uitleggen, 3.15). */
+  /**
+   * De vraag (zoals de oude les). De eerste keer met wat het kind moet doen (3.15).
+   * F16 (Sara, 18 november 2026; BOUWREGELS 15.37): hier stond "Tik op de goede boterham en dan op het vinkje." Het
+   * lesscherm laat elke zin met het woord "vinkje" weg (Lesscherm.tsx, opdracht eigenaar 30 oktober), en omdat de vraag
+   * als 1 stuk wordt gezegd viel de HELE eerste vraag weg: de les wachtte op een tik zonder vraag. Daarom zonder "vinkje",
+   * zoals de gouden les Meer-minder ("Tik op die kaart.").
+   */
   vraag: (v: Vraag2, eerste = false): string[] => {
     const h = woordenVan(v);
     const basis = metVoorbeeld(v) ? [`Kijk naar ${h.het} ${h.ding} bovenaan.`, `Op ${h.welk} zit ${vergelijking(v)} ${h.wat}?`] : [`Op ${h.welk} zit ${h.lw} ${v.wat === "meest" ? "meeste" : "minste"} ${h.wat}?`];
-    return eerste ? [...basis, `Tik op de goede ${h.ding} en dan op het vinkje.`] : basis;
+    return eerste ? [...basis, `Tik op de goede ${h.ding}.`] : basis;
+  },
+  /**
+   * Na de hint bij de 1e fout komt de vraag terug (F16, Sara 18 november 2026; BOUWREGELS 15.37 en 14.32): een hint als
+   * "Kijk hoeveel kaas er bovenaan zit." zegt niet wat het kind moet doen. Alleen de vraagzin, zonder "Kijk naar … bovenaan."
+   */
+  opnieuw: (v: Vraag2): string => {
+    const h = woordenVan(v);
+    return metVoorbeeld(v) ? `Op ${h.welk} zit ${vergelijking(v)} ${h.wat}?` : `Op ${h.welk} zit ${h.lw} ${v.wat === "meest" ? "meeste" : "minste"} ${h.wat}?`;
   },
   samenHelp: ZIN1.samenHelp,
   /** Samen kijken na de 2e fout: Bliepo wijst elk plaatje aan. */
