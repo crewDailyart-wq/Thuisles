@@ -71,3 +71,9 @@ Elke fout die Sara vindt komt hier, met de regel die erbij hoort (BOUWREGELS.md 
 - Oorzaak: het speelvlak `squla-rekentaal-gouden-vlak.tsx` zette sinds 12 november een lichte omtrek (`LICHT_RAND`, in code) om elke tekening, zodat de donkerblauwe lijn op de donkere achtergrond te zien bleef. Bij de nieuwe Magnific-plaatjes werd dat een witte rand. De plaatjes zelf hebben geen witte rand (gescand: 216 plaatjes in `public/voorwerpen`, geen enkel plaatje met een lichte randlaag). De pannenkoek stond in het midden van zijn vak, de ondergrond begon precies onder de voeten.
 - Regel: BOUWREGELS 15.33. Geen witte rand of halo om plaatjes; voorwerpen staan OP de ondergrond.
 - Gecontroleerd in de andere gouden lessen: de lichte omtrek bestond alleen in dit ene vlak (1 les); in de andere gouden lessen staat geen witte omtrek om voorwerp-plaatjes in code.
+
+**F14. Voorwerpen zweven boven hun ondergrond.** (Sara, 18 november 2026)
+- Wat mis was: in Rekentaal zweefden de voorwerpen boven de schaal van de weegschaal; Sara ziet dit steeds weer in nieuwe lessen en kan niet alles zelf nakijken.
+- Oorzaak: voorwerp en ondergrond zijn los van elkaar geplaatst; niemand meet of ze elkaar raken, vooral niet bij een kantelende ondergrond.
+- Regel: BOUWREGELS 15.34: elk voorwerp raakt zijn ondergrond; automatische zweef-controle plus schermfoto-keuring.
+- Controle: `scripts/zweef-controle.mjs` (nog uitbreiden naar de andere gouden lessen), en de keurder let op zweven op elke foto.

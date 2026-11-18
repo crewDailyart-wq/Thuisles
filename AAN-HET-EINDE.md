@@ -45,3 +45,4 @@ Deze lijst wordt bijgehouden. Wat klaar is, krijgt een vinkje; niets verdwijnt z
 - **Vaste plek antwoordknoppen** (15.32): per gouden les met schermfoto's controleren dat álle antwoorden rechts onder Bliepo's zin staan; automatische controle (x in rechterkolom) toevoegen aan speelcontrole. Alleen Plussommen extra is bekeken.
 
 - **Snelheidsmeting (vloeiend):** Sara, 18 nov: pas doen als de hele Bliepo-website klaar is, niet eerder. Helpers draaien hem niet en melden hem niet meer.
+- **Zweef-controle** (BOUWREGELS 15.34, F14): scripts/zweef-controle.mjs uitbreiden naar álle gouden lessen met voorwerpen op een ondergrond; keurder let op zweven op elke foto.
