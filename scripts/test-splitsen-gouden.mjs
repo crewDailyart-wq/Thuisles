@@ -940,7 +940,7 @@ const SITUATIES = {
     const a = l.filter((x) => x.wat === "aanwijzing").pop();
     const t = await P.tekst();
     zie(`proef, 4 en 1, 9 s stil: handje ${(await P.hand()) ? "ja" : "NEE"} (${a ? a.hand : "geen"}); Bliepo: "${t}"`);
-    if (!/Schuif een pion uit het paarse vak/.test(t) || /goed bezig|Jij kunt|Geen haast/.test(t)) fout("proef: handje-zin past niet bij de stand");
+    if (!/Schuif een pion uit het paarse vak/.test(t) || /goed bezig|Jij kunt|Geen haast|gaat goed zo|Probeer het maar/.test(t)) fout("proef: handje-zin past niet bij de stand");
     if (a?.hand !== "sleep") fout("proef: handje wijst niet van vak naar vak");
     await P.foto("21-proef-hand");
   },

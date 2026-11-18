@@ -24,7 +24,8 @@ import type { Lesdraaiboek, Lesgids } from "../soort";
 import { KaartSplitsenExtra, SplitsExtraVlak, type Knop, type Kop, type Som, type SplitsExtraProps } from "../vlakken/squla-splitsen-extra-vlak";
 import { speelLesgeluid } from "@/lib/lesgeluiden";
 import { zetTestAntwoord } from "./squla-hulp";
-import { maakBasis, schud, type Fout, type Uitkomst } from "./squla-extra-basis";
+import { EINDE, EINDE_VEEL_FOUTEN, maakBasis, schud, type Fout, type Uitkomst } from "./squla-extra-basis";
+import { deeltStuk, maakKiezer } from "./nooit-dubbel";
 import {
   AANMOEDIG_TIKKEN,
   KEUZE_GELIJK,
@@ -45,6 +46,7 @@ import {
   tussenFout,
   A,
   B_DEEL,
+  type FoutV,
 } from "./squla-splitsen-extra-zinnen";
 
 const LES_ID = "squla-splits-splitsen1-1-gouden-extra";
@@ -54,6 +56,46 @@ const DENK_MS = 200;
 const ALLE_KNOPPEN: Knop[] = ["min0", "plus0", "min1", "plus1"];
 const zet = (l: Lesgids, p: Partial<SplitsExtraProps>) => l.pasVlakAan<SplitsExtraProps>(p);
 const robotGehad = new WeakSet<Lesgids>();
+
+/**
+ * NOOIT 2 KEER HETZELFDE (Sara, 18 november 2026; zelfde aanpak als de proefles Tellen): alle zinnen in varianten kiest de
+ * les met de gedeelde kiezer (nooit-dubbel.ts). Nooit dezelfde zin 2 keer achter elkaar, ook niet over vragen heen;
+ * "Je koos 3." en "Je koos 2." tellen als dezelfde zin.
+ */
+const KIEZER = maakKiezer();
+const variant = (sleutel: string, zinnen: readonly string[], mag?: (z: string) => boolean) => KIEZER.kies(sleutel, zinnen, mag);
+const aanmoedig = () => variant("aanmoedigTikken", AANMOEDIG_TIKKEN);
+
+/**
+ * Kiest per fout de zinnen uit de varianten van de fouttabel, precies de zinnen die Bliepo gaat zeggen (zelfde regels als
+ * squla-extra-basis: 1e keer eerste zin + hint; 2e keer eerste zin + uitleg, of "weer" bij dezelfde denkfout of
+ * hetzelfde antwoord). Eén kiezer per vraag: hij onthoudt de 1e fout. (Zelfde functie als in de extra les Tellen.)
+ */
+function foutKiezer() {
+  let eerder: { x: string; f: Fout } | null = null;
+  return (x: string, f: FoutV): Fout => {
+    const v = f.v;
+    if (!v) {
+      eerder ??= { x, f };
+      return f;
+    }
+    if (!eerder) {
+      const eerste = v.eerste.length ? variant("eerste", v.eerste) : f.eerste;
+      const uit = { ...f, eerste, hint: variant("hint", v.hint, (z) => !deeltStuk(eerste, z)) };
+      eerder = { x, f: uit };
+      return uit;
+    }
+    const zelfde = eerder.f.soort === f.soort && !eerder.f.noot && f.code !== "onduidelijk";
+    if (v.weerEerste.length && (zelfde || x === eerder.x)) {
+      const weer = variant("weer", v.weerEerste);
+      return { ...f, weer: [weer, ...(v.weerUitleg.length ? [variant("uitleg", v.weerUitleg, (z) => !deeltStuk(weer, z))] : [])] };
+    }
+    const vorige = eerder.f.eerste;
+    const eersten = v.eerste.filter((z) => z !== vorige);
+    const eerste = variant("eerste", eersten.length ? eersten : v.eerste);
+    return { ...f, eerste, uitleg: variant("uitleg", v.uitleg, (z) => !deeltStuk(eerste, z)) };
+  };
+}
 
 type Paar = [number, number];
 type Stand = { delen: [number, number]; lijst: Som[] };
@@ -74,7 +116,7 @@ async function tikTot(l: Lesgids, o: { id: string; deel: 0 | 1; d: 1 | -1; doel:
   zet(l, { actief: [o.knop], ring: o.knop, hand: null });
   zetTestAntwoord(test);
   B.haak(l, { soort: "tel", goed: test, vraag: o.id });
-  const hk = B.handKlok(l, { aan: () => zet(l, { hand: o.knop }), uit: () => zet(l, { hand: null }), zin: `${AANMOEDIG_TIKKEN[B.st(l).fout % 2]} ${o.hand}` });
+  const hk = B.handKlok(l, { aan: () => zet(l, { hand: o.knop }), uit: () => zet(l, { hand: null }), zin: `${aanmoedig()} ${o.hand}` });
   void B.zegOpdracht(l, o.zin).catch(() => {});
   hk.opnieuw();
   let sinds = Date.now();
@@ -125,7 +167,9 @@ function reactie(l: Lesgids, a: number, b: number, t: number, lofZin: string): s
   const woord = (z: string) => z.split(/[\s,:!.]/)[0].toLowerCase();
   const zonder = r.zinnen.map((_, i) => i).filter((i) => woord(r.zinnen[i]) === woord(lofZin));
   if (robotGehad.has(l)) zonder.push(SPLITSREACTIE_ROBOT);
-  const z = B.kies(l, r, zonder);
+  /* De gedeelde kiezer onthoudt de vorige reactie over alle vragen heen (B.kies deed dat alleen binnen 1 vraag). */
+  const mag = r.zinnen.filter((_, i) => !zonder.includes(i));
+  const z = variant("reactie", mag.length ? mag : r.zinnen);
   if (z === r.zinnen[SPLITSREACTIE_ROBOT]) robotGehad.add(l);
   return z;
 }
@@ -134,13 +178,14 @@ function reactie(l: Lesgids, a: number, b: number, t: number, lofZin: string): s
 
 async function totaalVraag(l: Lesgids) {
   zet(l, { totaal: null, ring: null, actief: [] });
+  const kiesFout = foutKiezer();
   return B.keuzeVraag(l, {
     id: "totaal-5",
     opties: schud(["3", "2", "5"]),
     goed: "5",
     zinnen: [ZIN.vraagTotaal],
     eerste: true,
-    fout: (x) => foutenTotaal()[x],
+    fout: (x) => kiesFout(x, foutenTotaal()[x]),
     bijGoed: async (poging, lofZin) => {
       zet(l, { ring: "totaal", goed: B.st(l).goed });
       if (poging === 1) await B.zegDoor(l, lofZin, ZIN.totaalGoed);
@@ -165,12 +210,13 @@ async function nieuwTotaalVraag(l: Lesgids) {
   l.opdracht?.(null);
   speelLesgeluid("verschijn");
   await l.wacht(150);
+  const kiesFout = foutKiezer();
   return B.keuzeVraag(l, {
     id: "nieuw-totaal-7",
     opties: schud(NIEUWKEUZES),
     goed: String(TOTAAL7),
     zinnen: ZIN.nieuwTotaal,
-    fout: (x) => foutenNieuw()[x],
+    fout: (x) => kiesFout(x, foutenNieuw()[x]),
     bijGoed: async (poging, lofZin) => {
       zet(l, { goed: B.st(l).goed });
       if (poging === 1) await B.zegDoor(l, lofZin, ZIN.nieuwGoed);
@@ -194,12 +240,13 @@ async function somVraag(l: Lesgids) {
     s.lijst = [...s.lijst, goed];
     zet(l, { lijst: s.lijst });
   };
+  const kiesFout = foutKiezer();
   return B.keuzeVraag(l, {
     id: "som-3-2-5",
     opties: schud(SOMKEUZES),
     goed: SOMKEUZES[0],
     zinnen: ZIN.vraagSom,
-    fout: (x) => foutenSom()[x],
+    fout: (x) => kiesFout(x, foutenSom()[x]),
     bijGoed: async (poging, lofZin) => {
       voegToe();
       zet(l, { goed: B.st(l).goed });
@@ -274,6 +321,7 @@ async function splitsOpdracht(l: Lesgids, o: Opdracht): Promise<{ uitkomst: Uitk
   await l.wacht(150);
   let eerder: Fout | null = null;
   let eersteX = "";
+  const kiesFout = foutKiezer();
   let zin: Promise<void> = B.zegOpdracht(l, o.opdracht);
   const testStap = () => {
     const doel = nieuwPaar(o.T, o.gehad);
@@ -285,7 +333,7 @@ async function splitsOpdracht(l: Lesgids, o: Opdracht): Promise<{ uitkomst: Uitk
   };
   let poging: 1 | 2 = 1;
   for (;;) {
-    const hk = B.handKlok(l, { aan: () => zet(l, { hand: s.delen[0] <= s.delen[1] ? "plus0" : "plus1" }), uit: () => zet(l, { hand: null }), zin: poging === 1 && !s.lijst.length ? `${AANMOEDIG_TIKKEN[st.fout % 2]} ${o.hand}` : null });
+    const hk = B.handKlok(l, { aan: () => zet(l, { hand: s.delen[0] <= s.delen[1] ? "plus0" : "plus1" }), uit: () => zet(l, { hand: null }), zin: poging === 1 && !s.lijst.length ? `${aanmoedig()} ${o.hand}` : null });
     zet(l, { actief: ALLE_KNOPPEN });
     hk.opnieuw();
     B.haak(l, { soort: o.vinkje ? "maak" : "auto", poging, vraag: o.id });
@@ -318,7 +366,7 @@ async function splitsOpdracht(l: Lesgids, o: Opdracht): Promise<{ uitkomst: Uitk
       if (exact || (omgedraaid && o.ruil === "niet")) {
         /* Al gevonden of omgedraaid (bij 7): telt niet als fout (draaiboek §3 F.4 en F.5). Het kind probeert opnieuw. */
         zet(l, { actief: [] });
-        await B.zegDoor(l, exact ? ZIN.alGevonden(a, b, o.T) : ZIN.omgedraaid);
+        await B.zegDoor(l, exact ? variant("alGevonden", ZIN.alGevonden(a, b, o.T)) : variant("omgedraaid", ZIN.omgedraaid));
         s.delen = [0, 0];
         zet(l, { delen: [0, 0] });
         zin = Promise.resolve();
@@ -336,8 +384,8 @@ async function splitsOpdracht(l: Lesgids, o: Opdracht): Promise<{ uitkomst: Uitk
     }
     B.foutMoment(l);
     zet(l, { actief: [], fout: st.fout });
-    const f = splitsFout(a, b, o.T, st.vraag);
     const sleutel = `${a}+${b}`;
+    const f = kiesFout(sleutel, splitsFout(a, b, o.T, st.vraag));
     B.legDenkfoutVast(l, { vraag: o.id, antwoord: sleutel, denkfout: f.code, poging });
     const fz = B.foutZinnen(l, f, poging, eerder).filter(Boolean);
     if (poging === 2 && sleutel === eersteX && fz[0] === f.eerste && f.weer.length) fz.splice(0, fz.length, ...f.weer);
@@ -363,10 +411,10 @@ async function splitsOpdracht(l: Lesgids, o: Opdracht): Promise<{ uitkomst: Uitk
       s.lijst = [...s.lijst, { a: k, b: rest, t: o.T }];
       zet(l, { lijst: s.lijst });
       o.gehad.push([k, rest]);
-      await B.zegDoor(l, zelf ? ZIN.samenZelf(k, o.T) : ZIN.samenKlaar(k, o.T));
+      await B.zegDoor(l, zelf ? variant("samenZelf", ZIN.samenZelf(k, o.T)) : variant("samenKlaar", ZIN.samenKlaar(k, o.T)));
     };
-    const hk2 = B.handKlok(l, { aan: () => zet(l, { hand: "plus1" }), uit: () => zet(l, { hand: null }), zin: `${AANMOEDIG_TIKKEN[st.fout % 2]} ${ZIN.samenHand}` });
-    void B.zegOpdracht(l, ZIN.samenZet(k, st.vraag)).catch(() => {});
+    const hk2 = B.handKlok(l, { aan: () => zet(l, { hand: "plus1" }), uit: () => zet(l, { hand: null }), zin: `${aanmoedig()} ${variant("tikPlus", ZIN.tikPlus)}` });
+    void B.zegOpdracht(l, variant("samenZet", ZIN.samenZet(k))).catch(() => {});
     hk2.opnieuw();
     let sinds = Date.now();
     try {
@@ -446,16 +494,16 @@ const gouden: Lesdraaiboek = {
     await l.wacht(600);
     B.st(l).naamKeer = 1;
     B.st(l).naamVraag = 0;
-    await B.zegDoor(l, NAAM_GROET, ZIN.begin.join(" "));
+    await B.zegDoor(l, NAAM_GROET, `${variant("begin", ZIN.begin)} ${ZIN.beginKijk}`);
 
     /* Stap 7. De machine stap voor stap: 4 maken, 1 eraf (3), en 2 in het andere deel (totaal 5). */
-    await tikTot(l, { id: "machine-plus-4", deel: 0, d: 1, doel: 4, knop: "plus0", zin: ZIN.a1, hand: ZIN.a1Hand });
+    await tikTot(l, { id: "machine-plus-4", deel: 0, d: 1, doel: 4, knop: "plus0", zin: ZIN.a1, hand: variant("tikPlus", ZIN.tikPlus) });
     await B.zegDoor(l, ZIN.a1Klaar);
     await tikTot(l, { id: "machine-min-3", deel: 0, d: -1, doel: 3, knop: "min0", zin: ZIN.a2, hand: ZIN.a2Hand });
     zet(l, { ring: "totaal" });
     await B.zegDoor(l, ...ZIN.a2Klaar);
     zet(l, { ring: null });
-    await tikTot(l, { id: "machine-plus-2", deel: 1, d: 1, doel: 2, knop: "plus1", zin: ZIN.a3, hand: ZIN.a3Hand });
+    await tikTot(l, { id: "machine-plus-2", deel: 1, d: 1, doel: 2, knop: "plus1", zin: ZIN.a3, hand: variant("tikPlus", ZIN.tikPlus) });
     /* Wat staat er nu in het totaal? */
     await totaalVraag(l);
     /* Stap 9. Welke som heb je gemaakt? */
@@ -463,30 +511,38 @@ const gouden: Lesdraaiboek = {
 
     /* Stap 10. Kun je 5 ook anders splitsen? (omgedraaid telt hier goed) */
     const gehad5: Paar[] = [[A, B_DEEL]];
-    await splitsOpdracht(l, { id: "ander-5", T: TOTAAL5, vast: true, kop: null, opdracht: ZIN.anders.join(" "), hand: ZIN.andersHand, vinkje: false, ruil: "goed", gehad: gehad5 });
+    await splitsOpdracht(l, { id: "ander-5", T: TOTAAL5, vast: true, kop: null, opdracht: ZIN.anders.join(" "), hand: variant("plusMin", ZIN.plusMin), vinkje: false, ruil: "goed", gehad: gehad5 });
 
     /* Stap 11. Een nieuw totaal: welk getal is het? */
     await nieuwTotaalVraag(l);
     /* Stap 12. Zoek 2 delen die samen 7 maken. */
     const gehad7: Paar[] = [];
-    await splitsOpdracht(l, { id: "zoek-7", T: TOTAAL7, vast: true, kop: ZIN.zoekKop, opdracht: ZIN.zoekOpdracht, hand: ZIN.zoekHand, vinkje: true, ruil: "niet", gehad: gehad7, goedZinnen: (lof, a, b, p) => (p === 1 ? [lof, ZIN.goedSplits(a, b, TOTAAL7)] : [lof]) });
+    await splitsOpdracht(l, { id: "zoek-7", T: TOTAAL7, vast: true, kop: ZIN.zoekKop, opdracht: ZIN.zoekOpdracht, hand: variant("plusMin", ZIN.plusMin), vinkje: true, ruil: "niet", gehad: gehad7, goedZinnen: (lof, a, b, p) => (p === 1 ? [lof, variant("goedSplits", ZIN.goedSplits(a, b, TOTAAL7))] : [lof]) });
     /* Stap 14. Nog een manier voor 7. */
-    await splitsOpdracht(l, { id: "nog-7", T: TOTAAL7, vast: true, kop: ZIN.nogKop, opdracht: ZIN.nogOpdracht, hand: ZIN.zoekHand, vinkje: true, ruil: "niet", gehad: gehad7, goedZinnen: (lof, a, b, p) => (p === 1 ? [lof, ZIN.goedSplits(a, b, TOTAAL7)] : [lof]) });
+    await splitsOpdracht(l, { id: "nog-7", T: TOTAAL7, vast: true, kop: ZIN.nogKop, opdracht: ZIN.nogOpdracht, hand: variant("plusMin", ZIN.plusMin), vinkje: true, ruil: "niet", gehad: gehad7, goedZinnen: (lof, a, b, p) => (p === 1 ? [lof, variant("goedSplits", ZIN.goedSplits(a, b, TOTAAL7))] : [lof]) });
 
     /* Stap 15. Kiezen: nog een getal zoals dit (8) of een groter getal (10), en dat op 2 manieren splitsen. */
     const T = await keuzeGetal(l);
-    await B.zegDoor(l, ZIN.keuzeReactie(T));
+    await B.zegDoor(l, ZIN.keuzeReactie);
     const gehadT: Paar[] = [];
     B.st(l).laatste = false;
-    const eerste = await splitsOpdracht(l, { id: `splits-${T}-1`, T, vast: false, kop: ZIN.keuzeKop(T), opdracht: ZIN.keuzeOpdracht(T), hand: ZIN.zoekHand, vinkje: true, ruil: "niet", gehad: gehadT, goedZinnen: (_lof, a, b) => [ZIN.keuzeNog(a, b, T)] });
+    const eerste = await splitsOpdracht(l, { id: `splits-${T}-1`, T, vast: false, kop: ZIN.keuzeKop(T), opdracht: ZIN.keuzeOpdracht(T), hand: variant("plusMin", ZIN.plusMin), vinkje: true, ruil: "niet", gehad: gehadT, goedZinnen: (_lof, a, b) => [ZIN.keuzeNog(a, b, T)] });
     void eerste;
     B.st(l).laatste = true;
-    await splitsOpdracht(l, { id: `splits-${T}-2`, T, vast: false, kop: ZIN.keuzeKop(T), opdracht: ZIN.keuzeNogOpdracht(T), hand: ZIN.zoekHand, vinkje: true, ruil: "niet", gehad: gehadT });
+    await splitsOpdracht(l, { id: `splits-${T}-2`, T, vast: false, kop: ZIN.keuzeKop(T), opdracht: ZIN.keuzeNogOpdracht(T), hand: variant("plusMin", ZIN.plusMin), vinkje: true, ruil: "niet", gehad: gehadT });
 
     /* Stap 16. Einde: slotzin, kaart, eindzin. */
     zet(l, { delen: [0, 0], totaal: null, lijst: [], kop: null, actief: [], hand: null, ring: null });
     l.opdracht?.(null);
-    await B.einde(l, ZIN.slot);
+    /* Zelfde stappen als B.einde (squla-extra-basis), met de slotzin en "Tik op de kaart." in varianten. */
+    void l.zeg().catch(() => {});
+    await B.zegDoor(l, variant("slot", ZIN.slot));
+    B.log(l, "kaart");
+    l.verderWeg?.();
+    const tik = l.kaart();
+    speelLesgeluid("kaart");
+    await B.zeg(l, `${B.veelFouten(l) ? EINDE_VEEL_FOUTEN : B.kies(l, EINDE)} ${variant("kaartTik", ZIN.kaartTik)}`);
+    await tik;
   },
 };
 
