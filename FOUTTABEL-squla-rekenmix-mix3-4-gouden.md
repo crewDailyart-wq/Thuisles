@@ -4,7 +4,7 @@ Gemaakt op 12 november 2026, **uit de code** met `npx tsx scripts/fouttabel-reke
 
 **Welke gouden les deze vragen volgen (BOUWREGELS 15.25):** alle 15 vragen zijn splitsvragen ("Er zijn 6 ballen. Hoeveel zitten er in de doos?"), dus ze volgen de **gouden les Splitsen** (het totaal, het deel dat je ziet, het deel dat je zoekt) in het verloop van de gouden Rekenmix. **Eigen invulling, niet van Synthesis:** de hints, de uitleg en deze tabel.
 
-**Zo werkt het bij een fout — 2 POGINGEN (BOUWREGELS 15.9 en 15.11):** 1e fout = Bliepo's scherm 1,5 s rood, de eerste zin hieronder, dan de hint en de 3 knoppen terug. 2e fout = de eerste zin en de uitleg (geen opdracht), "Kom, we tellen ze samen.", Bliepo telt wat buiten ligt, de dingen komen uit de doos en het kind tikt ze aan; Bliepo telt verder. De les gaat door. Dezelfde denkfout 2 keer: "weer"-zinnen; hetzelfde foute getal 2 keer: "Je koos weer 3.".
+**Zo werkt het bij een fout — 2 POGINGEN (BOUWREGELS 15.9 en 15.11):** 1e fout = Bliepo's scherm 1,5 s rood, de eerste zin hieronder, dan de hint, de vraag nog 1 keer (F16, BOUWREGELS 15.37: "Hoeveel zitten er in de doos?"; niet als de hint zelf al een vraag is) en de 3 knoppen terug. 2e fout = de eerste zin en de uitleg (geen opdracht), "Kom, we tellen ze samen.", Bliepo telt wat buiten ligt, de dingen komen uit de doos en het kind tikt ze aan; Bliepo telt verder. De les gaat door. Dezelfde denkfout 2 keer: "weer"-zinnen; hetzelfde foute getal 2 keer: "Je koos weer 3.".
 
 ## 1. Denkfouten
 

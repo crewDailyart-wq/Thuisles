@@ -98,6 +98,11 @@ export const ZIN = {
   begin: "In deze les zoek je wat er verstopt zit.",
   /** De vraag (zoals de oude les): het totaal, en wat je zoekt. De eerste keer met wat het kind moet doen (3.15). */
   vraag: (v: Vraag3, eerste = false): string[] => [`Er zijn ${gk(v.tot, v.ding)} ${v.ding.naam}.`, `Hoeveel zitten er in ${de(v.houder)}?`, ...(eerste ? ["Tik op het goede getal."] : [])],
+  /**
+   * Na de hint bij de 1e fout komt de vraag terug (F16, Sara 18 november 2026; BOUWREGELS 15.37 en 14.32): een hint als
+   * "Het gaat om wat je niet ziet." zegt niet wat het kind moet doen. Niet als de hint zelf al een vraag is.
+   */
+  opnieuw: (v: Vraag3): string => `Hoeveel zitten er in ${de(v.houder)}?`,
   samenHelp: ZIN4.samenHelp,
   /** Samen tellen na de 2e fout (in delen, zodat de les er rustig tussen kan wachten). */
   samenBuiten: (v: Vraag3) => `Buiten ${de(v.houder)} liggen er ${gk(v.buiten, v.ding)}.`,

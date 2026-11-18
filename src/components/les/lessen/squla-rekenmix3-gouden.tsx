@@ -432,7 +432,8 @@ async function telVraag(l: Lesgids, v: Rmvraag, eersteVraag: boolean): Promise<U
       /* 1e fout (draaiboek Tellen §3 A.2): de vraag verdwijnt; de eerste zin (vanzelf door), dan komen de knoppen terug
          met de hint (een vraag: geen pijl). */
       await zegDoor(l, fz[0]);
-      zinnen = fz.slice(1);
+      /* Na de hint komt de vraag terug, zodat het kind weet wat het moet doen (F16, BOUWREGELS 15.37); niet als de hint zelf een vraag is. */
+      zinnen = fz.slice(1).some((z) => z.includes("?")) ? fz.slice(1) : [...fz.slice(1), ZIN.opnieuw(v)];
       eerder = f;
       eersteX = x;
       eersteZin = fz[0];
