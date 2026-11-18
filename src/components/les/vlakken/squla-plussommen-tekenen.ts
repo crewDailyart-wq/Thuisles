@@ -11,6 +11,7 @@ type C = CanvasRenderingContext2D;
 
 /** De vaste plaatjes die het vlak tekent (voor `voorwerpen` in het draaiboek; hier en niet in het vlak, want dat is een client-bestand). */
 export const VOORWERPEN_DISCO = ["discobal", "luidspreker", "draaitafel"] as const;
+export const VOORWERPEN_TOONBANK = ["toonbank"] as const;
 export const VOORWERPEN_BUS = ["bezorgbus", "pakje"] as const;
 
 function rondeRechthoek(c: C, x: number, y: number, b: number, h: number, r: number) {
@@ -18,6 +19,8 @@ function rondeRechthoek(c: C, x: number, y: number, b: number, h: number, r: num
   c.roundRect(x, y, b, h, r);
 }
 
+/** Kaartjes op de bakkerstoonbank (warm, geen feestkleuren). */
+export const KLEUREN_TOONBANK = ["#ffb347", "#ff8f85", "#7fd6a0", "#7cc6ff", "#ffd36e", "#d9b38a"];
 export const KLEUREN_DISCO = ["#ff6fae", "#7c8cff", "#3fd0c8", "#ffb347", "#b67cff", "#69d26a"];
 
 /** Een kaartje met één of twee rondjes voor de getallen (b × h). */

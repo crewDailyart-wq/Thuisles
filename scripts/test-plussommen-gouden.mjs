@@ -3,7 +3,7 @@
  * 2026 (KEUZES-VOOR-SARA.md Ronde 30). Herschreven naar scripts/test-tellen-gouden.mjs (de oude versie voor de pijlregel
  * van 9 november wachtte op de pijl; die regel is vervangen door BOUWREGELS 15.27): pijl (Bliepo praat door, vanzelf
  * verder ±0,7 s, pijl rechts als snelkoppeling, geen pijl bij vragen en opdrachten), F7, F8, overlap, sprongen, woorden,
- * eindkaart, plus: kiezen (verhaal en "welke som"), de disco (kaartjes in de tekening), verbinden (som en antwoord tikken;
+ * eindkaart, plus: kiezen (verhaal en "welke som"), de toonbank (kaartjes in de tekening), verbinden (som en antwoord tikken;
  * nakijken pas na rust), samen tellen na de 2e fout (lekkers of stippen aantikken; het hulphandje alleen daar en bij het
  * verbinden; vangnet na 20 s), en de vaste zone: het speelvlak blijft links van het tekstvak.
  *
@@ -327,12 +327,12 @@ async function speel(P, o = {}) {
       if (r) globalThis.__zone = { vlak: Math.max(globalThis.__zone?.vlak ?? -999, r.vlak), ding: Math.max(globalThis.__zone?.ding ?? -999, r.ding ?? -999), keuzes: Math.max(globalThis.__zone?.keuzes ?? -999, r.keuzes ?? -999) };
     };
     const sleutel = taak ? `${taak.soort}:${taak.vraag}:${taak.poging}` : null;
-    if (taak && (taak.soort === "kies" || taak.soort === "disco")) {
+    if (taak && (taak.soort === "kies" || taak.soort === "toonbank")) {
       const sl = `${sleutel}:${taak.n}`;
       if (sl !== laatsteTaak) {
         await wacht(o.vraagWacht ?? 1200);
         const z2 = await P.nu();
-        if (z2.pijl && z2.taak && (z2.taak.soort === "kies" || z2.taak.soort === "disco")) fout(`pijl bij een vraag (${taak.vraag})`);
+        if (z2.pijl && z2.taak && (z2.taak.soort === "kies" || z2.taak.soort === "toonbank")) fout(`pijl bij een vraag (${taak.vraag})`);
         await zonderHand();
         await zone();
         laatsteTaak = sl;
@@ -507,7 +507,7 @@ async function controleer(P, naam) {
   }
   /* Nooit pijl en keuzevraag tegelijk. */
   /* Langer dan 1 meting (een enkele meting van 50 ms is het moment dat de knoppen net verschijnen). */
-  const pk = (r) => r && r.pijl && r.taak && (r.taak.startsWith("kies:") || r.taak.startsWith("disco:")) && !r.taak.endsWith(":1");
+  const pk = (r) => r && r.pijl && r.taak && (r.taak.startsWith("kies:") || r.taak.startsWith("toonbank:")) && !r.taak.endsWith(":1");
   const samen = m.filter((r, i) => pk(r) && pk(m[i + 1]));
   if (samen.length) fout(`${naam}: ${samen.length} keer pijl en keuzevraag tegelijk`);
   /* F7 (Sara, 10 nov 2026): dezelfde tekst verdwijnt en komt terug zonder dat het kind iets deed. */
@@ -517,7 +517,7 @@ async function controleer(P, naam) {
   for (let i = 1; i < m.length; i++) {
     const k = sleutel(m[i]);
     /* Een vraag die na de hint opnieuw komt, is een nieuwe poging (geen F7). */
-    if (!k || k === sleutel(m[i - 1]) || (m[i].taak && (m[i].taak.startsWith("kies:") || m[i].taak.startsWith("disco:") || m[i].taak.startsWith("verbind:")))) continue;
+    if (!k || k === sleutel(m[i - 1]) || (m[i].taak && (m[i].taak.startsWith("kies:") || m[i].taak.startsWith("toonbank:") || m[i].taak.startsWith("verbind:")))) continue;
     for (let j = i - 2; j >= 0 && m[i].t - m[j].t < 15000; j--) {
       if (sleutel(m[j]) !== k) continue;
       if (!actie.some((t) => t > m[j].t && t <= m[i].t)) {
@@ -703,7 +703,7 @@ const ROUTES = {
       for (let i = 0; i < 400 && !((await P.nu())?.pijl && (await P.ev(`!!document.querySelector(".bliepo-tekst-nog")`))); i++) {
         const z = await P.nu();
         if (z?.taak?.soort === "kies") await P.klikTekst(z.taak.goed);
-        if (z?.taak?.soort === "disco" || z?.taak?.soort === "tel") await P.tikDing(`[data-ding="${z.taak.goed}"]`);
+        if (z?.taak?.soort === "toonbank" || z?.taak?.soort === "tel") await P.tikDing(`[data-ding="${z.taak.goed}"]`);
         if (z?.taak?.soort === "verbind") for (const [a, b] of Object.entries(z.taak.goed)) { await P.tikDing(`[data-ding="${a}"]`); await P.tikDing(`[data-ding="${b}"]`); }
         await wacht(80);
       }

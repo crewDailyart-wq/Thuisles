@@ -46,6 +46,7 @@ import { HOLO_CANVAS, useHoloMotor } from "../holo/motor";
 import { speelLesgeluid } from "@/lib/lesgeluiden";
 import {
   KLEUREN_DISCO,
+  KLEUREN_TOONBANK,
   rekMaat,
   rekVakje,
   tekenBundel, tekenToonbank,
@@ -78,6 +79,7 @@ export type PlusBeeld =
   | { soort: "bakkerij"; id: string; groepen: Groep[] }
   | { soort: "etalage"; id: string }
   | { soort: "disco"; id: string; kaarten: Kaart[]; vorm: "kaartje" | "plaat" }
+  | { soort: "toonbank"; id: string; kaarten: Kaart[] }
   | { soort: "bus"; id: string; inBus: number; instap: number; alsGetal: boolean }
   | { soort: "kaal"; id: string; level: number }
   | { soort: "verbind"; id: string; links: Kaart[]; rechts: Kaart[] };
@@ -167,6 +169,13 @@ function discoVakken(beeld: Extract<PlusBeeld, { soort: "disco" }>): Vak[] {
   return beeld.kaarten.map((k, i) => ({ id: k.id, kaart: k, soort: "kaartje", x: 490 + (i - (beeld.kaarten.length - 1) / 2) * 220, y: 420, b: 190, h: 112 }));
 }
 
+/** De bakkerstoonbank (gouden les, Sara 18 november 2026: geen disco): 3 kaartjes boven de toonbank met de kassa. */
+const TOONBANK = { x: 490, onder: 700, breed: 560 };
+
+function toonbankVakken(beeld: Extract<PlusBeeld, { soort: "toonbank" }>): Vak[] {
+  return beeld.kaarten.map((k, i) => ({ id: k.id, kaart: k, soort: "kaartje", x: 490 + (i - (beeld.kaarten.length - 1) / 2) * 220, y: 330, b: 190, h: 112 }));
+}
+
 function verbindVakken(beeld: Extract<PlusBeeld, { soort: "verbind" }>): Vak[] {
   const rij = (kaarten: Kaart[], x: number) => kaarten.map((k, i): Vak => ({ id: k.id, kaart: k, soort: "som", x, y: 260 + i * 150, b: 230, h: 100 }));
   return [...rij(beeld.links, 260), ...rij(beeld.rechts, 720)];
@@ -175,6 +184,7 @@ function verbindVakken(beeld: Extract<PlusBeeld, { soort: "verbind" }>): Vak[] {
 function vakkenVan(beeld: PlusBeeld | null, sommen: Kaart[]): Vak[] {
   const v: Vak[] = [];
   if (beeld?.soort === "disco") v.push(...discoVakken(beeld));
+  if (beeld?.soort === "toonbank") v.push(...toonbankVakken(beeld));
   if (beeld?.soort === "verbind") v.push(...verbindVakken(beeld));
   v.push(...somVakken(sommen));
   return v;
@@ -436,6 +446,10 @@ function maakPlusScene(Phaser: PhaserModule, rustig: boolean) {
         this.plek(box, this.vw("draaitafel", 190, 190), DISCO.tafel.x, DISCO.tafel.y);
         /* De lichtbundels van de spots alvast tekenen (anders hapert het eerste goede antwoord). */
         KLEUREN_DISCO.slice(0, 4).forEach((k, i) => this.time.delayedCall(300 + i * 80, () => this.tex(`bundel-${i}`, 60, 300, (c) => tekenBundel(c, k))));
+      } else if (beeld.soort === "toonbank") {
+        /* De bakkerstoonbank met de kassa (Magnific-plaatje, 686 × 346): de onderkant staat onderaan het vlak. */
+        const hb = Math.round((TOONBANK.breed * 346) / 686);
+        this.bal = this.plek(box, this.vw("toonbank", TOONBANK.breed, hb), TOONBANK.x, TOONBANK.onder - hb / 2);
       } else if (beeld.soort === "bus") {
         this.plek(box, this.vw("bezorgbus", BUSVAK_BASIS, BUSVAK_BASIS), BUSVAK.x + BUSVAK.s / 2, BUSVAK.y + BUSVAK.s / 2).setScale(BUSVAK.s / BUSVAK_BASIS / TX);
         const maat = busMaat(beeld.inBus);
@@ -491,7 +505,8 @@ function maakPlusScene(Phaser: PhaserModule, rustig: boolean) {
           const kleur = v.kaart.kleur ?? (n >= 1 ? ringKleur(n) : "#6d7699");
           sl = this.tex(`plaat-${kleur.slice(1)}`, v.b, v.h, (c) => tekenPlaat(c, v.b, kleur));
         } else if (v.soort === "kaartje") {
-          const kleur = KLEUREN_DISCO[(i * 2 + 1) % KLEUREN_DISCO.length];
+          const pal = beeld.soort === "toonbank" ? KLEUREN_TOONBANK : KLEUREN_DISCO;
+          const kleur = pal[(i * 2 + 1) % pal.length];
           const n = v.kaart.tekst.length;
           sl = this.tex(`kaartje-${n}-${kleur}`, v.b, v.h, (c) => tekenKaartje(c, v.b, v.h, kleur, n));
         } else sl = this.tex(`som-${v.b}-${v.h}`, v.b, v.h, (c) => tekenSomkaart(c, v.b, v.h, true));
@@ -685,7 +700,13 @@ function maakPlusScene(Phaser: PhaserModule, rustig: boolean) {
       this.flitsTot = performance.now() + 900;
       this.tekenStaat();
       this.time.delayedCall(950, () => this.tekenStaat());
-      if (this.rustig || b?.soort !== "disco") return;
+      if (this.rustig) return;
+      if (b?.soort === "toonbank") {
+        /* De kassa "pingt": de toonbank veert even op. */
+        if (this.bal) this.tweens.add({ targets: this.bal, scaleX: this.bal.scaleX * 1.03, scaleY: this.bal.scaleY * 1.03, duration: 160, yoyo: true, repeat: 1 });
+        return;
+      }
+      if (b?.soort !== "disco") return;
       /* De spots gaan aan en de discobal draait even. */
       KLEUREN_DISCO.slice(0, 4).forEach((k, i) => {
         const bundel = this.plaats(this.tex(`bundel-${i}`, 60, 300, (c) => tekenBundel(c, k)), DISCO.bal.x, DISCO.bal.y).setOrigin(0.5, 0);

@@ -77,3 +77,9 @@ Elke fout die Sara vindt komt hier, met de regel die erbij hoort (BOUWREGELS.md 
 - Oorzaak: voorwerp en ondergrond zijn los van elkaar geplaatst; niemand meet of ze elkaar raken, vooral niet bij een kantelende ondergrond.
 - Regel: BOUWREGELS 15.34: elk voorwerp raakt zijn ondergrond; automatische zweef-controle plus schermfoto-keuring.
 - Controle: `scripts/zweef-controle.mjs` (nog uitbreiden naar de andere gouden lessen), en de keurder let op zweven op elke foto.
+
+**F15. Disco-scène in de gouden les Plussommen.** (Sara, 18 november 2026)
+- Wat mis was: de vragen 6, 7 en 13 speelden in een disco (discobal, luidsprekers, draaitafel, spots die aangaan). Sara wil geen disco en ook niets in die richting (feest, dansen, muziek).
+- Oorzaak: de gouden les nam het beeld van de oude Squla-les "Dansende sommen" over zonder te vragen of dat bij het thema van de les (de bakkerij) en bij Sara's wensen past.
+- Regel: BOUWREGELS 15.35. Een scène past bij het thema van de les en nooit bij disco, feest, dansen of muziek.
+- Gecontroleerd in de andere gouden lessen: zie het rapport; geen disco, discobal, luidsprekers, dansen of muziek gevonden; wel ballonnen, feesthoedjes, vlaggetjes en slingerlampjes in Tijd, Vormen, Meer-minder, Meten, Minsommen, Getallenlijn en Rekenmix (voorgelegd aan Sara, niet vervangen).

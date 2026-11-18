@@ -3,7 +3,7 @@
 /**
  * Het speelvlak van de GOUDEN LES PLUSSOMMEN (squla-plus-bakkerij-1-gouden, 9 november 2026; BOUWREGELS hoofdstuk 15).
  *
- * Dit is het gewone plusvlak (SqulaPlusVlak, squla-plussommen-vlak.tsx: de bakkerij, de disco, het verbinden en de rij
+ * Dit is het gewone plusvlak (SqulaPlusVlak, squla-plussommen-vlak.tsx: de bakkerij, de toonbank, het verbinden en de rij
  * van 10 met stippen) met drie dingen erbij. Het plusvlak zelf en de oude les blijven precies zoals ze zijn; dit vlak
  * geeft alles gewoon door.
  *   - `tel`: samen verder tellen na de 2e fout (draaiboek Plussommen §3 D en de hulproute §3 C.5: het kind doet elke

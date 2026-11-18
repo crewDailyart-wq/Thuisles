@@ -23,7 +23,7 @@ for (const v of VRAGEN) {
   if (v.soort === "verhaal") {
     const n = v.keuzes.filter((k) => k === v.a + v.b).length;
     if (n !== 1) fouten.push(`${v.id}: ${n} goede keuzes`);
-  } else if (v.soort === "disco") {
+  } else if (v.soort === "toonbank") {
     const n = v.kaarten.filter((k) => k === v.a + v.b).length;
     if (n !== 1) fouten.push(`${v.id}: ${n} goede kaartjes`);
   } else if (v.soort === "som") {
@@ -50,7 +50,7 @@ const verklap = (v: Plusvraag, a: string, f: Fout): string | null => {
   if (/\bfout\b/i.test(`${f.eerste} ${f.hint} ${f.uitleg} ${f.weer.join(" ")}`)) return 'het woord "fout"';
   let over: unknown[] = [];
   if (v.soort === "verhaal") over = overNa(v.keuzes, Number(a), f.beperking);
-  else if (v.soort === "disco") over = overNa(v.kaarten, Number(a), f.beperking);
+  else if (v.soort === "toonbank") over = overNa(v.kaarten, Number(a), f.beperking);
   else if (v.soort === "som") over = sommenOver(v, a, f.beperking);
   else {
     const z = Number(a.split("→")[1]);
@@ -61,7 +61,7 @@ const verklap = (v: Plusvraag, a: string, f: Fout): string | null => {
 let telling = 0;
 for (const v of VRAGEN) {
   const tabel = foutenVan(v);
-  const nodig = v.soort === "verhaal" ? v.keuzes.length - 1 : v.soort === "disco" ? v.kaarten.length - 1 : v.soort === "som" ? v.opties.length - 1 : v.sommen.length * (v.antwoorden.length - 1);
+  const nodig = v.soort === "verhaal" ? v.keuzes.length - 1 : v.soort === "toonbank" ? v.kaarten.length - 1 : v.soort === "som" ? v.opties.length - 1 : v.sommen.length * (v.antwoorden.length - 1);
   if (Object.keys(tabel).length !== nodig) fouten.push(`${v.id}: ${Object.keys(tabel).length} rijen in de fouttabel, ${nodig} nodig`);
   for (const [a, f] of Object.entries(tabel)) {
     telling++;
@@ -88,7 +88,7 @@ for (const v of VRAGEN)
       if (!ok) fouten.push(`${waar}: niet waar: ${wat} ("${alles}")`);
     };
     for (const z of [f.uitleg, ...f.weer]) if (OPDRACHT.test(kaal(z))) fouten.push(`${waar}: opdracht in de zin bij de 2e fout: "${kaal(z)}"`);
-    if (v.soort === "verhaal" || v.soort === "disco") {
+    if (v.soort === "verhaal" || v.soort === "toonbank") {
       const x = Number(a);
       const s = v.a + v.b;
       const g2 = (n: number) => `\\b${n}\\b`;
@@ -105,11 +105,11 @@ for (const v of VRAGEN)
       if (v.soort === "verhaal") {
         klopt(/alleen (het|de) [^.]* hier\./, x === v.a, "alleen ... hier: dat is niet het 1e groepje");
         klopt(/alleen (het|de) [^.]* daar\./, x === v.b && x !== v.a, "alleen ... daar: dat is niet het 2e groepje");
-        klopt(/Er komen er|stip/, false, "zin van de disco bij een verhaaltje");
+        klopt(/Er komen er|stip/, false, "zin van de toonbank bij een verhaaltje");
       } else {
         klopt(new RegExp(`Er komen er ${v.b} bij, niet meer`), x > s, "niet meer");
         klopt(new RegExp(`Er komen er ${v.b} bij, niet minder`), x < s, "niet minder");
-        klopt(/hier|daar|taart|brood|cupcake|krentenbol|koekje|donut|croissant/, false, "lekkers bij de disco (daar is geen lekkers)");
+        klopt(/hier|daar|taart|brood|cupcake|krentenbol|koekje|donut|croissant/, false, "lekkers bij de toonbank (daar is geen lekkers)");
       }
     } else if (v.soort === "som") {
       const m = a.match(/^(\d+) (.) (\d+) = (\d+)$/)!;
@@ -152,8 +152,8 @@ const vraagNaam = (v: Plusvraag) =>
     ? `${v.nr}. verhaal ${v.a} + ${v.b} ${v.wat} (keuzes ${v.keuzes.join(" / ")})`
     : v.soort === "som"
       ? `${v.nr}. welke som? ${v.a} ${v.wat} en ${v.b} erbij (${v.opties.join(" / ")})`
-      : v.soort === "disco"
-        ? `${v.nr}. disco ${v.a} + ${v.b} (kaartjes ${v.kaarten.join(" / ")})`
+      : v.soort === "toonbank"
+        ? `${v.nr}. toonbank ${v.a} + ${v.b} (kaartjes ${v.kaarten.join(" / ")})`
         : `${v.nr}. verbinden ${v.sommen.map(([x, y]) => `${x} + ${y}`).join(", ")} ↔ ${v.antwoorden.join(", ")}`;
 const rijen = VRAGEN.flatMap((v) =>
   Object.entries(foutenVan(v)).map(
@@ -175,7 +175,7 @@ In de les staan de getallen in de kleur van het lekkers (of van de stippen); hie
 **Zo werkt het bij een fout — 2 POGINGEN (BOUWREGELS 15.9 en 15.11):**
 - **1e fout:** Bliepo's scherm 1,5 seconde rood (geen fout-geluidje), de knoppen weg, de som en het lekkers blijven staan. Bliepo zegt de eerste zin (vanzelf door, pijl rechts als snelkoppeling; BOUWREGELS 15.27); daarna komen dezelfde keuzes terug met de hint (een vraag: geen pijl, zoals het draaiboek §3 D.2). Bij het verbinden is de hint de nieuwe opdrachtzin.
 - **Richting en verklappen (15.17):** zou "meer dan" of "minder dan" maar 1 keuze overlaten, dan noemt Bliepo de richting niet (alleen "Je koos 7.") en wijst hij naar de manier van tellen. Het script hierboven rekent dat per fout antwoord na en stopt bij een verklapper.
-- **2e fout:** een korte uitleg bij de denkfout (§3, zonder nieuwe richting; uitleg, geen opdracht), "Kom, we tellen samen." (3 versies; alles vanzelf door). Dan telt het kind zelf verder: het tikt elk stuk lekkers van het 2e groepje aan (bij de disco en het verbinden: elke blauwe stip in de rij van 10) en Bliepo zegt het getal. Daarna staat de som met het antwoord bovenaan en gaat de les vanzelf door. Na ± 6 s stilte komt vanzelf het hulphandje; na 20 s zonder tik telt Bliepo de rest zelf ("Kijk, ik tel de rest. …", geen "Ja"). Bij "welke som?" wijst Bliepo de 2 groepjes aan ("Erbij is plus.") en tikt het kind de goede som (alleen die staat er nog, zoals de hulproute van het draaiboek §3 C.5).
+- **2e fout:** een korte uitleg bij de denkfout (§3, zonder nieuwe richting; uitleg, geen opdracht), "Kom, we tellen samen." (3 versies; alles vanzelf door). Dan telt het kind zelf verder: het tikt elk stuk lekkers van het 2e groepje aan (bij de toonbank en het verbinden: elke blauwe stip in de rij van 10) en Bliepo zegt het getal. Daarna staat de som met het antwoord bovenaan en gaat de les vanzelf door. Na ± 6 s stilte komt vanzelf het hulphandje; na 20 s zonder tik telt Bliepo de rest zelf ("Kijk, ik tel de rest. …", geen "Ja"). Bij "welke som?" wijst Bliepo de 2 groepjes aan ("Erbij is plus.") en tikt het kind de goede som (alleen die staat er nog, zoals de hulproute van het draaiboek §3 C.5).
 - **Twee keer dezelfde denkfout:** Bliepo zegt "weer" en legt het anders uit (laatste kolom van §3). Alleen als hij de 1e keer al zei wat er mis was.
 - **Hetzelfde foute antwoord 2 keer:** de eerste zin wordt "Je koos weer …".
 - **Niet duidelijk (\`onduidelijk\`):** komt in deze les niet voor (elk fout antwoord valt onder een denkfout); als vangnet een zin uit BLIEPO-KARAKTER.md §10 en een algemene hint.

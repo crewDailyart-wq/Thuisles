@@ -1355,5 +1355,13 @@
     "verbeterd": [
       "randen"
     ]
+  },
+  "toonbank": {
+    "bron": "eigen",
+    "v": 1,
+    "verbeterd": [
+      "randen",
+      "opnieuw-magnific"
+    ]
   }
 }

@@ -76,11 +76,11 @@ type Basis = { nr: number; id: string };
 export type Verhaal = Basis & { soort: "verhaal"; groepen: [Groep, Groep]; a: number; b: number; keuzes: number[]; namen: [Naam, Naam]; wat: string; zinnen: (ka: string, kb: string) => [string, string, string] };
 /** (B) Verhaaltje met 2 groepjes; welke som hoort erbij? (4 sommen) */
 export type Somkeuze = Basis & { soort: "som"; groepen: [Groep, Groep]; a: number; b: number; opties: string[]; namen: [Naam, Naam]; wat: string; zinnen: (ka: string, kb: string) => [string, string, string] };
-/** (C) Discospel: de som bovenaan; tik op het goede kaartje (uit 3). */
-export type Disco = Basis & { soort: "disco"; a: number; b: number; kaarten: number[] };
+/** (C) Toonbank: de som bovenaan; tik op het goede kaartje (uit 3). */
+export type Toonbank = Basis & { soort: "toonbank"; a: number; b: number; kaarten: number[] };
 /** (D) Verbinden: 3 sommen links, 3 antwoorden rechts. */
 export type Verbind = Basis & { soort: "verbind"; sommen: [number, number][]; antwoorden: number[] };
-export type Plusvraag = Verhaal | Somkeuze | Disco | Verbind;
+export type Plusvraag = Verhaal | Somkeuze | Toonbank | Verbind;
 
 const hoop = (n: number, ding: Groep["ding"], label = false): Groep => ({ n, ding, label });
 
@@ -108,7 +108,7 @@ const somkeuze = (nr: number, groepen: [Groep, Groep], opties: string[], namen: 
   wat,
   zinnen,
 });
-const disco = (nr: number, a: number, b: number, kaarten: number[]): Disco => ({ soort: "disco", nr, id: `vraag${nr}-disco-${a}+${b}`, a, b, kaarten });
+const toonbank = (nr: number, a: number, b: number, kaarten: number[]): Toonbank => ({ soort: "toonbank", nr, id: `vraag${nr}-toonbank-${a}+${b}`, a, b, kaarten });
 const verbind = (nr: number, sommen: [number, number][], antwoorden: number[]): Verbind => ({ soort: "verbind", nr, id: `vraag${nr}-verbind-${sommen.map(([x, y]) => `${x}+${y}`).join("-")}`, sommen, antwoorden });
 
 /** "−" zoals in de oude les (echt minteken). */
@@ -120,14 +120,14 @@ export const VRAGEN: Plusvraag[] = [
   verhaal(3, [hoop(4, "cupcake"), hoop(5, "cupcake")], [8, 9, 10, 1], [CUPCAKE, CUPCAKE], "cupcakes", (ka, kb) => [`Er staan ${g(4, ka)} cupcakes klaar.`, `Ik bak er nog ${g(5, kb)} bij.`, "Hoeveel cupcakes zijn het samen?"]),
   verhaal(4, [hoop(2, "krentenbol", true), hoop(6, "krentenbol", true)], [7, 8, 4, 9], [KRENTENBOL, KRENTENBOL], "krentenbollen", (ka, kb) => [`Hier liggen ${g(2, ka)} krentenbollen.`, `Daar liggen er ${g(6, kb)}.`, "Hoeveel krentenbollen zijn het samen?"]),
   somkeuze(5, [hoop(3, "koekje"), hoop(7, "koekje")], [`7 ${MIN} 3 = 4`, "3 + 7 = 10", "3 + 3 = 6", "7 + 7 = 14"], [KOEKJE, KOEKJE], "koekjes", (ka, kb) => [`Er liggen nog maar ${g(3, ka)} koekjes.`, `Ik bak er ${g(7, kb)} bij.`, "Welke som hoort erbij?"]),
-  disco(6, 5, 3, [9, 7, 8]),
-  disco(7, 6, 4, [10, 8, 9]),
+  toonbank(6, 5, 3, [9, 7, 8]),
+  toonbank(7, 6, 4, [10, 8, 9]),
   verbind(8, [[3, 4], [5, 3], [2, 7]], [9, 7, 8]),
   verhaal(9, [hoop(4, "donut"), hoop(4, "donut")], [4, 8, 7, 0], [DONUT, DONUT], "donuts", (ka, kb) => [`Hier liggen ${g(4, ka)} donuts.`, `Daar liggen er ook ${g(4, kb)}.`, "Hoeveel donuts zijn het samen?"]),
   verhaal(10, [hoop(2, "croissant"), hoop(5, "croissant")], [6, 7, 8, 2], [CROISSANT, CROISSANT], "croissants", (ka, kb) => [`Ik heb ${g(2, ka)} croissants gebakken.`, `Daarna bak ik er nog ${g(5, kb)}.`, "Hoeveel croissants zijn het samen?"]),
   verhaal(11, [hoop(3, "broodje"), hoop(6, "broodje")], [8, 9, 10, 3], [BROODJE, BROODJE], "broodjes", (ka, kb) => [`Hier liggen ${g(3, ka)} broodjes.`, `Daar liggen er ${g(6, kb)}.`, "Hoeveel broodjes zijn het samen?"]),
   somkeuze(12, [hoop(4, "taart"), hoop(5, "taart")], [`5 ${MIN} 4 = 1`, "4 + 5 = 9", "4 + 4 = 8", "5 + 5 = 10"], [TAARTJE, TAARTJE], "taartjes", (ka, kb) => [`Er staan ${g(4, ka)} taartjes.`, `Ik zet er ${g(5, kb)} bij.`, "Welke som hoort erbij?"]),
-  disco(13, 2, 6, [7, 9, 8]),
+  toonbank(13, 2, 6, [7, 9, 8]),
   verbind(14, [[1, 6], [4, 2], [5, 4]], [9, 7, 6]),
   verhaal(15, [hoop(7, "koekje"), hoop(2, "koekje")], [8, 9, 10, 5], [KOEKJE, KOEKJE], "koekjes", (ka, kb) => [`Ik heb ${g(7, ka)} koekjes.`, `Er komen er ${g(2, kb)} bij.`, "Hoeveel koekjes zijn het samen?"]),
   verhaal(16, [hoop(5, "krentenbol"), hoop(5, "krentenbol")], [5, 10, 9, 0], [KRENTENBOL, KRENTENBOL], "krentenbollen", (ka, kb) => [`Hier liggen ${g(5, ka)} krentenbollen.`, `Daar liggen er ook ${g(5, kb)}.`, "Hoeveel krentenbollen zijn het samen?"]),
@@ -154,9 +154,9 @@ export const ZIN = {
    */
   pijlUitleg: "Klaar met kijken? Tik dan op de blauwe pijl.",
   pijlUitlegNaFout: "Tik op de blauwe pijl als je het nog eens wilt proberen.",
-  /** Disco (Squla): de som staat bovenaan, het kind tikt op het kaartje. De eerste keer wat het kind doet (3.15). */
-  disco: (a: number, b: number) => `Welk kaartje hoort bij ${g(a)} + ${g(b)}?`,
-  discoEerste: "Tik op het goede kaartje.",
+  /** Toonbank (Squla): de som staat bovenaan, het kind tikt op het kaartje. De eerste keer wat het kind doet (3.15). */
+  toonbank: (a: number, b: number) => `Welk kaartje hoort bij ${g(a)} + ${g(b)}?`,
+  toonbankEerste: "Tik op het goede kaartje.",
   /** Verbinden (Squla): de eerste keer de hele opdracht, daarna korter (geleerd bij Splitsen: niet steeds de lange zin). */
   verbind: ["Welk antwoord hoort bij welke som?", "Tik op een som en dan op het antwoord."],
   verbindKort: ["Verbind weer elke som met zijn antwoord."],
@@ -171,7 +171,7 @@ export const ZIN = {
   samenVerder: (a: number, ka: string, nm: Naam) => `We tellen verder vanaf ${g(a, ka)}. Tik op ${nm.elk} ${nm.een} daar.`,
   samenHand: (nm: Naam) => `Tik op een ${nm.een} zonder getal.`,
   samenKlaar: (s: number, wat: string, a: number, b: number, ka: string, kb: string) => `${g(s)}. Samen zijn het ${g(s)} ${wat}: ${g(a, ka)} + ${g(b, kb)} = ${g(s)}.`,
-  /** Samen tellen met de stippen (disco en verbinden: daar is geen lekkers). */
+  /** Samen tellen met de stippen (de toonbank en verbinden: daar is geen lekkers). */
   stippen: (a: number, b: number) => `Kijk: ${g(a, ORANJE)} ${a === 1 ? "oranje stip" : "oranje stippen"} en ${g(b, BLAUW)} ${b === 1 ? "blauwe stip" : "blauwe stippen"}.`,
   stippenVerder: (a: number) => `We tellen verder vanaf ${g(a, ORANJE)}. Tik op elke blauwe stip.`,
   stippenHand: "Tik op een blauwe stip zonder getal.",
@@ -182,7 +182,7 @@ export const ZIN = {
    */
   samenZelf: (s: number, wat: string, a: number, b: number, ka: string, kb: string) => `Kijk, ik tel de rest. Samen zijn het ${g(s)} ${wat}: ${g(a, ka)} + ${g(b, kb)} = ${g(s)}.`,
   stippenZelf: (a: number, b: number) => `Kijk, ik tel de rest. ${g(a, ORANJE)} + ${g(b, BLAUW)} = ${g(a + b)}.`,
-  discoKlaar: (s: number) => `Op dit kaartje staat ${g(s)}.`,
+  toonbankKlaar: (s: number) => `Op dit kaartje staat ${g(s)}.`,
   verbindSamen: (x: number, y: number) => `Kom, we rekenen ${g(x)} + ${g(y)} samen uit.`,
   verbindAlles: (sommen: [number, number][]) => `Zo horen ze bij elkaar: ${sommen.map(([x, y]) => `${g(x)} + ${g(y)} = ${g(x + y)}`).join(", ")}.`,
   /** Welke som (2e fout): Bliepo wijst de groepjes aan, het kind tikt de goede som. */
@@ -238,7 +238,7 @@ export type Fout = {
 };
 
 const SCHERM_KEUZE = "Bliepo's scherm 1,5 s rood (geen fout-geluidje); de knoppen weg, de som en het lekkers blijven staan; met de hint komen dezelfde knoppen meteen terug (geen pijl, draaiboek §3 D.2)";
-const SCHERM_DISCO = "Bliepo's scherm 1,5 s rood; de kaartjes worden dof en zijn niet te tikken; met de hint zijn ze weer gewoon te tikken";
+const SCHERM_TOONBANK = "Bliepo's scherm 1,5 s rood; de kaartjes worden dof en zijn niet te tikken; met de hint zijn ze weer gewoon te tikken";
 const SCHERM_SOM = "Bliepo's scherm 1,5 s rood; de knoppen weg, het lekkers blijft staan; met de hint komen de 4 sommen meteen terug";
 const SCHERM_VERBIND = "Bliepo's scherm 1,5 s rood; de lijnen blijven even staan (wit, geen rood), daarna zijn ze weg en verbindt het kind alles opnieuw";
 
@@ -249,12 +249,12 @@ export const overNa = (keuzes: number[], x: number, b: Beperking) => keuzes.filt
 export const ZONDER_RICHTING = [(X: string) => `Je koos ${X}.`, (X: string) => `${X} is het niet.`, (X: string) => `Je koos ${X}. Dat is het nog niet.`];
 
 /**
- * De fouttabel van 1 fout antwoord bij een TOTAAL (verhaal en disco). Draaiboek §3 D en §7: deel als antwoord, het
+ * De fouttabel van 1 fout antwoord bij een TOTAAL (verhaal en toonbank). Draaiboek §3 D en §7: deel als antwoord, het
  * verschil (min), 1 te veel of te weinig. Bliepo zegt wat de keuze is en in welke richting het goede antwoord ligt; zou
  * die richting maar 1 keuze overlaten, dan noemt hij hem niet en wijst hij alleen naar de manier van tellen.
- * Voor de verhaaltjes noemt Bliepo het lekkers; bij de disco zijn er geen dingen in beeld, dan "de som".
+ * Voor de verhaaltjes noemt Bliepo het lekkers; bij de toonbank zijn er geen dingen in beeld, dan "de som".
  */
-export function totaalFout(v: Verhaal | Disco, x: number): Fout {
+export function totaalFout(v: Verhaal | Toonbank, x: number): Fout {
   const { a, b } = v;
   const s = a + b;
   const groot = Math.max(a, b);
@@ -265,7 +265,7 @@ export function totaalFout(v: Verhaal | Disco, x: number): Fout {
   const B = g(b, kb);
   const X = g(x);
   const keuzes = isVerhaal ? v.keuzes : v.kaarten;
-  const scherm = isVerhaal ? SCHERM_KEUZE : SCHERM_DISCO;
+  const scherm = isVerhaal ? SCHERM_KEUZE : SCHERM_TOONBANK;
   const nr = v.nr;
   const nm = isVerhaal ? v.namen : null;
   const wat = isVerhaal ? v.wat : "";
@@ -396,7 +396,7 @@ export function verbindFout(v: Verbind, i: number, z: number): Fout {
 /** De fouttabel van een vraag: elk fout antwoord (bij verbinden: elke som met elk fout antwoord). */
 export function foutenVan(v: Plusvraag): Record<string, Fout> {
   if (v.soort === "verhaal") return Object.fromEntries(v.keuzes.filter((k) => k !== v.a + v.b).map((k) => [String(k), totaalFout(v, k)]));
-  if (v.soort === "disco") return Object.fromEntries(v.kaarten.filter((k) => k !== v.a + v.b).map((k) => [String(k), totaalFout(v, k)]));
+  if (v.soort === "toonbank") return Object.fromEntries(v.kaarten.filter((k) => k !== v.a + v.b).map((k) => [String(k), totaalFout(v, k)]));
   if (v.soort === "som") return Object.fromEntries(v.opties.filter((o) => o !== somTekst(v.a, v.b)).map((o) => [o, somFout(v, o)]));
   return Object.fromEntries(v.sommen.flatMap(([x, y], i) => v.antwoorden.filter((z) => z !== x + y).map((z) => [`${x} + ${y} → ${z}`, verbindFout(v, i, z)])));
 }

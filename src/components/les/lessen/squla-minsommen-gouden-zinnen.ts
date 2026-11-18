@@ -55,7 +55,7 @@ export type Minvraag = { nr: number; id: string; soort: Soort; a: number; b: num
 
 const machine = (nr: number, b: number, keuzes: number[]): Minvraag => ({ nr, id: `vraag${nr}-machine-10-${b}`, soort: "machine", a: 10, b, keuzes });
 const bord = (nr: number, a: number, b: number, keuzes: number[]): Minvraag => ({ nr, id: `vraag${nr}-bord-${a}-${b}`, soort: "bord", a, b, keuzes });
-/** In de oude les heet dit type "disco": een kale som groot in het midden, kiezen uit 3. */
+/** In de oude les heet dit type anders: een kale som groot in het midden, kiezen uit 3. */
 const midden = (nr: number, a: number, b: number, keuzes: number[]): Minvraag => ({ nr, id: `vraag${nr}-som-${a}-${b}`, soort: "midden", a, b, keuzes });
 
 export const VRAGEN: Minvraag[] = [

@@ -84,4 +84,11 @@ export const PLUSSOMMEN: Voorwerp[] = [
     onderwerp: "a purple DJ table with a black turntable on top, seen from the front",
     schets: `<rect class="r" x="10" y="90" width="180" height="70" rx="12" fill="#8a5cf0"/><ellipse class="r" cx="100" cy="88" rx="60" ry="14" fill="#2b2f45"/><ellipse cx="100" cy="88" rx="12" ry="4" fill="#ffb347"/>`,
   },
+  {
+    naam: "toonbank",
+    titel: "Bakkerstoonbank met kassa",
+    groep: "eten",
+    onderwerp: "a wooden bakery shop counter seen from the front with a small shiny red cash register standing on top",
+    schets: `<rect class="r" x="10" y="110" width="180" height="70" rx="8" fill="#e3a55e"/><rect class="r" x="70" y="50" width="50" height="60" rx="8" fill="#c0392b"/>`,
+  },
 ];

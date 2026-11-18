@@ -6,16 +6,16 @@
  *   deze versie de oude voor kinderen.
  *
  * Inhoud (15.22 punt 1): die van squla-plus-bakkerij-1. Dezelfde 16 vragen in dezelfde volgorde, dezelfde getallen (tot
- * 10), dezelfde keuzes (ook de foute, zoals 0 en 1) en hetzelfde lekkers, dezelfde disco en hetzelfde verbinden.
+ * 10), dezelfde keuzes (ook de foute, zoals 0 en 1) en hetzelfde lekkers, dezelfde toonbank en hetzelfde verbinden.
  *
  * Skelet (15.22 punt 3): het draaiboek Plussommen (Adding below 10, SYNTHESIS-ANALYSE/DRAAIBOEKEN-NIEUW/plussommen.md):
  *   stap 1  openen: geen startvraag en geen proef (§0); Bliepo groet en zegt wat we gaan doen (1 stuk), vanzelf door;
- *   totaal  (§3 D, de verhaaltjes en de disco): de vraag met de keuzes tegelijk;
+ *   totaal  (§3 D, de verhaaltjes en de toonbank): de vraag met de keuzes tegelijk;
  *     - goed in 1 keer: scherm 1 s groen, lof + de som in kleur ("1 + 4 = 5"), vanzelf door;
  *     - 1e fout: scherm 1,5 s rood, geen fout-geluidje; Bliepo zegt wat de keuze is en in welke richting het goede
  *       antwoord ligt (als dat niets verklapt; vanzelf door), daarna dezelfde keuzes terug met de hint (geen pijl);
  *     - 2e fout: korte uitleg, dan SAMEN verder tellen (de hulproute §3 C.5: het kind doet elke stap zelf): het kind
- *       tikt elk stuk lekkers van het 2e groepje (bij de disco: elke blauwe stip) en Bliepo telt mee; door (15.11);
+ *       tikt elk stuk lekkers van het 2e groepje (bij de toonbank: elke blauwe stip) en Bliepo telt mee; door (15.11);
  *       vangnet: 20 s geen tik = Bliepo telt de rest zelf ("Kijk, ik tel de rest. …", geen "Ja");
  *     - goed na een fout: alleen een korte bevestiging met de som (§3 D.3);
  *   som     (§3 E, "welke som hoort erbij?"): idem; na de 2e fout wijst Bliepo de 2 groepjes aan ("erbij is plus") en
@@ -42,7 +42,7 @@ import type { Lesdraaiboek, Lesgids } from "../soort";
 import { KaartBakkerij, type Kaart, type Lijn, type PlusBeeld } from "../vlakken/squla-plussommen-vlak";
 import { GoudenPlusVlak, lekkersPlekken, stipPlek, verbindPlek, type GoudenPlusProps, type Punt } from "../vlakken/squla-plussommen-gouden-vlak";
 import { KLEURHEX } from "../vlakken/squla-getalring";
-import { VOORWERPEN_DISCO } from "../vlakken/squla-plussommen-tekenen";
+import { VOORWERPEN_TOONBANK } from "../vlakken/squla-plussommen-tekenen";
 import { zetTestAntwoord } from "./squla-hulp";
 import { speelLesgeluid } from "@/lib/lesgeluiden";
 import { bliepoScherm } from "@/lib/bliepo-scherm";
@@ -75,7 +75,7 @@ import {
   metNaam,
   somTekst,
   verbindFout,
-  type Disco,
+  type Toonbank,
   type Fout,
   type Rijtje,
   type Somkeuze,
@@ -114,7 +114,7 @@ type Staat = {
   opRij: number;
   momenten: Set<string>;
   haak: number;
-  discoUitgelegd: boolean;
+  toonbankUitgelegd: boolean;
   verbindKeer: number;
   goed: number;
   fout: number;
@@ -132,7 +132,7 @@ const st = (l: Lesgids): Staat => {
   if (!s)
     STAAT.set(
       l,
-      (s = { vorige: new Map(), recent: new Map(), zinNr: 0, robotNr: -99, namen: 0, naamKeer: 0, naamVraag: -99, opRij: 0, momenten: new Set(), haak: 0, discoUitgelegd: false, verbindKeer: 0, goed: 0, fout: 0, vraag: 0, laatste: false, eerste: new Map(), vraagFouten: new Map(), log: [], robotReactie: false, nakijk: 0 }),
+      (s = { vorige: new Map(), recent: new Map(), zinNr: 0, robotNr: -99, namen: 0, naamKeer: 0, naamVraag: -99, opRij: 0, momenten: new Set(), haak: 0, toonbankUitgelegd: false, verbindKeer: 0, goed: 0, fout: 0, vraag: 0, laatste: false, eerste: new Map(), vraagFouten: new Map(), log: [], robotReactie: false, nakijk: 0 }),
     );
   return s;
 };
@@ -601,7 +601,7 @@ async function somVraag(l: Lesgids, v: Somkeuze): Promise<Uitkomst> {
   return noteer(l, v.id, "samen");
 }
 
-/* ---------- samen tellen met de stippen (disco en verbinden: daar is geen lekkers) ---------- */
+/* ---------- samen tellen met de stippen (de toonbank en verbinden: daar is geen lekkers) ---------- */
 
 /** Geeft `true` als Bliepo de rest zelf telde (vangnet). */
 async function samenStippen(l: Lesgids, a: number, b: number): Promise<boolean> {
@@ -612,9 +612,9 @@ async function samenStippen(l: Lesgids, a: number, b: number): Promise<boolean> 
     opdracht: [ZIN.stippenVerder(a)], plekken: Array.from({ length: b }, (_, i) => stipPlek(a + i)), vanaf: a, kleur: BLAUW, hex: KLEURHEX[BLAUW], handZin: ZIN.stippenHand, maat: 54 });
 }
 
-/* ---------- (C) het discospel: welk kaartje hoort bij de som? ---------- */
+/* ---------- (C) de bakkerstoonbank: welk kaartje hoort bij de som? ---------- */
 
-async function discoVraag(l: Lesgids, v: Disco): Promise<Uitkomst> {
+async function toonbankVraag(l: Lesgids, v: Toonbank): Promise<Uitkomst> {
   const s = st(l);
   s.vraag++;
   const S = v.a + v.b;
@@ -625,11 +625,11 @@ async function discoVraag(l: Lesgids, v: Disco): Promise<Uitkomst> {
   const kaarten: Kaart[] = schud(v.kaarten).map((n) => ({ id: `c${n}`, tekst: [String(n)], aria: String(n) }));
   const ids = kaarten.map((k) => k.id);
   void l.zeg().catch(() => {});
-  toonBeeld(l, { soort: "disco", id: `gouden-${v.id}`, vorm: "kaartje", kaarten });
+  toonBeeld(l, { soort: "toonbank", id: `gouden-${v.id}`, kaarten });
   somBoven(l, v.a, v.b, wit);
   await l.wacht(150);
-  let zinnen = s.discoUitgelegd ? [ZIN.disco(v.a, v.b)] : [ZIN.disco(v.a, v.b), ZIN.discoEerste];
-  s.discoUitgelegd = true;
+  let zinnen = s.toonbankUitgelegd ? [ZIN.toonbank(v.a, v.b)] : [ZIN.toonbank(v.a, v.b), ZIN.toonbankEerste];
+  s.toonbankUitgelegd = true;
   let eerder: Fout | null = null;
   let eersteX = "";
   for (let poging = 1 as 1 | 2; poging <= 2; poging++) {
@@ -637,7 +637,7 @@ async function discoVraag(l: Lesgids, v: Disco): Promise<Uitkomst> {
     zet(l, { actief: true, uit: [] });
     /* Een vraag met keuzes (de kaartjes in de tekening): geen pijl (15.27). */
     l.verderWeg?.();
-    haak(l, { soort: "disco", opties: ids, goed, poging, vraag: v.id, fout: ids.filter((i) => i !== goed) });
+    haak(l, { soort: "toonbank", opties: ids, goed, poging, vraag: v.id, fout: ids.filter((i) => i !== goed) });
     const p = l.wachtOpVlak<{ soort: string; id: string }>("tik");
     log(l, "vraag", { zin: zinnen.join(" "), opties: ids });
     const z = zeg(l, zinnen.join(" "));
@@ -686,7 +686,7 @@ async function discoVraag(l: Lesgids, v: Disco): Promise<Uitkomst> {
     zet(l, { rek: null, tel: null, uit: [], goedIds: [goed] });
     /* Eerst de rij met stippen weg, dan pas over het kaartje praten (Bliepo doet hier zelf iets: iets langer dan 0,7 s). */
     await l.wacht(300);
-    await zegDoor(l, ZIN.discoKlaar(S));
+    await zegDoor(l, ZIN.toonbankKlaar(S));
     return noteer(l, v.id, "samen");
   }
   return noteer(l, v.id, "samen");
@@ -850,7 +850,7 @@ const gouden: Lesdraaiboek = {
   woordenMeeMetStem: true,
   kaarttekening: KaartBakkerij,
   nacht: true,
-  voorwerpen: ["broodje", "brood", "bruin-brood", "koekje", "taart", "cupcake", "krentenbol", "croissant", "donut", ...VOORWERPEN_DISCO],
+  voorwerpen: ["broodje", "brood", "bruin-brood", "koekje", "taart", "cupcake", "krentenbol", "croissant", "donut", ...VOORWERPEN_TOONBANK],
   async speel(l) {
     STAAT.delete(l);
     log(l, "start");
@@ -872,7 +872,7 @@ const gouden: Lesdraaiboek = {
       if (i === 8) await zegDoor(l, kies(l, OVERGANG));
       if (v.soort === "verhaal") await verhaalVraag(l, v, i === 0);
       else if (v.soort === "som") await somVraag(l, v);
-      else if (v.soort === "disco") await discoVraag(l, v);
+      else if (v.soort === "toonbank") await toonbankVraag(l, v);
       else await verbindVraag(l, v);
     }
 

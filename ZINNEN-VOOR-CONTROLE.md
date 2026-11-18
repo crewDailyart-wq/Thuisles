@@ -1,6 +1,6 @@
 # ZINNEN VOOR DE CONTROLE — de 15 nieuwe gouden lessen
 
-Gemaakt op 12 november 2026, automatisch, met `npx tsx scripts/zinnen-voor-controle.ts`. Pas niets in dit bestand aan: verander de zin in de les en maak het bestand opnieuw.
+Gemaakt op 18 november 2026, automatisch, met `npx tsx scripts/zinnen-voor-controle.ts`. Pas niets in dit bestand aan: verander de zin in de les en maak het bestand opnieuw.
 
 **De regels waaraan de zinnen moeten voldoen staan in [REGELS-VOOR-CONTROLEUR.md](REGELS-VOOR-CONTROLEUR.md).** Verwijs in je oordeel naar het nummer van de zin (bijvoorbeeld TELLEN-014).
 
@@ -8,7 +8,7 @@ Gemaakt op 12 november 2026, automatisch, met `npx tsx scripts/zinnen-voor-contr
 
 | Les | Vaste tekst van de les | Zinnen bij een foute poging | Samen |
 |---|---|---|---|
-| Tellen (squla-tellen-fruit-1-gouden) | 59 | 85 | 144 |
+| Tellen (squla-tellen-fruit-1-gouden) | 64 | 87 | 151 |
 | Splitsen (squla-splits-splitsen1-1-gouden) | 89 | 248 | 337 |
 | Plussommen (squla-plus-bakkerij-1-gouden) | 105 | 149 | 254 |
 | Minsommen (squla-min-machine-1-gouden) | 55 | 80 | 135 |
@@ -24,7 +24,7 @@ Gemaakt op 12 november 2026, automatisch, met `npx tsx scripts/zinnen-voor-contr
 | Rekentaal (squla-rekentaal-gouden) | 58 | 81 | 139 |
 | Rekenmix (squla-rekenmix-mix1-1-gouden) | 11 | 77 | 88 |
 | ALGEMEEN (gedeelde rijtjes, 1 keer, voor alle lessen) | 131 | 0 | 131 |
-| **Totaal** | 1198 | 1741 | **2939** |
+| **Totaal** | 1203 | 1743 | **2946** |
 
 ## Zo is dit bestand gemaakt
 
@@ -176,7 +176,7 @@ Gemaakt op 12 november 2026, automatisch, met `npx tsx scripts/zinnen-voor-contr
 
 ---
 
-## Tellen (squla-tellen-fruit-1-gouden) — 144 zinnen
+## Tellen (squla-tellen-fruit-1-gouden) — 151 zinnen
 
 Gebruikt ook de gedeelde zinnen: LOF (na een goed antwoord (gewone lof; hooguit 1 per vraag)); MOMENT (na goed, bij een bijzonder moment); NAAM_LOF (na goed, lof met de naam van het kind (zonder naam valt hij weg)); NAAM_GROET (begin van de les, groet met de naam); BEVESTIG (na een goed antwoord dat volgt op een foute poging); EINDE (eindkaart, afsluitende zin); EINDE_VEEL_FOUTEN (eindkaart, als het kind veel hulp nodig had); ONDUIDELIJK (na een foute poging als niet duidelijk is wat het kind dacht); AANMOEDIG (als het kind even stilzit of bij het hulphandje); OVERGANG (tussen 2 vragen in, voor de volgende vraag).
 
@@ -189,143 +189,150 @@ Gebruikt ook de gedeelde zinnen: LOF (na een goed antwoord (gewone lof; hooguit 
 | TELLEN-005 | Tellen | Tel ze en tik op het goede getal. | bij de eerste vraag (uitleg wat het kind moet doen) |
 | TELLEN-006 | Tellen | Ik tel ze hardop voor je. Tel maar mee! | bij de eerste vraag, samen natellen |
 | TELLEN-007 | Tellen | Kom, ik tel ze hardop. Tel maar mee! | bij de eerste vraag, samen natellen |
-| TELLEN-008 | Tellen | Zie je? Het zijn er [n]. Je had het precies goed. | na het samen natellen |
-| TELLEN-009 | Tellen | Zie je wel? Het zijn er [n]. Jij had het goed geteld. | na het samen natellen |
-| TELLEN-010 | Tellen | Kom, we tellen ze samen. | na de 2e foute poging, Bliepo telt/doet samen |
-| TELLEN-011 | Tellen | Weet je wat? We tellen ze samen. | na de 2e foute poging, Bliepo telt/doet samen |
-| TELLEN-012 | Tellen | Geeft niks. We tellen ze samen. | na de 2e foute poging, Bliepo telt/doet samen |
-| TELLEN-013 | Tellen | Ik help je even. We tellen ze samen. | na de 2e foute poging, Bliepo telt/doet samen |
-| TELLEN-014 | Tellen | Tik op elke [f.een]. Ik tel mee. | tijdens het samen doen |
-| TELLEN-015 | Tellen | Tik elke [f.een] aan. Ik zeg het getal. | tijdens het samen doen |
-| TELLEN-016 | Tellen | Tik op alle [f.naam]. Ik tel hardop mee. | tijdens het samen doen |
-| TELLEN-017 | Tellen | Tik op een [f.een] zonder nummer. | hulphandje tijdens het samen doen |
-| TELLEN-018 | Tellen | Zoek een [f.een] zonder nummer en tik erop. | hulphandje tijdens het samen doen |
-| TELLEN-019 | Tellen | Welke [f.een] heeft nog geen nummer? Tik erop. | hulphandje tijdens het samen doen |
-| TELLEN-020 | Tellen | En [n]! Zoveel [f.naam] zijn het. | na het samen doen |
-| TELLEN-021 | Tellen | En [n]! Nu hebben we ze samen allemaal geteld. | na het samen doen |
-| TELLEN-022 | Tellen | En de laatste is [n]. Zoveel [f.naam] zijn het. | na het samen doen |
-| TELLEN-023 | Tellen | Kijk, ik tel de rest. Het zijn er [n]. | als het kind 20 seconden niets doet bij het samen doen |
-| TELLEN-024 | Tellen | Kijk, ik tel even verder. Het zijn er [n]. | als het kind 20 seconden niets doet bij het samen doen |
-| TELLEN-025 | Tellen | Je hebt fruit geteld tot wel 17! | eindkaart, wat het kind geleerd heeft |
-| TELLEN-026 | Tellen | Wat heb jij veel fruit geteld: tot wel 17! | eindkaart, wat het kind geleerd heeft |
-| TELLEN-027 | Tellen | Tik op de kaart. | eindkaart, Bliepo zegt wat het kind met de kaart doet |
-| TELLEN-028 | Tellen | Tik maar op de kaart. | eindkaart, Bliepo zegt wat het kind met de kaart doet |
-| TELLEN-029 | Tellen | Kijk, een kaart voor jou! Tik erop. | eindkaart, Bliepo zegt wat het kind met de kaart doet |
-| TELLEN-030 | Tellen | Je koos weer [x]. | na dezelfde foute keuze 2 keer |
-| TELLEN-031 | Tellen | Je tikte weer op [x]. | na dezelfde foute keuze 2 keer |
-| TELLEN-032 | Tellen | Je bent goed bezig. | aanmoediging bij het hulphandje |
-| TELLEN-033 | Tellen | Jij kunt dit. | aanmoediging bij het hulphandje |
-| TELLEN-034 | Tellen | Het gaat goed zo. | aanmoediging bij het hulphandje |
-| TELLEN-035 | Tellen | Probeer het maar. | aanmoediging bij het hulphandje |
-| TELLEN-036 | Tellen | Toe maar, je doet het goed. | aanmoediging bij het hulphandje |
-| TELLEN-037 | Tellen | Ja, er zijn er [n]. | na een goed antwoord, reactie bij het tellen |
-| TELLEN-038 | Tellen | Ja, je hebt ze allemaal geteld: [n]. | na een goed antwoord, reactie bij het tellen |
-| TELLEN-039 | Tellen | Je hebt er [n] geteld. | na een goed antwoord, reactie bij het tellen |
-| TELLEN-040 | Tellen | Ik heb ze nagekeken: het zijn er [n]. | na een goed antwoord, reactie bij het tellen |
-| TELLEN-041 | Tellen | [n] [f.naam], precies! | na een goed antwoord, reactie bij het tellen |
-| TELLEN-042 | Tellen | Tel ze nog eens rustig. Wijs elke [f.een] aan. | hint na een foute poging (sjabloon) |
-| TELLEN-043 | Tellen | Tel ook de [f.naam] in de laatste rij. | hint na een foute poging (sjabloon) |
-| TELLEN-044 | Tellen | Bijna! [X] is nog iets te weinig. | na de 1e foute poging (eerste zin, sjabloon) |
-| TELLEN-045 | Tellen | Je kwam op [X]. Dat zijn alleen de volle rijen. | na de 1e foute poging (eerste zin, sjabloon) |
-| TELLEN-046 | Tellen | Je hebt een paar [f.naam] overgeslagen. | uitleg na de 2e foute poging (sjabloon) |
-| TELLEN-047 | Tellen | Je hebt een paar [f.naam] niet geteld. | uitleg na de 2e foute poging (sjabloon) |
-| TELLEN-048 | Tellen | Ook de [f.naam] in de laatste rij tellen mee. | uitleg na de 2e foute poging (sjabloon) |
-| TELLEN-049 | Tellen | Het zijn er weer iets te weinig. | bij dezelfde foute poging 2 keer: Bliepo zegt het anders (sjabloon) |
-| TELLEN-050 | Tellen | Weer iets te weinig, zie ik. | bij dezelfde foute poging 2 keer: Bliepo zegt het anders (sjabloon) |
-| TELLEN-051 | Tellen | We geven elke [f.een] een nummer. Zo vergeten we er geen. | bij dezelfde foute poging 2 keer: Bliepo zegt het anders (sjabloon) |
-| TELLEN-052 | Tellen | Je hebt weer alleen de volle rijen geteld. | bij dezelfde foute poging 2 keer: Bliepo zegt het anders (sjabloon) |
-| TELLEN-053 | Tellen | Dat zijn weer alleen de volle rijen. | bij dezelfde foute poging 2 keer: Bliepo zegt het anders (sjabloon) |
-| TELLEN-054 | Tellen | Je keek weer alleen naar de volle rijen. | bij dezelfde foute poging 2 keer: Bliepo zegt het anders (sjabloon) |
-| TELLEN-055 | Tellen | Ook de [f.naam] in de laatste rij horen erbij. | bij dezelfde foute poging 2 keer: Bliepo zegt het anders (sjabloon) |
-| TELLEN-056 | Tellen | De laatste rij is korter, maar hoort er ook bij. | bij dezelfde foute poging 2 keer: Bliepo zegt het anders (sjabloon) |
-| TELLEN-057 | Tellen | We tellen ze rustig, stuk voor stuk. | uitleg na de 2e foute poging (sjabloon) — komt 2 keer voor |
-| TELLEN-058 | Tellen | samen gedaan | bij het samen doen |
-| TELLEN-059 | Tellen | Fruit tellen | titel van de les op het scherm |
-| TELLEN-060 | Tellen | Je koos 10. Zoveel liggen er in de volle rijen. | na de 1e foute poging: Bliepo's eerste reactie (vraag: 1. 12 appels (keuzes 10 / 11 / 12); gekozen: 10) |
-| TELLEN-061 | Tellen | De laatste rij telt ook mee. Tel nog eens. | bij de hint na de 1e foute poging (vraag: 1. 12 appels (keuzes 10 / 11 / 12); gekozen: 10) — komt 2 keer voor |
-| TELLEN-062 | Tellen | Je koos 11. Dat scheelt niet veel. | na de 1e foute poging: Bliepo's eerste reactie (vraag: 1. 12 appels (keuzes 10 / 11 / 12); gekozen: 11) |
-| TELLEN-063 | Tellen | Tel nog eens, rij voor rij. Wijs elke appel aan. | bij de hint na de 1e foute poging (vraag: 1. 12 appels (keuzes 10 / 11 / 12); gekozen: 11) |
-| TELLEN-064 | Tellen | Bijna! 12 is het net niet. | na de 1e foute poging: Bliepo's eerste reactie (vraag: 2. 11 peren (keuzes 11 / 12 / 13); gekozen: 12) |
-| TELLEN-065 | Tellen | Tel ze nog eens rustig. Wijs elke peer aan en zeg het getal. | bij de hint na de 1e foute poging (vraag: 2. 11 peren (keuzes 11 / 12 / 13); gekozen: 12) |
-| TELLEN-066 | Tellen | Bijna! 13 is iets te veel. | na de 1e foute poging: Bliepo's eerste reactie (vraag: 2. 11 peren (keuzes 11 / 12 / 13); gekozen: 13) |
-| TELLEN-067 | Tellen | Begin bovenaan en tel rustig. Elke peer telt 1 keer mee. | bij de hint na de 1e foute poging (vraag: 2. 11 peren (keuzes 11 / 12 / 13); gekozen: 13) — komt 2 keer voor |
-| TELLEN-068 | Tellen | 12? Ik zie er nog meer. | na de 1e foute poging: Bliepo's eerste reactie (vraag: 3. 13 pruimen (keuzes 12 / 13 / 14); gekozen: 12) |
-| TELLEN-069 | Tellen | Probeer het nog eens. Tel elke pruim mee, ook de laatste. | bij de hint na de 1e foute poging (vraag: 3. 13 pruimen (keuzes 12 / 13 / 14); gekozen: 12) — komt 2 keer voor |
-| TELLEN-070 | Tellen | Je zit er dichtbij, maar 14 is te veel. | na de 1e foute poging: Bliepo's eerste reactie (vraag: 3. 13 pruimen (keuzes 12 / 13 / 14); gekozen: 14) |
-| TELLEN-071 | Tellen | Probeer het nog eens. Tel geen pruim 2 keer. | bij de hint na de 1e foute poging (vraag: 3. 13 pruimen (keuzes 12 / 13 / 14); gekozen: 14) |
-| TELLEN-072 | Tellen | Je tikte op 15. Het scheelt maar een klein beetje. | na de 1e foute poging: Bliepo's eerste reactie (vraag: 4. 14 appels (keuzes 14 / 15 / 16); gekozen: 15) |
-| TELLEN-073 | Tellen | Begin bovenaan en tel opnieuw. Wijs elke appel aan. | bij de hint na de 1e foute poging (vraag: 4. 14 appels (keuzes 14 / 15 / 16); gekozen: 15) — komt 2 keer voor |
-| TELLEN-074 | Tellen | Je tikte op 16. Zo veel liggen er niet. | na de 1e foute poging: Bliepo's eerste reactie (vraag: 4. 14 appels (keuzes 14 / 15 / 16); gekozen: 16) |
-| TELLEN-075 | Tellen | Tel nog eens, rij voor rij. Elke appel tel je maar 1 keer. | bij de hint na de 1e foute poging (vraag: 4. 14 appels (keuzes 14 / 15 / 16); gekozen: 16) |
-| TELLEN-076 | Tellen | Je koos 11. Er liggen er nog meer. | na de 1e foute poging: Bliepo's eerste reactie (vraag: 5. 12 peren (keuzes 11 / 12 / 13); gekozen: 11) |
-| TELLEN-077 | Tellen | Tel nog eens, rij voor rij. Sla geen peer over. | bij de hint na de 1e foute poging (vraag: 5. 12 peren (keuzes 11 / 12 / 13); gekozen: 11) — komt 2 keer voor |
-| TELLEN-078 | Tellen | Je koos 13. Dat zijn er iets te veel. | na de 1e foute poging: Bliepo's eerste reactie (vraag: 5. 12 peren (keuzes 11 / 12 / 13); gekozen: 13) |
-| TELLEN-079 | Tellen | Tel ze opnieuw. Wijs elke peer maar 1 keer aan. | bij de hint na de 1e foute poging (vraag: 5. 12 peren (keuzes 11 / 12 / 13); gekozen: 13) — komt 2 keer voor |
-| TELLEN-080 | Tellen | Je koos 13. Je hebt ze nog niet allemaal geteld. | na de 1e foute poging: Bliepo's eerste reactie (vraag: 6. 15 pruimen (keuzes 13 / 14 / 15); gekozen: 13) |
-| TELLEN-081 | Tellen | Begin bovenaan en tel opnieuw. Wijs elke pruim aan. | bij de hint na de 1e foute poging (vraag: 6. 15 pruimen (keuzes 13 / 14 / 15); gekozen: 13) — komt 2 keer voor |
-| TELLEN-082 | Tellen | Je koos 14. Dat scheelt niet veel. | na de 1e foute poging: Bliepo's eerste reactie (vraag: 6. 15 pruimen (keuzes 13 / 14 / 15); gekozen: 14) |
-| TELLEN-083 | Tellen | Tel ze nog eens rustig. Wijs elke pruim aan en zeg het getal. | bij de hint na de 1e foute poging (vraag: 6. 15 pruimen (keuzes 13 / 14 / 15); gekozen: 14) |
-| TELLEN-084 | Tellen | Je koos 15. Zoveel liggen er in de volle rijen. | na de 1e foute poging: Bliepo's eerste reactie (vraag: 7. 16 appels (keuzes 15 / 16 / 17); gekozen: 15) |
-| TELLEN-085 | Tellen | Bijna! 17 is iets te veel. | na de 1e foute poging: Bliepo's eerste reactie (vraag: 7. 16 appels (keuzes 15 / 16 / 17); gekozen: 17) |
-| TELLEN-086 | Tellen | Probeer het nog eens. Tel geen appel 2 keer. | bij de hint na de 1e foute poging (vraag: 7. 16 appels (keuzes 15 / 16 / 17); gekozen: 17) — komt 2 keer voor |
-| TELLEN-087 | Tellen | 14? Dat is heel dichtbij. | na de 1e foute poging: Bliepo's eerste reactie (vraag: 8. 13 peren (keuzes 13 / 14 / 15); gekozen: 14) |
-| TELLEN-088 | Tellen | Begin bovenaan en tel opnieuw. Wijs elke peer aan. | bij de hint na de 1e foute poging (vraag: 8. 13 peren (keuzes 13 / 14 / 15); gekozen: 14) — komt 2 keer voor |
-| TELLEN-089 | Tellen | Je zit er dichtbij, maar 15 is te veel. | na de 1e foute poging: Bliepo's eerste reactie (vraag: 8. 13 peren (keuzes 13 / 14 / 15); gekozen: 15) |
-| TELLEN-090 | Tellen | Tel nog eens, rij voor rij. Elke peer tel je maar 1 keer. | bij de hint na de 1e foute poging (vraag: 8. 13 peren (keuzes 13 / 14 / 15); gekozen: 15) |
-| TELLEN-091 | Tellen | Je hebt alleen de volle rijen geteld. Dat zijn er 15. | na de 1e foute poging: Bliepo's eerste reactie (vraag: 9. 17 pruimen (keuzes 15 / 16 / 17); gekozen: 15) |
-| TELLEN-092 | Tellen | Kijk ook naar de laatste rij en tel opnieuw. | bij de hint na de 1e foute poging (vraag: 9. 17 pruimen (keuzes 15 / 16 / 17); gekozen: 15) |
-| TELLEN-093 | Tellen | Je tikte op 16. Het scheelt maar een klein beetje. | na de 1e foute poging: Bliepo's eerste reactie (vraag: 9. 17 pruimen (keuzes 15 / 16 / 17); gekozen: 16) |
-| TELLEN-094 | Tellen | Tel nog eens, rij voor rij. Wijs elke pruim aan. | bij de hint na de 1e foute poging (vraag: 9. 17 pruimen (keuzes 15 / 16 / 17); gekozen: 16) |
-| TELLEN-095 | Tellen | Je koos 13. Er liggen er nog meer. | na de 1e foute poging: Bliepo's eerste reactie (vraag: 10. 14 peren (keuzes 13 / 14 / 15); gekozen: 13) |
-| TELLEN-096 | Tellen | Je koos 15. Dat zijn er iets te veel. | na de 1e foute poging: Bliepo's eerste reactie (vraag: 10. 14 peren (keuzes 13 / 14 / 15); gekozen: 15) |
-| TELLEN-097 | Tellen | Je koos 12. Je hebt ze nog niet allemaal geteld. | na de 1e foute poging: Bliepo's eerste reactie (vraag: 11. 13 appels (keuzes 12 / 13 / 14); gekozen: 12) |
-| TELLEN-098 | Tellen | Probeer het nog eens. Tel elke appel mee, ook de laatste. | bij de hint na de 1e foute poging (vraag: 11. 13 appels (keuzes 12 / 13 / 14); gekozen: 12) |
-| TELLEN-099 | Tellen | 14? Dat zijn er iets te veel. | na de 1e foute poging: Bliepo's eerste reactie (vraag: 11. 13 appels (keuzes 12 / 13 / 14); gekozen: 14) |
-| TELLEN-100 | Tellen | Bijna! 17 is het net niet. | na de 1e foute poging: Bliepo's eerste reactie (vraag: 12. 16 pruimen (keuzes 16 / 17 / 18); gekozen: 17) |
-| TELLEN-101 | Tellen | Bijna! 18 is iets te veel. | na de 1e foute poging: Bliepo's eerste reactie (vraag: 12. 16 pruimen (keuzes 16 / 17 / 18); gekozen: 18) |
-| TELLEN-102 | Tellen | Tel nog eens, rij voor rij. Elke pruim tel je maar 1 keer. | bij de hint na de 1e foute poging (vraag: 12. 16 pruimen (keuzes 16 / 17 / 18); gekozen: 18) |
-| TELLEN-103 | Tellen | 14? Ik zie er nog meer. | na de 1e foute poging: Bliepo's eerste reactie (vraag: 13. 15 peren (keuzes 14 / 15 / 16); gekozen: 14) |
-| TELLEN-104 | Tellen | Je zit er dichtbij, maar 16 is te veel. | na de 1e foute poging: Bliepo's eerste reactie (vraag: 13. 15 peren (keuzes 14 / 15 / 16); gekozen: 16) |
-| TELLEN-105 | Tellen | Je zit er dichtbij met 16. Je hebt ze nog niet allemaal geteld. | na de 1e foute poging: Bliepo's eerste reactie (vraag: 14. 17 appels (keuzes 16 / 17 / 18); gekozen: 16) |
-| TELLEN-106 | Tellen | Je tikte op 18. Zo veel liggen er niet. | na de 1e foute poging: Bliepo's eerste reactie (vraag: 14. 17 appels (keuzes 16 / 17 / 18); gekozen: 18) |
-| TELLEN-107 | Tellen | Begin bovenaan en tel rustig. Elke appel telt 1 keer mee. | bij de hint na de 1e foute poging (vraag: 14. 17 appels (keuzes 16 / 17 / 18); gekozen: 18) |
-| TELLEN-108 | Tellen | Je koos 9. Er liggen er nog meer. | na de 1e foute poging: Bliepo's eerste reactie (vraag: 15. 11 pruimen (keuzes 9 / 10 / 11); gekozen: 9) |
-| TELLEN-109 | Tellen | Je koos 10. Je zit er dichtbij. | na de 1e foute poging: Bliepo's eerste reactie (vraag: 15. 11 pruimen (keuzes 9 / 10 / 11); gekozen: 10) |
-| TELLEN-110 | Tellen | Probeer het nog eens. Tel hardop en wijs elke pruim aan. | bij de hint na de 1e foute poging (vraag: 15. 11 pruimen (keuzes 9 / 10 / 11); gekozen: 10) |
-| TELLEN-111 | Tellen | Je koos 10. Zoveel liggen er in de volle rijen. De laatste rij is niet vol. Die hoort er ook bij. | na de 2e foute poging: Bliepo legt uit (vraag: 1. 12 appels; gekozen: 10 (alleen-volle-rijen)) |
-| TELLEN-112 | Tellen | Je koos 11. Dat scheelt niet veel. Je hebt 1 appel overgeslagen. | na de 2e foute poging: Bliepo legt uit (vraag: 1. 12 appels; gekozen: 11 (te-weinig)) |
-| TELLEN-113 | Tellen | Bijna! 12 is het net niet. Je telde 1 peer te veel. | na de 2e foute poging: Bliepo legt uit (vraag: 2. 11 peren; gekozen: 12 (te-veel)) |
-| TELLEN-114 | Tellen | Weer iets te veel, zie ik. Elke peer krijgt 1 nummer. Dan tel je niets 2 keer. | 2e foute poging met dezelfde denkfout als de 1e: Bliepo zegt het anders (vraag: 2. 11 peren; gekozen: 12 (te-veel)) — komt 2 keer voor |
-| TELLEN-115 | Tellen | Bijna! 13 is iets te veel. Je telde een paar peren te veel. | na de 2e foute poging: Bliepo legt uit (vraag: 2. 11 peren; gekozen: 13 (te-veel)) |
-| TELLEN-116 | Tellen | 12? Ik zie er nog meer. Er ligt nog 1 pruim meer. | na de 2e foute poging: Bliepo legt uit (vraag: 3. 13 pruimen; gekozen: 12 (te-weinig)) |
-| TELLEN-117 | Tellen | Je zit er dichtbij, maar 14 is te veel. Je hebt 1 pruim 2 keer geteld. | na de 2e foute poging: Bliepo legt uit (vraag: 3. 13 pruimen; gekozen: 14 (te-veel)) |
-| TELLEN-118 | Tellen | Je tikte op 15. Het scheelt maar een klein beetje. Er ligt 1 appel minder. | na de 2e foute poging: Bliepo legt uit (vraag: 4. 14 appels; gekozen: 15 (te-veel)) |
-| TELLEN-119 | Tellen | Het zijn er weer iets te veel. Elke appel krijgt 1 nummer. Dan tel je niets 2 keer. | 2e foute poging met dezelfde denkfout als de 1e: Bliepo zegt het anders (vraag: 4. 14 appels; gekozen: 15 (te-veel)) |
-| TELLEN-120 | Tellen | Je tikte op 16. Zo veel liggen er niet. Er liggen een paar appels minder. | na de 2e foute poging: Bliepo legt uit (vraag: 4. 14 appels; gekozen: 16 (te-veel)) |
-| TELLEN-121 | Tellen | Je koos 11. Er liggen er nog meer. Je hebt 1 peer niet geteld. | na de 2e foute poging: Bliepo legt uit (vraag: 5. 12 peren; gekozen: 11 (te-weinig)) |
-| TELLEN-122 | Tellen | Je koos 13. Dat zijn er iets te veel. Je telde 1 peer te veel. | na de 2e foute poging: Bliepo legt uit (vraag: 5. 12 peren; gekozen: 13 (te-veel)) |
-| TELLEN-123 | Tellen | Je koos 13. Je hebt ze nog niet allemaal geteld. Er liggen nog een paar pruimen meer. | na de 2e foute poging: Bliepo legt uit (vraag: 6. 15 pruimen; gekozen: 13 (te-weinig)) |
-| TELLEN-124 | Tellen | Je koos 14. Dat scheelt niet veel. Er ligt nog 1 pruim meer. | na de 2e foute poging: Bliepo legt uit (vraag: 6. 15 pruimen; gekozen: 14 (te-weinig)) |
-| TELLEN-125 | Tellen | Je telde er weer te weinig. Elke pruim krijgt 1 nummer. Dan sla je er geen over. | 2e foute poging met dezelfde denkfout als de 1e: Bliepo zegt het anders (vraag: 6. 15 pruimen; gekozen: 14 (te-weinig)) |
-| TELLEN-126 | Tellen | Je koos 15. Zoveel liggen er in de volle rijen. De laatste rij is niet vol. Die hoort er ook bij. | na de 2e foute poging: Bliepo legt uit (vraag: 7. 16 appels; gekozen: 15 (alleen-volle-rijen)) |
-| TELLEN-127 | Tellen | Bijna! 17 is iets te veel. Er ligt 1 appel minder. | na de 2e foute poging: Bliepo legt uit (vraag: 7. 16 appels; gekozen: 17 (te-veel)) |
-| TELLEN-128 | Tellen | 14? Dat is heel dichtbij. Je telde 1 peer te veel. | na de 2e foute poging: Bliepo legt uit (vraag: 8. 13 peren; gekozen: 14 (te-veel)) |
-| TELLEN-129 | Tellen | Je zit er dichtbij, maar 15 is te veel. Je telde een paar peren te veel. | na de 2e foute poging: Bliepo legt uit (vraag: 8. 13 peren; gekozen: 15 (te-veel)) |
-| TELLEN-130 | Tellen | Je hebt alleen de volle rijen geteld. Dat zijn er 15. De rij die niet vol is, telt ook mee. | na de 2e foute poging: Bliepo legt uit (vraag: 9. 17 pruimen; gekozen: 15 (alleen-volle-rijen)) |
-| TELLEN-131 | Tellen | Je tikte op 16. Het scheelt maar een klein beetje. Er ligt nog 1 pruim meer. | na de 2e foute poging: Bliepo legt uit (vraag: 9. 17 pruimen; gekozen: 16 (te-weinig)) |
-| TELLEN-132 | Tellen | Je koos 13. Er liggen er nog meer. Je hebt 1 peer overgeslagen. | na de 2e foute poging: Bliepo legt uit (vraag: 10. 14 peren; gekozen: 13 (te-weinig)) |
-| TELLEN-133 | Tellen | Je koos 15. Dat zijn er iets te veel. Er ligt 1 peer minder. | na de 2e foute poging: Bliepo legt uit (vraag: 10. 14 peren; gekozen: 15 (te-veel)) |
-| TELLEN-134 | Tellen | Je koos 12. Je hebt ze nog niet allemaal geteld. Je hebt 1 appel niet geteld. | na de 2e foute poging: Bliepo legt uit (vraag: 11. 13 appels; gekozen: 12 (te-weinig)) |
-| TELLEN-135 | Tellen | 14? Dat zijn er iets te veel. Je telde 1 appel te veel. | na de 2e foute poging: Bliepo legt uit (vraag: 11. 13 appels; gekozen: 14 (te-veel)) |
-| TELLEN-136 | Tellen | Bijna! 17 is het net niet. Je hebt 1 pruim 2 keer geteld. | na de 2e foute poging: Bliepo legt uit (vraag: 12. 16 pruimen; gekozen: 17 (te-veel)) |
-| TELLEN-137 | Tellen | Je telde er weer te veel. Elke pruim krijgt 1 nummer. Dan tel je niets 2 keer. | 2e foute poging met dezelfde denkfout als de 1e: Bliepo zegt het anders (vraag: 12. 16 pruimen; gekozen: 17 (te-veel)) |
-| TELLEN-138 | Tellen | Bijna! 18 is iets te veel. Je hebt een paar pruimen 2 keer geteld. | na de 2e foute poging: Bliepo legt uit (vraag: 12. 16 pruimen; gekozen: 18 (te-veel)) |
-| TELLEN-139 | Tellen | 14? Ik zie er nog meer. Je hebt 1 peer overgeslagen. | na de 2e foute poging: Bliepo legt uit (vraag: 13. 15 peren; gekozen: 14 (te-weinig)) |
-| TELLEN-140 | Tellen | Je zit er dichtbij, maar 16 is te veel. Er ligt 1 peer minder. | na de 2e foute poging: Bliepo legt uit (vraag: 13. 15 peren; gekozen: 16 (te-veel)) |
-| TELLEN-141 | Tellen | Je zit er dichtbij met 16. Je hebt ze nog niet allemaal geteld. Je hebt 1 appel niet geteld. | na de 2e foute poging: Bliepo legt uit (vraag: 14. 17 appels; gekozen: 16 (te-weinig)) |
-| TELLEN-142 | Tellen | Je tikte op 18. Zo veel liggen er niet. Je telde 1 appel te veel. | na de 2e foute poging: Bliepo legt uit (vraag: 14. 17 appels; gekozen: 18 (te-veel)) |
-| TELLEN-143 | Tellen | Je koos 9. Er liggen er nog meer. Er liggen nog een paar pruimen meer. | na de 2e foute poging: Bliepo legt uit (vraag: 15. 11 pruimen; gekozen: 9 (te-weinig)) |
-| TELLEN-144 | Tellen | Je koos 10. Je zit er dichtbij. De rij die niet vol is, telt ook mee. | na de 2e foute poging: Bliepo legt uit (vraag: 15. 11 pruimen; gekozen: 10 (alleen-volle-rijen)) |
+| TELLEN-008 | Tellen | Laten we ze samen tellen. Ik tel hardop. | bij de eerste vraag, samen natellen |
+| TELLEN-009 | Tellen | Zie je? Het zijn er [n]. Je had het precies goed. | na het samen natellen |
+| TELLEN-010 | Tellen | Zie je wel? Het zijn er [n]. Jij had het goed geteld. | na het samen natellen |
+| TELLEN-011 | Tellen | Kijk, daar heb je het: [n]. Je zat precies goed. | na het samen natellen |
+| TELLEN-012 | Tellen | Kom, we tellen ze samen. | na de 2e foute poging, Bliepo telt/doet samen |
+| TELLEN-013 | Tellen | Weet je wat? We tellen ze samen. | na de 2e foute poging, Bliepo telt/doet samen |
+| TELLEN-014 | Tellen | Geeft niks. We tellen ze samen. | na de 2e foute poging, Bliepo telt/doet samen |
+| TELLEN-015 | Tellen | Ik help je even. We tellen ze samen. | na de 2e foute poging, Bliepo telt/doet samen |
+| TELLEN-016 | Tellen | Laten we ze samen tellen en kijken. | na de 2e foute poging, Bliepo telt/doet samen |
+| TELLEN-017 | Tellen | Tik op elke [f.een]. Ik tel mee. | tijdens het samen doen |
+| TELLEN-018 | Tellen | Tik elke [f.een] aan. Ik zeg het getal. | tijdens het samen doen |
+| TELLEN-019 | Tellen | Tik op alle [f.naam]. Ik tel hardop mee. | tijdens het samen doen |
+| TELLEN-020 | Tellen | Tik op een [f.een] zonder nummer. | hulphandje tijdens het samen doen |
+| TELLEN-021 | Tellen | Zoek een [f.een] zonder nummer en tik erop. | hulphandje tijdens het samen doen |
+| TELLEN-022 | Tellen | Welke [f.een] heeft nog geen nummer? Tik erop. | hulphandje tijdens het samen doen |
+| TELLEN-023 | Tellen | En [n]! Zoveel [f.naam] zijn het. | na het samen doen |
+| TELLEN-024 | Tellen | En [n]! Nu hebben we ze samen allemaal geteld. | na het samen doen |
+| TELLEN-025 | Tellen | En de laatste is [n]. Zoveel [f.naam] zijn het. | na het samen doen |
+| TELLEN-026 | Tellen | Kijk, ik tel de rest. Het zijn er [n]. | als het kind 20 seconden niets doet bij het samen doen |
+| TELLEN-027 | Tellen | Kijk, ik tel even verder. Het zijn er [n]. | als het kind 20 seconden niets doet bij het samen doen |
+| TELLEN-028 | Tellen | Je hebt fruit geteld tot wel 17! | eindkaart, wat het kind geleerd heeft |
+| TELLEN-029 | Tellen | Wat heb jij veel fruit geteld: tot wel 17! | eindkaart, wat het kind geleerd heeft |
+| TELLEN-030 | Tellen | Knap, hoor! Je hebt helemaal tot 17 geteld. | eindkaart, wat het kind geleerd heeft |
+| TELLEN-031 | Tellen | Tik op de kaart. | eindkaart, Bliepo zegt wat het kind met de kaart doet |
+| TELLEN-032 | Tellen | Tik maar op de kaart. | eindkaart, Bliepo zegt wat het kind met de kaart doet |
+| TELLEN-033 | Tellen | Kijk, een kaart voor jou! Tik erop. | eindkaart, Bliepo zegt wat het kind met de kaart doet |
+| TELLEN-034 | Tellen | Je koos weer [x]. | na dezelfde foute keuze 2 keer |
+| TELLEN-035 | Tellen | Je tikte weer op [x]. | na dezelfde foute keuze 2 keer |
+| TELLEN-036 | Tellen | Je bent goed bezig. | aanmoediging bij het hulphandje |
+| TELLEN-037 | Tellen | Jij kunt dit. | aanmoediging bij het hulphandje |
+| TELLEN-038 | Tellen | Het gaat goed zo. | aanmoediging bij het hulphandje |
+| TELLEN-039 | Tellen | Probeer het maar. | aanmoediging bij het hulphandje |
+| TELLEN-040 | Tellen | Toe maar, je doet het goed. | aanmoediging bij het hulphandje |
+| TELLEN-041 | Tellen | Ja, er zijn er [n]. | na een goed antwoord, reactie bij het tellen |
+| TELLEN-042 | Tellen | Ja, je hebt ze allemaal geteld: [n]. | na een goed antwoord, reactie bij het tellen |
+| TELLEN-043 | Tellen | Je hebt er [n] geteld. | na een goed antwoord, reactie bij het tellen |
+| TELLEN-044 | Tellen | Ik heb ze nagekeken: het zijn er [n]. | na een goed antwoord, reactie bij het tellen |
+| TELLEN-045 | Tellen | [n] [f.naam], precies! | na een goed antwoord, reactie bij het tellen |
+| TELLEN-046 | Tellen | Precies, [n] [f.naam]. | na een goed antwoord, reactie bij het tellen |
+| TELLEN-047 | Tellen | Dat klopt, er zijn [n] [f.naam]. | na een goed antwoord, reactie bij het tellen |
+| TELLEN-048 | Tellen | Tel ze nog eens rustig. Wijs elke [f.een] aan. | hint na een foute poging (sjabloon) |
+| TELLEN-049 | Tellen | Tel ook de [f.naam] in de laatste rij. | hint na een foute poging (sjabloon) |
+| TELLEN-050 | Tellen | Je kwam op [X]. Dat zijn alleen de volle rijen. | na de 1e foute poging (eerste zin, sjabloon) |
+| TELLEN-051 | Tellen | Je hebt een paar [f.naam] overgeslagen. | uitleg na de 2e foute poging (sjabloon) |
+| TELLEN-052 | Tellen | Je hebt een paar [f.naam] niet geteld. | uitleg na de 2e foute poging (sjabloon) |
+| TELLEN-053 | Tellen | Ook de [f.naam] in de laatste rij tellen mee. | uitleg na de 2e foute poging (sjabloon) |
+| TELLEN-054 | Tellen | Het zijn er weer iets te weinig. | bij dezelfde foute poging 2 keer: Bliepo zegt het anders (sjabloon) |
+| TELLEN-055 | Tellen | Weer iets te weinig, zie ik. | bij dezelfde foute poging 2 keer: Bliepo zegt het anders (sjabloon) |
+| TELLEN-056 | Tellen | We geven elke [f.een] een nummer. Zo vergeten we er geen. | bij dezelfde foute poging 2 keer: Bliepo zegt het anders (sjabloon) |
+| TELLEN-057 | Tellen | Je hebt weer alleen de volle rijen geteld. | bij dezelfde foute poging 2 keer: Bliepo zegt het anders (sjabloon) |
+| TELLEN-058 | Tellen | Dat zijn weer alleen de volle rijen. | bij dezelfde foute poging 2 keer: Bliepo zegt het anders (sjabloon) |
+| TELLEN-059 | Tellen | Je keek weer alleen naar de volle rijen. | bij dezelfde foute poging 2 keer: Bliepo zegt het anders (sjabloon) |
+| TELLEN-060 | Tellen | Ook de [f.naam] in de laatste rij horen erbij. | bij dezelfde foute poging 2 keer: Bliepo zegt het anders (sjabloon) |
+| TELLEN-061 | Tellen | De laatste rij is korter, maar hoort er ook bij. | bij dezelfde foute poging 2 keer: Bliepo zegt het anders (sjabloon) |
+| TELLEN-062 | Tellen | We tellen ze rustig, stuk voor stuk. | uitleg na de 2e foute poging (sjabloon) — komt 2 keer voor |
+| TELLEN-063 | Tellen | samen gedaan | bij het samen doen |
+| TELLEN-064 | Tellen | Fruit tellen | titel van de les op het scherm |
+| TELLEN-065 | Tellen | Je koos 10. Zoveel liggen er in de volle rijen. | na de 1e foute poging: Bliepo's eerste reactie (vraag: 1. 12 appels (keuzes 10 / 11 / 12); gekozen: 10) |
+| TELLEN-066 | Tellen | De laatste rij telt ook mee. Tel nog eens. | bij de hint na de 1e foute poging (vraag: 1. 12 appels (keuzes 10 / 11 / 12); gekozen: 10) — komt 2 keer voor |
+| TELLEN-067 | Tellen | Je koos 11. Dat scheelt niet veel. | na de 1e foute poging: Bliepo's eerste reactie (vraag: 1. 12 appels (keuzes 10 / 11 / 12); gekozen: 11) |
+| TELLEN-068 | Tellen | Tel nog eens, rij voor rij. Wijs elke appel aan. | bij de hint na de 1e foute poging (vraag: 1. 12 appels (keuzes 10 / 11 / 12); gekozen: 11) |
+| TELLEN-069 | Tellen | Bijna! 12 is het net niet. | na de 1e foute poging: Bliepo's eerste reactie (vraag: 2. 11 peren (keuzes 11 / 12 / 13); gekozen: 12) |
+| TELLEN-070 | Tellen | Tel ze nog eens rustig. Wijs elke peer aan en zeg het getal. | bij de hint na de 1e foute poging (vraag: 2. 11 peren (keuzes 11 / 12 / 13); gekozen: 12) |
+| TELLEN-071 | Tellen | Bijna! 13 is iets te veel. | na de 1e foute poging: Bliepo's eerste reactie (vraag: 2. 11 peren (keuzes 11 / 12 / 13); gekozen: 13) |
+| TELLEN-072 | Tellen | Begin bovenaan en tel rustig. Elke peer telt 1 keer mee. | bij de hint na de 1e foute poging (vraag: 2. 11 peren (keuzes 11 / 12 / 13); gekozen: 13) — komt 2 keer voor |
+| TELLEN-073 | Tellen | 12? Ik zie er nog meer. | na de 1e foute poging: Bliepo's eerste reactie (vraag: 3. 13 pruimen (keuzes 12 / 13 / 14); gekozen: 12) |
+| TELLEN-074 | Tellen | Probeer het nog eens. Tel elke pruim mee, ook de laatste. | bij de hint na de 1e foute poging (vraag: 3. 13 pruimen (keuzes 12 / 13 / 14); gekozen: 12) — komt 2 keer voor |
+| TELLEN-075 | Tellen | Je zit er dichtbij, maar 14 is te veel. | na de 1e foute poging: Bliepo's eerste reactie (vraag: 3. 13 pruimen (keuzes 12 / 13 / 14); gekozen: 14) |
+| TELLEN-076 | Tellen | Probeer het nog eens. Tel geen pruim 2 keer. | bij de hint na de 1e foute poging (vraag: 3. 13 pruimen (keuzes 12 / 13 / 14); gekozen: 14) |
+| TELLEN-077 | Tellen | Je tikte op 15. Het scheelt maar een klein beetje. | na de 1e foute poging: Bliepo's eerste reactie (vraag: 4. 14 appels (keuzes 14 / 15 / 16); gekozen: 15) |
+| TELLEN-078 | Tellen | Probeer het nog eens. Tel de appels en tik op het getal. | bij de hint na de 1e foute poging (vraag: 4. 14 appels (keuzes 14 / 15 / 16); gekozen: 15) |
+| TELLEN-079 | Tellen | Je tikte op 16. Zo veel liggen er niet. | na de 1e foute poging: Bliepo's eerste reactie (vraag: 4. 14 appels (keuzes 14 / 15 / 16); gekozen: 16) |
+| TELLEN-080 | Tellen | Tel nog eens, rij voor rij. Elke appel tel je maar 1 keer. | bij de hint na de 1e foute poging (vraag: 4. 14 appels (keuzes 14 / 15 / 16); gekozen: 16) |
+| TELLEN-081 | Tellen | 11 peren? Je hebt ze nog niet allemaal geteld. | na de 1e foute poging: Bliepo's eerste reactie (vraag: 5. 12 peren (keuzes 11 / 12 / 13); gekozen: 11) |
+| TELLEN-082 | Tellen | Tel nog eens, rij voor rij. Sla geen peer over. | bij de hint na de 1e foute poging (vraag: 5. 12 peren (keuzes 11 / 12 / 13); gekozen: 11) — komt 2 keer voor |
+| TELLEN-083 | Tellen | 13 peren? Ik denk dat je er te veel hebt geteld. | na de 1e foute poging: Bliepo's eerste reactie (vraag: 5. 12 peren (keuzes 11 / 12 / 13); gekozen: 13) |
+| TELLEN-084 | Tellen | Tel ze opnieuw. Wijs elke peer maar 1 keer aan. | bij de hint na de 1e foute poging (vraag: 5. 12 peren (keuzes 11 / 12 / 13); gekozen: 13) — komt 2 keer voor |
+| TELLEN-085 | Tellen | Je koos 13. Er liggen er nog meer. | na de 1e foute poging: Bliepo's eerste reactie (vraag: 6. 15 pruimen (keuzes 13 / 14 / 15); gekozen: 13) |
+| TELLEN-086 | Tellen | Begin bovenaan en tel opnieuw. Wijs elke pruim aan. | bij de hint na de 1e foute poging (vraag: 6. 15 pruimen (keuzes 13 / 14 / 15); gekozen: 13) — komt 2 keer voor |
+| TELLEN-087 | Tellen | Je koos 14. Dat scheelt niet veel. | na de 1e foute poging: Bliepo's eerste reactie (vraag: 6. 15 pruimen (keuzes 13 / 14 / 15); gekozen: 14) |
+| TELLEN-088 | Tellen | Tel nog eens, rij voor rij. Wijs elke pruim aan. | bij de hint na de 1e foute poging (vraag: 6. 15 pruimen (keuzes 13 / 14 / 15); gekozen: 14) |
+| TELLEN-089 | Tellen | Je koos 15. Zoveel liggen er in de volle rijen. | na de 1e foute poging: Bliepo's eerste reactie (vraag: 7. 16 appels (keuzes 15 / 16 / 17); gekozen: 15) |
+| TELLEN-090 | Tellen | 17? Dat zijn er iets te veel. | na de 1e foute poging: Bliepo's eerste reactie (vraag: 7. 16 appels (keuzes 15 / 16 / 17); gekozen: 17) |
+| TELLEN-091 | Tellen | Probeer het nog eens. Tel geen appel 2 keer. | bij de hint na de 1e foute poging (vraag: 7. 16 appels (keuzes 15 / 16 / 17); gekozen: 17) — komt 2 keer voor |
+| TELLEN-092 | Tellen | 14? Dat is heel dichtbij. | na de 1e foute poging: Bliepo's eerste reactie (vraag: 8. 13 peren (keuzes 13 / 14 / 15); gekozen: 14) |
+| TELLEN-093 | Tellen | Probeer het nog eens. Tel hardop en wijs elke peer aan. | bij de hint na de 1e foute poging (vraag: 8. 13 peren (keuzes 13 / 14 / 15); gekozen: 14) |
+| TELLEN-094 | Tellen | Bijna! 15 is iets te veel. | na de 1e foute poging: Bliepo's eerste reactie (vraag: 8. 13 peren (keuzes 13 / 14 / 15); gekozen: 15) |
+| TELLEN-095 | Tellen | Tel nog eens, rij voor rij. Elke peer tel je maar 1 keer. | bij de hint na de 1e foute poging (vraag: 8. 13 peren (keuzes 13 / 14 / 15); gekozen: 15) |
+| TELLEN-096 | Tellen | Je hebt alleen de volle rijen geteld. Dat zijn er 15. | na de 1e foute poging: Bliepo's eerste reactie (vraag: 9. 17 pruimen (keuzes 15 / 16 / 17); gekozen: 15) |
+| TELLEN-097 | Tellen | Kijk ook naar de laatste rij en tel opnieuw. | bij de hint na de 1e foute poging (vraag: 9. 17 pruimen (keuzes 15 / 16 / 17); gekozen: 15) |
+| TELLEN-098 | Tellen | Je tikte op 16. Het scheelt maar een klein beetje. | na de 1e foute poging: Bliepo's eerste reactie (vraag: 9. 17 pruimen (keuzes 15 / 16 / 17); gekozen: 16) |
+| TELLEN-099 | Tellen | Probeer het nog eens. Tel de pruimen en tik op het getal. | bij de hint na de 1e foute poging (vraag: 9. 17 pruimen (keuzes 15 / 16 / 17); gekozen: 16) |
+| TELLEN-100 | Tellen | Je zit er dichtbij met 13. Je hebt ze nog niet allemaal geteld. | na de 1e foute poging: Bliepo's eerste reactie (vraag: 10. 14 peren (keuzes 13 / 14 / 15); gekozen: 13) |
+| TELLEN-101 | Tellen | Begin bovenaan en tel opnieuw. Wijs elke peer aan. | bij de hint na de 1e foute poging (vraag: 10. 14 peren (keuzes 13 / 14 / 15); gekozen: 13) |
+| TELLEN-102 | Tellen | Je tikte op 15. Zo veel liggen er niet. | na de 1e foute poging: Bliepo's eerste reactie (vraag: 10. 14 peren (keuzes 13 / 14 / 15); gekozen: 15) |
+| TELLEN-103 | Tellen | 12 appels? Je hebt ze nog niet allemaal geteld. | na de 1e foute poging: Bliepo's eerste reactie (vraag: 11. 13 appels (keuzes 12 / 13 / 14); gekozen: 12) |
+| TELLEN-104 | Tellen | Probeer het nog eens. Tel elke appel mee, ook de laatste. | bij de hint na de 1e foute poging (vraag: 11. 13 appels (keuzes 12 / 13 / 14); gekozen: 12) |
+| TELLEN-105 | Tellen | 14 appels? Ik denk dat je er te veel hebt geteld. | na de 1e foute poging: Bliepo's eerste reactie (vraag: 11. 13 appels (keuzes 12 / 13 / 14); gekozen: 14) |
+| TELLEN-106 | Tellen | Bijna! 17 is het net niet. | na de 1e foute poging: Bliepo's eerste reactie (vraag: 12. 16 pruimen (keuzes 16 / 17 / 18); gekozen: 17) |
+| TELLEN-107 | Tellen | Tel ze nog eens rustig. Wijs elke pruim aan en zeg het getal. | bij de hint na de 1e foute poging (vraag: 12. 16 pruimen (keuzes 16 / 17 / 18); gekozen: 17) |
+| TELLEN-108 | Tellen | Je koos 18. Dat zijn er iets te veel. | na de 1e foute poging: Bliepo's eerste reactie (vraag: 12. 16 pruimen (keuzes 16 / 17 / 18); gekozen: 18) |
+| TELLEN-109 | Tellen | Tel nog eens, rij voor rij. Elke pruim tel je maar 1 keer. | bij de hint na de 1e foute poging (vraag: 12. 16 pruimen (keuzes 16 / 17 / 18); gekozen: 18) |
+| TELLEN-110 | Tellen | Je koos 14. Je hebt ze nog niet allemaal geteld. | na de 1e foute poging: Bliepo's eerste reactie (vraag: 13. 15 peren (keuzes 14 / 15 / 16); gekozen: 14) |
+| TELLEN-111 | Tellen | 16? Dat zijn er iets te veel. | na de 1e foute poging: Bliepo's eerste reactie (vraag: 13. 15 peren (keuzes 14 / 15 / 16); gekozen: 16) |
+| TELLEN-112 | Tellen | Bijna! 16 is nog iets te weinig. | na de 1e foute poging: Bliepo's eerste reactie (vraag: 14. 17 appels (keuzes 16 / 17 / 18); gekozen: 16) |
+| TELLEN-113 | Tellen | Begin bovenaan en tel opnieuw. Wijs elke appel aan. | bij de hint na de 1e foute poging (vraag: 14. 17 appels (keuzes 16 / 17 / 18); gekozen: 16) |
+| TELLEN-114 | Tellen | Bijna! 18 is iets te veel. | na de 1e foute poging: Bliepo's eerste reactie (vraag: 14. 17 appels (keuzes 16 / 17 / 18); gekozen: 18) |
+| TELLEN-115 | Tellen | Begin bovenaan en tel rustig. Elke appel telt 1 keer mee. | bij de hint na de 1e foute poging (vraag: 14. 17 appels (keuzes 16 / 17 / 18); gekozen: 18) |
+| TELLEN-116 | Tellen | 9? Ik zie er nog meer. | na de 1e foute poging: Bliepo's eerste reactie (vraag: 15. 11 pruimen (keuzes 9 / 10 / 11); gekozen: 9) |
+| TELLEN-117 | Tellen | Je koos 10. Je zit er dichtbij. | na de 1e foute poging: Bliepo's eerste reactie (vraag: 15. 11 pruimen (keuzes 9 / 10 / 11); gekozen: 10) |
+| TELLEN-118 | Tellen | Je koos 10. Zoveel liggen er in de volle rijen. De laatste rij is niet vol. Die hoort er ook bij. | na de 2e foute poging: Bliepo legt uit (vraag: 1. 12 appels; gekozen: 10 (alleen-volle-rijen)) |
+| TELLEN-119 | Tellen | Je koos 11. Dat scheelt niet veel. Je hebt 1 appel overgeslagen. | na de 2e foute poging: Bliepo legt uit (vraag: 1. 12 appels; gekozen: 11 (te-weinig)) |
+| TELLEN-120 | Tellen | Bijna! 12 is het net niet. Je telde 1 peer te veel. | na de 2e foute poging: Bliepo legt uit (vraag: 2. 11 peren; gekozen: 12 (te-veel)) |
+| TELLEN-121 | Tellen | Weer iets te veel, zie ik. Elke peer krijgt 1 nummer. Dan tel je niets 2 keer. | 2e foute poging met dezelfde denkfout als de 1e: Bliepo zegt het anders (vraag: 2. 11 peren; gekozen: 12 (te-veel)) — komt 2 keer voor |
+| TELLEN-122 | Tellen | Bijna! 13 is iets te veel. Je telde een paar peren te veel. | na de 2e foute poging: Bliepo legt uit (vraag: 2. 11 peren; gekozen: 13 (te-veel)) |
+| TELLEN-123 | Tellen | 12? Ik zie er nog meer. Er ligt nog 1 pruim meer. | na de 2e foute poging: Bliepo legt uit (vraag: 3. 13 pruimen; gekozen: 12 (te-weinig)) |
+| TELLEN-124 | Tellen | Je zit er dichtbij, maar 14 is te veel. Je hebt 1 pruim 2 keer geteld. | na de 2e foute poging: Bliepo legt uit (vraag: 3. 13 pruimen; gekozen: 14 (te-veel)) |
+| TELLEN-125 | Tellen | Je tikte op 15. Het scheelt maar een klein beetje. Er ligt 1 appel minder. | na de 2e foute poging: Bliepo legt uit (vraag: 4. 14 appels; gekozen: 15 (te-veel)) |
+| TELLEN-126 | Tellen | Het zijn er weer iets te veel. Elke appel krijgt 1 nummer. Dan tel je niets 2 keer. | 2e foute poging met dezelfde denkfout als de 1e: Bliepo zegt het anders (vraag: 4. 14 appels; gekozen: 15 (te-veel)) |
+| TELLEN-127 | Tellen | Je tikte op 16. Zo veel liggen er niet. Er liggen een paar appels minder. | na de 2e foute poging: Bliepo legt uit (vraag: 4. 14 appels; gekozen: 16 (te-veel)) |
+| TELLEN-128 | Tellen | 11 peren? Je hebt ze nog niet allemaal geteld. Je hebt 1 peer niet geteld. | na de 2e foute poging: Bliepo legt uit (vraag: 5. 12 peren; gekozen: 11 (te-weinig)) |
+| TELLEN-129 | Tellen | 13 peren? Ik denk dat je er te veel hebt geteld. Je telde 1 peer te veel. | na de 2e foute poging: Bliepo legt uit (vraag: 5. 12 peren; gekozen: 13 (te-veel)) |
+| TELLEN-130 | Tellen | Je koos 13. Er liggen er nog meer. Er liggen nog een paar pruimen meer. | na de 2e foute poging: Bliepo legt uit (vraag: 6. 15 pruimen; gekozen: 13 (te-weinig)) |
+| TELLEN-131 | Tellen | Je koos 14. Dat scheelt niet veel. Er ligt nog 1 pruim meer. | na de 2e foute poging: Bliepo legt uit (vraag: 6. 15 pruimen; gekozen: 14 (te-weinig)) |
+| TELLEN-132 | Tellen | Je telde er weer te weinig. Elke pruim krijgt 1 nummer. Dan sla je er geen over. | 2e foute poging met dezelfde denkfout als de 1e: Bliepo zegt het anders (vraag: 6. 15 pruimen; gekozen: 14 (te-weinig)) |
+| TELLEN-133 | Tellen | Je koos 15. Zoveel liggen er in de volle rijen. De laatste rij is niet vol. Die hoort er ook bij. | na de 2e foute poging: Bliepo legt uit (vraag: 7. 16 appels; gekozen: 15 (alleen-volle-rijen)) |
+| TELLEN-134 | Tellen | 17? Dat zijn er iets te veel. Er ligt 1 appel minder. | na de 2e foute poging: Bliepo legt uit (vraag: 7. 16 appels; gekozen: 17 (te-veel)) |
+| TELLEN-135 | Tellen | 14? Dat is heel dichtbij. Je telde 1 peer te veel. | na de 2e foute poging: Bliepo legt uit (vraag: 8. 13 peren; gekozen: 14 (te-veel)) |
+| TELLEN-136 | Tellen | Bijna! 15 is iets te veel. Je telde een paar peren te veel. | na de 2e foute poging: Bliepo legt uit (vraag: 8. 13 peren; gekozen: 15 (te-veel)) |
+| TELLEN-137 | Tellen | Je hebt alleen de volle rijen geteld. Dat zijn er 15. De rij die niet vol is, telt ook mee. | na de 2e foute poging: Bliepo legt uit (vraag: 9. 17 pruimen; gekozen: 15 (alleen-volle-rijen)) |
+| TELLEN-138 | Tellen | Je tikte op 16. Het scheelt maar een klein beetje. Er ligt nog 1 pruim meer. | na de 2e foute poging: Bliepo legt uit (vraag: 9. 17 pruimen; gekozen: 16 (te-weinig)) |
+| TELLEN-139 | Tellen | Je zit er dichtbij met 13. Je hebt ze nog niet allemaal geteld. Je hebt 1 peer overgeslagen. | na de 2e foute poging: Bliepo legt uit (vraag: 10. 14 peren; gekozen: 13 (te-weinig)) |
+| TELLEN-140 | Tellen | Je tikte op 15. Zo veel liggen er niet. Er ligt 1 peer minder. | na de 2e foute poging: Bliepo legt uit (vraag: 10. 14 peren; gekozen: 15 (te-veel)) |
+| TELLEN-141 | Tellen | 12 appels? Je hebt ze nog niet allemaal geteld. Je hebt 1 appel niet geteld. | na de 2e foute poging: Bliepo legt uit (vraag: 11. 13 appels; gekozen: 12 (te-weinig)) |
+| TELLEN-142 | Tellen | 14 appels? Ik denk dat je er te veel hebt geteld. Je telde 1 appel te veel. | na de 2e foute poging: Bliepo legt uit (vraag: 11. 13 appels; gekozen: 14 (te-veel)) |
+| TELLEN-143 | Tellen | Bijna! 17 is het net niet. Je hebt 1 pruim 2 keer geteld. | na de 2e foute poging: Bliepo legt uit (vraag: 12. 16 pruimen; gekozen: 17 (te-veel)) |
+| TELLEN-144 | Tellen | Je telde er weer te veel. Elke pruim krijgt 1 nummer. Dan tel je niets 2 keer. | 2e foute poging met dezelfde denkfout als de 1e: Bliepo zegt het anders (vraag: 12. 16 pruimen; gekozen: 17 (te-veel)) |
+| TELLEN-145 | Tellen | Je koos 18. Dat zijn er iets te veel. Je hebt een paar pruimen 2 keer geteld. | na de 2e foute poging: Bliepo legt uit (vraag: 12. 16 pruimen; gekozen: 18 (te-veel)) |
+| TELLEN-146 | Tellen | Je koos 14. Je hebt ze nog niet allemaal geteld. Je hebt 1 peer overgeslagen. | na de 2e foute poging: Bliepo legt uit (vraag: 13. 15 peren; gekozen: 14 (te-weinig)) |
+| TELLEN-147 | Tellen | 16? Dat zijn er iets te veel. Er ligt 1 peer minder. | na de 2e foute poging: Bliepo legt uit (vraag: 13. 15 peren; gekozen: 16 (te-veel)) |
+| TELLEN-148 | Tellen | Bijna! 16 is nog iets te weinig. Je hebt 1 appel niet geteld. | na de 2e foute poging: Bliepo legt uit (vraag: 14. 17 appels; gekozen: 16 (te-weinig)) |
+| TELLEN-149 | Tellen | Bijna! 18 is iets te veel. Je telde 1 appel te veel. | na de 2e foute poging: Bliepo legt uit (vraag: 14. 17 appels; gekozen: 18 (te-veel)) |
+| TELLEN-150 | Tellen | 9? Ik zie er nog meer. Er liggen nog een paar pruimen meer. | na de 2e foute poging: Bliepo legt uit (vraag: 15. 11 pruimen; gekozen: 9 (te-weinig)) |
+| TELLEN-151 | Tellen | Je koos 10. Je zit er dichtbij. De rij die niet vol is, telt ook mee. | na de 2e foute poging: Bliepo legt uit (vraag: 15. 11 pruimen; gekozen: 10 (alleen-volle-rijen)) |
 
 ---
 
@@ -725,8 +732,8 @@ Gebruikt ook de gedeelde zinnen: LOF (na een goed antwoord (gewone lof; hooguit 
 | PLUSSOMMEN-042 | Plussommen | In deze les tel je lekkers uit de bakkerij bij elkaar op. Dat heet een plussom. | begin van de les (Bliepo opent) |
 | PLUSSOMMEN-043 | Plussommen | Klaar met kijken? Tik dan op de blauwe pijl. | vaste zin van de les (bron: pijlUitleg in ZIN) |
 | PLUSSOMMEN-044 | Plussommen | Tik op de blauwe pijl als je het nog eens wilt proberen. | vaste zin van de les (bron: pijlUitlegNaFout in ZIN) |
-| PLUSSOMMEN-045 | Plussommen | Welk kaartje hoort bij [a] + [b]? | vaste zin van de les (bron: disco in ZIN) |
-| PLUSSOMMEN-046 | Plussommen | Tik op het goede kaartje. | vaste zin van de les (bron: discoEerste in ZIN) |
+| PLUSSOMMEN-045 | Plussommen | Welk kaartje hoort bij [a] + [b]? | vaste zin van de les (bron: toonbank in ZIN) |
+| PLUSSOMMEN-046 | Plussommen | Tik op het goede kaartje. | vaste zin van de les (bron: toonbankEerste in ZIN) |
 | PLUSSOMMEN-047 | Plussommen | Welk antwoord hoort bij welke som? | vaste zin van de les (bron: verbind in ZIN) |
 | PLUSSOMMEN-048 | Plussommen | Tik op een som en dan op het antwoord. | vaste zin van de les (bron: verbind in ZIN) |
 | PLUSSOMMEN-049 | Plussommen | Verbind weer elke som met zijn antwoord. | vaste zin van de les (bron: verbindKort in ZIN) |
@@ -814,14 +821,14 @@ Gebruikt ook de gedeelde zinnen: LOF (na een goed antwoord (gewone lof; hooguit 
 | PLUSSOMMEN-131 | Plussommen | In 3 + 3 staat 2 keer de 3. | na de 1e foute poging: Bliepo's eerste reactie (vraag: 5. welke som? 3 koekjes en 7 erbij (7 − 3 = 4 / 3 + 7 = 10 / 3 + 3 = 6 / 7 + 7 = 14); gekozen: 3 + 3 = 6) |
 | PLUSSOMMEN-132 | Plussommen | Kijk naar de koekjes hier én daar. | bij de hint na de 1e foute poging (vraag: 5. welke som? 3 koekjes en 7 erbij (7 − 3 = 4 / 3 + 7 = 10 / 3 + 3 = 6 / 7 + 7 = 14); gekozen: 3 + 3 = 6) — komt 2 keer voor |
 | PLUSSOMMEN-133 | Plussommen | In 7 + 7 staat 2 keer de 7. | na de 1e foute poging: Bliepo's eerste reactie (vraag: 5. welke som? 3 koekjes en 7 erbij (7 − 3 = 4 / 3 + 7 = 10 / 3 + 3 = 6 / 7 + 7 = 14); gekozen: 7 + 7 = 14) |
-| PLUSSOMMEN-134 | Plussommen | 5 en 3 samen is meer dan 7. | na de 1e foute poging: Bliepo's eerste reactie (vraag: 6. disco 5 + 3 (kaartjes 9 / 7 / 8); gekozen: 7) |
-| PLUSSOMMEN-135 | Plussommen | Begin bij 5 en tel 3 verder. Sla er geen over. | bij de hint na de 1e foute poging (vraag: 6. disco 5 + 3 (kaartjes 9 / 7 / 8); gekozen: 7) |
-| PLUSSOMMEN-136 | Plussommen | 5 en 3 samen is minder dan 9. | na de 1e foute poging: Bliepo's eerste reactie (vraag: 6. disco 5 + 3 (kaartjes 9 / 7 / 8); gekozen: 9) |
-| PLUSSOMMEN-137 | Plussommen | Begin bij 5 en tel 3 verder, niet meer. | bij de hint na de 1e foute poging (vraag: 6. disco 5 + 3 (kaartjes 9 / 7 / 8); gekozen: 9) |
-| PLUSSOMMEN-138 | Plussommen | 6 en 4 samen is meer dan 8. | na de 1e foute poging: Bliepo's eerste reactie (vraag: 7. disco 6 + 4 (kaartjes 10 / 8 / 9); gekozen: 8) |
-| PLUSSOMMEN-139 | Plussommen | Tel verder vanaf 6: nog 4 erbij. Sla er geen over. | bij de hint na de 1e foute poging (vraag: 7. disco 6 + 4 (kaartjes 10 / 8 / 9); gekozen: 8) |
-| PLUSSOMMEN-140 | Plussommen | Je koos 9. Dat is het nog niet. | na de 1e foute poging: Bliepo's eerste reactie (vraag: 7. disco 6 + 4 (kaartjes 10 / 8 / 9); gekozen: 9) |
-| PLUSSOMMEN-141 | Plussommen | Tel verder vanaf 6: nog 4 erbij. | bij de hint na de 1e foute poging (vraag: 7. disco 6 + 4 (kaartjes 10 / 8 / 9); gekozen: 9) |
+| PLUSSOMMEN-134 | Plussommen | 5 en 3 samen is meer dan 7. | na de 1e foute poging: Bliepo's eerste reactie (vraag: 6. toonbank 5 + 3 (kaartjes 9 / 7 / 8); gekozen: 7) |
+| PLUSSOMMEN-135 | Plussommen | Begin bij 5 en tel 3 verder. Sla er geen over. | bij de hint na de 1e foute poging (vraag: 6. toonbank 5 + 3 (kaartjes 9 / 7 / 8); gekozen: 7) |
+| PLUSSOMMEN-136 | Plussommen | 5 en 3 samen is minder dan 9. | na de 1e foute poging: Bliepo's eerste reactie (vraag: 6. toonbank 5 + 3 (kaartjes 9 / 7 / 8); gekozen: 9) |
+| PLUSSOMMEN-137 | Plussommen | Begin bij 5 en tel 3 verder, niet meer. | bij de hint na de 1e foute poging (vraag: 6. toonbank 5 + 3 (kaartjes 9 / 7 / 8); gekozen: 9) |
+| PLUSSOMMEN-138 | Plussommen | 6 en 4 samen is meer dan 8. | na de 1e foute poging: Bliepo's eerste reactie (vraag: 7. toonbank 6 + 4 (kaartjes 10 / 8 / 9); gekozen: 8) |
+| PLUSSOMMEN-139 | Plussommen | Tel verder vanaf 6: nog 4 erbij. Sla er geen over. | bij de hint na de 1e foute poging (vraag: 7. toonbank 6 + 4 (kaartjes 10 / 8 / 9); gekozen: 8) |
+| PLUSSOMMEN-140 | Plussommen | Je koos 9. Dat is het nog niet. | na de 1e foute poging: Bliepo's eerste reactie (vraag: 7. toonbank 6 + 4 (kaartjes 10 / 8 / 9); gekozen: 9) |
+| PLUSSOMMEN-141 | Plussommen | Tel verder vanaf 6: nog 4 erbij. | bij de hint na de 1e foute poging (vraag: 7. toonbank 6 + 4 (kaartjes 10 / 8 / 9); gekozen: 9) |
 | PLUSSOMMEN-142 | Plussommen | Je verbond 3 + 4 met 9. 3 + 4 is minder dan 9. | na de 1e foute poging: Bliepo's eerste reactie (vraag: 8. verbinden 3 + 4, 5 + 3, 2 + 7 ↔ 9, 7, 8; gekozen: 3 + 4 → 9) |
 | PLUSSOMMEN-143 | Plussommen | Reken elke som uit en verbind ze opnieuw. | bij de hint na de 1e foute poging (vraag: 8. verbinden 3 + 4, 5 + 3, 2 + 7 ↔ 9, 7, 8; gekozen: 3 + 4 → 9) — komt 12 keer voor |
 | PLUSSOMMEN-144 | Plussommen | Je verbond 3 + 4 met 8. | na de 1e foute poging: Bliepo's eerste reactie (vraag: 8. verbinden 3 + 4, 5 + 3, 2 + 7 ↔ 9, 7, 8; gekozen: 3 + 4 → 8) |
@@ -851,8 +858,8 @@ Gebruikt ook de gedeelde zinnen: LOF (na een goed antwoord (gewone lof; hooguit 
 | PLUSSOMMEN-168 | Plussommen | In 4 + 4 staat 2 keer de 4. | na de 1e foute poging: Bliepo's eerste reactie (vraag: 12. welke som? 4 taartjes en 5 erbij (5 − 4 = 1 / 4 + 5 = 9 / 4 + 4 = 8 / 5 + 5 = 10); gekozen: 4 + 4 = 8) |
 | PLUSSOMMEN-169 | Plussommen | Kijk naar de taartjes hier én daar. | bij de hint na de 1e foute poging (vraag: 12. welke som? 4 taartjes en 5 erbij (5 − 4 = 1 / 4 + 5 = 9 / 4 + 4 = 8 / 5 + 5 = 10); gekozen: 4 + 4 = 8) — komt 2 keer voor |
 | PLUSSOMMEN-170 | Plussommen | In 5 + 5 staat 2 keer de 5. | na de 1e foute poging: Bliepo's eerste reactie (vraag: 12. welke som? 4 taartjes en 5 erbij (5 − 4 = 1 / 4 + 5 = 9 / 4 + 4 = 8 / 5 + 5 = 10); gekozen: 5 + 5 = 10) |
-| PLUSSOMMEN-171 | Plussommen | Tel verder vanaf 2: nog 6 erbij. Sla er geen over. | bij de hint na de 1e foute poging (vraag: 13. disco 2 + 6 (kaartjes 7 / 9 / 8); gekozen: 7) |
-| PLUSSOMMEN-172 | Plussommen | Tel verder vanaf 2: nog 6 erbij, niet meer. | bij de hint na de 1e foute poging (vraag: 13. disco 2 + 6 (kaartjes 7 / 9 / 8); gekozen: 9) |
+| PLUSSOMMEN-171 | Plussommen | Tel verder vanaf 2: nog 6 erbij. Sla er geen over. | bij de hint na de 1e foute poging (vraag: 13. toonbank 2 + 6 (kaartjes 7 / 9 / 8); gekozen: 7) |
+| PLUSSOMMEN-172 | Plussommen | Tel verder vanaf 2: nog 6 erbij, niet meer. | bij de hint na de 1e foute poging (vraag: 13. toonbank 2 + 6 (kaartjes 7 / 9 / 8); gekozen: 9) |
 | PLUSSOMMEN-173 | Plussommen | Je verbond 1 + 6 met 9. 1 + 6 is minder dan 9. | na de 1e foute poging: Bliepo's eerste reactie (vraag: 14. verbinden 1 + 6, 4 + 2, 5 + 4 ↔ 9, 7, 6; gekozen: 1 + 6 → 9) |
 | PLUSSOMMEN-174 | Plussommen | Je verbond 1 + 6 met 6. Maar 6 staat al in die som. | na de 1e foute poging: Bliepo's eerste reactie (vraag: 14. verbinden 1 + 6, 4 + 2, 5 + 4 ↔ 9, 7, 6; gekozen: 1 + 6 → 6) |
 | PLUSSOMMEN-175 | Plussommen | Je verbond 4 + 2 met 9. 4 + 2 is minder dan 9. | na de 1e foute poging: Bliepo's eerste reactie (vraag: 14. verbinden 1 + 6, 4 + 2, 5 + 4 ↔ 9, 7, 6; gekozen: 4 + 2 → 9) |
