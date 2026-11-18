@@ -1061,9 +1061,9 @@ function Lesscherm({
   const squlaMidden = nieuw && staand && les.synthesis.startsWith("Squla");
   /* Opt-in per les (proef geldmachine-1): zin en keuzes bovenaan in het midden van het speelvlak, niet in de kolom bij Bliepo. */
   const vraagBoven = nieuw && !!les.vraagBoven;
-  /* Vaste plek antwoorden (Sara, 18 nov 2026, BOUWREGELS 15.32): in ALLE gouden lessen staan de antwoordknoppen altijd rechts, onder Bliepo's zin. Geen tegels links, niet in het midden, niet bij de opdracht. */
+  /* Vaste plek antwoorden (Sara, 18 nov 2026, BOUWREGELS 15.32, niet te letterlijk): in gouden lessen staan gewone antwoordknoppen rechts, onder Bliepo's zin; de cijfertegels gaan dus niet meer naar links (`raster`). Zijn de antwoorden voorwerpen in het beeld (munten, kaartjes), dan blijven `midden` en `bijOpdracht` zoals ze waren. */
   const vastePlek = les.id.includes("gouden");
-  const opdrachtKnoppen = !vastePlek && vraagBoven && !!beeld.opdracht && b?.soort === "kies" && !!b.instel?.bijOpdracht;
+  const opdrachtKnoppen = vraagBoven && !!beeld.opdracht && b?.soort === "kies" && !!b.instel?.bijOpdracht;
   /* F11 (17 nov 2026, 15.31): staat de opdracht al in beeld (boven het vlak, of via opdrachtInVlak in het vlak zelf), dan toont Bliepo's tekstvak dezelfde zin niet nog een keer. */
   const zinSleutel = (t: string | null | undefined) => kaal(t ?? "").toLowerCase().replace(/[^a-z0-9\u00c0-\u024f]+/g, "");
   const spreektOpdracht = (vraagBoven || (nieuw && !!les.opdrachtInVlak)) && !!beeld.opdracht && beeld.zichtbaar > 0 &&
@@ -1098,7 +1098,7 @@ function Lesscherm({
   */
   const tegelsLinks = !vastePlek && synth && b?.soort === "kies" && !!b.instel?.raster;
   /* Herstel 7 november (groep C): opt-in per vraag, de antwoorden groot in het midden van het speelvlak. */
-  const keuzesMidden = !vastePlek && synth && !tegelsLinks && b?.soort === "kies" && typeof b.instel?.midden === "number" ? b.instel.midden : null;
+  const keuzesMidden = synth && !tegelsLinks && b?.soort === "kies" && typeof b.instel?.midden === "number" ? b.instel.midden : null;
   /*
     Gebaren bij het praten (23 oktober 2026, opdracht eigenaar): bij elke zin
     die Bliepo zegt een passend gebaar (vraag: open handen; uitleg: wijzen of
