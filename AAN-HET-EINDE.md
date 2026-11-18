@@ -43,3 +43,5 @@ Deze lijst wordt bijgehouden. Wat klaar is, krijgt een vinkje; niets verdwijnt z
 ## Toegevoegd 18 november 2026
 - **Eigen tegels in Magnific** (Sara): de blokjes (tegels) in Plussommen extra, Tellen extra e.d. lijken te veel op Synthesis. Maak eigen aantrekkelijke kinder-tegels in Magnific (Bliepo-stijl), eerst een proefvel laten zien. Raakt `optellen10-holo-tegels.tsx` (nu door de handje-helpers aangepast): pas doen als die klaar zijn.
 - **Vaste plek antwoordknoppen** (15.32): per gouden les met schermfoto's controleren dat álle antwoorden rechts onder Bliepo's zin staan; automatische controle (x in rechterkolom) toevoegen aan speelcontrole. Alleen Plussommen extra is bekeken.
+
+- **Snelheidsmeting (vloeiend):** Sara, 18 nov: pas doen als de hele Bliepo-website klaar is, niet eerder. Helpers draaien hem niet en melden hem niet meer.
