@@ -53,7 +53,10 @@ export const KRAAL = ding("kraal", "kraal", "kralen", "paars");
 export const RAKET = ding("raketje", "raketje", "raketjes", "rood", "elk");
 export const PLANEET = ding("planeet", "planeet", "planeten", "paars");
 export const UFO = ding("ufo", "ufo", "ufo's", "paars");
-export const SATELLIET = ding("satelliet", "satelliet", "satellieten", "groen");
+/* Keuring 19 nov 2026: "satelliet" is te moeilijk voor groep 3. Het plaatje (public/voorwerpen/satelliet.png, een groen
+   ding met blauwe panelen in de ruimte) heet nu overal "ruimteschip" (in tekst en zin; het plaatje en de kleur blijven).
+   Oud: ding("satelliet", "satelliet", "satellieten", "groen"). WIJZIGINGEN-ZINNEN-REKENMIX34.md, WEGGEHAALD.md. */
+export const SATELLIET = ding("satelliet", "ruimteschip", "ruimteschepen", "groen", "elk");
 export const KNOOP = ding("knoop", "knoop", "knopen", "blauw");
 
 const als1 = (d: Ding) => d as unknown as Ding1;
@@ -106,7 +109,8 @@ export const VRAGEN: Vraag4[] = [
   V(8, "tel", RAKET, 12, [12, 11, 10], { rijen: [5, 5, 2] }),
   V(9, "samen", KNIKKER, 4, [4, 5, 3], { delen: [2, 2] }),
   V(10, "samen", BAL, 7, [7, 6, 8], { delen: [4, 3] }),
-  V(11, "druk", SATELLIET, 6, [6, 7, 8], { zaad: 71, extra: [{ ding: PLANEET, n: 3 }, { ding: STER, n: 3 }] }),
+  /* Het id blijft "satellieten" (voortgang en controles kennen de vraag onder die naam); alleen het woord is veranderd. */
+  V(11, "druk", SATELLIET, 6, [6, 7, 8], { zaad: 71, extra: [{ ding: PLANEET, n: 3 }, { ding: STER, n: 3 }], id: "vraag11-6-satellieten" }),
   V(12, "tel", KRAAL, 4, [3, 5, 4], { zaad: 73 }),
   V(13, "tel", STER, 9, [9, 8, 10], { rijen: [5, 4] }),
   V(14, "samen", APPEL, 8, [9, 8, 7], { delen: [4, 4] }),
@@ -438,7 +442,7 @@ export const RM4 = {
   /** Na de 2e keer: samen tellen. */
   samenHelp: ["Kom, we tellen ze samen.", "Weet je wat? We tellen ze samen.", "Geeft niks. We tellen ze samen.", "Ik help je even. We tellen ze samen.", "Laten we ze samen tellen en kijken."],
   samenTik: (d: Ding) => [`Tik op ${d.elk} ${d.een}. Ik tel mee.`, `Tik ${d.elk} ${d.een} aan. Ik zeg het getal.`, `Tik op alle ${d.naam}. Ik tel hardop mee.`],
-  samenHand: (d: Ding) => [`Tik op een ${d.een} zonder nummer.`, `Zoek een ${d.een} zonder nummer en tik erop.`, `Welke ${d.een} heeft nog geen nummer? Tik erop.`],
+  samenHand: (d: Ding) => [`Tik op een ${d.een} zonder nummer.`, `Zoek een ${d.een} zonder nummer en tik erop.`, `${d.elk === "elk" ? "Welk" : "Welke"} ${d.een} heeft nog geen nummer? Tik erop.`],
   /** Het laatste getal is het aantal; het getal staat er 1 keer (was: "8. Samen telden we 8 raketjes."). */
   samenKlaar: (n: number, d: Ding) => [`En ${gk(n, d)}! Zoveel ${d.naam} zijn het.`, `En ${gk(n, d)}! Nu hebben we ze samen allemaal geteld.`, `En de laatste is ${gk(n, d)}. Zoveel ${d.naam} zijn het.`],
   /** Vangnet: 20 s geen tik, dan telt Bliepo de rest zelf (geen "Ja", geen "samen"; begint met "Kijk,"). */

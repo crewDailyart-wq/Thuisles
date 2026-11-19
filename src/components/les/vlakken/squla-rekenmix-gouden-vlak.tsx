@@ -30,7 +30,7 @@ export { KaartRekenmix as KaartRekenmixGouden } from "./squla-rekenmix-vlak";
 export type RmgDing = { beeld: string; x: number; y: number; m: number; boven: number };
 /** `reserveer`: zoveel punten bovenaan vrijhouden (Rekenmix 3 splitsen: daar staat het splitsbeen). */
 export type RmgOpgave = { id: string; dingen: RmgDing[]; reserveer?: number };
-/** Het splitsbeen (Rekenmix 3 splitsen): het totaal, het deel dat je ziet (in de kleur van het ding) en een vraagteken. */
+/** Het splitsbeen (Rekenmix 3 splitsen): het totaal en het deel dat je ziet (allebei in de kleur van het ding, 19 nov) en een vraagteken. */
 export type Splitsbeen = { tot: number; deel: number; kleur: string };
 
 export type GoudenRekenmixProps = {
@@ -333,7 +333,9 @@ export function GoudenRekenmixVlak({ opgave, nummers = [], kleur = "wit", tikbaa
             <line x1="190" y1="92" x2="270" y2="178" />
           </g>
           {[
-            { x: 190, y: 74, r: 42, t: String(splitsbeen.tot), c: "#ffffff" },
+            /* Keuring 19 nov 2026 (2.1/2.2): het totaal telt dezelfde dingen (alle ballen), dus de kleur van die dingen,
+               net als in Bliepo's zin ("Er zijn {7} ballen."). Was wit (WEGGEHAALD.md). Het vraagteken is geen getal: wit. */
+            { x: 190, y: 74, r: 42, t: String(splitsbeen.tot), c: LABELKLEUR[splitsbeen.kleur] ?? "#ffffff" },
             { x: 110, y: 200, r: 38, t: String(splitsbeen.deel), c: LABELKLEUR[splitsbeen.kleur] ?? "#ffffff" },
             { x: 270, y: 200, r: 38, t: "?", c: "#ffffff" },
           ].map((k, i) => (

@@ -7,7 +7,7 @@
  *   de oude voor kinderen.
  *
  * Inhoud (15.22 punt 1): die van squla-rekenmix-mix4-1 (Squla level 1). Dezelfde 15 vragen in dezelfde volgorde, dezelfde
- * dingen (raketjes, knopen, planeten, ballen, appels, ufo's, aardbeien, knikkers, satellieten, kralen, sterren), dezelfde
+ * dingen (raketjes, knopen, planeten, ballen, appels, ufo's, aardbeien, knikkers, satellieten (sinds 19 nov "ruimteschepen" genoemd), kralen, sterren), dezelfde
  * aantallen en dezelfde 3 keuzes: 8 keer gewoon tellen, 3 keer tellen in een druk plaatje (alleen 1 soort telt mee) en
  * 4 keer 2 rijen samen tellen (in de oude les: 2 groepjes met een gekleurde ring; "groepje" staat op de niet-lijst).
  *

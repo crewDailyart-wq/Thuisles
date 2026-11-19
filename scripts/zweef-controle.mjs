@@ -55,11 +55,34 @@ export function beoordeel(m, label = "") {
       f.push(`${wat(d)}: staat naast alle ondergronden (x ${d.x.toFixed(0)})`);
       continue;
     }
+    /* Keuring 19 nov 2026: ook de UITEINDEN moeten op de ondergrond liggen (het lange broodje stak rechts buiten het
+       kleed). Een kleed in perspectief (`schuin`) is boven smaller dan onder; gemeten op de middellijn van het voorwerp. */
+    if (d.b && d.h && grond[0].h) {
+      const g = grond[0];
+      const ym = d.voet - d.h / 2;
+      const fr = Math.max(0, Math.min(1, (ym - g.y) / g.h));
+      const inspring = g.schuin ? Math.max(0, g.schuin[0] - g.schuin[1] * fr) * (g.x1 - g.x0) : 0;
+      const links = g.x0 + inspring;
+      const rechts = g.x1 - inspring;
+      if (d.x - d.b / 2 < links - TOLERANTIE) f.push(`${wat(d)}: steekt links ${(links - (d.x - d.b / 2)).toFixed(0)} punten buiten de ondergrond`);
+      if (d.x + d.b / 2 > rechts + TOLERANTIE) f.push(`${wat(d)}: steekt rechts ${(d.x + d.b / 2 - rechts).toFixed(0)} punten buiten de ondergrond`);
+    }
     const goed = grond.some((g) => d.voet >= g.top - TOLERANTIE && d.voet <= g.bottom + TOLERANTIE);
     if (goed) continue;
     const dichtst = grond.map((g) => (d.voet < g.top ? g.top - d.voet : d.voet - g.bottom)).sort((a, b) => a - b)[0];
     const boven = grond.every((g) => d.voet < g.top);
     f.push(`${wat(d)}: ${boven ? "zweeft" : "staat buiten het oppervlak"} (${dichtst.toFixed(1)} punten van de ondergrond, voet y ${d.voet.toFixed(0)})`);
+  }
+  /* De startstreep (bij "onder") ligt met boven- en onderkant op de ondergrond (keuring 19 nov 2026). */
+  if (m.streep && m.gronden && m.gronden.length) {
+    const g = m.gronden[0];
+    for (const [y, waar] of [[m.streep.top, "bovenkant"], [m.streep.bottom, "onderkant"]]) {
+      const fr = g.h ? Math.max(0, Math.min(1, (y - g.y) / g.h)) : 0;
+      const inspring = g.schuin ? Math.max(0, g.schuin[0] - g.schuin[1] * fr) * (g.x1 - g.x0) : 0;
+      /* De streep mag ook op de houten rand van de tafel liggen: getoetst aan het plaatje zelf (3% van boven en onder eraf). */
+      const buiten = y < g.y + 0.03 * g.h || y > g.y + 0.97 * g.h || m.streep.x < g.x0 + inspring || m.streep.x > g.x1 - inspring;
+      if (buiten) f.push(`${label} ${m.beeld ?? ""} startstreep: ${waar} ligt niet op de ondergrond`.trim());
+    }
   }
   return f;
 }

@@ -106,3 +106,11 @@ Rekenmix 4 is tellen, net als Color Count van Synthesis; dezelfde zinnen als bij
 - **De vaste rijtjes** (lof, bevestiging, eindzinnen, groet, overgang): niet aangeraakt (`squla-klok-gouden-zinnen.ts`, alle gouden lessen).
 - **De oude les `squla-rekenmix.tsx`, het vlak en de plaatjes:** niet aangeraakt.
 - **Stem:** niets gemaakt (schatting in KEUZES-REKENMIX34.md).
+
+## Keuring 19 november 2026
+
+| Les | Oud | Nieuw | Waarom |
+|---|---|---|---|
+| 4 | Hoeveel satellieten zie je? De planeten en de sterren tellen niet mee. (en alle zinnen bij vraag 11: "satelliet", "elke satelliet") | Hoeveel ruimteschepen zie je? De planeten en de sterren tellen niet mee. ("ruimteschip", "elk ruimteschip") | "satelliet" is te moeilijk voor groep 3; "ruimteschip" past bij het plaatje (een groen ruimteding met blauwe panelen) en heet overal hetzelfde, in tekst en zin. Plaatje, kleur, aantal en vraag-id blijven. |
+| 4 | Welke raketje heeft nog geen nummer? Tik erop. | Welk raketje heeft nog geen nummer? Tik erop. | bij een het-woord hoort "Welk" (gold ook voor "ruimteschip"); bij de-woorden blijft "Welke" |
+| 3 | (tekening) het totaal in het splitsbeen wit, in de zin rood | het totaal ook in de tekening in de kleur van de ballen | kleurregel 2.1/2.2: zin en tekening gelijk. Geen zin veranderd. |

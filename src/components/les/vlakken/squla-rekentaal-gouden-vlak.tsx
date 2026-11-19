@@ -194,6 +194,14 @@ const BAND: Record<string, [number, number]> = {
   "rt-tafel-rij": [0.02, 0.72], "rt-kleed-rij": [0.04, 0.96], "rt-tafel-vlak": [0.14, 0.88], "rt-kleed-vlak": [0.04, 0.96],
 };
 const VOET: Record<string, number> = { "rt-tafel-rij": 0.45, "rt-kleed-rij": 0.6 };
+/** Het kleed bij "onder" (broodjes): links, bovenkant en breedte, zo dat de streep en het langste broodje erop liggen (keuring 19 nov). */
+const KLEED_ONDER = { x: 16, top: 151, b: 830 };
+/**
+ * Een ondergrond in perspectief (boven smaller dan onder): de linkerrand ligt op (a - b * f) van de breedte, de rechterrand
+ * op 1 - (a - b * f), met f = hoe ver omlaag in het plaatje (0 = boven, 1 = onder). Gemeten in rt-kleed-vlak.png (19 nov).
+ * Alleen voor de zweef-controle: die kijkt zo of de uiteinden van een voorwerp en de streep echt OP het kleed liggen.
+ */
+const SCHUIN: Record<string, [number, number]> = { "rt-kleed-vlak": [0.108, 0.114] };
 const ysOnder = (n: number) => (n === 2 ? [330, 470] : HEEL ? [285, 400, 515] : [270, 400, 530]);
 
 /** Waar een voorwerp staat: `x` = midden, `y` = onderkant, `b` en `h` = de maat. Bij de weegschaal: na het kantelen. */
@@ -544,6 +552,7 @@ function maakScene(Phaser: PhaserModule, rustig: boolean, plaatjesAan = false) {
             ...(["rt-tafel-rij", "rt-kleed-rij"] as const).flatMap((g) => [800, 700, 620].map((b) => () => void this.heelGrondPlaatje(g, b))),
             () => void this.heelGrondPlaatje("rt-tafel-vlak", 740),
             () => void this.heelGrondPlaatje("rt-kleed-vlak", 740),
+            () => void this.heelGrondPlaatje("rt-kleed-vlak", KLEED_ONDER.b),
             ...dingen.map((d) => () => void this.plaatje(d)),
           ]
         : [
@@ -633,7 +642,9 @@ function maakScene(Phaser: PhaserModule, rustig: boolean, plaatjesAan = false) {
 
     /* ---------- de plaatjes-versie: alles HEEL uit Magnific ---------- */
 
-    gronden: { naam: string; x0: number; x1: number; top: number; bottom: number }[] = [];
+    gronden: { naam: string; x0: number; x1: number; top: number; bottom: number; y: number; h: number; schuin: [number, number] | null }[] = [];
+    /** De startstreep bij "onder" (voor de zweef-controle): midden en boven- en onderkant. */
+    streepMaat: { x: number; top: number; bottom: number } | null = null;
     /** Weegschaal: de schalen (x, de stand van de bovenkant van de schaal bij recht en aan het eind) en het voorwerp erop. */
     schalen: { x: number; recht: number; eind: number; doos: Box | null }[] = [];
     weegBeelden: { recht: Img; scheef: Img } | null = null;
@@ -664,7 +675,7 @@ function maakScene(Phaser: PhaserModule, rustig: boolean, plaatjesAan = false) {
       this.achter.push(o);
       this.tover(o);
       const [b0, b1] = BAND[naam];
-      this.gronden.push({ naam, x0: x, x1: x + b, top: y + b0 * h, bottom: y + b1 * h });
+      this.gronden.push({ naam, x0: x, x1: x + b, top: y + b0 * h, bottom: y + b1 * h, y, h, schuin: SCHUIN[naam] ?? null });
       return h;
     }
 
@@ -693,9 +704,14 @@ function maakScene(Phaser: PhaserModule, rustig: boolean, plaatjesAan = false) {
       else if (p.indeling === "onder") {
         const ys = ysOnder(n);
         const naam = tafel ? "rt-tafel-vlak" : "rt-kleed-vlak";
-        this.heelGrond(naam, 60, ys[0] - (tafel ? 80 : 70), 740);
+        /* Het kleed is in perspectief getekend (boven smaller dan onder). Keuring 19 november 2026: het lange broodje
+           stak rechts buiten het kleed en de startstreep stond links naast het kleed. Daarom is het kleed bij "onder"
+           breder (830 i.p.v. 740) en hoger gezet, zodat de bovenste rij en de hele streep echt OP het kleed liggen;
+           de streep is iets korter (35 i.p.v. 45 punten boven en onder de rijen). De tafel blijft zoals hij was. */
+        if (tafel) this.heelGrond(naam, 60, ys[0] - 80, 740);
+        else this.heelGrond(naam, KLEED_ONDER.x, KLEED_ONDER.top, KLEED_ONDER.b);
         /* De startstreep (heel plaatje): de slierten en broodjes beginnen er allemaal bij. */
-        const sh = ys[ys.length - 1] - ys[0] + 90;
+        const sh = ys[ys.length - 1] - ys[0] + (tafel ? 90 : 70);
         const sb = sh * (SB_RATIO);
         const sl = `rtp-streep-${Math.round(sh)}`;
         const img = this.bron("rt-streep")!;
@@ -704,6 +720,7 @@ function maakScene(Phaser: PhaserModule, rustig: boolean, plaatjesAan = false) {
           c.drawImage(img, 0, 0, sb, sh);
         });
         const streep = this.plaats(this.gloedPlaatje(sl, "rt-streep"), 110, (ys[0] + ys[ys.length - 1]) / 2).setDepth(1);
+        this.streepMaat = { x: 110, top: (ys[0] + ys[ys.length - 1]) / 2 - sh / 2, bottom: (ys[0] + ys[ys.length - 1]) / 2 + sh / 2 };
         this.achter.push(streep);
         this.tover(streep);
       } else if (p.indeling === "weegschaal") {
@@ -790,8 +807,9 @@ function maakScene(Phaser: PhaserModule, rustig: boolean, plaatjesAan = false) {
         indeling: this.p?.indeling ?? null,
         heel: this.heel,
         weegP: this.weegP,
-        dingen: [...this.dozen.entries()].map(([id, doos]) => ({ id, soort: sleutel(id)?.soort ?? "", x: doos.x, voet: doos.y, b: sleutel(id) ? maten(sleutel(id)!).b : 0 })),
+        dingen: [...this.dozen.entries()].map(([id, doos]) => ({ id, soort: sleutel(id)?.soort ?? "", x: doos.x, voet: doos.y, b: sleutel(id) ? maten(sleutel(id)!).b : 0, h: sleutel(id) ? maten(sleutel(id)!).h : 0 })),
         gronden: this.gronden,
+        streep: this.streepMaat,
         schalen: this.schalen.map((s) => ({ x: s.x, bovenkant: W_T + s.recht + (s.eind - s.recht) * this.weegP, doos: s.doos ? [...this.dozen.entries()].find(([, d]) => d === s.doos)?.[0] ?? null : null })),
       };
     }
@@ -850,6 +868,7 @@ function maakScene(Phaser: PhaserModule, rustig: boolean, plaatjesAan = false) {
       this.dozen.clear();
       this.balk = null;
       this.gronden = [];
+      this.streepMaat = null;
       this.schalen = [];
       this.weegBeelden = null;
       if (!p.indeling) return;

@@ -192,6 +192,12 @@ Alleen de tekst, passend gemaakt voor groep 3. Geen audio, beeld of code.
 
 Niet overgenomen: "ah, ik snap wat je denkt" (een vaste opening die Bliepo niet zegt, BLIEPO-KARAKTER §9), "geen zorgen, laten we dit samen uitzoeken" (de zijroute bestaat bij ons niet; wel "Geeft niks. We tellen samen."), "je hebt mooie optelkunsten laten zien" ("optelkunsten" is geen woord voor groep 3; wel "Knap, hoor! Je kunt al goed optellen tot 10.") en de lofwoorden "nice, yep, alright" (lof komt uit het vaste rijtje van alle lessen).
 
+## Keuring 19 november 2026
+
+| Oud | Nieuw | Waarom |
+|---|---|---|
+| Welk antwoord hoort bij elke som? Tik ze weer aan. | Tik weer op een som en dan op het antwoord dat erbij hoort. | "Tik ze weer aan" was vaag: het kind wist niet wát het moest aantikken (keuring, BOUWREGELS 15.36). De andere variant ("Zoek weer bij elke som het goede antwoord.") blijft. |
+
 ## Niet gedaan, met reden
 
 - **De verhaaltjes en de vragen zelf afwisselen** ("Hoeveel taartjes zijn het samen?"): niet gedaan. Dezelfde soort vraag heet overal hetzelfde (BOUWREGELS 3.11) en de inhoud van de Squla-les blijft gelijk (15.22).

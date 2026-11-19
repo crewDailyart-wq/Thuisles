@@ -178,7 +178,9 @@ export const ZIN = {
   toonbankEerste: "Tik op het goede kaartje.",
   /** Verbinden (Squla): de eerste keer de hele opdracht, daarna korter (geleerd bij Splitsen: niet steeds de lange zin). */
   verbind: ["Welk antwoord hoort bij welke som?", "Tik op een som en dan op het antwoord."],
-  verbindKort: ["Zoek weer bij elke som het goede antwoord.", "Welk antwoord hoort bij elke som? Tik ze weer aan."],
+  /* Keuring 19 nov 2026 (15.36): "Welk antwoord hoort bij elke som? Tik ze weer aan." was vaag (wat tik je aan?); nu zegt
+     de zin wat het kind aantikt (WIJZIGINGEN-ZINNEN-PLUSSOMMEN.md, WEGGEHAALD.md). */
+  verbindKort: ["Zoek weer bij elke som het goede antwoord.", "Tik weer op een som en dan op het antwoord dat erbij hoort."],
   /** Hulphandje bij het verbinden (opdracht, 15.19): wijst naar een som zonder lijn, nooit naar een antwoord. */
   verbindHand: ["Tik op een som. Tik dan op het antwoord dat erbij hoort.", "Kies eerst een som. Tik daarna op het antwoord dat erbij hoort."],
   verbindHandGekozen: (x: number, y: number) => [`Reken ${g(x)} + ${g(y)} uit en tik op het antwoord.`, `Hoeveel is ${g(x)} + ${g(y)}? Tik op dat antwoord.`],

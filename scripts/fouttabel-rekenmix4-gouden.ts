@@ -34,8 +34,8 @@ const vorm = maakVorm(WISSEL_4);
   const blok = bron.slice(bron.indexOf('id: "squla-rekenmix-mix4-1"'), bron.indexOf("const mix4_2"));
   const vragenBlok = blok.slice(blok.indexOf("vragen: ["));
   const regels = [...vragenBlok.matchAll(/\{ t: "tel", v: (\w+), gr: (.*?), keuzes: \[([\d, ]+)\], soort: "(\w+)"/g)];
-  const naarDing: Record<string, string> = { APPEL: "appels", BAL: "ballen", KNIKKER: "knikkers", STER: "sterren", AARDBEI: "aardbeien", KRAAL: "kralen", RAKET: "raketjes", PLANEET: "planeten", UFO: "ufo's", SATELLIET: "satellieten", KNOOP: "knopen" };
-  const beeldNaam: Record<string, string> = { raketje: "raketjes", ster: "sterren", planeet: "planeten", ufo: "ufo's", satelliet: "satellieten", bal: "ballen", appel: "appels", knikker: "knikkers" };
+  const naarDing: Record<string, string> = { APPEL: "appels", BAL: "ballen", KNIKKER: "knikkers", STER: "sterren", AARDBEI: "aardbeien", KRAAL: "kralen", RAKET: "raketjes", PLANEET: "planeten", UFO: "ufo's", SATELLIET: "ruimteschepen" /* oud woord "satellieten" (keuring 19 nov: te moeilijk), zelfde plaatje */, KNOOP: "knopen" };
+  const beeldNaam: Record<string, string> = { raketje: "raketjes", ster: "sterren", planeet: "planeten", ufo: "ufo's", satelliet: "ruimteschepen", bal: "ballen", appel: "appels", knikker: "knikkers" };
   const oud = regels.map((m) => {
     const gr = m[2];
     const soort = m[4];

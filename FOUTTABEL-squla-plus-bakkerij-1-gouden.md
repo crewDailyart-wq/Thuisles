@@ -172,7 +172,7 @@ De les kiest uit elk rijtje steeds een andere zin dan de vorige keer.
 | Situatie | Varianten |
 |---|---|
 | Begin van de les | Vandaag tellen we lekkers uit de bakkerij bij elkaar op. Dat heet een plussom. / We gaan samen lekkers uit de bakkerij optellen. Dat heet een plussom. |
-| Verbinden: de opdracht (2e keer en later) | Zoek weer bij elke som het goede antwoord. / Welk antwoord hoort bij elke som? Tik ze weer aan. |
+| Verbinden: de opdracht (2e keer en later) | Zoek weer bij elke som het goede antwoord. / Tik weer op een som en dan op het antwoord dat erbij hoort. |
 | Verbinden: het hulphandje | Tik op een som. Tik dan op het antwoord dat erbij hoort. / Kies eerst een som. Tik daarna op het antwoord dat erbij hoort. |
 | Verbinden: het hulphandje bij een gekozen som | Reken 3 + 4 uit en tik op het antwoord. / Hoeveel is 3 + 4? Tik op dat antwoord. |
 | 2e fout: we gaan samen tellen | Kom, we tellen samen. / Weet je wat? We tellen samen. / Geeft niks. We tellen samen. / Ik help je even. We tellen samen. / Laten we samen tellen en kijken. |
