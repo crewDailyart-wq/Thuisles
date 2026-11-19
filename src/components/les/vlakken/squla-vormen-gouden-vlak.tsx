@@ -13,7 +13,11 @@
  *     puzzelstukje dat vastklikt wordt gemeld (alleen met die optie; de oude lessen geven hem niet mee);
  *   - `kies`: de keuzes om aan te tikken. Een tik zet een VINKJE op de keuze (nog een tik haalt het weg; een andere keuze
  *     neemt het over). Meldt `{ soort: "vormKies", id }`;
- *   - `hulphand`: het HULPHANDJE (15.19): komt vanzelf, is nooit een knop, alleen bij opdrachten.
+ *   - `hulphand`: het HULPHANDJE (15.19): komt vanzelf, is nooit een knop, alleen bij opdrachten;
+ *   - `keuzes` (19 nov 2026, besluit Sara; BOUWREGELS 15.32): de keuzes staan RECHTS, ONDER Bliepo's zin, op een vaste plek
+ *     (niet meer linksonder in het beeld). Ze worden hier in HTML getekend (elk 1 keer op een klein canvas, met dezelfde
+ *     tekening als in het vlak) en blijven staan zolang de vraag in beeld is; `kies` maakt ze tikbaar. Het rode rondje om
+ *     een keuze (`licht` met het id van de keuze, 7.8) komt hier ook.
  * Het hele vlak staat iets kleiner, vanaf de linkerkant (vaste zones, 15.30; keuring Meer-minder): zo blijft alles links
  * van het vaste tekstvak. Alles erbovenop in HTML met CSS: geen Phaser-werk elk beeld (HARDE REGEL 7). Maten in punten
  * van het vlak (980 × 720).
@@ -21,7 +25,7 @@
 
 import { useEffect, useRef } from "react";
 import type { Vlakbasis } from "../soort";
-import { SqulaVormenVlak, type VormenProps } from "./squla-vormen-vlak";
+import { SqulaVormenVlak, maatLos, tekenLos, type Deel, type VormenProps } from "./squla-vormen-vlak";
 import { zegKeuze } from "@/lib/stem";
 import s from "./squla-vormen-gouden.module.css";
 import { HulphandDom } from "../holo/hulphand-dom";
@@ -29,33 +33,41 @@ import { HulphandDom } from "../holo/hulphand-dom";
 export type Punt = { x: number; y: number };
 export type Hand = { plek: Punt; sleutel: string };
 /** Een keuze om aan te tikken: waar het vak staat (midden, breedte, hoogte) en wat er hardop bij mag (alleen een woord). */
-export type Keuzeplek = { id: string; x: number; y: number; b: number; h: number; aria: string };
+export type Keuzeplek = { id: string; x: number; y: number; b: number; h: number; aria: string; deel?: Deel };
 
 export type GoudenVormenProps = VormenProps & {
   kies?: { gekozen: string | null; tikbaar: string[]; plekken: Keuzeplek[] } | null;
   hulphand?: Hand | null;
+  /** De keuzes rechts onder Bliepo's zin (getekend in HTML; zie boven). */
+  keuzes?: Keuzeplek[] | null;
 };
 
 /** Hoeveel kleiner het hele vlak staat, vanaf de linkerkant (zie boven). */
 export const KLEINER = 0.84;
 
-export function GoudenVormenVlak({ kies = null, hulphand = null, ...rest }: GoudenVormenProps & Vlakbasis) {
+export function GoudenVormenVlak({ kies = null, hulphand = null, keuzes = null, ...rest }: GoudenVormenProps & Vlakbasis) {
   const { meld } = rest;
   const klok = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
   useEffect(() => () => clearTimeout(klok.current), []);
+  /* De keuzes in HTML: altijd zichtbaar zolang de vraag er is; zonder `keuzes` de oude manier (onzichtbare knoppen). */
+  const plekken = keuzes ?? kies?.plekken ?? [];
+  const keuzeIds = new Set((keuzes ?? []).map((k) => k.id));
+  /* Het rondje om een keuze tekent dit vlak zelf; het oude vlak krijgt alleen de rest. */
+  const licht = (rest.licht ?? []).filter((x) => !keuzeIds.has(x));
   return (
     <div className={s.wortel} style={{ transform: `scale(${KLEINER})`, transformOrigin: "0 50%" }} data-vormen-gouden="">
-      <SqulaVormenVlak {...rest} gouden gekozen={[]} goedIds={[]} uit={[]} fout={0} />
-      {kies &&
-        kies.plekken.map((k, i) => {
-          const aan = kies.gekozen === k.id;
-          const mag = kies.tikbaar.includes(k.id);
+      <SqulaVormenVlak {...rest} licht={licht} gouden gekozen={[]} goedIds={[]} uit={[]} fout={0} />
+      {(kies || keuzes) &&
+        plekken.map((k, i) => {
+          const aan = kies?.gekozen === k.id;
+          const mag = !!kies?.tikbaar.includes(k.id);
           return (
             <button
               key={`k-${i}-${k.id}`}
               type="button"
-              className={s.kaart}
+              className={`${s.kaart} ${k.deel ? s.tegel : ""}`}
               style={{ left: k.x - k.b / 2, top: k.y - k.h / 2, width: k.b, height: k.h }}
+              data-keuze-rechts={k.deel ? "" : undefined}
               data-ding={k.id}
               /* Een gekozen keuze heeft geen data-plek: dan tikt de speelcontrole de volgende aan (geleerd bij Getallenlijn). */
               data-plek={mag && !aan ? "keuze" : undefined}
@@ -74,7 +86,12 @@ export function GoudenVormenVlak({ kies = null, hulphand = null, ...rest }: Goud
                 if (mag) meld({ soort: "vormKies", id: k.id });
               }}
             >
+              {k.deel && <Tekening deel={k.deel} b={k.b} h={k.h} />}
               {aan && <Vinkje />}
+              {k.deel && rest.licht?.includes(k.id) && (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img src="/rondje/rondje-rood-2.png" alt="" className={s.rondje} aria-hidden data-rondje="" />
+              )}
             </button>
           );
         })}
@@ -94,6 +111,30 @@ export function GoudenVormenVlak({ kies = null, hulphand = null, ...rest }: Goud
       )}
     </div>
   );
+}
+
+/** Een keuze 1 keer getekend op een klein canvas (zelfde tekening als in het vlak; geen Phaser-werk per beeld). */
+function Tekening({ deel, b, h }: { deel: Deel; b: number; h: number }) {
+  const doek = useRef<HTMLCanvasElement>(null);
+  const sleutel = JSON.stringify(deel);
+  useEffect(() => {
+    const c = doek.current?.getContext("2d");
+    if (!c || !doek.current) return;
+    const f = 2;
+    doek.current.width = Math.round(b * f);
+    doek.current.height = Math.round(h * f);
+    c.setTransform(f, 0, 0, f, 0, 0);
+    c.clearRect(0, 0, b, h);
+    const m = maatLos(deel);
+    c.translate((b - m.b) / 2, (h - m.h) / 2);
+    try {
+      tekenLos(c, deel);
+    } catch {
+      /* een plaatje dat (nog) niet geladen is: dan blijft het vak leeg */
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [sleutel, b, h]);
+  return <canvas ref={doek} className={s.tekening} style={{ width: b, height: h }} aria-hidden />;
 }
 
 function Vinkje() {

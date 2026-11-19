@@ -167,6 +167,17 @@ function teken(c: CanvasRenderingContext2D, d: Deel) {
   }
 }
 
+/**
+ * Opt-in (gouden les Patronen, 19 nov 2026): een deel (kraal, vorm, ding) tekenen op een eigen klein canvas, voor de
+ * keuzes die rechts onder Bliepo's zin staan (BOUWREGELS 15.32). Zelfde tekening als in het vlak; de oude les gebruikt dit niet.
+ */
+export function tekenLos(c: CanvasRenderingContext2D, d: Deel): { b: number; h: number } {
+  const m = maatVan(d);
+  teken(c, d);
+  return m;
+}
+export const maatLos = (d: Deel) => maatVan(d);
+
 /* ---------- de puzzel: waar alles ligt ---------- */
 
 const BORD = { x: 480, y: 360, S: 390 };

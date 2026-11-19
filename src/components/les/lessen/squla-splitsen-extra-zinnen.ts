@@ -45,20 +45,25 @@ export const KEUZE_GROTER = 10;
 /** "{3} + {2} = {5}" met elk getal in zijn eigen kleur. */
 export const som = (a: number, b: number, t: number) => `{${a}} + {${b}} = {${t}}`;
 export const paar = (a: number, b: number) => `{${a}} en {${b}}`;
+/** "{1} stip" of "{3} stippen" (enkelvoud bij 1). */
+const stip = (n: number) => `{${n}} ${n === 1 ? "stip" : "stippen"}`;
 
 /* ---------- vaste zinnen van het verloop (eigen woorden) ---------- */
 
 export const ZIN = {
   /** Stap 7: de machine (het draaiboek heeft geen startvraag bij deze stappen). De eerste zin in 2 varianten. */
   begin: ["Vandaag werken we met een splitsmachine.", "We gaan samen werken met een splitsmachine."],
-  beginKijk: "Boven staat het totaal. Onder staan de 2 delen.",
-  a1: `Tik op de plus bij het linkerdeel, tot er {4} stippen staan.`,
+  /* 19 nov 2026 (keuring 15.36): "totaal" uitgelegd als "alles samen" (was: "Boven staat het totaal. Onder staan de 2 delen."). */
+  beginKijk: "Bovenaan komt het totaal: alle stippen samen. Onderaan staan de 2 delen.",
+  /* 19 nov 2026: "linkerdeel" is moeilijk voor groep 3 (was: "Tik op de plus bij het linkerdeel, tot er {4} stippen staan."). */
+  a1: `Tik op de plus bij het deel links, tot er {4} stippen in staan.`,
   a1Klaar: "Mooi, er staan {4} stippen.",
   a2: "Tik nu {1:wit} keer op de min bij dat deel.",
   a2Hand: "Tik op de min.",
   /* Het getal 3 staat er 1 keer (was: "… een 3. Kijk, bovenaan staat ook 3."). */
   a2Klaar: [`Je hebt van {4} een {3} gemaakt.`, "Kijk, bovenaan staat hetzelfde getal. Daar staat het totaal."],
-  a3: `Het rechterdeel is nog leeg. Zet er {2} stippen in met de plus.`,
+  /* 19 nov 2026: was "Het rechterdeel is nog leeg. Zet er {2} stippen in met de plus." */
+  a3: `Het andere deel, rechts, is nog leeg. Zet er met de plus {2} stippen in.`,
   /** Het hulphandje bij een plus (stap 7 en het samen voordoen), in 3 varianten. */
   tikPlus: ["Tik op de plus.", "Tik maar op de plus.", "Zoek de plus en tik erop."],
   /** Het hulphandje bij een splitsopdracht, in 3 varianten. */
@@ -68,7 +73,8 @@ export const ZIN = {
   totaalUitleg: "Het totaal is alles samen. Dat zijn de stippen in de cirkel bovenaan.",
   totaalTel: (n: number) => `Het zijn er ${`{${n}}`}. Dat is het totaal.`,
   /** Stap 9: de som. */
-  vraagSom: ["Je hebt 2 delen en 1 totaal.", "Welke som heb je gemaakt?"],
+  /* 19 nov 2026: was "Je hebt 2 delen en 1 totaal." (te moeilijk voor groep 3). */
+  vraagSom: ["De 2 delen samen maken het totaal.", "Welke som heb je gemaakt?"],
   somGoed: `Je hebt de som ${som(A, B_DEEL, TOTAAL5)} gemaakt.`,
   somUitleg: `De delen zijn {3} en {2}. Die schrijf je als {3} + {2}.`,
   somSamen: ["Kom, we rekenen het samen uit."],
@@ -77,7 +83,8 @@ export const ZIN = {
   tussenGoed: `Ja, ${som(A, B_DEEL, TOTAAL5)}. Dat is de som die je hebt gemaakt.`,
   tussenFout: (x: string) => (x === "32" ? `Je zette de cijfers naast elkaar: {32}. Maar we tellen ze op: {3} + {2} = {5}.` : `Je koos ${`{${x}}`}. Dat is dichtbij. {3} en dan nog {2} erbij is {5}.`),
   /** Stap 10: een andere manier voor 5. */
-  anders: [`{5} kun je splitsen in ${paar(A, B_DEEL)}.`, "Kun jij het ook op een andere manier? Verander de stippen onder. Het totaal blijft hetzelfde."],
+  /* 19 nov 2026 (keuring 15.36): "Verander de stippen onder." was geen goede zin; nu zegt Bliepo wat het kind doet en waar. */
+  anders: [`{5} kun je splitsen in ${paar(A, B_DEEL)}.`, "Kun jij het ook op een andere manier? Tik op de plus en de min bij de 2 delen onderaan. Het totaal blijft hetzelfde."],
   omgedraaid5: "Je hebt de delen omgedraaid. Dat mag ook!",
   /** Stap 11: een nieuw totaal. */
   nieuwTotaal: ["Ik zet een nieuw totaal klaar.", "Welk getal is het?"],
@@ -95,7 +102,8 @@ export const ZIN = {
   goedSplits: (a: number, b: number, t: number) => [`Je hebt {${t}} gesplitst in {${a}} en {${b}}.`, `{${a}} en {${b}} zijn samen {${t}}.`, `Dat klopt: {${t}} is {${a}} en {${b}}.`],
   alGevonden: (a: number, b: number, t: number) => [`Zo heb je {${t}} al gesplitst, in ${paar(a, b)}. Zoek een andere manier.`, `${paar(a, b)} hadden we al. Zoek een andere manier om {${t}} te splitsen.`],
   omgedraaid: ["Je hebt de delen omgedraaid. Het zijn dezelfde getallen. Zoek een andere manier.", "Dit zijn dezelfde getallen, alleen omgedraaid. Zoek een andere manier."],
-  samenZet: (k: number) => [`Ik zet het linkerdeel op {${k}}. Zoek jij het andere deel.`, `Het linkerdeel zet ik op {${k}}. Jij zoekt het andere deel.`, `Kijk, links staat {${k}}. Zoek jij het andere deel?`],
+  /* 19 nov 2026: zonder "linkerdeel" (was: "Ik zet het linkerdeel op 3. Zoek jij het andere deel." / "Het linkerdeel zet ik op 3. Jij zoekt het andere deel." / "Kijk, links staat 3. Zoek jij het andere deel?"). */
+  samenZet: (k: number) => [`Ik zet ${stip(k)} in het deel links. Zoek jij het andere deel?`, `In het deel links zet ik ${stip(k)}. Maak jij het andere deel?`, `Kijk, links staan nu ${stip(k)}. Zoek jij het andere deel?`].map((z) => (k === 1 ? z.replace("links staan nu", "links staat nu") : z)),
   samenKlaar: (k: number, t: number) => [`Dat is het: {${t}} is {${k}} en {${t - k}}.`, `Gevonden: {${t}} is {${k}} en {${t - k}}.`, `Samen is het gelukt: {${t}} is {${k}} en {${t - k}}.`],
   samenZelf: (k: number, t: number) => [`Kijk, ik zoek het andere deel. {${t}} is {${k}} en {${t - k}}.`, `Kijk, ik maak het andere deel. {${t}} is {${k}} en {${t - k}}.`],
   /** Stap 15: kiezen. */
@@ -137,7 +145,7 @@ const metV = (basis: Omit<Fout, "eerste" | "hint" | "uitleg" | "weer">, nr: numb
 const SCHERM = "vraag en knoppen even weg; Bliepo's scherm 1,5 s rood; met de hint komen de knoppen meteen terug (geen pijl)";
 
 const UITLEG_TOTAAL = [ZIN.totaalUitleg, "In de cirkel bovenaan staan alle stippen samen. Dat is het totaal."];
-const UITLEG_SOM = [ZIN.somUitleg, "Onder in de machine staan {3} en {2}. Die tel je op in de som."];
+const UITLEG_SOM = [ZIN.somUitleg, "Onderaan staan {3} en {2}. Die tel je op in de som."];
 const UITLEG_NIEUW = [ZIN.nieuwUitleg, "Elke stip in de cirkel bovenaan telt {1:wit} keer mee."];
 
 /** Stap 7: wat staat er in het totaal? Keuzes 3, 2 en 5. Draaiboek §3 B.2: een deel genoemd in plaats van het totaal. */
@@ -161,7 +169,7 @@ export function somFout(x: string): FoutV {
   if (x === "4 + 2 = 6")
     return metV({ code: "andere-getallen-gekozen", soort: "andere-getallen-gekozen", denkfout: "koos een som met getallen die niet in de machine staan", scherm: SCHERM }, 0, {
       eerste: ["In die som staat een {4}. Dat deel staat niet in de machine.", "Die som begint met {4}. Zo'n deel staat niet in de machine.", "Je koos de som met {4}. Dat getal staat niet in de machine."],
-      hint: ["Kijk naar de 2 delen onder in de machine. Welke som past daarbij?", "Welke 2 delen staan er onder in de machine? Kies de som met die delen."],
+      hint: ["Kijk naar de 2 delen onderaan. Welke som past daarbij?", "Welke 2 delen staan er onderaan? Kies de som met die delen."],
       uitleg: UITLEG_SOM,
       weerEerste: ["Je koos weer een som met getallen die er niet staan.", "Weer een som met een getal dat er niet staat.", "Die getallen staan weer niet in de machine."],
       weerUitleg: UITLEG_SOM,
@@ -174,7 +182,7 @@ export function somFout(x: string): FoutV {
       weerEerste: ["Het totaal zit weer in de som als deel.", "Weer telt het totaal mee als deel.", "Je koos weer de som met het totaal erin."],
       weerUitleg: UITLEG_SOM,
     });
-  return OND_FOUT("Kijk naar de 2 delen onder in de machine.", ZIN.somUitleg);
+  return OND_FOUT("Kijk naar de 2 delen onderaan.", ZIN.somUitleg);
 }
 export const foutenSom = (): Record<string, FoutV> => Object.fromEntries(SOMKEUZES.filter((k) => k !== SOMKEUZES[0]).map((k) => [k, somFout(k)]));
 
@@ -211,7 +219,7 @@ export function splitsFout(a: number, b: number, t: number, nr = 0): FoutV {
   if (a === 0 || b === 0) {
     const uitleg = [`Allebei de delen krijgen stippen. Samen zijn ze {${t}}.`, `Elk deel heeft minstens {1:wit} stip. Samen maken ze {${t}}.`, `De 2 delen hebben allebei stippen. Samen zijn het er {${t}}.`];
     return metV({ code: "een-deel-leeg", soort: "een-deel-leeg", denkfout: "liet een deel leeg (of 0)", scherm }, nr, {
-      eerste: ["{1:wit} van je delen is nog leeg.", "Je liet een deel leeg.", "Een cirkel onder heeft nog geen stippen."],
+      eerste: ["{1:wit} van je delen is nog leeg.", "Je liet een deel leeg.", "Een cirkel onderaan heeft nog geen stippen."],
       hint: [`Zet in allebei de delen stippen. Samen moeten het er {${t}} zijn.`, `Allebei de delen hebben stippen nodig. Samen is het {${t}}.`, `Geef elk deel stippen. Samen moeten het {${t}} stippen zijn.`],
       uitleg,
       weerEerste: ["Een deel is weer leeg.", "Je liet weer een deel leeg.", "Er is weer een cirkel zonder stippen."],

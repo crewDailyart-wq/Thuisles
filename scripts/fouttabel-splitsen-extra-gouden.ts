@@ -90,7 +90,7 @@ const VERLOOP: [string, string[], number][] = [
   ["Zin met de som na lof", SPLITSREACTIE(3, 4, 7).zinnen, 5],
   ["Al gevonden (telt niet als mis)", ZIN.alGevonden(3, 4, 7), 2],
   ["Omgedraaid bij 7, 8 en 10 (telt niet als mis)", ZIN.omgedraaid, 2],
-  ["Samen: Bliepo zet het linkerdeel", ZIN.samenZet(3), 3],
+  ["Samen: Bliepo zet het deel links", ZIN.samenZet(3), 3],
   ["Samen: klaar", ZIN.samenKlaar(3, 7), 3],
   ["Samen: Bliepo zoekt het andere deel zelf", ZIN.samenZelf(3, 7), 2],
   ["Slot", ZIN.slot, 2],

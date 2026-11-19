@@ -165,3 +165,14 @@ Niet overgenomen: "hm, niet helemaal" en "een interessant antwoord" (vaste openi
 - **Een aanmoediging met de naam van het kind bij een keuze die niet goed is:** niet gedaan (BOUWREGELS 3.17).
 - **De startvraag weghalen:** niet gedaan. Het draaiboek Getallenlijn heeft een startvraag; die blijft (alleen de zin is veranderd).
 - **De oude les `squla-getallenlijn.tsx` en de andere getallenlijn-lessen:** niet aangeraakt (harde regel 8 en de afspraak: alleen deze les).
+
+## Herstel 19 november 2026 (keuring F16, 15.37: het begin)
+
+Geen nieuwe woorden. De groet ("Hoi Testkind! Fijn dat je er bent.") en de startvraag waren 2 alinea's: soms stond de groet 3 seconden alleen wit in beeld, met Ja en Nee al tikbaar en de vraag nog gedimd. Nu zijn groet en startvraag 1 alinea: ze komen samen in beeld en Bliepo zegt ze in 1 keer.
+
+Ook (19 november 2026, dezelfde regel als bij Vormen: geen los "En" aan het begin van een vraag, 15.36):
+
+| Oud | Nieuw |
+|---|---|
+| En wat staat er bij 14? | Wat staat er nu bij 14? |
+| En welk getal ligt het dichtst bij 10? | Welk getal ligt nu het dichtst bij 10? |

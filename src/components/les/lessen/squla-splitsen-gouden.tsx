@@ -361,6 +361,9 @@ function hoopPlek(spec: S1Spec, i: number): Punt {
   return { x: t.x + (col - (inRij - 1) / 2) * stap, y: t.y + rij * stap * 0.96 };
 }
 
+/** Het dak van het huisje met dingen is zoveel keer hoger dan gewoon (apex van y 93 naar y 20 in het vlak van 980 × 720). */
+const DAK_HOOG = 1.355;
+
 /** Het huisje met dingen (vraag 1–9, en het voorbeeld van de uitleg). `la` / `lb` = het getal onder het vak ("?" = nog open). */
 function huisOpbouw(v: HuisVraag) {
   const { tot, deel, vw, zak } = v;
@@ -372,7 +375,9 @@ function huisOpbouw(v: HuisVraag) {
   const beeld = (o: { la?: string; lb?: string; top?: string } = {}): Beeld => ({
     id,
     delen: [
-      { s: "huisje", id: "huis", x: HX, y: HY, b: HB, top: o.top ?? "", links: "", rechts: "" },
+      /* Een hoger dak (19 nov 2026, keuring): de bovenste pionnen en ballen staken door de dakrand. DAK_HOOG maakt de
+         zolder hoger; het hoopje ligt nu helemaal binnen het dak (zie tray hieronder). */
+      { s: "huisje", id: "huis", x: HX, y: HY, b: HB, top: o.top ?? "", links: "", rechts: "", dakHoog: DAK_HOOG },
       /* De getallen onder de vakken in de kleur van hun vak (2.1); als hex, want het splitsvlak zet deze kleur zo op de
          tekst (met "paars" werd het getal wit, zoals in de oude les; zie KEUZES-VOOR-SARA.md Ronde 21). */
       { s: "tekst", id: "la", t: o.la ?? String(deel), x: kx[0], y: 596, grootte: 60, kleur: KLEUR[KA] },
@@ -382,7 +387,9 @@ function huisOpbouw(v: HuisVraag) {
   });
   /** Klaar: het andere deel onder het vak en het totaal in het dak (draaiboek stap 8: het totaal staat boven). */
   const klaar = () => beeld({ lb: String(rest), top: String(tot) });
-  const dia = tot <= 5 ? 84 : 66;
+  /* Bij 2 rijen iets kleiner en dichter bij elkaar (was dia 66, stap 75, y 192): zo blijven de buitenste dingen van de
+     bovenste rij binnen de schuine dakrand. 1 rij (5 of minder) blijft zoals hij was. */
+  const dia = tot <= 5 ? 84 : 62;
   const zones: S1Zone[] = [
     { id: "a", x: kx[0], y: 424, b: 300, h: 226, kl: KA, per: 4, dia: 68 },
     { id: "b", x: kx[1], y: 424, b: 300, h: 226, kl: KB, per: 4, dia: 68 },
@@ -392,7 +399,7 @@ function huisOpbouw(v: HuisVraag) {
       soort: "dingen" as const,
       vw,
       n: tot,
-      tray: { x: HX, y: tot <= 5 ? 248 : 192, per: 5, dia },
+      tray: tot <= 5 ? { x: HX, y: 248, per: 5, dia } : { x: HX, y: 196, per: 5, dia, stap: 68 },
       zones,
       oplossing: o.oplossing ?? [deel, rest],
       fout: o.fout ?? (deel === rest ? [tot, 0] : [rest, deel]),
@@ -1271,7 +1278,9 @@ const gouden: Lesdraaiboek = {
     zetTestAntwoord("Nee");
     haak({ soort: "kies", opties: ["Ja", "Nee"], goed: "Nee", poging: 1, vraag: "start" });
     const pStart = l.kies(["Ja", "Nee"], { direct: true, weetniet: false });
-    void zeg(l, NAAM_GROET, `${variant("begin", ZIN.begin)} ${ZIN.start}`).catch(() => {});
+    /* Groet en vraag in 1 alinea (19 nov 2026, keuring F16/15.37 bij Getallenlijn en Klok; hier dezelfde opbouw): nooit alleen
+       de groet wit in beeld terwijl Ja en Nee al tikbaar zijn en de vraag nog gedimd staat. */
+    void zeg(l, `${NAAM_GROET} ${variant("begin", ZIN.begin)} ${ZIN.start}`).catch(() => {});
     const start = await pStart;
     haak(null);
     log(l, "tik", { x: start });

@@ -127,3 +127,14 @@ Synthesis heeft geen les over vormen of patronen (KOPPELING.md §13). Alleen alg
 - **De paar-zin noemt de kleur van het goede antwoord** ("Blauw? Daarvoor komen eerst 2 rode kralen." bij vraag 4, waar rood goed is): niet veranderd. Zo deed de les het al (de keuring vond het goed); er blijven 2 keuzes over. Zie KEUZES-VORMEN.md.
 - **Een aanmoediging met de naam van het kind bij een keuze die niet goed is:** niet gedaan (BOUWREGELS 3.17).
 - **De oude les `squla-vormen.tsx` en de andere vormen-lessen:** niet aangeraakt (harde regel 8 en de afspraak: alleen deze les).
+
+## Herstel 19 november 2026 (keuring 15.36: geen los "En" aan het begin)
+
+De 2e vraag van dezelfde soort direct erna kreeg "En … nu …". Een zin die met "En" begint klinkt raar als Bliepo er niets voor zei. Nu een gewone vraag die op zichzelf klopt; de schoolterm blijft (kraal, lege plek, pijl, vorm). De fouttabel-controle (`scripts/fouttabel-vormen-gouden.ts`) kent de nieuwe zinnen.
+
+| Oud | Nieuw |
+|---|---|
+| En welke kraal komt er nu? | Welke kraal is de volgende? |
+| En welke kraal hoort nu op de lege plek? | Welke kraal past op de lege plek? |
+| En wat hoort nu bij de pijl? | Wat komt er bij de pijl? |
+| En welke vorm komt er nu? | Welke vorm is de volgende? |

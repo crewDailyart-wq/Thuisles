@@ -296,8 +296,8 @@ export const ZIN = {
 
   /**
    * De vraag van de oude les; dezelfde soort vraag = dezelfde schooltermen (3.11). Niet 2 keer na elkaar precies
-   * dezelfde zin (F7): volgt een vraag op een vraag van dezelfde soort, dan klinkt hij net anders ("nu", "ook deze",
-   * "En …"), zoals een juf dat doet.
+   * dezelfde zin (F7): volgt een vraag op een vraag van dezelfde soort, dan klinkt hij net anders ("nu", "ook deze"),
+   * zoals een juf dat doet (geen los "En" aan het begin, 19 nov 2026).
    */
   vraag: (v: Vraag): string[] => {
     if (v.vraagzin) return v.vraagzin;
@@ -306,8 +306,10 @@ export const ZIN = {
     if (v.soort === "natien") return [`Het raketje vliegt verder dan de ${w(10)}.`, "Welk getal komt daarna?"];
     if (v.soort === "meer") return [...v.meer!.verhaal, `Wat is meer: ${ster(v.meer!.a)} of ${ster(v.meer!.b)}?`];
     if (v.soort === "orden") return [vervolg(v) ? "Zet ook deze getallen op volgorde." : "Zet de getallen op volgorde.", "Van klein naar groot."];
-    if (v.soort === "wie") return [`${vervolg(v) ? "En wat" : "Wat"} staat er bij ${w(v.n!)}?`, "Tik erop."];
-    if (v.soort === "dichtst") return [`${vervolg(v) ? "En welk" : "Welk"} getal ligt het dichtst bij ${w(v.n!)}?`];
+    /* 19 nov 2026 (keuring Vormen, 15.36; geldt voor alle lessen): geen los "En" aan het begin van een vraag. Was: "En wat
+       staat er bij …?" en "En welk getal ligt het dichtst bij …?". */
+    if (v.soort === "wie") return [`${vervolg(v) ? "Wat staat er nu" : "Wat staat er"} bij ${w(v.n!)}?`, "Tik erop."];
+    if (v.soort === "dichtst") return [`${vervolg(v) ? "Welk getal ligt nu" : "Welk getal ligt"} het dichtst bij ${w(v.n!)}?`];
     return [vervolg(v) ? "Bij welk getal staat het raketje nu ongeveer?" : "Bij welk getal staat het raketje ongeveer?"];
   },
   /** Op volgorde, de eerste keer: hoe het werkt (3.15: 1 keer per les uitleggen). */

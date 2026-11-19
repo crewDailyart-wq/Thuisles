@@ -293,12 +293,16 @@ const H = Hoofd;
 
 /* ---------- vaste zinnen van het verloop (laag 1 van de gouden lessen; eigen woorden, in varianten) ---------- */
 
-/** De vraagzinnen van de oude les; de 2e vraag van dezelfde soort achter elkaar krijgt "En … nu …" (3.11: de schoolterm blijft). */
+/**
+ * De vraagzinnen van de oude les; de 2e vraag van dezelfde soort achter elkaar krijgt een andere zin (3.11: de schoolterm
+ * blijft). 19 nov 2026 (keuring 15.36): zonder het losse "En" aan het begin; de zin klopt nu op zichzelf. Was: "En welke
+ * kraal komt er nu?", "En welke kraal hoort nu op de lege plek?", "En wat hoort nu bij de pijl?", "En welke vorm komt er nu?".
+ */
 const NOG_EEN: Record<string, string> = {
-  "Welke kraal komt nu?": "En welke kraal komt er nu?",
-  "Welke kraal hoort op de lege plek?": "En welke kraal hoort nu op de lege plek?",
-  "Wat hoort bij de pijl?": "En wat hoort nu bij de pijl?",
-  "Welke vorm komt nu?": "En welke vorm komt er nu?",
+  "Welke kraal komt nu?": "Welke kraal is de volgende?",
+  "Welke kraal hoort op de lege plek?": "Welke kraal past op de lege plek?",
+  "Wat hoort bij de pijl?": "Wat komt er bij de pijl?",
+  "Welke vorm komt nu?": "Welke vorm is de volgende?",
 };
 function basisVraag(v: Keuzevraag): string {
   if (v.wat === "ding") return "Wat hoort bij de pijl?";
@@ -307,7 +311,7 @@ function basisVraag(v: Keuzevraag): string {
   if (v.vorm === "nu") return "Welke kraal komt nu?";
   return `Welke kraal komt na de ${kwb(v.rij[v.plek - 1] as Kleur)} kraal?`;
 }
-/** De vraagzin van deze vraag: die van de oude les; staat dezelfde vraag er net al, dan om en om met "En … nu …". */
+/** De vraagzin van deze vraag: die van de oude les; staat dezelfde vraag er net al, dan om en om met de andere zin uit NOG_EEN. */
 export function vraagZin(v: Keuzevraag): string {
   const basis = basisVraag(v);
   let k = 0;

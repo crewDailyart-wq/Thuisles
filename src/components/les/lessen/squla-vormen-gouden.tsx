@@ -37,7 +37,7 @@
 
 import type { Lesdraaiboek, Lesgids } from "../soort";
 import { KaartPatronen, type Beeld, type Deel, type Ketting, type VormenProps } from "../vlakken/squla-vormen-vlak";
-import { GoudenVormenVlak, type GoudenVormenProps, type Keuzeplek, type Punt } from "../vlakken/squla-vormen-gouden-vlak";
+import { GoudenVormenVlak, KLEINER, type GoudenVormenProps, type Keuzeplek, type Punt } from "../vlakken/squla-vormen-gouden-vlak";
 import type { Kleur } from "../vlakken/squla-vormen-tekenen";
 import { zetTestAntwoord } from "./squla-hulp";
 import { speelLesgeluid } from "@/lib/lesgeluiden";
@@ -139,25 +139,38 @@ function vormenRij(v: Keuzevraag): Deel[] {
   delen.push({ s: "pijl", id: "pijl", x: rijX(n, n - 1, tussen), y: RIJ_Y, lang: 74 });
   return delen;
 }
-/** Het beeld van een keuzevraag: de rij en de 3 keuzes in een zacht vak (op een willekeurige plek, 1.23). */
+/**
+ * Waar de keuzes staan: RECHTS, ONDER Bliepo's zin (besluit Sara 19 nov 2026; BOUWREGELS 15.32), op een vaste plek
+ * onderin zijn tekstvak (het lesvlak van 1280 × 720: tekstvak x 880–1272, y 112–468; Lesscherm / opdracht-nieuw.css).
+ * Omgerekend naar punten van dit vlak, dat iets kleiner staat vanaf links (KLEINER, oorsprong 0, 360).
+ */
+/* Onderkant 418: net boven het knopje "Nog eens horen" en de verder-pijl onderin het tekstvak (gemeten 19 nov 2026). */
+const KOLOM = { x: 1076, onder: 418 };
+function rechtsOnder(n: number, i: number): { x: number; y: number; maat: number } {
+  const T = n <= 3 ? 96 : 80;
+  const tussen = 14;
+  const sx = KOLOM.x + (i - (n - 1) / 2) * (T + tussen);
+  const sy = KOLOM.onder - T / 2;
+  return { x: sx / KLEINER, y: 360 + (sy - 360) / KLEINER, maat: T / KLEINER };
+}
+
+/** Het beeld van een keuzevraag: de rij in het vlak, de keuzes rechts onder Bliepo's zin (op een willekeurige volgorde, 1.23). */
 function keuzeBeeld(v: Keuzevraag, volgorde: string[]): { beeld: Beeld; plekken: Keuzeplek[] } {
   const n = namen(v.wat, v.kleur);
   const plekken: Keuzeplek[] = volgorde.map((id, i) => {
-    const b = v.wat === "kraal" ? 120 : 150;
-    return { id, x: keuzeX(volgorde.length, i), y: KEUZE_Y, b, h: b, aria: n.kort(id) };
-  });
-  const keuzeDelen = plekken.flatMap((p): Deel[] => {
-    const tek: Deel =
+    const p = rechtsOnder(volgorde.length, i);
+    const b = p.maat;
+    /* Dezelfde tekening als vroeger in het vlak (kraal 44 in een vak van 120, ding en vorm 120 in een vak van 150). */
+    const deel: Deel =
       v.wat === "kraal"
-        ? { s: "kraal", id: `kz-${p.id}`, groep: p.id, x: p.x, y: p.y, r: 44, kleur: p.id as Kleur }
+        ? { s: "kraal", id: `kz-${id}`, x: 0, y: 0, r: b * (44 / 120), kleur: id as Kleur }
         : v.wat === "ding"
-          ? { s: "vw", id: `kz-${p.id}`, groep: p.id, naam: p.id, x: p.x, y: p.y, maat: 120 }
-          : { s: "vorm", id: `kz-${p.id}`, groep: p.id, x: p.x, y: p.y, maat: 120, vorm: p.id as never, kleur: v.kleur![p.id] };
-    /* Het zachte vak achter de keuze (oude vlak, `vak`); tikken gaat via de knoppen van het gouden vlak. */
-    return [tek, { s: "tik", id: `vak-${p.id}`, x: p.x, y: p.y, b: p.b, h: p.h, aria: p.aria, vak: true }];
+          ? { s: "vw", id: `kz-${id}`, naam: id, x: 0, y: 0, maat: b * 0.8 }
+          : { s: "vorm", id: `kz-${id}`, x: 0, y: 0, maat: b * 0.8, vorm: id as never, kleur: v.kleur![id] };
+    return { id, x: p.x, y: p.y, b, h: b, aria: n.kort(id), deel };
   });
   const rij = v.wat === "kraal" ? kralenRij(v.rij) : v.wat === "ding" ? dingenRij(v.rij, v.plek) : vormenRij(v);
-  return { beeld: { id: `${v.id}-${Math.random().toString(36).slice(2, 7)}`, delen: [...rij, ...keuzeDelen] }, plekken };
+  return { beeld: { id: `${v.id}-${Math.random().toString(36).slice(2, 7)}`, delen: rij }, plekken };
 }
 
 /** Voor de eigen test (vaste zone, 15.30): de rechterrand van alles wat het vlak tekent, in punten van het vlak. */
@@ -208,7 +221,7 @@ type Staat = {
 };
 const STAAT = new WeakMap<Lesgids, Staat>();
 
-const LEEG_V: Partial<GoudenVormenProps> = { beeld: null, licht: [], actief: false, ketting: null, puzzel: null, kies: null, hulphand: null };
+const LEEG_V: Partial<GoudenVormenProps> = { beeld: null, licht: [], actief: false, ketting: null, puzzel: null, kies: null, hulphand: null, keuzes: null };
 
 const st = (l: Lesgids): Staat => {
   let s = STAAT.get(l);
@@ -537,7 +550,7 @@ async function keuzeVraag(l: Lesgids, v: Keuzevraag, eersteVraag: boolean): Prom
   const id = v.id;
   void l.zeg().catch(() => {});
   const { beeld, plekken } = keuzeBeeld(v, schud(v.keuzes));
-  nieuwBeeld(l, { beeld });
+  nieuwBeeld(l, { beeld, keuzes: plekken });
   speelLesgeluid("verschijn");
   await l.wacht(150);
   const fouten = foutenVan(v);

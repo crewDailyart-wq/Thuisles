@@ -93,3 +93,14 @@ Elke fout die Sara vindt komt hier, met de regel die erbij hoort (BOUWREGELS.md 
 - Regel: BOUWREGELS 15.37. Elke stap waarin het kind iets moet doen heeft een duidelijke vraag of opdracht, ook na een kijk-stap; het kind weet altijd wát en wáár.
 - Opgelost: (1) wacht de les op de eerste tik, dan staat er "Tik op het scherm. Dan begint Bliepo." (alle 21 gouden lessen); (2) Rekenmix 2: de eerste vraag zonder het woord "vinkje" ("Tik op de goede boterham."); (3) Meten: de vraag blijft staan terwijl Bliepo de kaartjes voorleest; (4) na de hint komt de vraag terug waar de hint zelf geen vraag of opdracht is (Rekenmix 2 en 3).
 - Controle: `scripts/vraag-aanwezig-controle.mjs` (in `node scripts/speelcontrole.mjs`, melding F16; los: het begin van elke gouden les zonder tik).
+- Oorzaak 5 (Getallenlijn en Klok, het begin in de foutroute; keuring 19 november 2026): de groet en de startvraag waren 2 alinea's. Ja en Nee stonden al klaar, de groet was wit en de vraag nog gedimd (Bliepo was er nog niet aan begonnen): 3 seconden lang alleen "Hoi Testkind! Fijn dat je er bent." Opgelost: groet en startvraag in 1 alinea, zelfde woorden (ook in Splitsen, de 3e les met een startvraag). Regel: BOUWREGELS hoofdstuk 4 (aanvulling 19 nov).
+
+**F17. Een zin die op zichzelf niet klopt of moeilijke woorden heeft.** (keuring, besluit Sara 19 november 2026)
+- Wat mis was: Vormen begon een vraag met een los "En" ("En welke kraal komt er nu?") terwijl Bliepo er niets voor zei; Splitsen extra zei "Verander de stippen onder." (geen goede zin) en gebruikte "linkerdeel", "rechterdeel" en "2 delen en 1 totaal" (te moeilijk voor groep 3).
+- Regel: BOUWREGELS 15.36. Elke zin klopt op zichzelf, zegt wat het kind ziet en doet, met gewone woorden (het deel links, het andere deel, samen, onderaan).
+- Gecontroleerd in alle gouden lessen: los "En" aan het begin van een vraag ook in Getallenlijn ("En wat staat er bij 14?", "En welk getal ligt het dichtst bij 10?"; opgelost); "En deze korte oranje wijzer?" (Klok) volgt direct op de vraag over de lange wijzer en blijft. "linkerdeel/rechterdeel" alleen in Splitsen extra.
+
+**F18. Gouden les Splitsen: de bovenste pionnen en ballen staken door de dakrand van het huisje.** (keuring 19 november 2026)
+- Oorzaak: het hoopje (2 rijen van 5) was breder dan het schuine dak op die hoogte.
+- Opgelost: het dak van het huisje hoger (opt-in `dakHoog`, alleen de gouden les) en het hoopje bij 6 tot 10 dingen iets kleiner. Er gaat niets weg.
+- Controle: schermfoto per vraag; kijk of er iets door een lijn steekt (15.34 punt 3).

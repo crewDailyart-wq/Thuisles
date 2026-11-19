@@ -221,3 +221,63 @@
     animation: none;
   }
 }
+
+/* 19 nov 2026 (BOUWREGELS 15.32): de kaartjes van "kies er 2" rechts onder Bliepo's zin, in HTML. Een zacht vak (zoals het
+   oude keuzevak), geen rand; een gekozen kaartje krijgt alleen het vinkje (7.8a), geen gloed. */
+.kaartRechts {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  background: rgba(207, 227, 255, 0.15);
+  color: #ffffff;
+}
+.kaartRechts:disabled {
+  opacity: 1;
+}
+.kaartTekening {
+  display: block;
+  pointer-events: none;
+}
+.kaartWoord {
+  display: block;
+  max-width: 92%;
+  font-size: 21px;
+  font-weight: 800;
+  line-height: 1.12;
+  text-align: center;
+  pointer-events: none;
+}
+/* Bliepo leest een schilderij-kaartje voor: het plaatje zelf licht op langs zijn eigen rand (7.9), geen vak eromheen. */
+.oplicht .kaartTekening {
+  filter: drop-shadow(0 0 5px #ffd36e) drop-shadow(0 0 10px #ffc53d);
+}
+/* Bliepo leest een ander kaartje voor: het rode rondje (7.8). */
+.kaartRondje {
+  position: absolute;
+  left: -14%;
+  top: -12%;
+  width: 128%;
+  height: 124%;
+  pointer-events: none;
+  animation: plop 0.24s ease-out both;
+}
+/* De korte lichtgolf bij goed (7.6): geen gloed die blijft. */
+.kaartGolf {
+  position: absolute;
+  inset: 0;
+  border-radius: 22px;
+  pointer-events: none;
+  background: radial-gradient(circle, rgba(255, 236, 160, 0.55), rgba(255, 236, 160, 0) 70%);
+  animation: kaartGolf 0.9s ease-out both;
+}
+@keyframes kaartGolf {
+  from { opacity: 1; transform: scale(0.7); }
+  to { opacity: 0; transform: scale(1.25); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .kaartGolf {
+    animation: none;
+  }
+}

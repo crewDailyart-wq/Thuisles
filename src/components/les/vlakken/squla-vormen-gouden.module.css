@@ -111,3 +111,25 @@
     animation: none;
   }
 }
+
+/* 19 nov 2026 (BOUWREGELS 15.32): de keuzes rechts onder Bliepo's zin, in HTML getekend. Een zacht vak (zoals het oude
+   keuzevak), geen rand en geen gloed; een gekozen keuze krijgt alleen het vinkje (7.8a). */
+.tegel {
+  background: rgba(207, 227, 255, 0.15);
+}
+.tegel:disabled {
+  opacity: 1;
+}
+.tekening {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+.rondje {
+  position: absolute;
+  left: -18%;
+  top: -18%;
+  width: 136%;
+  height: 136%;
+  pointer-events: none;
+}

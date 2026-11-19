@@ -615,7 +615,9 @@ const gouden: Lesdraaiboek = {
     zetTestAntwoord("Nee");
     haak(l, { soort: "kies", opties: ["Ja", "Nee"], goed: "Nee", poging: 1, vraag: "start" }, true);
     const pStart = l.kies(["Ja", "Nee"], { direct: true, weetniet: false });
-    void zeg(l, NAAM_GROET, K(l).kies("start", VAR.start)).catch(() => {});
+    /* Groet en vraag in 1 alinea (19 nov 2026, keuring F16/15.37): als 2 alinea's stond de groet soms 3 s alleen wit in beeld,
+       met Ja en Nee al tikbaar en de vraag nog gedimd. Nu komen ze samen in beeld en worden ze samen uitgesproken. */
+    void zeg(l, `${NAAM_GROET} ${K(l).kies("start", VAR.start)}`).catch(() => {});
     st(l).naamKeer = 1;
     const start = await pStart;
     haak(l, null);

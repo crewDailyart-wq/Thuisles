@@ -431,7 +431,8 @@ for (const z of ZIN.start) if (lengte("Hoi Testkind! Fijn dat je er bent.", z) >
 for (const z of [...ZIN.kettingHand, ...ZIN.puzzelHand, ...ZIN.samenHand, ...ZIN.samenKettingHand]) if (!passend(AANMOEDIG, z).some((a) => lengte(a, z) <= MAX_STUK)) fouten.push(`hulphandje te lang: "${z}"`);
 /* Per vraag. */
 const OUD = ["Welke kraal komt nu?", "Welke kraal hoort op de lege plek?", "Wat hoort bij de pijl?", "Welke vorm komt nu?"];
-const NOG = ["En welke kraal komt er nu?", "En welke kraal hoort nu op de lege plek?", "En wat hoort nu bij de pijl?", "En welke vorm komt er nu?"];
+/* 19 nov 2026: de 2e vraag van dezelfde soort zonder los "En" aan het begin (keuring 15.36). */
+const NOG = ["Welke kraal is de volgende?", "Welke kraal past op de lege plek?", "Wat komt er bij de pijl?", "Welke vorm is de volgende?"];
 let vorigeVraag = "";
 for (const v of VRAGEN) {
   if (v.soort === "keuze") {

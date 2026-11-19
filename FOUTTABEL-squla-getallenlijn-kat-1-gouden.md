@@ -278,8 +278,8 @@ Volgt een vraag op een vraag van dezelfde soort, dan klinkt hij net anders ("nu"
 | 8 | bij welk getal | Dit is een lange getallenlijn. Bij welk getal staat het raketje nu? |
 | 9 | bij welk getal | Bij welk getal staat het raketje? |
 | 10 | wat staat er bij | Wat staat er bij 17? Tik erop. |
-| 11 | wat staat er bij | En wat staat er bij 14? Tik erop. |
+| 11 | wat staat er bij | Wat staat er nu bij 14? Tik erop. |
 | 12 | het dichtst bij | Welk getal ligt het dichtst bij 20? |
-| 13 | het dichtst bij | En welk getal ligt het dichtst bij 10? |
+| 13 | het dichtst bij | Welk getal ligt nu het dichtst bij 10? |
 | 14 | ongeveer | Bij welk getal staat het raketje ongeveer? |
 | 15 | ongeveer | Bij welk getal staat het raketje nu ongeveer? |

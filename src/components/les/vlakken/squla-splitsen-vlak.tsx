@@ -48,7 +48,9 @@ export type Deel =
   | { s: "geld"; id: string; soort: "briefje-10" | "munt-1"; x: number; y: number; maat: number; verborgen?: boolean }
   | { s: "tekst"; id: string; t: string; x: number; y: number; grootte?: number; kleur?: string; verborgen?: boolean }
   /** Het splitshuisje: bovenaan het totaal (onder het dak), onder twee kamers. Leeg = lege kamer. */
-  | { s: "huisje"; id: string; x: number; y: number; b?: number; top: string; links: string; rechts: string; dak?: boolean; stippen?: boolean; kleuren?: GetalKleuren }
+  | { s: "huisje"; id: string; x: number; y: number; b?: number; top: string; links: string; rechts: string; dak?: boolean; stippen?: boolean; kleuren?: GetalKleuren;
+      /** Opt-in (gouden les Splitsen, 19 nov 2026): het dak zoveel keer hoger, zodat het hoopje erin past zonder door de dakrand te steken. Standaard 1 (oude lessen ongewijzigd). */
+      dakHoog?: number }
   /** De splitspaal: een rondje met het totaal, een lijn naar beneden en twee takken. */
   | { s: "paal"; id: string; x: number; y: number; top: string; links: string; rechts: string; kleuren?: GetalKleuren }
   /** Het tienvak (eierdoos, 2 rijen van 5): `n` ballen te zien, `doek` vakjes onder een doek. */
@@ -274,7 +276,7 @@ function tekstenVan(d: Deel): Tekst[] {
       { k: `${d.id}-l`, id: d.id, x: d.x - b / 4, y: ky, t: d.links, grootte: g, kleur: kleurVan(d.kleuren?.links) },
       { k: `${d.id}-r`, id: d.id, x: d.x + b / 4, y: ky, t: d.rechts, grootte: g, kleur: kleurVan(d.kleuren?.rechts) },
     ];
-    if (d.dak !== false) lijst.push({ k: `${d.id}-t`, id: d.id, x: d.x, y: d.y - HUIS.dak * k * 0.42, t: d.top, grootte: g * 0.92, kleur: kleurVan(d.kleuren?.top) });
+    if (d.dak !== false) lijst.push({ k: `${d.id}-t`, id: d.id, x: d.x, y: d.y - HUIS.dak * k * 0.42 * (d.dakHoog ?? 1), t: d.top, grootte: g * 0.92, kleur: kleurVan(d.kleuren?.top) });
     return lijst.filter((t) => t.t !== "");
   }
   if (d.s === "paal")
@@ -302,8 +304,9 @@ function tekenLijnen(gr: import("phaser").GameObjects.Graphics, delen: Deel[], k
       gr.strokeRect(x0, d.y, b, kamer);
       gr.lineBetween(d.x, d.y, d.x, d.y + kamer);
       if (d.dak !== false) {
-        gr.fillTriangle(x0 - 10 * f, d.y, d.x, d.y - HUIS.dak * f * 1.25, x0 + b + 10 * f, d.y);
-        gr.strokeTriangle(x0 - 10 * f, d.y, d.x, d.y - HUIS.dak * f * 1.25, x0 + b + 10 * f, d.y);
+        const dh = HUIS.dak * f * 1.25 * (d.dakHoog ?? 1);
+        gr.fillTriangle(x0 - 10 * f, d.y, d.x, d.y - dh, x0 + b + 10 * f, d.y);
+        gr.strokeTriangle(x0 - 10 * f, d.y, d.x, d.y - dh, x0 + b + 10 * f, d.y);
       }
       if (d.stippen) {
         for (const [kant, tekst] of [[-1, d.links], [1, d.rechts]] as const) {
@@ -775,7 +778,7 @@ function maakScene(Phaser: PhaserModule, rustig: boolean) {
           const b = d.b ?? HUIS.b;
           const f = b / HUIS.b;
           const kamer = HUIS.kamer * f * (d.stippen ? 1.3 : 1);
-          erbij(d.x - b / 2 - 10 * f, d.dak !== false ? d.y - HUIS.dak * f * 1.25 : d.y, d.x + b / 2 + 10 * f, d.y + kamer);
+          erbij(d.x - b / 2 - 10 * f, d.dak !== false ? d.y - HUIS.dak * f * 1.25 * (d.dakHoog ?? 1) : d.y, d.x + b / 2 + 10 * f, d.y + kamer);
         } else if (d.s === "paal") erbij(d.x - 140, d.y - 44, d.x + 140, d.y + 170);
         else if (d.s === "staaf") erbij(d.x, d.y - (d.blok ?? 40) / 2, d.x + d.n * (d.blok ?? 40), d.y + (d.blok ?? 40) / 2);
         else if (d.s === "tekst") erbij(d.x - d.t.length * (d.grootte ?? 56) * 0.3, d.y - (d.grootte ?? 56) * 0.6, d.x + d.t.length * (d.grootte ?? 56) * 0.3, d.y + (d.grootte ?? 56) * 0.6);

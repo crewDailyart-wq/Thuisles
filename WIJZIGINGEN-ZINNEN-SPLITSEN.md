@@ -246,3 +246,21 @@ Alleen de tekst, passend gemaakt voor groep 3. Geen audio, beeld of code.
 |---|---|---|
 | (extra, stap 12) Maak met de plus en de min 2 delen die samen 7 zijn. Tik dan op het vinkje. | Maak met de plus en de min 2 delen die samen 7 zijn. | een zin met "vinkje" laat het lesscherm helemaal weg, dus Bliepo zei deze opdracht nooit (15.37 punt 2); het vinkje legt het lesscherm zelf 1 keer uit |
 
+
+## Herstel 19 november 2026 (keuring 15.36: Splitsen extra, kindertaal groep 3)
+
+Getal, antwoord en betekenis zijn niet veranderd. De fouttabel (`npx tsx scripts/fouttabel-splitsen-extra-gouden.ts`) keurt alle varianten opnieuw: goed.
+
+| Oud | Nieuw | Waarom |
+|---|---|---|
+| (extra, stap 10) Kun jij het ook op een andere manier? Verander de stippen onder. Het totaal blijft hetzelfde. | Kun jij het ook op een andere manier? Tik op de plus en de min bij de 2 delen onderaan. Het totaal blijft hetzelfde. | "Verander de stippen onder." was geen goede zin; nu zegt Bliepo wat het kind doet en waar (15.36, 15.37) |
+| (extra, stap 9) Je hebt 2 delen en 1 totaal. | De 2 delen samen maken het totaal. | "1 totaal" is moeilijk voor groep 3 |
+| (extra, stap 7) Tik op de plus bij het linkerdeel, tot er 4 stippen staan. | Tik op de plus bij het deel links, tot er 4 stippen in staan. | "linkerdeel" is moeilijk voor groep 3 |
+| (extra, stap 7) Het rechterdeel is nog leeg. Zet er 2 stippen in met de plus. | Het andere deel, rechts, is nog leeg. Zet er met de plus 2 stippen in. | "rechterdeel" is moeilijk voor groep 3 |
+| (extra, begin) Boven staat het totaal. Onder staan de 2 delen. | Bovenaan komt het totaal: alle stippen samen. Onderaan staan de 2 delen. | "totaal" uitgelegd met "samen"; "bovenaan/onderaan" in plaats van "boven/onder" |
+| (extra, samen voordoen) Ik zet het linkerdeel op 3. Zoek jij het andere deel. / Het linkerdeel zet ik op 3. Jij zoekt het andere deel. / Kijk, links staat 3. Zoek jij het andere deel? | Ik zet 3 stippen in het deel links. Zoek jij het andere deel? / In het deel links zet ik 3 stippen. Maak jij het andere deel? / Kijk, links staan nu 3 stippen. Zoek jij het andere deel? | zonder "linkerdeel"; elke variant eindigt met een vraag; bij 1: "1 stip" |
+| (extra, hint som) Kijk naar de 2 delen onder in de machine. Welke som past daarbij? / Welke 2 delen staan er onder in de machine? Kies de som met die delen. | Kijk naar de 2 delen onderaan. Welke som past daarbij? / Welke 2 delen staan er onderaan? Kies de som met die delen. | "onder in de machine" was onduidelijk |
+| (extra, uitleg som) Onder in de machine staan 3 en 2. Die tel je op in de som. | Onderaan staan 3 en 2. Die tel je op in de som. | idem |
+| (extra, een deel leeg) Een cirkel onder heeft nog geen stippen. | Een cirkel onderaan heeft nog geen stippen. | idem |
+
+Gouden les Splitsen: de groet en de startvraag staan nu in 1 alinea (zelfde woorden, zie 15.37/F16 bij Getallenlijn en Klok); het dak van het huisje is hoger en het hoopje bij 6 tot 10 dingen iets kleiner, zodat de bovenste pionnen en ballen niet meer door de dakrand steken.

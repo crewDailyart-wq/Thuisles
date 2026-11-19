@@ -457,6 +457,7 @@ async function tweeAntwoord(l: Lesgids, v: Vraag, c: Ctx, zinnen: string[], voor
     (dat oplicht als Bliepo het leest), dus hij hoeft niet ook in het tekstvak (15.31).
   */
   let leest = false;
+  let leestNu: string | null = null;
   let stopLezen: (() => void) | null = null;
   const gestopt = new Promise<void>((r) => (stopLezen = r));
   void (async () => {
@@ -465,10 +466,14 @@ async function tweeAntwoord(l: Lesgids, v: Vraag, c: Ctx, zinnen: string[], voor
       for (const k of c.kaarten) {
         if (klaar) break;
         if (!k.zeg) continue;
-        pasM(l, { licht: [k.id] });
+        /* Een gekozen kaartje licht niet op: daar staat alleen het vinkje (Sara, 19 nov 2026; 7.8a: een gloed die als
+           "gekozen" leest mag niet). */
+        leestNu = k.id;
+        pasM(l, { licht: gekozen.includes(k.id) ? [] : [k.id] });
         leest = true;
         await Promise.race([zegEnWacht([metUitspraak(k.zeg, l.naam)]), gestopt]);
         leest = false;
+        leestNu = null;
       }
     if (!klaar) {
       pasM(l, { licht: [] });
@@ -484,6 +489,8 @@ async function tweeAntwoord(l: Lesgids, v: Vraag, c: Ctx, zinnen: string[], voor
     const id = r.t.id;
     gekozen = gekozen.includes(id) ? gekozen.filter((x) => x !== id) : [...gekozen, id].slice(-2);
     log(l, "kies", { gekozen });
+    /* Kiest het kind het kaartje dat Bliepo nu voorleest: dan gaat het oplichten meteen uit (alleen het vinkje). */
+    if (leestNu && gekozen.includes(leestNu)) pasM(l, { licht: [] });
     speelLesgeluid("tik");
     zetKies(true);
     test();
@@ -741,6 +748,7 @@ async function samenDoen(l: Lesgids, v: Vraag, c: Ctx) {
     const zetK = () => zet(l, { kies2: { gekozen: [...gekozen], tikbaar: goed.filter((g) => !gekozen.includes(g)) } });
     zetK();
     const open = () => goed.filter((g) => !gekozen.includes(g));
+    /* De kaartjes staan rechts onder Bliepo's zin (15.32); het handje wijst daar. */
     const rects = kaartenVan(s.m);
     const plekVan = (id: string) => {
       const r = rects[c.kaarten.findIndex((k) => k.id === id)];

@@ -149,3 +149,7 @@ Niet overgenomen: "probeer deze" met een extra klok na een fout (bij ons komen d
 - **Zeggen wat het kind koos als de denkfout niet duidelijk is** ("Je koos 9 uur."): niet gedaan. Daar zegt Bliepo een zin uit het vaste rijtje van alle lessen; dat rijtje is niet van de Klok alleen.
 - **De startvraag met Ja en Nee, de gloed om de wijzer en de oranje ring:** niet aangeraakt.
 - **De oude les `squla-klok.tsx`:** niet aangeraakt.
+
+## Herstel 19 november 2026 (keuring F16, 15.37: het begin)
+
+Geen nieuwe woorden. De groet ("Hoi Testkind! Fijn dat je er bent.") en de startvraag waren 2 alinea's: soms stond de groet 3 seconden alleen wit in beeld, met Ja en Nee al tikbaar en de vraag nog gedimd. Nu zijn groet en startvraag 1 alinea: ze komen samen in beeld en Bliepo zegt ze in 1 keer.

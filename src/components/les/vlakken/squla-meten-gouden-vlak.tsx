@@ -23,6 +23,12 @@
  *   - `velTik`: bij het samen voordoen het gedraaide kaartje aantikken. Meldt `{ soort: "velTik" }`;
  *   - `rondje`: het rode rondje om wat Bliepo noemt (7.8; `public/rondje/rondje-rood-2.png`, zelfde maat als holo/rondje.ts);
  *   - `hulphand`: het HULPHANDJE (15.19): komt vanzelf, is nooit een knop, alleen bij opdrachten.
+ * KAARTJES RECHTS (besluit Sara, 19 november 2026; BOUWREGELS 15.32): de kaartjes van "kies er 2" staan niet meer in het
+ * vlak maar RECHTS, ONDER Bliepo's zin, op een vaste plek onderin zijn tekstvak. Ze worden hier in HTML getekend (de tekening
+ * 1 keer op een klein canvas, met het woord eronder); het oude vlak krijgt geen kaartjes meer (`kaarten: []`), zodat de
+ * tekening erboven de ruimte krijgt. Alle plekfuncties hieronder (grootVan, puntenVan, schilderijVan …) rekenen daarom
+ * ook zonder kaartjes. Bliepo leest een kaartje voor: dan licht het op (schilderij: gloed langs het plaatje zelf, 7.9;
+ * anders het rode rondje, 7.8), nooit als het kind het al koos (alleen een vinkje, 7.8a).
  * Het hele vlak staat iets kleiner, vanaf de linkerkant (keuring Meer-minder, 15.30): het oude vlak loopt tot x = 927 van de
  * 980, het vaste tekstvak begint bij ± 880. Alles in HTML met CSS: geen Phaser-werk elk beeld (HARDE REGEL 7). Maten in
  * punten van het vlak (980 × 720).
@@ -31,7 +37,7 @@
 import { useEffect, useRef, useState, type CSSProperties } from "react";
 import type { Vlakbasis } from "../soort";
 import { SqulaMetenVlak, indeling, type MetenProps, type Rect } from "./squla-meten-vlak";
-import { MUREN, tekeningMaat, tekeningPunten } from "./squla-meten-tekeningen";
+import { MUREN, tekenTekening, tekeningMaat, tekeningPunten } from "./squla-meten-tekeningen";
 import { zegKeuze } from "@/lib/stem";
 import { useInBeeld } from "@/components/oefenen/toetsenbordruimte";
 import s from "./squla-meten-gouden.module.css";
@@ -63,9 +69,12 @@ export const KLEINER = 0.86;
 
 /* ---------- waar staat wat (punten van het vlak) ---------- */
 
+/** Het oude vlak tekent geen kaartjes meer (ze staan rechts onder Bliepo); de indeling dus ook zonder kaartjes. */
+const zonderKaarten = (p: MetenProps): MetenProps => ({ ...p, kaarten: [] });
+
 /** De grote tekening (muur, tafel, matten, ruitjes, kaartjes papier). */
 export function grootVan(p: MetenProps) {
-  return indeling(p).groot;
+  return indeling(zonderKaarten(p)).groot;
 }
 /** De punten van de tekening (tegels, hokjes, stukken, blaadjes) in punten van het vlak, met de maat van 1 vakje. */
 export function puntenVan(p: MetenProps): { x: number; y: number; d: number }[] {
@@ -103,9 +112,24 @@ export function velVan(p: MetenProps): Rect | null {
   const k = gr.b / m.b;
   return { x: gr.x - gr.b / 2 + 345 * k, y: gr.y - gr.h / 2 + 135 * k, b: 210 * k, h: 140 * k };
 }
-export const kaartenVan = (p: MetenProps) => indeling(p).kaarten;
-export const vakkenVan = (p: MetenProps) => indeling(p).vakken;
-export const losseVan = (p: MetenProps) => indeling(p).losse;
+/**
+ * Waar de kaartjes staan: RECHTS, ONDER Bliepo's zin, onderin zijn tekstvak (lesvlak 1280 × 720: tekstvak x 880–1272,
+ * y 112–468; opdracht-nieuw.css). Omgerekend naar punten van dit vlak (KLEINER, oorsprong 0, 360).
+ */
+export function kaartenVan(p: MetenProps): Rect[] {
+  const n = p.kaarten?.length ?? 0;
+  const B = n <= 3 ? 120 : 92;
+  const H = 112;
+  const tussen = 10;
+  return Array.from({ length: n }, (_, i) => {
+    const sx = 1076 + (i - (n - 1) / 2) * (B + tussen);
+    /* Onderkant 418: net boven het knopje "Nog eens horen" en de verder-pijl onderin het tekstvak (gemeten 19 nov 2026). */
+    const sy = 418 - H / 2;
+    return { x: sx / KLEINER, y: 360 + (sy - 360) / KLEINER, b: B / KLEINER, h: H / KLEINER };
+  });
+}
+export const vakkenVan = (p: MetenProps) => indeling(zonderKaarten(p)).vakken;
+export const losseVan = (p: MetenProps) => indeling(zonderKaarten(p)).losse;
 
 /* ---------- het vlak ---------- */
 
@@ -118,19 +142,22 @@ export function GoudenMetenVlak({ kies2 = null, merken = [], tik = null, typ = n
   useEffect(() => () => clearTimeout(klok.current), []);
   return (
     <div className={s.wortel} style={{ transform: `scale(${KLEINER})`, transformOrigin: "0 50%" }} data-meten-gouden="">
-      <SqulaMetenVlak {...rest} kaartenActief={false} goed={[]} fout={[]} gekozen={[]} />
-      {kies2 &&
-        kaarten.map((k, i) => {
+      <SqulaMetenVlak {...rest} kaarten={[]} kaartenActief={false} goed={[]} fout={[]} gekozen={[]} />
+      {kaarten.map((k, i) => {
           const r = rects[i];
           if (!r) return null;
-          const aan = kies2.gekozen.includes(k.id);
-          const mag = kies2.tikbaar.includes(k.id);
+          const aan = !!kies2?.gekozen.includes(k.id);
+          const mag = !!kies2?.tikbaar.includes(k.id);
+          /* Bliepo leest dit kaartje voor (en het kind koos het nog niet): oplichten (schilderij) of het rondje. */
+          const wijst = !aan && !!rest.licht?.includes(k.id);
+          const sch = !!k.tekening?.startsWith("onderwerp|");
           return (
             <button
               key={`k-${rest.nr}-${k.id}`}
               type="button"
-              className={s.kaart}
+              className={`${s.kaart} ${s.kaartRechts} ${wijst && sch ? s.oplicht : ""}`}
               style={{ left: r.x - r.b / 2, top: r.y - r.h / 2, width: r.b, height: r.h }}
+              data-keuze-rechts=""
               data-ding={k.id}
               /* Een gekozen kaartje heeft geen data-plek: dan tikt de speelcontrole het volgende aan (geleerd bij Getallenlijn). */
               data-plek={mag && !aan ? "kaart" : undefined}
@@ -146,7 +173,14 @@ export function GoudenMetenVlak({ kies2 = null, merken = [], tik = null, typ = n
               onMouseLeave={() => clearTimeout(klok.current)}
               onClick={() => mag && meld({ soort: "kaartKies", id: k.id })}
             >
+              {k.tekening && <KaartTekening sleutel={k.tekening} b={r.b - 16} h={r.h * (k.label ? 0.62 : 0.86)} />}
+              {k.label && <span className={s.kaartWoord}>{k.label}</span>}
+              {rest.golf?.id === k.id && <span key={`g-${rest.golf.n}`} className={s.kaartGolf} aria-hidden />}
               {aan && <Vinkje />}
+              {wijst && !sch && (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img src="/rondje/rondje-rood-2.png" alt="" className={s.kaartRondje} aria-hidden data-rondje="" />
+              )}
             </button>
           );
         })}
@@ -238,6 +272,27 @@ export function GoudenMetenVlak({ kies2 = null, merken = [], tik = null, typ = n
       )}
     </div>
   );
+}
+
+/** De tekening van een kaartje, 1 keer op een klein canvas (geen Phaser-werk per beeld, HARDE REGEL 7). */
+function KaartTekening({ sleutel, b, h }: { sleutel: string; b: number; h: number }) {
+  const doek = useRef<HTMLCanvasElement>(null);
+  useEffect(() => {
+    const el = doek.current;
+    const c = el?.getContext("2d");
+    if (!el || !c) return;
+    const m = tekeningMaat(sleutel);
+    const k = Math.min(b / m.b, h / m.h);
+    const f = 2;
+    el.width = Math.round(b * f);
+    el.height = Math.round(h * f);
+    c.setTransform(f, 0, 0, f, 0, 0);
+    c.clearRect(0, 0, b, h);
+    c.translate((b - m.b * k) / 2, (h - m.h * k) / 2);
+    c.scale(k, k);
+    tekenTekening(c, sleutel);
+  }, [sleutel, b, h]);
+  return <canvas ref={doek} className={s.kaartTekening} style={{ width: b, height: h }} aria-hidden />;
 }
 
 function Vinkje() {
