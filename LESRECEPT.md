@@ -291,6 +291,7 @@ Volg per stap het draaiboek. Hieronder staat wat bij elke stap altijd geldt.
 - Standaard **geen startvraag** (hoofdstuk 4, besluit 12). Bliepo vertelt in een eigen zin wat het kind in deze les gaat doen (4.3, 4.4), en dan komt de eerste stap.
 - Heeft het draaiboek wél een startvraag (nu alleen de klok), dan: **Ja = een proef van 2 opgaven; maakt het kind in de proef 2 fouten, dan krijgt het alsnog de uitleg (de Nee-route van BOUWREGELS 4.5). Nee = de uitleg.** Heeft het draaiboek geen startvraag, dan komt er ook geen (4e ronde).
 - Nooit een "Weet ik niet"-knop (1.27).
+- **Afspeelknop als vangnet (DEFINITIEF, Sara 19 november 2026, BOUWREGELS 15.38):** via een klik in het lesoverzicht geen knop, Bliepo praat meteen. Houdt de browser het geluid tegen (geplakte link, verversen), dan alleen de lesachtergrond met 1 grote ronde oranje afspeelknop (Magnific-plaatje, stijl B), zonder tekst en zonder tekstvak; na de tik begint de les meteen met Bliepo's groet. Dit regelt het gedeelde lesscherm vanzelf voor elke les met `stemHeelUitpraten` en "-gouden" in de id; niets aan de les zelf bouwen, en geen startzin zoals "Tik op het scherm" toevoegen.
 
 ### 3.2 Uitleg
 - Volg de uitlegstappen van het draaiboek in dezelfde volgorde en met dezelfde betekenis, in eigen woorden.

@@ -52,3 +52,9 @@ Met de Google-stem in Chrome zijn de woordtijden een schatting (spreekmodel `GOO
 ## Woord-voor-woord oplichten gelijk met de stem (Sara, 17 november 2026)
 
 Sara ziet dat het oplichten niet samengaat met de stem (gouden Tellen). Oorzaak: de huidige stem (Google) geeft geen woordtijden, dus de tijd per woord wordt geschat (ongeveer 70% van de woorden binnen 150 ms). Besluit Sara: dit doen we pas als de officiële stem (Ruth) erbij komt, omdat die de exacte woordtijden meegeeft. Dan voor alle gouden lessen tegelijk de geschatte tijden vervangen door de echte, en `scripts/test-woord-oplichten.mjs` opnieuw draaien (ook voor de 3 extra-lessen). Eerst toestemming vragen voor het tegoed (regel 9).
+
+## Taal en spelling: de proef spelling groep 3 (Sara, 19 november 2026)
+De proef voor taal en spelling (spelling groep 3) bewaren we voor later. Nu niet bouwen en niet aanpassen; pas oppakken als Sara het zegt.
+
+## Afspeelknop bij het begin: nog meten op telefoon en tablet (19 november 2026, BOUWREGELS 15.38)
+De ronde afspeelknop (geplakte link of verversen in een gouden les) is alleen gemeten op de laptop in Chrome (1440 x 900). Nog meten op een telefoon en een tablet (staand en liggend; Safari op iPad/iPhone en Chrome op Android): staat de knop in het midden, is hij groot genoeg (minstens 96 px), reageert de hele ronde, en begint Bliepo na de tik meteen met de groet. Let op Safari: die heeft eigen regels voor geluid zonder tik.

@@ -465,9 +465,10 @@ async function speel(c, id) {
         break;
       }
       if (z.kaart && (await klik(`(b) => /af te vinken|kaart/i.test(b.getAttribute("aria-label") || "")`))) continue;
-      /* Staat de start-aanwijzing er ("Tik op het scherm. Dan begint Bliepo.", BOUWREGELS 15.37), dan tikt de speler 1 keer echt op het scherm, zoals een kind (links in het midden, waar niets te kiezen valt). */
-      if (await ev(`[...document.querySelectorAll("[data-start-tik]")].some((e) => e.getBoundingClientRect().width > 3)`)) {
-        await tikPunt({ x: 6, y: Math.round(APPARAAT.h / 2) });
+      /* Staat de ronde afspeelknop er (BOUWREGELS 15.38: de browser houdt het geluid nog tegen), dan tikt de speler 1 keer echt op de knop, zoals een kind (iets naast het midden: de hele ronde moet reageren, niet alleen het driehoekje). */
+      const startKnop = await ev(`(() => { const e = document.querySelector("[data-startknop]"); if (!e) return null; const r = e.getBoundingClientRect(); return r.width > 3 ? { x: Math.round(r.left + r.width * 0.25), y: Math.round(r.top + r.height * 0.7) } : null; })()`);
+      if (startKnop) {
+        await tikPunt(startKnop);
         continue;
       }
       if (f16) {

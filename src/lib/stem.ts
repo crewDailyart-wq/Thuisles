@@ -203,8 +203,8 @@ let beurt = 0;
        Voor een geluidsbestand van Ruth geldt hetzelfde: klaar = het einde van het bestand (speelVanServer -> eindigt);
        lukt afspelen niet, dan valt de zin terug op de browserstem of op de leestijd, zoals hierboven.
     3. Heeft het kind nog nergens getikt (Chrome laat dan geen geluid toe), dan wacht de zin tot de eerste tik of toets
-       van het kind en wordt hij dán uitgesproken (geen startknop; de tekst staat er al). Lukt het daarna nog steeds niet,
-       dan de leestijd.
+       van het kind en wordt hij dán uitgesproken. Het lesscherm toont zolang alleen de lesachtergrond met de ronde
+       afspeelknop (BOUWREGELS 15.38, Sara 19 november 2026). Lukt het daarna nog steeds niet, dan de leestijd.
 */
 let heelUitpraten = false;
 /** Staat de optie "heel uitpraten" aan in de les van nu? (BliepoTekst: een zin die al wit is, blijft wit; F7, 11 nov 2026.) */
@@ -215,8 +215,9 @@ const leestijd = (zin: string) => 900 + zin.length * 55;
 /** Heeft het kind op deze pagina nog nergens getikt? Dan laat Chrome geen geluid toe. */
 const geenGebaar = () => typeof navigator !== "undefined" && !!navigator.userActivation && !navigator.userActivation.hasBeenActive;
 /*
-  Wacht een zin van Bliepo op de eerste tik van het kind (Chrome laat nog geen geluid toe)? Het lesscherm laat dan een
-  korte start-aanwijzing zien, zodat het kind weet wat het moet doen (F16, Sara 18 november 2026; BOUWREGELS 15.37).
+  Wacht een zin van Bliepo op de eerste tik van het kind (Chrome laat nog geen geluid toe)? Het lesscherm laat dan alleen
+  de lesachtergrond met de ronde afspeelknop zien (BOUWREGELS 15.38, Sara 19 november 2026; vervangt de zin
+  "Tik op het scherm. Dan begint Bliepo." uit 15.37).
   Alleen met de optie heel uitpraten; zonder die optie is dit altijd false.
 */
 let wachtOpTik = 0;

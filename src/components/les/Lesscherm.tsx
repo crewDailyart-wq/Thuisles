@@ -15,7 +15,7 @@
 
 import { MERKNAAM } from "@/lib/merk";
 import { useCallback, useEffect, useMemo, useRef, useState, useSyncExternalStore, type CSSProperties, type ReactNode } from "react";
-import { abonneerEersteTik, meldStemOnderweg, stopPraten, wachtOpEersteTik, zegNaElkaar, zetLesStem } from "@/lib/stem";
+import { abonneerEersteTik, abonneerPraten, meldStemOnderweg, praatVos, stopPraten, wachtOpEersteTik, zegNaElkaar, zetLesStem } from "@/lib/stem";
 import { speelLesgeluid, zetLesgeluiden } from "@/lib/lesgeluiden";
 import { GeluidjesKnop } from "./GeluidjesKnop";
 import { wachtOpBliepo } from "@/lib/bliepo-in-beeld";
@@ -52,8 +52,8 @@ const ONTWERP: "nieuw" | "oud" = "nieuw";
 
 /* ---------- vaste maten van het speelvlak ---------- */
 
-/** F16 (15.37): wat er staat zolang Bliepo's eerste zin op de eerste tik van het kind wacht. */
-const START_TIK_ZIN = "Tik op het scherm. Dan begint Bliepo.";
+/** De ronde afspeelknop (BOUWREGELS 15.38, Sara 19 november 2026): een plaatje uit Magnific, stijl B, in de huisstijlkleur. */
+const STARTKNOP = "/assets/bliepo/startknop";
 const B = 1280;
 const H = 720;
 const CEL = 66;
@@ -517,11 +517,39 @@ function Lesscherm({
 
   /*
     F16 (Sara, 18 november 2026; BOUWREGELS 15.37): wacht Bliepo's eerste zin op de eerste tik van het kind (rechtstreekse
-    link of herladen: Chrome laat dan nog geen geluid toe), dan staat er een korte start-aanwijzing in beeld. Alleen in
+    link of herladen: Chrome laat dan nog geen geluid toe), dan staat er alleen de lesachtergrond met de ronde afspeelknop
+    (BOUWREGELS 15.38, Sara 19 november 2026; vervangt de zin "Tik op het scherm. Dan begint Bliepo."). Alleen in
     lessen met stemHeelUitpraten (de gouden lessen); in alle andere lessen verandert er niets.
   */
   const wachtOpTik = useSyncExternalStore(abonneerEersteTik, wachtOpEersteTik, () => false);
-  const startTik = les.stemHeelUitpraten === true && wachtOpTik;
+  /* 15.38 (Sara, 19 november 2026): de afspeelknop voorlopig ALLEEN in de nieuwe gouden lessen (optie stemHeelUitpraten én
+     "gouden" in de les-id); in alle andere lessen (ook oude lessen en concepten) verandert er niets. */
+  const goudenStart = les.stemHeelUitpraten === true && les.id.includes("-gouden");
+  const startTik = goudenStart && wachtOpTik;
+  /*
+    15.38: tot duidelijk is of de browser geluid toelaat, alleen de lesachtergrond (zonder knop). Anders staat de les bij
+    een geplakte link eerst ca. 0,8 s gewoon in beeld en springt daarna de knop erover. Beslist = Bliepo praat (geluid
+    mag), of de eerste zin wacht op een tik (dan de knop), of het kind heeft op deze pagina al getikt (via het
+    lesoverzicht), of na 4 s als vangnet (dan gewoon de les).
+  */
+  const [geluidBeslist, setGeluidBeslist] = useState(false);
+  useEffect(() => {
+    if (!goudenStart) return;
+    const kijk = () => {
+      if (!navigator.userActivation || navigator.userActivation.hasBeenActive || praatVos() || wachtOpEersteTik()) setGeluidBeslist(true);
+    };
+    const uit1 = abonneerPraten(kijk);
+    const uit2 = abonneerEersteTik(kijk);
+    const meteen = setTimeout(kijk, 0);
+    const vangnet = setTimeout(() => setGeluidBeslist(true), 4000);
+    return () => {
+      uit1();
+      uit2();
+      clearTimeout(meteen);
+      clearTimeout(vangnet);
+    };
+  }, [goudenStart]);
+  const startLaag = goudenStart && (startTik || !geluidBeslist);
 
   /* Het vaste speelvlak zo groot als het scherm toelaat. */
   /* De nagebouwde lessen: alleen de bewaarde stem van Ruth, nooit de browserstem; de naam gaat mee voor het naamfragment (28 okt 2026). */
@@ -1320,12 +1348,6 @@ function Lesscherm({
       >
         {/* naam en pauze */}
         {!pilBoven && !squlaMidden && pilBalk}
-        {/* F16: de start-aanwijzing (zie wachtOpTik hierboven); verdwijnt bij de eerste tik, dan begint Bliepo te praten. */}
-        {startTik && (
-          <div className={s.startTik} data-start-tik="">
-            <span>{START_TIK_ZIN}</span>
-          </div>
-        )}
         {!nieuw && tekstblok}
         {tegelsLinks && <div className={s.synthKolom}>{maakTekstblok("knoppen")}</div>}
         {keuzesMidden !== null && <div className={s.keuzesMidden} style={{ top: keuzesMidden }} data-keuzes-midden="">{maakTekstblok("knoppen")}</div>}
@@ -1545,6 +1567,25 @@ function Lesscherm({
       {sleep && Math.hypot(sleep.x - sleep.vanX, sleep.y - sleep.vanY) > 8 && (
         <div className={s.spook} style={{ left: sleep.x - CEL * schaal, top: sleep.y - (hoogte(sleep.n) * CEL * schaal) / 2 }}>
           <Tegel n={sleep.n} c={CEL * schaal} />
+        </div>
+      )}
+
+      {/*
+        De afspeelknop (BOUWREGELS 15.38, Sara 19 november 2026). Alleen als de browser het geluid nog tegenhoudt
+        (geplakte link, na verversen): dan alleen de lesachtergrond en 1 grote ronde knop in het midden, zonder tekst en
+        zonder Bliepo's tekstvak. De tik (op de knop) geeft de browser toestemming voor geluid; lib/stem.ts zegt dan
+        Bliepo's eerste zin (de groet) opnieuw en deze laag verdwijnt. Via een klik in het lesoverzicht komt hij niet.
+      */}
+      {startLaag && (
+        <div className={s.startLaag} data-startknop-laag="">
+          {nieuw && <OpdrachtDecor />}
+          {nieuw && les.nacht && <div className="opdracht-nacht" aria-hidden="true" />}
+          {startTik && <button type="button" className={s.startKnop} data-startknop="" aria-label="Begin de les">
+            <picture>
+              <source type="image/webp" srcSet={`${STARTKNOP}.webp`} />
+              <img src={`${STARTKNOP}.png`} alt="" draggable={false} />
+            </picture>
+          </button>}
         </div>
       )}
     </div>

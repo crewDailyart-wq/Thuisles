@@ -25,8 +25,9 @@
  *
  * HET BEGIN VAN DE LES (los te draaien): `node scripts/vraag-aanwezig-controle.mjs` opent elke gouden les uit
  * public/alle-lessen.html met een rechtstreekse link in een zichtbare Chrome met de echte geluidsregels, en tikt NIET.
- * Chrome laat dan geen geluid toe en Bliepo's eerste zin wacht op de eerste tik. Na 12 seconden moet er een vraag of
- * opdracht in beeld staan (bijvoorbeeld de start-aanwijzing "Tik op het scherm. Dan begint Bliepo."), anders F16.
+ * Chrome laat dan geen geluid toe en Bliepo's eerste zin wacht op de eerste tik. Na 12 seconden moet de ronde afspeelknop
+ * in beeld staan (BOUWREGELS 15.38: alleen de lesachtergrond en de knop; dat telt als de start) of een vraag of
+ * opdracht, anders F16.
  *   LESSEN=id1,id2 node scripts/vraag-aanwezig-controle.mjs     alleen deze lessen
  *   FOTO=<map> …                                                een schermfoto per les
  * Het ophalen van Ruth (/api/stem) is in deze controle geblokkeerd: er wordt nooit een stem gemaakt.
@@ -72,8 +73,8 @@ export const VRAAG_METER = `
       for (const e of document.body.querySelectorAll("*")) {
         const tag = e.tagName.toUpperCase();
         if (["SCRIPT", "STYLE", "NOSCRIPT", "BUTTON", "INPUT", "TEXTAREA", "A"].includes(tag)) continue;
-        /* De start-aanwijzing ("Tik op het scherm. Dan begint Bliepo.") telt niet als vraag of opdracht van de les: anders zou hij in een test zonder echte tik elke ontbrekende vraag verbergen. De begincontrole kijkt er apart naar (stand().start). */
-        if (e.closest(".bliepo-tekst, button, a, nextjs-portal, [aria-hidden='true'], .bliepo-tekst-later, script, style, [data-start-tik]")) continue;
+        /* De laag met de afspeelknop (BOUWREGELS 15.38) telt niet als vraag of opdracht van de les. De begincontrole kijkt er apart naar (stand().start). */
+        if (e.closest(".bliepo-tekst, button, a, nextjs-portal, [aria-hidden='true'], .bliepo-tekst-later, script, style, [data-startknop-laag]")) continue;
         if (![...e.childNodes].some((k) => k.nodeType === 3 && /[A-Za-zÀ-ɏ]{2}/.test(k.textContent || ""))) continue;
         if (!zichtbaar(e)) continue;
         const t = (e.textContent || "").replace(/\\s+/g, " ").trim();
@@ -101,8 +102,9 @@ export const VRAAG_METER = `
       const canvas = [...document.querySelectorAll("canvas")].some((c) => c.width > 200 && zichtbaar(c));
       const t = teksten();
       const k = invoer();
-      const start = [...document.querySelectorAll("[data-start-tik]")].some(zichtbaar);
-      return { pijl, einde, praat, canvas, t, k, start, wacht: !pijl && !einde && (k.length > 0 || canvas) && t.length + k.length > 0 };
+      /* De knopstand (BOUWREGELS 15.38): alleen de lesachtergrond en de ronde afspeelknop. Dat is de start van de les, geen wachten zonder opdracht. */
+      const start = [...document.querySelectorAll("[data-startknop]")].some(zichtbaar);
+      return { pijl, einde, praat, canvas, t, k, start, wacht: !start && !pijl && !einde && (k.length > 0 || canvas) && t.length + k.length > 0 };
     };
     /* Voor de begincontrole (zie onderaan dit bestand): wat staat er nu, en staat er een vraag of opdracht bij? */
     window.__f16Stand = () => { const s = stand(); return { tekst: s.t, knoppen: s.k, pijl: s.pijl, einde: s.einde, praat: s.praat, opdracht: s.t.some(heeftOpdracht), start: s.start, getikt: !!(navigator.userActivation && navigator.userActivation.hasBeenActive) }; };
@@ -205,7 +207,7 @@ if (process.argv[1] && import.meta.url.endsWith(process.argv[1].split("/").pop()
     await stuur("Page.navigate", { url: `${BASIS}/voorbeeld/les/${id}?naam=Testkind` }, s);
     /* Wachten tot de les er staat (de ontwikkelversie compileert soms lang), dan 12 seconden niets doen. */
     let st = null;
-    for (let i = 0; i < 150; i++) { await wacht(400); st = await ev(`window.__f16Stand ? window.__f16Stand() : null`); if (st && st.tekst.length) break; }
+    for (let i = 0; i < 150; i++) { await wacht(400); st = await ev(`window.__f16Stand ? window.__f16Stand() : null`); if (st && (st.start || st.tekst.length)) break; }
     await wacht(12000);
     st = await ev(`window.__f16Stand ? window.__f16Stand() : null`);
     if (FOTO) {
@@ -214,8 +216,8 @@ if (process.argv[1] && import.meta.url.endsWith(process.argv[1].split("/").pop()
       writeFileSync(join(FOTO, `begin-${id}.jpg`), Buffer.from(data, "base64"));
     }
     await stuur("Target.closeTarget", { targetId }).catch(() => {});
-    if (!st || !st.tekst.length) { fout++; console.log(`✗ ${id}: de les kwam niet in beeld`); continue; }
-    if (st.start) console.log(`✓ ${id}: na 12 s zonder tik staat de start-aanwijzing in beeld ("Tik op het scherm. Dan begint Bliepo.")`);
+    if (!st || (!st.start && !st.tekst.length)) { fout++; console.log(`✗ ${id}: de les kwam niet in beeld`); continue; }
+    if (st.start) console.log(`✓ ${id}: na 12 s zonder tik staat de ronde afspeelknop in beeld (alleen de lesachtergrond, BOUWREGELS 15.38)`);
     else if (st.opdracht) console.log(`✓ ${id}: na 12 s zonder tik staat er een vraag of opdracht ("${st.tekst.find((t) => /\?|^Tik|[.!] Tik/.test(t)) ?? st.tekst[0]}")`);
     else { fout++; console.log(`✗ ${id}: F16 bij het begin: na 12 s zonder tik wacht de les, zonder vraag of opdracht. In beeld: "${st.tekst.join(" | ").slice(0, 160)}"; pijl: ${st.pijl ? "ja" : "nee"}; te tikken: ${st.knoppen.join(", ") || "(niets)"}`); }
   }

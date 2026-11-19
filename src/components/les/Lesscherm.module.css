@@ -818,44 +818,48 @@ a.knop {
   white-space: nowrap;
 }
 
-/* ---------- F16 (Sara, 18 november 2026; BOUWREGELS 15.37): de start-aanwijzing ----------
-   Alleen zolang Bliepo's eerste zin op de eerste tik van het kind wacht (gouden lessen, rechtstreekse link of herladen).
-   Los boven het speelvlak (niets verspringt als hij weggaat); een tik gaat er dwars doorheen. */
-.startTik {
-  position: absolute;
-  left: 0;
-  right: 300px;
-  bottom: 20px;
-  z-index: 9;
+/* ---------- De afspeelknop (Sara, 19 november 2026; BOUWREGELS 15.38) ----------
+   Alleen zolang de browser het geluid tegenhoudt (gouden lessen, geplakte link of na verversen). De laag dekt het
+   hele scherm af met de lesachtergrond: verder niets in beeld, geen tekst en geen tekstvak van Bliepo. In het midden
+   1 grote ronde knop (een plaatje uit Magnific, stijl B, huisstijloranje). De hele ronde reageert, niet alleen het
+   driehoekje. Vervangt de oude start-aanwijzing "Tik op het scherm. Dan begint Bliepo." (.startTik, weggehaald op
+   verzoek van Sara). */
+.startLaag {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
   display: flex;
+  align-items: center;
   justify-content: center;
+}
+.startKnop {
+  position: relative;
+  z-index: 1;
+  width: clamp(120px, 18vmin, 180px);
+  height: clamp(120px, 18vmin, 180px);
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: transform 0.15s ease;
+}
+.startKnop picture,
+.startKnop img {
+  display: block;
+  width: 100%;
+  height: 100%;
   pointer-events: none;
+  user-select: none;
 }
-.startTik span {
-  padding: 12px 30px;
-  border-radius: 999px;
-  background: rgba(10, 22, 48, 0.9);
-  border: 2px solid #ffd45c;
-  color: #fff;
-  font-size: 30px;
-  font-weight: 700;
-  line-height: 1.2;
-  animation: startTikPuls 1.6s ease-in-out infinite;
+.startKnop:hover {
+  transform: scale(1.04);
 }
-[data-staand] .startTik {
-  right: 0;
+.startKnop:active {
+  transform: scale(0.96);
 }
-@keyframes startTikPuls {
-  0%,
-  100% {
-    transform: scale(1);
-  }
-  50% {
-    transform: scale(1.05);
-  }
-}
-@media (prefers-reduced-motion: reduce) {
-  .startTik span {
-    animation: none;
-  }
+.startKnop:focus-visible {
+  outline: 4px solid #fff;
+  outline-offset: 6px;
 }
