@@ -77,8 +77,8 @@ die gaat bij strijdige oudere regels over de lesopbouw voor.
 
 **Aanvulling 8 november 2026 (besluiten over de botsingen; voorlopig, bijgewerkt
 in de tweede en derde ronde: besluit Sara 8 nov, 2e en 3e ronde; zie BOUWREGELS.md bovenaan):**
-- Beginscherm: een startvraag alleen waar het draaiboek er een heeft (nu de
-  klok; vierde ronde). Dan: zin 1 (uitleg) en zin 2 (persoonlijke vraag), steeds
+- Beginscherm: de startvraag mag in elk onderwerp waar Synthesis er een heeft
+  (besluit Sara, 19 november 2026; was: alleen de klok, vierde ronde). Dan: zin 1 (uitleg) en zin 2 (persoonlijke vraag), steeds
   anders. Ja = een proef van 2 opgaven (2 fouten = alsnog de uitleg), Nee =
   eerst uitleg (de 6 stappen hierboven blijven bij lessen met een
   startvraag).
