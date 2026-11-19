@@ -58,6 +58,7 @@ import {
   type Rooster,
   type SoortVraag,
 } from "./squla-tellen-extra-zinnen";
+import { afscheidNa } from "./squla-klok-gouden-zinnen";
 
 const LES_ID = "squla-tellen-fruit-1-gouden-extra";
 const B = maakBasis(LES_ID);
@@ -548,8 +549,12 @@ const gouden: Lesdraaiboek = {
     l.verderWeg?.();
     const tik = l.kaart();
     speelLesgeluid("kaart");
-    await B.zeg(l, `${B.veelFouten(l) ? EINDE_VEEL_FOUTEN : B.kies(l, EINDE)} ${variant("kaartTik", ZIN.kaartTik)}`);
+    const eind = B.veelFouten(l) ? EINDE_VEEL_FOUTEN : B.kies(l, EINDE);
+    await B.zeg(l, `${eind} ${variant("kaartTik", ZIN.kaartTik)}`);
     await tik;
+    /* Ronde 51 punt 10 (15.50): het afscheid ("Tot snel!") pas na de tik op de kaart; zo blijft "Tik op de kaart." het laatste in beeld. */
+    const afscheid = afscheidNa(eind);
+    if (afscheid) await B.zeg(l, afscheid);
   },
 };
 

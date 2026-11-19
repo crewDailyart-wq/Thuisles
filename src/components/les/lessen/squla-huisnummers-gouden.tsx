@@ -82,6 +82,7 @@ import {
 } from "./squla-huisnummers-gouden-zinnen";
 import { maakKiezer } from "./nooit-dubbel";
 import { alleenBijKeuze } from "./squla-klok-gouden-zinnen";
+import { afscheidNa } from "./squla-klok-gouden-zinnen";
 
 /**
  * NOOIT 2 KEER HETZELFDE (Sara, 18 november 2026; zelfde aanpak als de proefles Tellen en de les Splitsen): alle zinnen in
@@ -640,8 +641,12 @@ const gouden: Lesdraaiboek = {
     l.verderWeg?.();
     const tik = l.kaart();
     speelLesgeluid("kaart");
-    await zeg(l, `${veelFouten(l) ? EINDE_VEEL_FOUTEN : kies(l, EINDE)} ${variant("kaartTik", ZIN.kaartTik)}`);
+    const eind = veelFouten(l) ? EINDE_VEEL_FOUTEN : kies(l, EINDE);
+    await zeg(l, `${eind} ${variant("kaartTik", ZIN.kaartTik)}`);
     await tik;
+    /* Ronde 51 punt 10 (15.50): het afscheid ("Tot snel!") pas na de tik op de kaart; zo blijft "Tik op de kaart." het laatste in beeld. */
+    const afscheid = afscheidNa(eind);
+    if (afscheid) await zeg(l, afscheid);
   },
 };
 

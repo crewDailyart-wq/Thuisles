@@ -279,7 +279,7 @@ export const ZIN = {
   handKaart: ["Tik op de kaart in het rondje.", "Tik maar op de kaart in het rondje."],
   handSleep: ["Sleep de kaart in het rondje naar de lege plek.", "Sleep maar de kaart in het rondje naar de lege plek."],
   /** Vangnet bij slepen: lang niets nagekeken. */
-  mistVangnet: ["Ik help je met deze.", "Ik help je even."],
+  mistVangnet: ["Deze doen we samen.", "Ik help je even."],
   /** Hetzelfde antwoord 2 keer: niet 2 keer dezelfde eerste zin (geleerd bij Tellen). Bliepo zegt wat hij ziet. */
   weerGekozen: (v: Vraag, c: number) =>
     v.invoer === "sleep" ? [`Je sleepte weer ${naam(c)}.`, `Weer ${naam(c)}, zie ik.`, `Dat is weer ${naam(c)}.`] : [`Je koos weer ${naam(c)}.`, `Weer ${naam(c)}, zie ik.`, `Je tikte weer op ${naam(c)}.`],

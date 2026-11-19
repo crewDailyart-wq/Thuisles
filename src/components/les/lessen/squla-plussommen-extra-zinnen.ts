@@ -20,10 +20,10 @@
  * nooit 2 keer achter elkaar) en elke situatie die terugkomt in varianten. Een lijst = varianten: de les kiest er 1 met de
  * gedeelde kiezer (nooit-dubbel.ts), nooit 2 keer achter elkaar dezelfde. "Rooster" is "veld" geworden en "totaal" is
  * "samen" (WOORDEN-GROEP3.md). Getallen, antwoorden en betekenis zijn niet veranderd. Oud naast nieuw:
- * WIJZIGINGEN-ZINNEN-PLUSSOMMEN.md. Een paar zinnen zijn de tekst van Synthesis (Adding below 10) in het Nederlands
- * (besluit Sara 17 november 2026, BOUWREGELS 15.2): "Kies maar een tegel die jij wilt." (19 nov 2026; was "…, welke je wilt."), "7? Ik tel er meer.",
- * "3 en 5 samen is iets meer dan 7.", "Je hebt de 3 en de 7 naast elkaar gezet.", "Wat gebeurt er als ik de tegels
- * omdraai?", "Je mag de getallen omdraaien.", "Precies, 3 + 4 = 7.".
+ * WIJZIGINGEN-ZINNEN-PLUSSOMMEN.md. 19 november 2026 (besluit Sara, BOUWREGELS 15.41): de zinnen die vertaald uit
+ * Synthesis (Adding below 10) kwamen ("Kies maar een tegel die jij wilt.", "7? Ik tel er meer.", "Wat gebeurt er als ik de
+ * tegels omdraai?", "Precies, 3 + 4 = 7.", enz.) zijn eigen zinnen geworden op dezelfde plek; oud naast nieuw onderaan
+ * WIJZIGINGEN-ZINNEN-PLUSSOMMEN.md.
  *
  * Leesbare versie: FOUTTABEL-squla-plus-bakkerij-1-gouden-extra.md (maak hem opnieuw met
  * `npx tsx scripts/fouttabel-plussommen-extra-gouden.ts`). {5} = een getal in de kleur van zijn tegel.
@@ -47,15 +47,15 @@ export const ZIN = {
   /** Stap 1: openen (het draaiboek heeft geen startvraag). Eerst wat we gaan doen (1 van de varianten), dan de tegels. */
   begin: ["Vandaag rekenen we met tegels.", "We gaan samen rekenen met tegels."],
   beginTegels: "Elke tegel heeft vakjes. Tel de vakjes, dan weet je welk getal het is.",
-  kies1: "Kies maar een tegel die jij wilt. Zet hem op het veld.",
+  kies1: "Welke tegel wil jij? Zet die op het veld.",
   kiesAnder: ["Kies een andere tegel.", "Zet er nog {1:wit} op het veld.", "Nu een andere tegel. Kies maar."],
   /** Hulphandje bij een tegel kiezen en zetten (15.19). */
   kiesHand: ["Tik op een tegel. Tik dan op het veld.", "Tik eerst op een tegel. Tik daarna op het veld."],
   /** Stap 2: welk getal? (elke keer anders verwoord, draaiboek stap 2). */
-  welkGetal: ["Welk getal is dit?", "Welk getal heb je gekozen?", "Welk getal hoort bij deze tegel?"],
+  welkGetal: ["Welk getal is dit?", "Welk getal past bij jouw tegel?", "Welk getal hoort bij deze tegel?"],
   getalGoed: (n: number) => [`Het is een ${g(n)}.`, `Dit is de ${g(n)}.`, `Klopt, het is een ${g(n)}.`],
   /** Bliepo heeft de vakjes geteld (in beeld). Het getal staat er 1 keer (was: "Ik tel 5 vakjes. Het is een 5."). */
-  getalTel: (n: number) => [`Het zijn ${g(n)} vakjes. Dat is het getal van deze tegel.`, `Ik tel ${g(n)} vakjes. Zo weet je welk getal het is.`],
+  getalTel: (n: number) => [`Deze tegel heeft ${g(n)} vakjes. Dat is zijn getal.`, `Ik tel ${g(n)} vakjes. Zo weet je welk getal het is.`],
   /** Stap 4 en 6: twee tegels. */
   tweeTegels: ["Zet nu {2:wit} tegels op het veld.", "Kies zelf welke."],
   tweeTegelsNog: "Kies {2:wit} andere tegels.",
@@ -75,10 +75,10 @@ export const ZIN = {
   somUitleg: "Je zet de tegels bij elkaar. Daarom schrijf je een plus.",
   somSamen: (a: number, b: number) => [`Kijk, zo schrijf je het: ${som(a, b, 10)}.`, `Kijk, dit is de som: ${som(a, b, 10)}.`],
   /** Stap 11: omwisselen. */
-  omdraaien: ["Wat gebeurt er als ik de tegels omdraai?", "Kijk goed mee."],
+  omdraaien: ["Ik draai de tegels om. Wat zou er gebeuren?", "Kijk goed mee."],
   nuBovenop: (p: number) => [`Nu ligt de ${g(p)} bovenop.`, "Hoeveel is het nu samen?"],
-  omGoed: (a: number, b: number) => [`${som(a, b, 10)} en ${som(b, a, 10)}. Je mag de getallen omdraaien.`, `${som(a, b, 10)} en ${som(b, a, 10)}. Omdraaien mag: het blijft evenveel.`],
-  omTel: [`Het zijn dezelfde tegels. Het is nog steeds ${g(10)}. Omdraaien maakt niet uit.`, `Het zijn dezelfde vakjes. Samen blijft het ${g(10)}. Je mag de getallen omdraaien.`],
+  omGoed: (a: number, b: number) => [`${som(a, b, 10)} en ${som(b, a, 10)}. Andersom komt er hetzelfde uit.`, `${som(a, b, 10)} en ${som(b, a, 10)}. Omdraaien mag: het blijft evenveel.`],
+  omTel: [`Kijk, het zijn dezelfde tegels. Samen hebben ze ${g(10)} vakjes.`, `Het zijn dezelfde vakjes. Samen blijft het ${g(10)}. Andersom mag ook.`],
   /** Stap 12: nog een manier. */
   nogManier: [`Laten we nog een manier vinden om ${g(10)} te maken.`, "Kies een andere tegel."],
   /** Stap 13: einde. */
@@ -93,9 +93,9 @@ export const ZIN = {
 /** Bewaard voor wie hem nog laadt (nu 5 varianten in ZIN.aanmoedigTikken). */
 export const AANMOEDIG_TIKKEN = ZIN.aanmoedigTikken;
 
-/** Reactie bij goed (draaiboek stap 7: lof met de som erin). 5 is de zin van Synthesis ("precies; 2 + 3 = 5"). */
+/** Reactie bij goed (draaiboek stap 7: lof met de som erin). Plek 5 was vertaald uit Synthesis; sinds 19 nov 2026 een eigen zin (15.41). */
 export const SOMREACTIE = (a: number, b: number, t: number) =>
-  rij([`Dat klopt: ${som(a, b, t)}.`, `Ja, ${g(a)} en ${g(b)} maken samen ${g(t)}.`, `${som(a, b, t)}, precies.`, `Je hebt ${g(t)} gemaakt met de ${g(a)} en de ${g(b)}.`, `Inderdaad, zo kom je op ${g(t)}.`, `Precies, ${som(a, b, t)}.`], [4]);
+  rij([`Dat klopt: ${som(a, b, t)}.`, `Ja, ${g(a)} en ${g(b)} maken samen ${g(t)}.`, `${som(a, b, t)}, precies.`, `Je hebt ${g(t)} gemaakt met de ${g(a)} en de ${g(b)}.`, `Inderdaad, zo kom je op ${g(t)}.`, `Goed gerekend: ${som(a, b, t)}.`], [4]);
 export const SOMREACTIE_ROBOT = 4;
 
 /* ---------- denkfouten (draaiboek Plussommen §7; namen voor de voortgang) ---------- */
@@ -141,17 +141,17 @@ export function getalFout(x: number, goed: number, opties: number[], nr = 0): Fo
   const X = g(x);
   const paar = Math.abs(goed - x) === 1 ? "{1:wit} vakje" : "een paar vakjes";
   /* Hints zonder richting (mogen altijd): alleen hoe je telt. */
-  const hint = ["Tel de vakjes van de tegel. Wijs ze stuk voor stuk aan.", "Kijk goed naar de tegel en tel de vakjes rustig.", "Tel de vakjes nog eens. Je mag ze met je vinger aanwijzen.", "Probeer het nog eens. Tel de vakjes en tik op het getal."];
+  const hint = ["Tel de vakjes van de tegel. Wijs ze stuk voor stuk aan.", "Kijk goed naar de tegel en tel de vakjes rustig.", "Tel de vakjes nog eens. Je mag ze met je vinger aanwijzen.", "Tel de vakjes. Tik dan op dat getal."];
   if (x < goed)
     return metV({ code: "te-weinig-hokjes", soort: "te-weinig-hokjes", denkfout: "telde er te weinig vakjes (sloeg er een over)", scherm: SCHERM, ...(verklapt ? { noot: NOOT } : {}) }, nr, {
-      eerste: verklapt ? DICHTBIJ(X) : [`Je koos ${X}. De tegel heeft meer vakjes.`, `Bijna! ${X} is nog iets te weinig.`, `${X}? Ik tel er meer.`, `Je tikte op ${X}. Ik zie nog meer vakjes.`],
+      eerste: verklapt ? DICHTBIJ(X) : [`Je koos ${X}. De tegel heeft meer vakjes.`, `Bijna! ${X} is nog iets te weinig.`, `${X}? Er zijn nog meer vakjes.`, `Je tikte op ${X}. Ik zie nog meer vakjes.`],
       hint,
       uitleg: [`Je hebt ${paar} overgeslagen. We tellen ze allemaal.`, `Je hebt ${paar} niet meegeteld. We tellen ze samen.`, `De tegel heeft ${paar} meer. We tellen ze samen.`],
       weerEerste: verklapt ? [] : ["Je telde er weer te weinig.", "Het zijn er weer iets te weinig.", "Weer iets te weinig, zie ik."],
       weerUitleg: verklapt ? [] : ["We tellen ze rustig, stuk voor stuk.", "Elk vakje telt mee. We tellen ze samen."],
     });
   return metV({ code: "te-veel-hokjes", soort: "te-veel-hokjes", denkfout: "telde er te veel vakjes (telde een vakje 2 keer)", scherm: SCHERM, ...(verklapt ? { noot: NOOT } : {}) }, nr, {
-    eerste: verklapt ? DICHTBIJ(X) : [`Je koos ${X}. Zo veel vakjes heeft de tegel niet.`, `Bijna! ${X} is iets te veel.`, `${X}? Ik tel er minder.`, `Je tikte op ${X}. Dat zijn er iets te veel.`],
+    eerste: verklapt ? DICHTBIJ(X) : [`Je koos ${X}. Zo veel vakjes heeft de tegel niet.`, `Bijna! ${X} is iets te veel.`, `${X}? Er zijn minder vakjes.`, `Je tikte op ${X}. Dat zijn er iets te veel.`],
     hint,
     uitleg: [`Je hebt ${paar} {2:wit} keer geteld. We tellen ze stuk voor stuk.`, `De tegel heeft ${paar} minder. We tellen ze samen.`, `Je telde ${paar} te veel. We tellen ze samen.`],
     weerEerste: verklapt ? [] : ["Je telde er weer te veel.", "Het zijn er weer iets te veel.", "Weer iets te veel, zie ik."],
@@ -165,17 +165,17 @@ export function totaalFout(x: number, a: number, b: number, opties: number[], nr
   const kant = opties.filter((k) => k !== x && (x < t ? k > x : k < x));
   const verklapt = kant.length === 1;
   const X = g(x);
-  const hint = zonderDubbel([`Tel de vakjes van de ${g(a)} en de ${g(b)} samen.`, "Tel de vakjes van allebei de tegels.", "Probeer het nog eens. Tel de vakjes en tik op het getal.", `Begin bij de ${g(a)} en tel de vakjes van de ${g(b)} erbij.`]);
+  const hint = zonderDubbel([`Tel de vakjes van de ${g(a)} en de ${g(b)} samen.`, "Tel de vakjes van allebei de tegels.", "Tel de vakjes. Tik dan op dat getal.", `Begin bij de ${g(a)} en tel de vakjes van de ${g(b)} erbij.`]);
   if (x < t)
     return metV({ code: "samen-te-weinig", soort: "samen-te-weinig", denkfout: "telde er te weinig bij elkaar", scherm: SCHERM, ...(verklapt ? { noot: NOOT } : {}) }, nr, {
-      eerste: verklapt ? DICHTBIJ(X) : zonderDubbel([`Je koos ${X}. Samen zijn het er meer.`, `Bijna! ${X} is nog iets te weinig.`, `${g(a)} en ${g(b)} samen is iets meer dan ${X}.`, `${X}? Ik tel meer vakjes.`]),
+      eerste: verklapt ? DICHTBIJ(X) : zonderDubbel([`Je koos ${X}. Samen zijn het er meer.`, `Bijna! ${X} is nog iets te weinig.`, `${X} is net te weinig voor ${g(a)} en ${g(b)} samen.`, `${X}? Er horen nog meer vakjes bij.`]),
       hint,
       uitleg: ["Alle vakjes van allebei de tegels tellen mee.", "Je hebt nog niet alle vakjes geteld.", "Samen hebben de tegels meer vakjes."],
       weerEerste: verklapt ? [] : ["Je telde weer te weinig.", "Het is weer te weinig.", "Weer te weinig, zie ik."],
       weerUitleg: verklapt ? [] : ["Alle vakjes van allebei de tegels tellen mee.", "We tellen de vakjes van de {2:wit} tegels samen."],
     });
   return metV({ code: "samen-te-veel", soort: "samen-te-veel", denkfout: "telde er te veel bij elkaar", scherm: SCHERM, ...(verklapt ? { noot: NOOT } : {}) }, nr, {
-    eerste: verklapt ? DICHTBIJ(X) : zonderDubbel([`Je koos ${X}. Samen zijn het er minder.`, `Bijna! ${X} is iets te veel.`, `${g(a)} en ${g(b)} samen is iets minder dan ${X}.`, `${X}? Ik tel minder vakjes.`]),
+    eerste: verklapt ? DICHTBIJ(X) : zonderDubbel([`Je koos ${X}. Samen zijn het er minder.`, `Bijna! ${X} is iets te veel.`, `${X} is net te veel voor ${g(a)} en ${g(b)} samen.`, `${X}? Dat zijn te veel vakjes.`]),
     hint,
     uitleg: ["Elk vakje telt maar {1:wit} keer.", "Je hebt vakjes {2:wit} keer geteld.", "Samen hebben de tegels minder vakjes."],
     weerEerste: verklapt ? [] : ["Je telde weer te veel.", "Het is weer te veel.", "Weer te veel, zie ik."],
@@ -218,7 +218,7 @@ export function somFout(x: string, p: number, q: number): FoutV {
     return metV({ code: "cijfers-naast-elkaar", soort: "cijfers-naast-elkaar", denkfout: "zette de getallen naast elkaar (3 en 7 werd 37)", scherm: SCHERM }, 0, {
       /* 19 nov 2026 (Sara: losse cijfers nooit als 1 groter getal lezen; KEUZES Ronde 52): het aan elkaar gezette getal
          wit (verwijst nergens naar, 2.1), de 2 losse getallen in de kleur van hun tegel. Was: "Je zette de getallen naast elkaar." */
-      eerste: [`Je zette de getallen naast elkaar. Dan lees je {${p}${q}:wit}.`, `Je hebt de ${g(p)} en de ${g(q)} naast elkaar gezet.`, "In deze som staan de getallen naast elkaar."],
+      eerste: [`Je zette de getallen naast elkaar. Dan lees je {${p}${q}:wit}.`, `Je plakte de ${g(p)} en de ${g(q)} aan elkaar vast.`, "In deze som staan de getallen naast elkaar."],
       hint: ["Je telt de tegels bij elkaar op. Hoeveel is dat samen?", "Achter het is-teken staat hoeveel het samen is. Welke som hoort erbij?", "Tel de vakjes van de tegels. Dat getal komt achter het is-teken."],
       uitleg: ["Achter het is-teken staat hoeveel de tegels samen zijn.", "Naast elkaar is een ander getal. We tellen de tegels juist bij elkaar op."],
       weerEerste: ["Je zette de getallen weer naast elkaar.", "Dat zijn weer de getallen naast elkaar.", "Weer naast elkaar, zie ik."],
@@ -240,8 +240,8 @@ export function somFout(x: string, p: number, q: number): FoutV {
 export function omwisselFout(x: number): FoutV {
   const wat = x < 10 ? "te weinig" : "te veel";
   return metV({ code: "totaal-verandert-bij-omwisselen", soort: "totaal-verandert-bij-omwisselen", denkfout: "denkt dat het totaal verandert als de tegels omgedraaid liggen", scherm: SCHERM }, x, {
-    eerste: [`${g(x)}? Dat is net ${wat}.`, `Je koos ${g(x)}. Dat is iets ${wat}.`, `Bijna! ${g(x)} is net ${wat}.`],
-    hint: ["Tel de vakjes nog eens, stuk voor stuk.", "Probeer het nog eens. Tel de vakjes van de tegels.", "Kijk goed naar de tegels en tel de vakjes rustig."],
+    eerste: [`${g(x)} vakjes is ${wat}.`, `Je koos ${g(x)}. Dat is iets ${wat}.`, `Bijna! ${g(x)} is net ${wat}.`],
+    hint: ["Wijs elk vakje aan en tel ze.", "Probeer het nog eens. Tel de vakjes van de tegels.", "Kijk goed naar de tegels en tel de vakjes rustig."],
     uitleg: ["Ze liggen alleen anders. Het zijn nog steeds dezelfde vakjes.", "De tegels zijn alleen omgedraaid. Er kwam geen vakje bij en er ging er geen weg."],
     /* 9 en daarna 11 is niet "weer hetzelfde": dan de gewone eerste zin met de uitleg. */
     weerEerste: [],

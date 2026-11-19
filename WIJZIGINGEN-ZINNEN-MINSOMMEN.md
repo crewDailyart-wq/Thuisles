@@ -133,3 +133,14 @@ Opdracht van Sara: het woord "nagekeken" (en "nakijken") komt niet meer voor in 
 |---|---|---|---|
 | squla-min-machine-1-gouden | nagekeken weg | Er ${u === 1 ?  /  :  / } ${U} ${blokjes(u)} uit. / Ik heb het nagekeken: ${A} min ${B} is ${U}. | Er ${u === 1 ?  /  :  / } ${U} ${blokjes(u)} uit. / Zie je, ${B} eraf en dan heb je er nog ${U}. |
 | squla-min-machine-1-gouden | nagekeken weg | Van de ${A} ${blijft(u)} er ${U} over. / Ik heb het nagekeken: ${A} min ${B} is ${U}. | Van de ${A} ${blijft(u)} er ${U} over. / Zie je, ${B} eraf en dan heb je er nog ${U}. |
+
+
+## 19 november 2026: eigen zinnen in plaats van de vertaalde Synthesis-zinnen (besluit Sara, BOUWREGELS 15.41)
+
+Sara besliste: in onze gouden lessen geen zinnen van Synthesis, ook niet vertaald. Elke nieuwe zin staat op dezelfde plek in de rij, doet hetzelfde en is ongeveer even lang. Getallen, antwoorden, keuzes en robotplekken zijn niet veranderd. Fouttabel-script opnieuw gedraaid. Oude zinnen: WEGGEHAALD.md. Bleven staan (gewoon Nederlands, geen herkenbare kopie): "Precies, …", "Dat klopt, …" en "Je hebt goed gewerkt vandaag!" (die laatste zegt Bliepo ook in 6 andere lessen).
+
+| Les | Waar | Oud (vertaald uit Synthesis) | Nieuw (eigen zin) |
+|---|---|---|---|
+| gouden | de 1e vraag van de uitleg | Wat gebeurt er met het totaal als er een stip bij komt? | Er komt 1 stip bij. Wat zie je aan het totaal? |
+| gouden | samen voordoen klaar (variant 2) | We begonnen met 10 en haalden er 4 weg. Er blijven er 6 over. | Van de 10 gingen er 4 weg. Er blijven er 6 over. (bij 1: ging) |
+| gouden | 2e keer mis (variant 5) | Deze is best lastig. We doen het samen. | Dat is een moeilijke. We doen het samen. |

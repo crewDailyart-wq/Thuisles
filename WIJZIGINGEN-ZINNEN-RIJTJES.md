@@ -41,3 +41,32 @@ Op verzoek van Sara zijn alle punten van KEUZES-VOOR-SARA.md Ronde 51 met advies
 **Punt 12:** BLIEPO-KARAKTER.md is gelijk gemaakt aan de code: in §10 zijn "Er is nog een betere keuze." en "Ik zie een andere die beter past." weg (WEGGEHAALD.md); bij §3.2 "Na lang nadenken" staat dat de code dit nog niet gebruikt; bij §5 staat dat de andere groeten later gaan afwisselen.
 
 **Stem:** de bewaarde opname van "Klaar! Wat heb je goed je best gedaan." past niet meer bij de zin met uitroepteken. Die moet bij de Ruth-ronde aan het eind opnieuw. De andere veranderde zinnen hadden nog geen opname.
+
+## 19 november 2026 (later): Ronde 51 punt 10 en 13 uitgevoerd (besluit Sara)
+
+Elke zin bleef op zijn plek in het rijtje; robotplekken, de kijkvraag-plek (4), "Goed gekozen!" (26) en "Gevonden!" (6) zijn gelijk. `nooit-dubbel.ts` is niet veranderd. Oude zinnen staan in WEGGEHAALD.md. Per zin oud / nieuw / doorgevoerd of afgewezen (met reden): RIJTJES-RESULTAAT-WARMER.md.
+
+**Punt 13, warmer (16 doorgevoerd, 9 afgewezen):**
+
+| Rijtje, plek | Oud | Nieuw |
+|---|---|---|
+| LOF 2 | Helemaal goed! | Helemaal goed, knap van jou! |
+| LOF 4 (kijkvraag) | Dat heb je goed gezien. | Dat heb je goed gezien, zeg! |
+| LOF 7 | Heel goed! | Heel goed, ik ben blij! |
+| LOF 12 | Goed zo! | Goed zo, dat kun jij! |
+| LOF 17 | Netjes! | Netjes gedaan, hoor! |
+| LOF 21 | Top! | Top, daar word ik blij van! |
+| LOF 32 (robot) | Mijn scherm is helemaal groen. Goed zo! | Mijn scherm is helemaal groen. Dat komt door jou! |
+| LOF 37 (robot) | Mijn scherm straalt groen! | Mijn scherm straalt groen voor jou! |
+| LOF 39 (robot) | Die bewaar ik in mijn geheugen. Goed zo! | Die bewaar ik in mijn geheugen. Fijn! |
+| BEVESTIG 2 | Nu heb je hem. | Nu heb je hem! |
+| BEVESTIG 3 | Die is goed. | Die is goed. Fijn! |
+| BEVESTIG 4 | Zo is het. | Zo is het. Goed doorgezet! |
+| BEVESTIG 7 | Nu zit het goed. | Nu zit het goed. Mooi! |
+| EINDE 1 | Goed gedaan! Tot de volgende keer. | Goed gedaan! (na de tik op de kaart: "Ik zie je graag de volgende keer.") |
+| EINDE 7 | Dat was de les. Tot snel! | Dat was de les. Ik vond het fijn. (na de tik: "Tot snel!") |
+| EINDE 8 (robotplek) | Alles is af. De les is klaar! | Alles is af. Wat ben jij goed bezig geweest! |
+
+**Punt 10, het afscheid na de kaart (BOUWREGELS 15.50):** EINDE 9 (robot) "Deze les bewaar ik in mijn geheugen. Tot de volgende keer!" werd bij de kaart "Deze les bewaar ik in mijn geheugen."; "Tot de volgende keer!" komt na de tik. Hoe: `EINDE_AFSCHEID` (zelfde plekken als `EINDE`) en `afscheidNa(eind)` in `squla-klok-gouden-zinnen.ts`; alle 21 gouden lessen en `squla-extra-basis.ts` zeggen eerst "eindzin + Tik op de kaart.", wachten op de tik en zeggen dan het afscheid (als die eindzin er een heeft). De klok zei nog geen "Tik op de kaart."; die heeft nu dezelfde 3 varianten als de andere lessen (`VAR.kaartTik`), zodat de opdracht het laatste in beeld is (15.37).
+
+**Stem:** "Helemaal goed!" en "Zo is het." hadden een bewaarde opname; de nieuwe zinnen komen in de Ruth-ronde (DESIGN-LATER.md).

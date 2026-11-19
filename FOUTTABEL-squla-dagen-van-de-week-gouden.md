@@ -215,7 +215,7 @@ Er staan bijna geen getallen in deze les; "2 dagen", "1 dag", "6" en "7 dagen" z
 | Andere dag van het weekend: de vraag opnieuw | 3 | Tik op de andere dag van het weekend. / Op welke andere dag is er geen school? / Zoek de andere dag zonder school. Tik erop. |
 | Er mist een dag: wat er is | 3 | Er mist een dag in de trein. / Oei, er mist een dag in de trein! / Kijk, er is een lege plek in de trein. |
 | Er mist een dag: het hulphandje | 2 | Sleep een kaart naar de lege plek. / Sleep maar een kaart naar de lege plek. |
-| Er mist een dag: lang niets nagekeken | 2 | Ik help je met deze. / Ik help je even. |
+| Er mist een dag: lang niets nagekeken | 2 | Deze doen we samen. / Ik help je even. |
 | Hulphandje: aanmoediging (komt vóór de opdracht) | 5 | Je bent goed bezig. / Jij kunt dit. / Het gaat goed zo. / Probeer het maar. / Toe maar, je doet het goed. |
 | 2e keer mis: samen | 5 | Kom, we kijken samen. / We zoeken het samen. / Kom, samen lukt het. / Geeft niks. We kijken samen. / Weet je wat? We zoeken het samen. |
 | Samen, tik op de wagon: begin | 3 | We lopen samen langs de wagons. / We lezen samen de bordjes, van voor naar achter. / Kom, we gaan de trein langs. Ik begin vooraan. |

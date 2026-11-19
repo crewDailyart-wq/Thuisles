@@ -43,7 +43,7 @@ import { zetTestAntwoord } from "./squla-hulp";
 import { speelLesgeluid } from "@/lib/lesgeluiden";
 import { bliepoScherm } from "@/lib/bliepo-scherm";
 import { bewaarUitkomst } from "@/app/lesuitkomstacties";
-import { AANMOEDIG, AANMOEDIG_DENK, AANMOEDIG_KIEST, BEVESTIG, EINDE, EINDE_VEEL_FOUTEN, KLOKKEN, KLOKREACTIE, LOF, LOF_KIJK_INDEX, MOMENT, NAAM_GROET, NAAM_LOF, ONDUIDELIJK, ONDUIDELIJK_ANDERE, ONDUIDELIJK_NOG_1_KEER, OVERGANG, SNEL, VAR, VOORDOEN, ZIN, foutReactie, kiesStuk, kleineStap as kleineStapZin, metNaam, nieuweKiezer, vraagMet, vraagOpnieuw, zetFout, zetSamen, type Fout, type Rijtje, type Scherm } from "./squla-klok-gouden-zinnen";
+import { AANMOEDIG, AANMOEDIG_DENK, afscheidNa, AANMOEDIG_KIEST, BEVESTIG, EINDE, EINDE_VEEL_FOUTEN, KLOKKEN, KLOKREACTIE, LOF, LOF_KIJK_INDEX, MOMENT, NAAM_GROET, NAAM_LOF, ONDUIDELIJK, ONDUIDELIJK_ANDERE, ONDUIDELIJK_NOG_1_KEER, OVERGANG, SNEL, VAR, VOORDOEN, ZIN, foutReactie, kiesStuk, kleineStap as kleineStapZin, metNaam, nieuweKiezer, vraagMet, vraagOpnieuw, zetFout, zetSamen, type Fout, type Rijtje, type Scherm } from "./squla-klok-gouden-zinnen";
 import type { Kiezer } from "./nooit-dubbel";
 import { alleenBijKeuze } from "./squla-klok-gouden-zinnen";
 
@@ -663,8 +663,13 @@ const gouden: Lesdraaiboek = {
     l.verderWeg?.();
     const tik = l.kaart();
     speelLesgeluid("kaart");
-    await zeg(l, veelFouten(l) ? EINDE_VEEL_FOUTEN : kies(l, EINDE));
+    /* Ronde 51 punt 10 (15.50): eindzin + "Tik op de kaart." in 1 uiting (zoals de andere gouden lessen); het afscheid
+       ("Tot snel!") pas na de tik, zo blijft de opdracht het laatste in beeld (15.37). */
+    const eind = veelFouten(l) ? EINDE_VEEL_FOUTEN : kies(l, EINDE);
+    await zeg(l, `${eind} ${K(l).kies("kaartTik", VAR.kaartTik)}`);
     await tik;
+    const afscheid = afscheidNa(eind);
+    if (afscheid) await zeg(l, afscheid);
   },
 };
 

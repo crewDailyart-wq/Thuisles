@@ -164,8 +164,8 @@ export const ZIN = {
   proefOpnieuw: (v: HuisVraag) => `In het paarse vak horen ${aantal(v.deel, v.vw, KA)}. Schuif de ${meervoud(v.vw)} maar naar het goede vak.`,
   proefLastig: "Dit is nog lastig. Geeft niks! We kijken eerst samen hoe splitsen gaat.",
   /** Stap 2b: Nee. */
-  /* "Dat geeft niet, we komen er wel." is de tekst van Synthesis (Part Part Whole), in het Nederlands (15.2). */
-  nee: "Dat geeft niet, we komen er wel. We kijken eerst samen hoe splitsen gaat.",
+  /* Was "Dat geeft niet, we komen er wel. …" (vertaald uit Synthesis, Part Part Whole); sinds 19 nov 2026 een eigen zin (15.41). */
+  nee: "Geeft niks, dat leer je nu. We kijken eerst samen hoe splitsen gaat.",
   /* "Klaar met kijken? Tik dan op de blauwe pijl." en "Tik op de blauwe pijl als je het nog eens wilt proberen." zijn weg
      sinds 10 nov 2026: Bliepo praat door en het kind hoeft nooit op de pijl te tikken (BOUWREGELS 15.27; WEGGEHAALD.md). */
 
@@ -193,7 +193,7 @@ export const ZIN = {
   totaalUitleg: [`De 2 delen zijn ${g(1, KA)} en ${g(4, KB)}. Samen maken ze ${g(5)}.`, "Alles samen heet het totaal. Dat staat boven in het dak."],
   /** Stap 10: kun je 5 ook anders splitsen? (zelf 2 delen zoeken) */
   andersVraag: `${g(5)} kun je splitsen in ${g(1, KA)} en ${g(4, KB)}. Dat kan ook anders! Zoek zelf een andere manier.`,
-  andersAlGevonden: `Dat klopt, maar ${g(1, KA)} en ${g(4, KB)} hadden we al. Zoek een andere manier.`,
+  andersAlGevonden: `Die klopt, maar ${g(1, KA)} en ${g(4, KB)} vond je al. Zoek een andere manier.`,
   andersLeegVak: "Sleep in allebei de vakken pionnen. Dan heb je 2 delen.",
   andersHelp: `Ik help je. Ik leg ${g(3, KA)} pionnen in het paarse vak. Sleep de andere naar het oranje vak.`,
   /** Na de hulp lukt het nog niet: Bliepo maakt het af en de les gaat door (geen eindeloze lus; kind-test punt 5). */
@@ -520,7 +520,7 @@ export function parenFout(v: ParenVraag, tel: number[]): Fout {
     eerste:
       c === 0
         ? [`In het huisje met ${g(t)} is het vakje nog leeg.`, `Het huisje met ${g(t)} heeft nog een leeg vakje.`]
-        : [`Bij het huisje met ${g(t)}: ${g(d, KA)} en ${g(c, KB)} is samen ${g(d + c)}. We zoeken ${g(t)}.`, `Even rekenen bij dit huisje: ${g(d, KA)} en ${g(c, KB)} is samen ${g(d + c)}. We zoeken ${g(t)}.`, `In dit huisje is ${g(d, KA)} en ${g(c, KB)} samen ${g(d + c)}. In het dak staat ${g(t)}.`],
+        : [`Bij het huisje met ${g(t)}: ${g(d, KA)} en ${g(c, KB)} is samen ${g(d + c)}. We zoeken ${g(t)}.`, `Tel dit huisje na: ${g(d, KA)} en ${g(c, KB)} maakt ${g(d + c)}, niet ${g(t)}.`, `In dit huisje is ${g(d, KA)} en ${g(c, KB)} samen ${g(d + c)}. In het dak staat ${g(t)}.`],
     hint: ["Kijk ook naar de andere huisjes. Tel bij elk huisje door tot het getal in het dak.", "Begin bij het getal in het vakje ernaast en tel door tot het getal in het dak.", "Doe het huisje voor huisje. Het getal ernaast en de ballen zijn samen het getal in het dak."],
     uitleg: ["In elk huisje zijn het getal ernaast en de ballen samen het getal in het dak.", "Het getal in het vakje en de ballen ernaast zijn samen het getal in het dak."],
     weerEerste: [`Bij het huisje met ${g(t)} klopt het weer niet.`, `Het huisje met ${g(t)} klopt weer niet.`],

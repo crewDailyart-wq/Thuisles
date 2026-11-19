@@ -786,7 +786,7 @@ export function typFout(x: number, v: Vraag): Fout {
       soort: "rij-gemist",
       denkfout: `sloeg een hele rij over (${x} van de ${n})`,
       ...metV({
-        eerste: ["Dan heb je een rij overgeslagen.", `Je typte ${X}. Dan mis je nog een hele rij.`, `${X}? Dan heb je een rij overgeslagen.`],
+        eerste: ["Dan heb je een rij overgeslagen.", `Je typte ${X}. Er hoort nog een hele rij bij.`, `${X}? Dan heb je een rij overgeslagen.`],
         hint: ["Tel rij voor rij. Tik elk blaadje aan als je telt.", "Tel elke rij. Tik de blaadjes aan, dan zie je wat je al telde.", "Probeer het nog eens. Tel alle rijen, van boven naar beneden."],
         uitleg: ["Elke rij telt mee.", "Alle rijen horen erbij.", "We slaan geen rij over."],
         weerEerste: ["Je sloeg weer een rij over.", "Weer een rij overgeslagen, zie ik."],

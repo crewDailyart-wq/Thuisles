@@ -389,6 +389,7 @@ Bij elke fout: Bliepo's scherm kleurt 1,5 seconde rood, geen fout-geluidje, nooi
 - Een eindzin uit het rijtje in BLIEPO-KARAKTER.md (3.13).
 - Verder zoals het draaiboek (bijvoorbeeld een eindkaart), in onze eigen stijl.
 - **De eindkaart staat links naast het vaste tekstvak** (BOUWREGELS 15.46; regelt het gedeelde lesscherm bij `stemHeelUitpraten`). Bliepo's laatste zin loopt nooit over de kaart; geen pijl op de eindkaart.
+- **Eerst de eindzin, dan "Tik op de kaart."; het afscheid pas na de tik** (BOUWREGELS 15.50, Sara 19 november 2026). Zo bouw je het einde: `const eind = veelFouten(l) ? EINDE_VEEL_FOUTEN : kies(l, EINDE);` → `await zeg(l, `${eind} ${kaartTik}`);` → `await tik;` → `const afscheid = afscheidNa(eind); if (afscheid) await zeg(l, afscheid);`. Zet nooit "Tot snel!" of "Tot de volgende keer" in een eindzin vóór de kaart; dat hoort in `EINDE_AFSCHEID`.
 
 ---
 

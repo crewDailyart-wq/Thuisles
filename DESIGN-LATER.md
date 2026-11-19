@@ -71,3 +71,11 @@ De gedeelde vaste rijtjes (lof, "nu is het goed", eindzinnen, groet; o.a. in `sr
 
 ## Vloeiendheid en telefoontests: pas aan het einde (besluit Sara, 19 nov 2026)
 Hapering 57 ms en 84 ms op de telefoon: later, blokkeert niets. Meten, prestatietests, Ruth en online zetten komen pas als de hele website klaar is (zie CLAUDE.md bovenaan).
+
+## Ruth-ronde: zinnen die opnieuw moeten na de rijtjes en de eigen zinnen (19 november 2026)
+Bij de warmere rijtjes (RIJTJES-RESULTAAT-WARMER.md), het afscheid na de kaart (BOUWREGELS 15.50) en de eigen zinnen in plaats van Synthesis-zinnen (15.41) zijn zinnen veranderd. Van deze oude zinnen bestaat een bewaarde opname; de nieuwe zin op die plek moet in de Ruth-ronde opgenomen worden (de oude opname blijft staan, andere lessen kunnen hem gebruiken):
+- "Helemaal goed!" → "Helemaal goed, knap van jou!" (LOF plek 2)
+- "Zo is het." → "Zo is het. Goed doorgezet!" (BEVESTIG plek 4)
+- "Welk getal heb je gekozen?" → "Welk getal past bij jouw tegel?" (Plussommen extra)
+- "Wat gebeurt er als ik de tegels omdraai?" → "Ik draai de tegels om. Wat zou er gebeuren?" (Plussommen extra)
+Alle andere veranderde zinnen hadden nog geen opname; die komen vanzelf mee in de Ruth-ronde. Nieuw: de afscheidszinnen na de tik op de kaart ("Ik zie je graag de volgende keer.", "Tot snel!", "Tot de volgende keer!") en bij de klok "Tik op de kaart." (3 varianten). Nu geen opnames maken (geen tegoed).

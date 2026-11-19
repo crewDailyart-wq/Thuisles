@@ -227,19 +227,19 @@ const vervolg = (v: Vraag) => VRAGEN[v.nr - 2]?.soort === v.soort;
 export const ZIN = {
   /**
    * Stap 3: "laten zien wat je weet?" (draaiboek: ja = proef, nee = uitleg). Groet en startvraag zijn 1 stuk (Sara,
-   * 10 nov). Uitlegdeel en persoonlijke vraag (BOUWREGELS 4.4); Ja = beginnen, Nee = samen oefenen. De vraag is die van
-   * Synthesis ("wil je laten zien wat je nog weet?"); "Weet jij al hoe dat gaat?" was vaag (BOUWREGELS 15.36). Niet
+   * 10 nov). Uitlegdeel en persoonlijke vraag (BOUWREGELS 4.4); Ja = beginnen, Nee = samen oefenen. "Weet jij al hoe dat
+   * gaat?" was vaag (BOUWREGELS 15.36); de vertaalde Synthesis-vraag is sinds 19 nov 2026 een eigen zin (15.41). Niet
    * langer dan de eerste versie (79 tekens): met de groet erboven moet het in het tekstvak passen (15.30).
    */
   start: [
-    "We zoeken bij welk getal het raketje staat. Wil je laten zien wat je al kunt?",
+    "We zoeken bij welk getal het raketje staat. Kun jij dat al?",
     "Vandaag zoeken we het getal bij het raketje. Wil je het eerst zelf proberen?",
   ],
   proefBegin: ["Laat maar zien!", "Toe maar, laat maar zien!", "Fijn! Laat maar zien wat je kunt."],
   proefGoed: ["Dat gaat goed! We gaan verder.", "Je kunt het al goed. We gaan door.", "Dat gaat al heel goed. Kom, we gaan verder."],
   proefLastig: [
     ["Dit is nog een beetje lastig. Geeft niks!", "We oefenen eerst samen."],
-    ["Dit kan lastig zijn. Dat geeft niks.", "We doen samen een stapje terug."],
+    ["Dat is ook nog nieuw voor je. Geeft niks.", "We bekijken het eerst samen."],
     ["Dat is nog best moeilijk, hè?", "Kom, we oefenen eerst samen."],
   ],
   /** Stap 4: de uitleg (4.5: samen beginnen, 1 ding uitleggen en laten zien, kleine stap, vraag, waarom, minder hulp). */
@@ -269,8 +269,8 @@ export const ZIN = {
     ["Elke sprong is 1 streepje. Tik op het getal vlak naast het raketje."],
   ],
   uitlegHeleStuk: [
-    ["Je wilde het hele stuk in 1 keer doen.", "Het raketje maakt kleine sprongen. Tik op het volgende getal."],
-    ["Jij wilt al naar het eind! Dat is te ver.", "Tik eerst op het getal vlak naast het raketje."],
+    ["Je tikte meteen op het eind.", "Het raketje maakt kleine sprongen. Tik op het volgende getal."],
+    ["Daar wil het raketje straks heen. Nu nog niet.", "Tik eerst op het getal vlak naast het raketje."],
   ],
   uitlegSpringZelf: ["Kijk, zo springt het raketje: steeds 1 streepje verder.", "Kijk, ik laat het zien. Het raketje springt steeds 1 streepje verder."],
   uitlegVraag: "Hoeveel sprongen maakte het raketje?",

@@ -98,9 +98,10 @@ const stippen = (n: number) => (n === 1 ? "stip" : "stippen");
  * Een lijst = varianten: de les kiest er 1 met de gedeelde kiezer (nooit-dubbel.ts), nooit 2 keer achter elkaar
  * dezelfde, ook niet over vragen heen. Getal, antwoord en betekenis zijn niet veranderd. De vraagzinnen ("Hoeveel
  * blokjes komen eruit?", "Hoeveel is 8 − 5?") zijn gelijk gebleven (3.11). Oud naast nieuw: WIJZIGINGEN-ZINNEN-MINSOMMEN.md.
- * Een deel is de tekst van Synthesis (Dot Destruction) in het Nederlands, passend gemaakt voor groep 3 (besluit Sara
- * 17 november 2026, BOUWREGELS 15.2): "We begonnen met 10 en haalden er 4 weg.", "Deze is best lastig.", "Je hebt goed
- * gewerkt vandaag!", "Precies, …", "Dat klopt: …".
+ * 19 november 2026 (besluit Sara, BOUWREGELS 15.41): de zinnen die herkenbaar vertaald uit Synthesis (Dot Destruction)
+ * kwamen ("We begonnen met 10 en haalden er 4 weg.", "Deze is best lastig.", "Wat gebeurt er met het totaal als er een
+ * stip bij komt?") zijn eigen zinnen op dezelfde plek (WIJZIGINGEN-ZINNEN-MINSOMMEN.md). Algemene woorden als "Precies",
+ * "Dat klopt" en "goed gewerkt vandaag" zijn gewoon Nederlands en bleven.
  */
 
 export const ZIN = {
@@ -123,7 +124,7 @@ export const ZIN = {
   /** Eerste keer het schoolbord: een korte overgang (wat het kind ziet verandert). */
   bordEerst: ["Nu staan de minsommen op het schoolbord.", "Kijk, nu staan de minsommen op het schoolbord."],
   /** 2e fout: Bliepo doet het samen voor (draaiboek §3 E: samen in de machine; het kind haalt zelf weg). */
-  samen: ["Kom, we doen het samen.", "Weet je wat? We doen het samen.", "Geeft niks. We doen het samen.", "Ik help je even. We doen het samen.", "Deze is best lastig. We doen het samen."],
+  samen: ["Kom, we doen het samen.", "Weet je wat? We doen het samen.", "Geeft niks. We doen het samen.", "Ik help je even. We doen het samen.", "Dat is een moeilijke. We doen het samen."],
   samenStippen: (v: Minvraag): string[] => {
     const [ka] = kleurenVan(v, true);
     const A = g(v.a, ka);
@@ -149,7 +150,7 @@ export const ZIN = {
     const U = g(u, ka);
     return [
       `${A} ${MIN} ${B} = ${U}. Kijk maar: zoveel ${blijft(u)} er over.`,
-      `We begonnen met ${A} en haalden er ${B} weg. Er ${blijft(u)} er ${U} over.`,
+      `Van de ${A} ${v.b === 1 ? "ging" : "gingen"} er ${B} weg. Er ${blijft(u)} er ${U} over.`,
       `Er ${blijft(u)} ${U} ${stippen(u)} over. Zoveel is ${A} ${MIN} ${B}.`,
     ];
   },
@@ -212,7 +213,7 @@ export const INTRO = {
 export const INTRO_VRAGEN: IntroVraag[] = [
   {
     id: "intro-totaal",
-    vraag: ["Wat gebeurt er met het totaal als er een stip bij komt?"],
+    vraag: [`Er komt ${g(1, K)} stip bij. Wat zie je aan het totaal?`],
     opnieuw: ["Wordt het totaal dan groter of kleiner?"],
     keuzes: ["Het wordt groter.", "Het wordt kleiner."],
     goed: "Het wordt groter.",

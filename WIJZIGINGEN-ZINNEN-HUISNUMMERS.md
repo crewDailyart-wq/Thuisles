@@ -168,3 +168,13 @@ Opdracht van Sara: het woord "nagekeken" (en "nakijken") komt niet meer voor in 
 | Les | Soort | Oud | Nieuw |
 |---|---|---|---|
 | squla-huisnummers-gouden | nagekeken weg | Nagekeken: nummer ${g} hoort hier. | Zie je, dit huis heeft nummer ${g}. |
+
+
+## 19 november 2026: eigen zinnen in plaats van de vertaalde Synthesis-zinnen (besluit Sara, BOUWREGELS 15.41)
+
+Sara besliste: in onze gouden lessen geen zinnen van Synthesis, ook niet vertaald. Elke nieuwe zin staat op dezelfde plek in de rij, doet hetzelfde en is ongeveer even lang. Getallen, antwoorden, keuzes en robotplekken zijn niet veranderd. Fouttabel-script opnieuw gedraaid. Oude zinnen: WEGGEHAALD.md.
+
+| Les | Waar | Oud (vertaald uit Synthesis) | Nieuw (eigen zin) |
+|---|---|---|---|
+| gouden | eerste zin, 1 huis te ver (plek 4) | Je koos 9. Je ging een beetje te ver. | Je koos 9. Dat huis ligt net te ver. |
+| gouden | begin van het laatste blok | We gaan nog een stukje verder. Nu komen de huisnummers tot 50. | Nu lopen we verder de straat in. Hier gaan de huisnummers tot 50. |

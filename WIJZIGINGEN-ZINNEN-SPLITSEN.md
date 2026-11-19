@@ -280,3 +280,18 @@ Opdracht van Sara: het woord "nagekeken" (en "nakijken") komt niet meer voor in 
 | Les | Waar | Oud | Nieuw | Waarom |
 |---|---|---|---|---|
 | squla-splits-splitsen1-1-gouden-extra | tussenvraag, keuze 32 | Je zette de cijfers naast elkaar: {32}. Maar we tellen ze op: {3} + {2} = {5}. | Je zette de cijfers naast elkaar. Dan lees je {32:wit}. Maar we tellen ze op: {3} + {2} = {5}. | 32 staat in een eigen zin en is wit (verwijst nergens naar, 2.1); de 3 en de 2 houden de kleur van hun deel. Zo leest een kind de losse 3 en 2 niet als 32. De keuzes 5, 4 en 32 bleven. |
+
+
+## 19 november 2026: eigen zinnen in plaats van de vertaalde Synthesis-zinnen (besluit Sara, BOUWREGELS 15.41)
+
+Sara besliste: in onze gouden lessen geen zinnen van Synthesis, ook niet vertaald. Elke nieuwe zin staat op dezelfde plek in de rij, doet hetzelfde en is ongeveer even lang. Getallen, antwoorden, keuzes en robotplekken zijn niet veranderd. Fouttabel-script opnieuw gedraaid. Oude zinnen: WEGGEHAALD.md. Bleef staan: "Je hebt 7 gesplitst in 4 en 3." (gewoon de som in woorden, geen herkenbare kopie).
+
+| Les | Waar | Oud (vertaald uit Synthesis) | Nieuw (eigen zin) |
+|---|---|---|---|
+| gouden | na "Nee" op de startvraag | Dat geeft niet, we komen er wel. We kijken eerst samen hoe splitsen gaat. | Geeft niks, dat leer je nu. We kijken eerst samen hoe splitsen gaat. |
+| gouden | uitleg "splits 5 anders" | Dat klopt, maar 1 en 4 hadden we al. Zoek een andere manier. | Die klopt, maar 1 en 4 vond je al. Zoek een andere manier. |
+| gouden | 3 huisjes, eerste zin (variant 2) | Even rekenen bij dit huisje: 4 en 3 is samen 7. We zoeken 6. | Tel dit huisje na: 4 en 3 maakt 7, niet 6. |
+| extra | tussenvraag, 32 | Je zette de cijfers naast elkaar. Dan lees je 32. Maar we tellen ze op: 3 + 2 = 5. | Je plakte de cijfers aan elkaar. Dan lees je 32. Maar we tellen ze op: 3 + 2 = 5. (32 blijft apart en wit, Ronde 52) |
+| extra | tussenvraag, 4 | Je koos 4. Dat is dichtbij. 3 en dan nog 2 erbij is 5. | Je koos 4. Dat scheelt maar weinig. 3 en dan nog 2 erbij is 5. |
+| extra | hoeveel in het totaal? (variant 3) | O, 3 is een deel. Ik zoek het totaal. | Met 3 heb je maar 1 deel. Het totaal is alles samen. |
+| extra | nieuw totaal van 7 (variant 2) | 8? Dat is net iets te veel. | 8 stippen is net iets te veel. |

@@ -327,9 +327,9 @@ export const foutenVan = (v: Vraag4): Record<string, Fout> => Object.fromEntries
  * de denkfout (code, soort, noot) komt nog steeds uit telFout. De oude zinnen zijn telkens 1 van de varianten.
  * Elke situatie die terugkomt heeft varianten; de les kiest met de gedeelde kiezer (nooit-dubbel.ts): nooit dezelfde
  * zin 2 keer achter elkaar, ook niet over vragen heen. Getallen, antwoorden, keuzes en de betekenis zijn niet veranderd.
- * De vraag "Hoeveel … zie je?" blijft gelijk (3.11, 15.36). Een deel is de tekst van Synthesis (Color Count), in het
- * Nederlands (besluit Sara 17 nov 2026), net als bij Tellen: "Ik denk dat je er te veel hebt geteld.", "Probeer het nog
- * eens.", "Laten we ze samen tellen en kijken.", "Kijk, daar heb je het", "Precies, 8 raketjes.", "Dat klopt, er zijn …".
+ * De vraag "Hoeveel … zie je?" blijft gelijk (3.11, 15.36). De zinnen die herkenbaar vertaald uit Synthesis (Color Count)
+ * kwamen ("Ik denk dat je er te veel hebt geteld.", "Laten we ze samen tellen en kijken.", "Kijk, daar heb je het", …) zijn
+ * sinds 19 nov 2026 eigen zinnen op dezelfde plek, net als bij Tellen (15.41; WIJZIGINGEN-ZINNEN-REKENMIX34.md).
  * ===================================================================================================================== */
 
 /** Wisselwoorden voor de kiezer: "Tik op elke bal." en "Tik op elk raketje." tellen als dezelfde zin. */
@@ -438,9 +438,9 @@ export const RM4 = {
   /** Na het hardop tellen. Het laatste getal zegt Bliepo hier (niet ook nog los ervoor): zo klinkt het maar 1 keer. */
   natellenKlaar: (n: number, d: Ding) => [`En ${gk(n, d)}! Je had het precies goed.`, `En de laatste is ${gk(n, d)}. Jij had het goed geteld.`, `En ${gk(n, d)}! Zie je? Je zat precies goed.`],
   /** Als het kind op de pijl tikte (alle nummers staan er meteen): Bliepo noemde nog geen getal. */
-  natellenKlaarSnel: (n: number, d: Ding) => [`Zie je? Het zijn er ${gk(n, d)}. Je had het precies goed.`, `Zie je wel? Het zijn er ${gk(n, d)}. Jij had het goed geteld.`, `Kijk, daar heb je het: ${gk(n, d)}. Je zat precies goed.`],
+  natellenKlaarSnel: (n: number, d: Ding) => [`Zie je? Het zijn er ${gk(n, d)}. Je had het precies goed.`, `Zie je wel? Het zijn er ${gk(n, d)}. Jij had het goed geteld.`, `Het zijn er echt ${gk(n, d)}. Dat koos jij ook.`],
   /** Na de 2e keer: samen tellen. */
-  samenHelp: ["Kom, we tellen ze samen.", "Weet je wat? We tellen ze samen.", "Geeft niks. We tellen ze samen.", "Ik help je even. We tellen ze samen.", "Laten we ze samen tellen en kijken."],
+  samenHelp: ["Kom, we tellen ze samen.", "Weet je wat? We tellen ze samen.", "Geeft niks. We tellen ze samen.", "Ik help je even. We tellen ze samen.", "Ik doe mee. We tellen ze samen."],
   samenTik: (d: Ding) => [`Tik op ${d.elk} ${d.een}. Ik tel mee.`, `Tik ${d.elk} ${d.een} aan. Ik zeg het getal.`, `Tik op alle ${d.naam}. Ik tel hardop mee.`],
   samenHand: (d: Ding) => [`Tik op een ${d.een} zonder nummer.`, `Zoek een ${d.een} zonder nummer en tik erop.`, `${d.elk === "elk" ? "Welk" : "Welke"} ${d.een} heeft nog geen nummer? Tik erop.`],
   /** Het laatste getal is het aantal; het getal staat er 1 keer (was: "8. Samen telden we 8 raketjes."). */
@@ -474,8 +474,8 @@ type ZX = (X: string, d: Ding) => string;
 
 /* De eerste zin (1e keer): wat het kind koos, 1 keer genoemd, vriendelijk, nooit "fout". De oude zinnen zijn er 1 van. */
 const DICHTBIJ_4: ZX[] = [(X) => `${X} is dichtbij.`, (X) => `Je koos ${X}. Je zit er dichtbij.`, (X) => `Je koos ${X}. Dat scheelt niet veel.`, (X) => `Bijna! ${X} is het net niet.`, (X) => `${X}? Dat is heel dichtbij.`, (X) => `Je tikte op ${X}. Het scheelt maar een klein beetje.`];
-const WEINIG_4: ZX[] = [(X) => `${X} is dichtbij, maar je hebt ze nog niet allemaal geteld.`, (X) => `Je koos ${X}. Je hebt ze nog niet allemaal geteld.`, (X) => `${X} is te weinig.`, (X) => `${X}? Ik zie er nog meer.`, (X) => `Bijna! ${X} is nog iets te weinig.`, (X, d) => `${X} ${d.naam}? Je hebt ze nog niet allemaal geteld.`];
-const VEEL_4: ZX[] = [(X) => `${X} is dichtbij, maar dat is te veel.`, (X) => `Je koos ${X}. Dat is te veel.`, (X) => `${X} is te veel.`, (X) => `${X}? Dat zijn er iets te veel.`, (X) => `Bijna! ${X} is iets te veel.`, (X, d) => `${X} ${d.naam}? Ik denk dat je er te veel hebt geteld.`, (X) => `Je tikte op ${X}. Zo veel zijn er niet.`];
+const WEINIG_4: ZX[] = [(X) => `${X} is dichtbij, maar je hebt ze nog niet allemaal geteld.`, (X) => `Je koos ${X}. Je hebt ze nog niet allemaal geteld.`, (X) => `${X} is te weinig.`, (X) => `${X}? Ik zie er nog meer.`, (X) => `Bijna! ${X} is nog iets te weinig.`, (X, d) => `${X} ${d.naam}? Er liggen er nog meer, kijk maar.`];
+const VEEL_4: ZX[] = [(X) => `${X} is dichtbij, maar dat is te veel.`, (X) => `Je koos ${X}. Dat is te veel.`, (X) => `${X} is te veel.`, (X) => `${X}? Dat zijn er iets te veel.`, (X) => `Bijna! ${X} is iets te veel.`, (X, d) => `Zoveel ${d.naam}? ${X} is te veel.`, (X) => `Je tikte op ${X}. Zo veel zijn er niet.`];
 /** Alleen bij 2 rijen samen, als het gekozen getal precies 1 rij is (`rij` = "bovenste" of "onderste"). */
 const DEEL_4 = (X: string, rij: string) => [`${X} is maar een deel.`, `${X}? Dat zijn ze nog niet allemaal.`, `Je koos ${X}. Zoveel zie je alleen ${rij === "bovenste" ? "bovenaan" : "onderaan"}.`];
 

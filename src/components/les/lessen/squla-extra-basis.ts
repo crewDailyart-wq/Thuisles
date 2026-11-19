@@ -18,7 +18,7 @@ import { bliepoScherm } from "@/lib/bliepo-scherm";
 import { bewaarUitkomst } from "@/app/lesuitkomstacties";
 import { BEVESTIG, EINDE, EINDE_VEEL_FOUTEN, LOF, LOF_KIJK_INDEX, MOMENT, NAAM_LOF, ONDUIDELIJK, ONDUIDELIJK_NOG_1_KEER, OND_FOUT, metNaam, zaad, type Fout, type Rijtje } from "./squla-extra-zuiver";
 import { zetTestAntwoord } from "./squla-hulp";
-import { alleenBijKeuze } from "./squla-klok-gouden-zinnen";
+import { afscheidNa, alleenBijKeuze } from "./squla-klok-gouden-zinnen";
 
 export { BEVESTIG, EINDE, EINDE_VEEL_FOUTEN, LOF, MOMENT, NAAM_LOF, ONDUIDELIJK, OND_FOUT, metNaam, zaad, type Fout, type Rijtje };
 
@@ -319,8 +319,12 @@ export function maakBasis(LES_ID: string) {
     l.verderWeg?.();
     const tik = l.kaart();
     speelLesgeluid("kaart");
-    await zeg(l, `${veelFouten(l) ? EINDE_VEEL_FOUTEN : kies(l, EINDE)} Tik op de kaart.`);
+    const eind = veelFouten(l) ? EINDE_VEEL_FOUTEN : kies(l, EINDE);
+    await zeg(l, `${eind} Tik op de kaart.`);
     await tik;
+    /* Ronde 51 punt 10 (15.50): het afscheid ("Tot snel!") pas na de tik op de kaart; zo blijft "Tik op de kaart." het laatste in beeld. */
+    const afscheid = afscheidNa(eind);
+    if (afscheid) await zeg(l, afscheid);
   }
 
   return { st, zeg, log, haak, legDenkfoutVast, noteer, veelFouten, kies, lof, bevestig, zegDoor, zegOpdracht, vraagMetKnoppen, foutZinnen, goedMoment, foutMoment, handKlok, keuzeVraag, einde };

@@ -31,6 +31,7 @@ import { bewaarUitkomst } from "@/app/lesuitkomstacties";
 import { BEVESTIG, EINDE, EINDE_VEEL_FOUTEN, LOF, LOF_KIJK_INDEX, MOMENT, NAAM_GROET, NAAM_LOF, ONDUIDELIJK, ONDUIDELIJK_NOG_1_KEER, OVERGANG, RM3, SPLITSREACTIE_3, SPLITSREACTIE_JA, VRAGEN, WISSEL_3, binnenIdx, buitenIdx, deeltStuk3, foutReactie3, fouten3, gk, hard4, herhaling4, metNaam, opnieuw3, past4, plekken, type Fout, type Fout3, type Rijtje, type Vraag3 as Rmvraag } from "./squla-rekenmix3-gouden-zinnen";
 import { maakKiezer } from "./nooit-dubbel";
 import { alleenBijKeuze } from "./squla-klok-gouden-zinnen";
+import { afscheidNa } from "./squla-klok-gouden-zinnen";
 
 const LES_ID = "squla-rekenmix-mix3-4-gouden";
 
@@ -509,6 +510,9 @@ const gouden: Lesdraaiboek = {
     const eind = veelFouten(l) ? EINDE_VEEL_FOUTEN : kies(l, EINDE);
     await zeg(l, `${eind} ${variant("kaartTik", hard4(RM3.kaartTik, (z) => past4(eind, z)))}`);
     await tik;
+    /* Ronde 51 punt 10 (15.50): het afscheid ("Tot snel!") pas na de tik op de kaart; zo blijft "Tik op de kaart." het laatste in beeld. */
+    const afscheid = afscheidNa(eind);
+    if (afscheid) await zeg(l, afscheid);
   },
 };
 

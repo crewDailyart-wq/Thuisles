@@ -140,3 +140,18 @@ Opdracht van Sara: het woord "nagekeken" (en "nakijken") komt niet meer voor in 
 |---|---|---|---|
 | squla-meer-minder-evenveel2-1-gouden | nagekeken weg | Ik heb ze nagekeken: ${kr(n)} kralen. | Zie je, ${kr(n)} past bij de kralen. |
 | squla-meer-minder-evenveel2-1-gouden | nagekeken weg | Ik heb geteld en nagekeken: hier zijn er meer. | Zie je, op de andere kaarten liggen er minder. |
+
+
+## 19 november 2026: eigen zinnen in plaats van de vertaalde Synthesis-zinnen (besluit Sara, BOUWREGELS 15.41)
+
+Sara besliste: in onze gouden lessen geen zinnen van Synthesis, ook niet vertaald. Elke nieuwe zin staat op dezelfde plek in de rij, doet hetzelfde en is ongeveer even lang. Getallen, antwoorden, keuzes en robotplekken zijn niet veranderd. Fouttabel-script opnieuw gedraaid. Oude zinnen: WEGGEHAALD.md. Bleven staan: "Dat klopt, …" en "Tik jij op de kralen in de laatste rij? Ik tel mee." (gewoon Nederlands, geen herkenbare kopie).
+
+| Les | Waar | Oud (vertaald uit Synthesis) | Nieuw (eigen zin) |
+|---|---|---|---|
+| gouden | 1e keer mis bij de koekjes (variant 3) | Geen zorgen. Ik leg de koekjes in rijen van 10. | Ik maak het makkelijker. Ik leg de koekjes in rijen van 10. |
+| gouden | hint bij de koekjes, 2e deel (variant 3) | Zo zie je beter waar de meeste liggen. | In rijen tel je ze makkelijker. |
+| gouden | kralen: eerste zin, te veel (variant 5) | 13 kralen? Ik denk dat je er te veel hebt geteld. | Zoveel kralen? 13 is te veel. |
+| gouden | kralen: eerste zin, te weinig (variant 5) | 11 kralen? Je hebt ze nog niet allemaal geteld. | 11 kralen? Er zijn er meer, kijk maar. |
+| gouden | kralen: hint zonder richting (variant 4) | Probeer het nog eens. Tel de kralen en tik op het getal. | Kijk nog eens goed. Tel de kralen en kies het goede getal. |
+| gouden | 2e keer mis (variant 5) | Laten we ze samen tellen en kijken. | Ik doe mee. We tellen ze samen. |
+| gouden | slotzin (variant 3) | Mooi gewerkt! Je ziet nu snel waar de meeste liggen. | Waar liggen de meeste? Dat zie jij nu snel! |

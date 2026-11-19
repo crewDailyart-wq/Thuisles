@@ -83,7 +83,7 @@ export const ZIN = {
   tussenGoed: `Ja, ${som(A, B_DEEL, TOTAAL5)}. Dat is de som die je hebt gemaakt.`,
   /* 19 nov 2026 (Sara: losse cijfers nooit als 1 groter getal lezen; KEUZES Ronde 52): 32 staat apart en wit (het verwijst
      nergens naar, 2.1); de 3 en de 2 houden de kleur van hun deel. Was: "Je zette de cijfers naast elkaar: {32}. …". */
-  tussenFout: (x: string) => (x === "32" ? `Je zette de cijfers naast elkaar. Dan lees je {32:wit}. Maar we tellen ze op: {3} + {2} = {5}.` : `Je koos ${`{${x}}`}. Dat is dichtbij. {3} en dan nog {2} erbij is {5}.`),
+  tussenFout: (x: string) => (x === "32" ? `Je plakte de cijfers aan elkaar. Dan lees je {32:wit}. Maar we tellen ze op: {3} + {2} = {5}.` : `Je koos ${`{${x}}`}. Dat scheelt maar weinig. {3} en dan nog {2} erbij is {5}.`),
   /** Stap 10: een andere manier voor 5. */
   /* 19 nov 2026 (keuring 15.36): "Verander de stippen onder." was geen goede zin; nu zegt Bliepo wat het kind doet en waar. */
   anders: [`{5} kun je splitsen in ${paar(A, B_DEEL)}.`, "Kun jij het ook op een andere manier? Tik op de plus en de min bij de 2 delen onderaan. Het totaal blijft hetzelfde."],
@@ -154,7 +154,7 @@ const UITLEG_NIEUW = [ZIN.nieuwUitleg, "Elke stip in de cirkel bovenaan telt {1:
 export function totaalFout(x: string): FoutV {
   if (x === "3" || x === "2")
     return metV({ code: "deel-ipv-totaal", soort: "deel-ipv-totaal", denkfout: "koos een deel in plaats van het totaal", scherm: SCHERM }, Number(x), {
-      eerste: [`Je koos {${x}}. Dat is {1:wit} van de delen.`, `{${x}}? Dat is een deel, niet het totaal.`, `O, {${x}} is een deel. Ik zoek het totaal.`, `Je tikte op {${x}}. Zoveel stippen heeft {1:wit} deel.`],
+      eerste: [`Je koos {${x}}. Dat is {1:wit} van de delen.`, `{${x}}? Dat is een deel, niet het totaal.`, `Met {${x}} heb je maar {1:wit} deel. Het totaal is alles samen.`, `Je tikte op {${x}}. Zoveel stippen heeft {1:wit} deel.`],
       /* Na de hint staat alleen de hint in beeld: daarom eindigt hij met de vraag, anders verwoord (15.37; draaiboek §3 B.2). */
       hint: ["Het totaal is alles samen. Hoeveel stippen staan er in de cirkel bovenaan?", "Het totaal staat bovenaan. Hoeveel stippen tel je in de cirkel daar?"],
       uitleg: UITLEG_TOTAAL,
@@ -202,7 +202,7 @@ export function nieuwFout(x: string): FoutV {
   const richting = c > TOTAAL7 ? "te veel" : "te weinig";
   const code = c > TOTAAL7 ? "totaal-een-te-veel" : "totaal-een-te-weinig";
   return metV({ code, soort: code, denkfout: c > TOTAAL7 ? "telde 1 stip te veel" : "telde 1 stip te weinig", scherm: SCHERM }, 0, {
-    eerste: [`Je koos {${c}}. Dat is net iets ${richting}.`, `{${c}}? Dat is net iets ${richting}.`, `Bijna! {${c}} is iets ${richting}.`],
+    eerste: [`Je koos {${c}}. Dat is net iets ${richting}.`, `{${c}} stippen is net iets ${richting}.`, `Bijna! {${c}} is iets ${richting}.`],
     hint: [ZIN.nieuwHint, "Tel de stippen bovenaan nog eens rustig. Wijs elke stip aan."],
     uitleg: UITLEG_NIEUW,
     weerEerste: [`Je telde weer ${richting}.`, `Het zijn er weer iets ${richting}.`, `Weer iets ${richting}, zie ik.`],

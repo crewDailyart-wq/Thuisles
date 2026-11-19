@@ -125,3 +125,15 @@ Opdracht van Sara: het woord "nagekeken" (en "nakijken") komt niet meer voor in 
 | squla-rekenmix-mix4-1-gouden | DEEL A | Begin linksboven en tel opnieuw. Wijs ${d.elk} ${d.een} aan. / Wijs ${d.elk} ${d.een} aan en zeg het getal. Sla er geen over. | Begin bovenaan en tel opnieuw. Wijs ${d.elk} ${d.een} aan. / Wijs ${d.elk} ${d.een} aan en zeg het getal. Sla er geen over. |
 | squla-rekenmix-mix4-1-gouden | DEEL A | Begin linksboven en tel rustig. Wijs ${d.elk} ${d.een} ${w(1)} keer aan. | Begin bovenaan en tel rustig. Wijs ${d.elk} ${d.een} ${w(1)} keer aan. |
 | squla-rekenmix-mix4-1-gouden | DEEL A | Begin linksboven en tel opnieuw. Wijs ${d.elk} ${d.een} aan. | Begin bovenaan en tel opnieuw. Wijs ${d.elk} ${d.een} aan. |
+
+
+## 19 november 2026: eigen zinnen in plaats van de vertaalde Synthesis-zinnen (besluit Sara, BOUWREGELS 15.41)
+
+Sara besliste: in onze gouden lessen geen zinnen van Synthesis, ook niet vertaald. Elke nieuwe zin staat op dezelfde plek in de rij, doet hetzelfde en is ongeveer even lang. Getallen, antwoorden, keuzes en robotplekken zijn niet veranderd. Fouttabel-script opnieuw gedraaid. Oude zinnen: WEGGEHAALD.md. Rekenmix 4; dezelfde nieuwe zinnen als bij Tellen en Rekenmix 1. Rekenmix 3 had alleen algemene zinnen ("Ik help je even", "Precies", "Kijk, daar zijn ze"); die bleven.
+
+| Les | Waar | Oud (vertaald uit Synthesis) | Nieuw (eigen zin) |
+|---|---|---|---|
+| Rekenmix 4 | na het natellen (variant 3) | Kijk, daar heb je het: 8. Je zat precies goed. | Het zijn er echt 8. Dat koos jij ook. |
+| Rekenmix 4 | 2e keer mis, samen tellen (variant 5) | Laten we ze samen tellen en kijken. | Ik doe mee. We tellen ze samen. |
+| Rekenmix 4 | eerste zin, te weinig (variant 6) | 7 knopen? Je hebt ze nog niet allemaal geteld. | 7 knopen? Er liggen er nog meer, kijk maar. |
+| Rekenmix 4 | eerste zin, te veel (variant 6) | 7 knopen? Ik denk dat je er te veel hebt geteld. | Zoveel knopen? 7 is te veel. |

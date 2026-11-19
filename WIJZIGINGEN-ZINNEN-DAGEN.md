@@ -118,3 +118,12 @@ Opdracht van Sara: het woord "nagekeken" (en "nakijken") komt niet meer voor in 
 | squla-dagen-van-de-week-gouden | nagekeken weg | Nagekeken: morgen is echt ${naam(a)}. | Zie je, ${naam(a)} komt over ${g(1)} dag. |
 | squla-dagen-van-de-week-gouden | nagekeken weg | Nagekeken: ${naam(dag)} is weekend. | Zie je, op ${naam(dag)} ben je vrij. |
 | squla-dagen-van-de-week-gouden | nagekeken weg | Nagekeken: allebei de dagen van het weekend. | Zie je, je vond allebei de vrije dagen. |
+
+
+## 19 november 2026: eigen zinnen in plaats van de vertaalde Synthesis-zinnen (besluit Sara, BOUWREGELS 15.41)
+
+Sara besliste: in onze gouden lessen geen zinnen van Synthesis, ook niet vertaald. Elke nieuwe zin staat op dezelfde plek in de rij, doet hetzelfde en is ongeveer even lang. Getallen, antwoorden, keuzes en robotplekken zijn niet veranderd. Fouttabel-script opnieuw gedraaid. Oude zinnen: WEGGEHAALD.md. Synthesis heeft geen les over dagen; deze zin was dezelfde letterlijke vertaling als in Rekentaal.
+
+| Les | Waar | Oud (vertaald uit Synthesis) | Nieuw (eigen zin) |
+|---|---|---|---|
+| gouden | vangnet (variant 1) | Ik help je met deze. | Deze doen we samen. |

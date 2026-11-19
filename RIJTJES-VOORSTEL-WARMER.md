@@ -1,6 +1,6 @@
 # Voorstel: warmere vaste rijtjes (KEUZES-VOOR-SARA.md Ronde 51, punt 13)
 
-**Dit is alleen een voorstel. Er is niets veranderd in de lessen.** Zeg per zin ja of nee (of schrijf een betere). Wat je goedkeurt, zet een helper daarna op dezelfde plek in het rijtje (`squla-klok-gouden-zinnen.ts`), zodat robotplekken en de kiezer gelijk blijven.
+**[VERWERKT 19 november 2026 (besluit Sara): 16 zinnen doorgevoerd, 9 afgewezen met reden. Zie RIJTJES-RESULTAAT-WARMER.md.]** Hieronder het oorspronkelijke voorstel. **Dit was alleen een voorstel.** Zeg per zin ja of nee (of schrijf een betere). Wat je goedkeurt, zet een helper daarna op dezelfde plek in het rijtje (`squla-klok-gouden-zinnen.ts`), zodat robotplekken en de kiezer gelijk blijven.
 
 Hoe ik "warmer" heb gemaakt:
 - Bliepo praat tegen het kind ("jij", "van jou") en zegt soms wat hij zelf voelt ("Daar word ik blij van").

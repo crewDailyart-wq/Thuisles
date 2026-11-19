@@ -88,8 +88,8 @@ export const volleRijen = (n: number) => Math.floor((n - 1) / 5) * 5;
  * Een lijst = varianten: de les kiest er 1 met de gedeelde kiezer (nooit-dubbel.ts), nooit 2 keer achter elkaar
  * dezelfde, ook niet over vragen heen. Getal, antwoord en betekenis zijn niet veranderd. De vraagzinnen ("Tel de kralen.
  * Hoeveel kralen zijn het?", "Waar liggen de meeste koekjes?") zijn gelijk gebleven (3.11). Oud naast nieuw:
- * WIJZIGINGEN-ZINNEN-MEER-MINDER.md. Een deel is de tekst van Synthesis (More or Less, Color Count) in het Nederlands,
- * passend gemaakt voor groep 3 (besluit Sara 17 november 2026, BOUWREGELS 15.2).
+ * WIJZIGINGEN-ZINNEN-MEER-MINDER.md. De zinnen die herkenbaar vertaald uit Synthesis (More or Less, Color Count) kwamen,
+ * zijn sinds 19 november 2026 eigen zinnen op dezelfde plek (besluit Sara, BOUWREGELS 15.41).
  */
 
 export const ZIN = {
@@ -106,9 +106,9 @@ export const ZIN = {
   drieVraag: (eerste: boolean, nr = 0): string[] => (eerste ? ["Waar liggen de meeste koekjes?", "Tik op die kaart."] : [nr % 2 ? "Op welke kaart liggen de meeste koekjes?" : "Waar liggen de meeste koekjes?"]),
   drieOpnieuw: ["Waar liggen nu de meeste koekjes?", "Welke kaart heeft nu de meeste koekjes?", "Kijk nog eens goed. Welke kaart heeft de meeste koekjes?"],
   /** 1e fout bij de koekjes: het beeld verandert (draaiboek §6: op een rij leggen); dit is het eerste deel van de hint. */
-  opRij: ["Ik leg de koekjes in rijen van 10.", "Kijk, ik leg de koekjes in rijen van 10.", "Geen zorgen. Ik leg de koekjes in rijen van 10."],
+  opRij: ["Ik leg de koekjes in rijen van 10.", "Kijk, ik leg de koekjes in rijen van 10.", "Ik maak het makkelijker. Ik leg de koekjes in rijen van 10."],
   /** 2e fout: Bliepo doet het samen voor (draaiboek §3 A.5: samen tellen, een getal boven elke groep). */
-  samen: ["Kom, we tellen samen.", "Weet je wat? We tellen ze samen.", "Geeft niks. We tellen ze samen.", "Ik help je even. We tellen ze samen.", "Laten we ze samen tellen en kijken."],
+  samen: ["Kom, we tellen samen.", "Weet je wat? We tellen ze samen.", "Geeft niks. We tellen ze samen.", "Ik help je even. We tellen ze samen.", "Ik doe mee. We tellen ze samen."],
   /** Samen tellen bij de kralen: Bliepo telt de volle rijen, het kind telt de laatste rij (de kleine stap). */
   samenVol: (n: number) => (volleRijen(n) === 5 ? ["Ik tel de eerste rij.", "Ik begin met de eerste rij."] : ["Ik tel de volle rijen.", "Ik begin met de volle rijen.", "Eerst tel ik de volle rijen."]),
   samenTelRij: (k: number) => `${kr(k)}.`,
@@ -130,7 +130,7 @@ export const ZIN = {
   /** Hetzelfde foute antwoord 2 keer: niet 2 keer dezelfde eerste zin (geleerd bij Tellen). */
   weerGekozen: (x: number) => [`Je koos weer ${kr(x)}.`, `Je tikte weer op ${kr(x)}.`, `Weer ${kr(x)}, zie ik.`],
   /** Stap 8: einde. */
-  slot: ["Je kunt nu tellen hoeveel er zijn, en je ziet waar de meeste liggen.", "Je hebt goed gewerkt vandaag! Je hebt kralen geteld en de meeste koekjes gevonden.", "Mooi gewerkt! Je ziet nu snel waar de meeste liggen."],
+  slot: ["Je kunt nu tellen hoeveel er zijn, en je ziet waar de meeste liggen.", "Je hebt goed gewerkt vandaag! Je hebt kralen geteld en de meeste koekjes gevonden.", "Waar liggen de meeste? Dat zie jij nu snel!"],
   kaartTik: ["Tik op de kaart.", "Tik maar op de kaart.", "Kijk, een kaart voor jou! Tik erop."],
 };
 
@@ -210,7 +210,7 @@ const HINT_VEEL = ["Tel nog een keer. Wijs elke kraal maar 1 keer aan.", "Tel ri
  * "erbij" of "te veel": dat zou alsnog zeggen of het kind te weinig of te veel had, en dan blijft er maar 1 keuze over
  * (15.17). Het fouttabel-script controleert dit.
  */
-const HINT_NEUTRAAL = ["Tel nog een keer, rij voor rij.", "In een volle rij liggen 5 kralen. Tel rij voor rij.", "Begin bij de bovenste rij en tel rustig opnieuw.", "Probeer het nog eens. Tel de kralen en tik op het getal."];
+const HINT_NEUTRAAL = ["Tel nog een keer, rij voor rij.", "In een volle rij liggen 5 kralen. Tel rij voor rij.", "Begin bij de bovenste rij en tel rustig opnieuw.", "Kijk nog eens goed. Tel de kralen en kies het goede getal."];
 const HINT_VOLLE = ["De rij die niet vol is, telt ook mee. Tel die erbij.", "Kijk ook naar de laatste rij en tel opnieuw.", "Tel ook de kralen in de laatste rij."];
 /**
  * Zonder richting: het gekozen getal ligt vlak naast het goede. Geen van deze zinnen geeft een richting. (Keuring 10 nov:
@@ -218,9 +218,9 @@ const HINT_VOLLE = ["De rij die niet vol is, telt ook mee. Tel die erbij.", "Kij
  */
 const DICHTBIJ = [(X: string) => `Je koos ${X}. Dat is dichtbij.`, (X: string) => `Je koos ${X}. Je zit er dichtbij.`, (X: string) => `Je koos ${X}. Dat scheelt niet veel.`, (X: string) => `Bijna! ${X} is het net niet.`, (X: string) => `${X}? Dat is heel dichtbij.`];
 /** Te weinig, met richting. */
-const WEINIG = [(X: string) => `Je koos ${X}, maar er liggen meer kralen.`, (X: string) => `Je koos ${X}. Er liggen er nog meer.`, (X: string) => `Bijna! ${X} is nog iets te weinig.`, (X: string) => `${X}? Ik zie er nog meer.`, (X: string) => `${X} kralen? Je hebt ze nog niet allemaal geteld.`];
+const WEINIG = [(X: string) => `Je koos ${X}, maar er liggen meer kralen.`, (X: string) => `Je koos ${X}. Er liggen er nog meer.`, (X: string) => `Bijna! ${X} is nog iets te weinig.`, (X: string) => `${X}? Ik zie er nog meer.`, (X: string) => `${X} kralen? Er zijn er meer, kijk maar.`];
 /** Te veel, met richting. */
-const VEEL = [(X: string) => `Je koos ${X}, maar zoveel kralen liggen er niet.`, (X: string) => `Je koos ${X}. Dat zijn er iets te veel.`, (X: string) => `Bijna! ${X} is iets te veel.`, (X: string) => `${X}? Dat zijn er iets te veel.`, (X: string) => `${X} kralen? Ik denk dat je er te veel hebt geteld.`];
+const VEEL = [(X: string) => `Je koos ${X}, maar zoveel kralen liggen er niet.`, (X: string) => `Je koos ${X}. Dat zijn er iets te veel.`, (X: string) => `Bijna! ${X} is iets te veel.`, (X: string) => `${X}? Dat zijn er iets te veel.`, (X: string) => `Zoveel kralen? ${X} is te veel.`];
 /** Alleen de volle rijen geteld. */
 const VOLLE = [(X: string) => `Je koos ${X}: zoveel liggen er in de volle rijen.`, (X: string) => `Je hebt alleen de volle rijen geteld. Dat zijn er ${X}.`, (X: string) => `Je kwam op ${X}. Dat zijn alleen de volle rijen.`];
 /* De uitleg bij de 2e keer (meteen daarna tellen we samen). */
@@ -322,7 +322,7 @@ const SCHERM_DRIE =
 
 /** Het tweede deel van de hint (na "Ik leg de koekjes in rijen van 10."), in varianten. */
 /* Het getal 10 staat er 1 keer (was: "… in rijen van 10. Kijk wat er onder de rij van 10 nog ligt."): de rij van 10 is de bovenste rij. */
-const HINT_DRIE = ["Kijk wat er onder de bovenste rij nog ligt.", "Wat ligt er op elke kaart onder de bovenste rij?", "Zo zie je beter waar de meeste liggen."];
+const HINT_DRIE = ["Kijk wat er onder de bovenste rij nog ligt.", "Wat ligt er op elke kaart onder de bovenste rij?", "In rijen tel je ze makkelijker."];
 /** De hele hint: elke variant van "Ik leg …" met een tweede deel (de les kiest de 2 delen los, steeds een andere). */
 export const HINT_DRIE_DELEN = { opRij: ZIN.opRij, kijk: HINT_DRIE };
 

@@ -110,3 +110,12 @@ Opdracht van Sara: het woord "nagekeken" (en "nakijken") komt niet meer voor in 
 |---|---|---|---|
 | squla-rekentaal-gouden | nagekeken weg | Nagekeken: ze staan echt van klein naar groot. | Zie je, de kleinste staat vooraan. |
 | squla-rekentaal-gouden | nagekeken weg | Nagekeken: ${wie} is echt ${v.woord}. | Zie je, ${v.woord}: dat is ${wie}. |
+
+
+## 19 november 2026: eigen zinnen in plaats van de vertaalde Synthesis-zinnen (besluit Sara, BOUWREGELS 15.41)
+
+Sara besliste: in onze gouden lessen geen zinnen van Synthesis, ook niet vertaald. Elke nieuwe zin staat op dezelfde plek in de rij, doet hetzelfde en is ongeveer even lang. Getallen, antwoorden, keuzes en robotplekken zijn niet veranderd. Fouttabel-script opnieuw gedraaid. Oude zinnen: WEGGEHAALD.md. Bleef staan: "Precies! …" (gewoon Nederlands).
+
+| Les | Waar | Oud (vertaald uit Synthesis) | Nieuw (eigen zin) |
+|---|---|---|---|
+| gouden | vangnet op volgorde (variant 1) | Ik help je met deze. | Deze doen we samen. |

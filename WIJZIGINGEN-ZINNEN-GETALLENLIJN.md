@@ -193,3 +193,15 @@ Opdracht van Sara: het woord "nagekeken" (en "nakijken") komt niet meer voor in 
 | squla-getallenlijn-kat-1-gouden | DEEL A | de satelliet | het ruimteschip |
 | squla-getallenlijn-kat-1-gouden | DEEL A | het raketje / de ufo / de satelliet | het raketje / de ufo / het ruimteschip |
 | squla-getallenlijn-kat-1-gouden | DEEL A | denkfout (voortgang, fouttabel): "tikte op de satelliet, die bij 19 staat" | "tikte op het ruimteschip, dat bij 19 staat" (die/dat volgt nu het woord; ook in het vlak: aria-label "Het ruimteschip") |
+
+
+## 19 november 2026: eigen zinnen in plaats van de vertaalde Synthesis-zinnen (besluit Sara, BOUWREGELS 15.41)
+
+Sara besliste: in onze gouden lessen geen zinnen van Synthesis, ook niet vertaald. Elke nieuwe zin staat op dezelfde plek in de rij, doet hetzelfde en is ongeveer even lang. Getallen, antwoorden, keuzes en robotplekken zijn niet veranderd. Fouttabel-script opnieuw gedraaid. Oude zinnen: WEGGEHAALD.md.
+
+| Les | Waar | Oud (vertaald uit Synthesis) | Nieuw (eigen zin) |
+|---|---|---|---|
+| gouden | begin, startvraag (variant 1) | We zoeken bij welk getal het raketje staat. Wil je laten zien wat je al kunt? | We zoeken bij welk getal het raketje staat. Kun jij dat al? |
+| gouden | na 2 keer mis in de proef (variant 2) | Dit kan lastig zijn. Dat geeft niks. / We doen samen een stapje terug. | Dat is ook nog nieuw voor je. Geeft niks. / We bekijken het eerst samen. |
+| gouden | uitleg springen: het hele stuk (variant 1) | Je wilde het hele stuk in 1 keer doen. | Je tikte meteen op het eind. |
+| gouden | uitleg springen: het hele stuk (variant 2) | Jij wilt al naar het eind! Dat is te ver. | Daar wil het raketje straks heen. Nu nog niet. |

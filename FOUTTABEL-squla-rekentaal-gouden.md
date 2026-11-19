@@ -114,7 +114,7 @@ De les kiest uit elk rijtje steeds 1 zin met de gedeelde kiezer: nooit dezelfde 
 - begin: "Vandaag leren we rekenwoorden. Kijk: een grote en een kleine pannenkoek." / "We gaan samen rekenwoorden leren, zoals groot en klein, vol en leeg." / "Vandaag leren we woorden als groot en klein, vol en leeg."
 - naar de picknick: "De keuken is klaar. Nu gaan we picknicken in het park." / "Klaar in de keuken! Kom, we gaan picknicken in het park." / "Dat was de keuken. Nu gaan we naar het park. Daar picknicken we."
 - samen: "Kom, we kijken samen." / "We zoeken het samen." / "Kom, samen lukt het." / "Ik help je even. We kijken samen." / "Geeft niks. We zoeken het samen."
-- vangnet op volgorde: "Ik help je met deze." / "Kom, we zetten ze samen op volgorde." / "Geeft niks. We doen het samen."
+- vangnet op volgorde: "Deze doen we samen." / "Kom, we zetten ze samen op volgorde." / "Geeft niks. We doen het samen."
 - hulphandje bij de kleine stap: "Tik in het rode rondje." / "Tik maar in het rode rondje." / "Hier is het. Tik in het rode rondje."
 - slot: "Nu ken je veel rekenwoorden." / "Jij kent nu veel rekenwoorden." / "Nu weet jij wat al die rekenwoorden betekenen."
 - kaart: "Tik op de kaart." / "Tik maar op de kaart." / "Kijk, een kaart voor jou! Tik erop."

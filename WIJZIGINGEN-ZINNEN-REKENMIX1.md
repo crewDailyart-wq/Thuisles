@@ -96,3 +96,17 @@ Opdracht van Sara: het woord "nagekeken" (en "nakijken") komt niet meer voor in 
 | Les | Soort | Oud | Nieuw |
 |---|---|---|---|
 | squla-rekenmix-mix1-1-gouden | nagekeken weg | Ik heb ze nagekeken: het zijn er ${gk(n, d)}. | Inderdaad, je telde tot ${gk(n, d)}. |
+
+
+## 19 november 2026: eigen zinnen in plaats van de vertaalde Synthesis-zinnen (besluit Sara, BOUWREGELS 15.41)
+
+Sara besliste: in onze gouden lessen geen zinnen van Synthesis, ook niet vertaald. Elke nieuwe zin staat op dezelfde plek in de rij, doet hetzelfde en is ongeveer even lang. Getallen, antwoorden, keuzes en robotplekken zijn niet veranderd. Fouttabel-script opnieuw gedraaid. Oude zinnen: WEGGEHAALD.md. Dezelfde nieuwe zinnen als bij Tellen. Bleven staan: "Precies, …" en "Dat klopt, …".
+
+| Les | Waar | Oud (vertaald uit Synthesis) | Nieuw (eigen zin) |
+|---|---|---|---|
+| gouden | hint zonder richting (3 soorten: rijen, los, paren) | Probeer het nog eens. Tel de ballen en tik op het getal. | Kijk nog eens goed en tel de ballen opnieuw. (niet "kies het goede getal": daarna volgt "Tik dan op het goede getal.") |
+| gouden | Bliepo telt na (variant 3) | Laten we ze samen tellen. Ik tel hardop. | Luister maar, ik tel ze hardop. |
+| gouden | na het natellen (variant 3) | Kijk, daar heb je het: 7. Je zat precies goed. | Het zijn er echt 7. Dat koos jij ook. |
+| gouden | 2e keer mis, samen tellen (variant 5) | Laten we ze samen tellen en kijken. | Ik doe mee. We tellen ze samen. |
+| gouden | eerste zin, te weinig (variant 6) | 9 ballen? Je hebt ze nog niet allemaal geteld. | 9 ballen? Er liggen er nog meer, kijk maar. |
+| gouden | eerste zin, te veel (variant 6) | 11 ballen? Ik denk dat je er te veel hebt geteld. | Zoveel ballen? 11 is te veel. |

@@ -15,7 +15,7 @@
  * is nagelopen. Wat terugkomt, staat in varianten (VAR, de fouttabel, UITLEG, VOORDOEN); de les kiest met de gedeelde kiezer
  * (nooit-dubbel.ts): nooit 2 keer achter elkaar dezelfde zin, ook niet over vragen heen. Een getal klinkt niet 2 keer vlak
  * achter elkaar. Oud naast nieuw: WIJZIGINGEN-ZINNEN-KLOK.md. De GEDEELDE rijtjes hieronder (lof, einde, groet, ...) zijn
- * van alle gouden lessen samen en zijn NIET veranderd.
+ * van alle gouden lessen samen; wat daarin veranderde staat in WIJZIGINGEN-ZINNEN-RIJTJES.md.
  *
  * Leesbare versie: FOUTTABEL-squla-klok-gouden.md (die volgt dit bestand). {naam} = de naam van het kind (alleen op het
  * scherm en met de browserstem; zonder naam valt hij weg). {3:oranje} = kleur van de kleine wijzer, {12:paars} = kleur
@@ -29,9 +29,12 @@ import { deeltStuk, maakKiezer, maakVorm, type Kiezer } from "./nooit-dubbel";
 export type Rijtje = { zinnen: string[]; robot: number[] };
 const rij = (zinnen: string[], robot: number[] = []): Rijtje => ({ zinnen, robot });
 
-/** §3.1 Gewone lofzinnen. Zin 4 ("Dat heb je goed gezien.") alleen bij een kijkvraag. Robot: 31 t/m 40. */
+/**
+ * §3.1 Gewone lofzinnen. Zin 4 ("Dat heb je goed gezien, zeg!") alleen bij een kijkvraag. Robot: 31 t/m 40.
+ * Ronde 51 punt 13 (19 november 2026): 9 zinnen warmer gemaakt op dezelfde plek (RIJTJES-RESULTAAT-WARMER.md).
+ */
 export const LOF = rij(
-  ["Ja, dat is goed!", "Helemaal goed!", "Super gedaan!", "Dat heb je goed gezien.", "Knap gedaan!", "Ja, zo is het!", "Heel goed!", "Wauw, goed zeg!", "Dat zit goed!", "Jij weet het!", "Precies goed!", "Goed zo!", "Ja, die klopt!", "Mooi zo!", "Ja, die is het!", "Prima gedaan!", "Netjes!", "Klopt helemaal!", "Ja hoor, goed!", "Wat goed van jou!", "Top!", "Heel knap!", "Zo doe je dat!", "Lekker bezig!", "Dat ging goed!", "Goed gekozen!", "Ja, dat is het goede antwoord!", "Helemaal raak!", "Dat weet jij al!", "Fijn, die is goed!", "Kijk, mijn scherm wordt er groen van!", "Mijn scherm is helemaal groen. Goed zo!", "Inderdaad, zo moet het!", "Zie je, jij snapt het!", "Groen scherm! Die is goed.", "Dat stop ik in mijn geheugen: jij kunt dit!", "Mijn scherm straalt groen!", "Even kijken… ja, goed!", "Die bewaar ik in mijn geheugen. Goed zo!", "Mijn scherm kleurt groen. Knap!"],
+  ["Ja, dat is goed!", "Helemaal goed, knap van jou!", "Super gedaan!", "Dat heb je goed gezien, zeg!", "Knap gedaan!", "Ja, zo is het!", "Heel goed, ik ben blij!", "Wauw, goed zeg!", "Dat zit goed!", "Jij weet het!", "Precies goed!", "Goed zo, dat kun jij!", "Ja, die klopt!", "Mooi zo!", "Ja, die is het!", "Prima gedaan!", "Netjes gedaan, hoor!", "Klopt helemaal!", "Ja hoor, goed!", "Wat goed van jou!", "Top, daar word ik blij van!", "Heel knap!", "Zo doe je dat!", "Lekker bezig!", "Dat ging goed!", "Goed gekozen!", "Ja, dat is het goede antwoord!", "Helemaal raak!", "Dat weet jij al!", "Fijn, die is goed!", "Kijk, mijn scherm wordt er groen van!", "Mijn scherm is helemaal groen. Dat komt door jou!", "Inderdaad, zo moet het!", "Zie je, jij snapt het!", "Groen scherm! Die is goed.", "Dat stop ik in mijn geheugen: jij kunt dit!", "Mijn scherm straalt groen voor jou!", "Even kijken… ja, goed!", "Die bewaar ik in mijn geheugen. Fijn!", "Mijn scherm kleurt groen. Knap!"],
   [30, 31, 32, 33, 34, 35, 36, 37, 38, 39],
 );
 export const LOF_KIJK_INDEX = 3;
@@ -84,8 +87,8 @@ export const MOMENT = {
 export const NAAM_LOF = rij(["Goed zo, {naam}!", "Knap gedaan, {naam}!", "{naam}, dat is helemaal goed!", "Ja, {naam}, zo is het!", "Wat goed, {naam}!", "Jij weet het, {naam}!", "{naam}, mijn scherm wordt groen van jou!", "{naam}, dat zet ik in mijn geheugen!"], [6, 7]);
 export const NAAM_GROET = "Hoi {naam}! Fijn dat je er bent.";
 
-/** §3.4 Goed na een fout: alleen een korte bevestiging. */
-export const BEVESTIG = rij(["Ja, nu is het goed.", "Nu heb je hem.", "Die is goed.", "Zo is het.", "Ja, nu klopt het.", "Gevonden!", "Nu zit het goed.", "Ja, deze is het.", "Nu wordt mijn scherm groen.", "Inderdaad, nu is hij raak."], [8, 9]);
+/** §3.4 Goed na een fout: alleen een korte bevestiging. Ronde 51 punt 13: plek 2, 3, 4 en 7 warmer (RIJTJES-RESULTAAT-WARMER.md). */
+export const BEVESTIG = rij(["Ja, nu is het goed.", "Nu heb je hem!", "Die is goed. Fijn!", "Zo is het. Goed doorgezet!", "Ja, nu klopt het.", "Gevonden!", "Nu zit het goed. Mooi!", "Ja, deze is het.", "Nu wordt mijn scherm groen.", "Inderdaad, nu is hij raak."], [8, 9]);
 
 /** §3.5 Heel snel geantwoord. */
 export const SNEL = rij(["Dat ging snel!", "Wat was jij snel!", "Snel en goed!"]);
@@ -93,9 +96,22 @@ export const SNEL = rij(["Dat ging snel!", "Wat was jij snel!", "Snel en goed!"]
 /** §4 Reactie op wat het kind koos, bij de klok (zin 4, half, past niet bij hele uren). */
 export const KLOKREACTIE = (uur: number) => rij([`Ja, de kleine wijzer staat op de {${uur}:oranje}.`, "Ja, de grote wijzer staat bovenaan, dus het is een heel uur.", `Ja, het is precies {${uur}:oranje} uur.`, `Inderdaad, de klok zegt {${uur}:oranje} uur.`, `Precies, het is {${uur}:oranje} uur.`, `Dat klopt, de kleine wijzer wijst naar de {${uur}:oranje}.`], [3]);
 
-/** §5 Einde. Zin 6 alleen na veel fouten (4 of meer vragen met een fout). */
-export const EINDE = rij(["Goed gedaan! Tot de volgende keer.", "De les is klaar. Wat heb jij goed gewerkt!", "Klaar! Je hebt veel geoefend vandaag.", "Dat was de laatste. Fijn dat je meedeed!", "Je bent klaar. Ik vond het leuk met jou!", "Klaar! Wat heb je goed je best gedaan!", "Dat was de les. Tot snel!", "Alles is af. De les is klaar!", "Deze les bewaar ik in mijn geheugen. Tot de volgende keer!"], [7, 8]);
+/**
+ * §5 Einde. Zin 6 alleen na veel fouten (4 of meer vragen met een fout).
+ * Ronde 51 punt 10 (besluit Sara 19 november 2026, weg b; BOUWREGELS 15.50): de eindzin komt vóór "Tik op de kaart.", en
+ * terwijl de les op de tik wacht is die opdracht het laatste wat in beeld staat (15.37). Daarom staat er in EINDE geen
+ * afscheid ("Tot snel!", "Tot de volgende keer!"): dat zegt Bliepo pas NA de tik op de kaart (`afscheidNa`). Elke zin
+ * staat op zijn oude plek (robotplekken 7 en 8 gelijk); EINDE_AFSCHEID[i] hoort bij EINDE.zinnen[i] (null = geen afscheid).
+ * Ronde 51 punt 13 (19 november 2026): plek 1, 7 en 8 zijn warmer (RIJTJES-RESULTAAT-WARMER.md).
+ */
+export const EINDE = rij(["Goed gedaan!", "De les is klaar. Wat heb jij goed gewerkt!", "Klaar! Je hebt veel geoefend vandaag.", "Dat was de laatste. Fijn dat je meedeed!", "Je bent klaar. Ik vond het leuk met jou!", "Klaar! Wat heb je goed je best gedaan!", "Dat was de les. Ik vond het fijn.", "Alles is af. Wat ben jij goed bezig geweest!", "Deze les bewaar ik in mijn geheugen."], [7, 8]);
+export const EINDE_AFSCHEID: (string | null)[] = ["Ik zie je graag de volgende keer.", null, null, null, null, null, "Tot snel!", null, "Tot de volgende keer!"];
 export const EINDE_VEEL_FOUTEN = "Je hebt goed doorgezet. Volgende keer gaat het nog beter.";
+/** Het afscheid dat bij deze eindzin hoort, of null. Bliepo zegt het pas na de tik op de kaart (Ronde 51 punt 10). */
+export function afscheidNa(eind: string): string | null {
+  const i = EINDE.zinnen.indexOf(eind);
+  return i >= 0 ? (EINDE_AFSCHEID[i] ?? null) : null;
+}
 
 /** §10 Eerste zin als de denkfout niet duidelijk is (binnen 1 vraag nooit 2 keer dezelfde). */
 export const ONDUIDELIJK = rij(["Die is lastig, hè.", "We zoeken het samen.", "Ik help je een stukje.", "Goed dat je het probeert.", "Kom, we kijken samen.", "Ik geef je een tip.", "Ik bedoelde een andere.", "Dat geeft niks, zo leer je het.", "Rustig maar, we doen het stap voor stap.", "Probeer het nog {1:wit} keer, met een tip.", "Even in mijn geheugen kijken… ik heb een tip!", "Mijn geheugen zegt: samen lukt dit vast.", "Ik weet een hulpje voor jou."], [10, 11, 12]);
@@ -196,6 +212,8 @@ export const VAR = {
   extra: (n: number) => (n === 1 ? ["Nog 1 klok om te oefenen.", "We oefenen nog 1 klok."] : [`Nog ${n} klokken om te oefenen.`, `We oefenen nog ${n} klokken.`]),
   terugLastig: ["Deze klokken oefenen we een andere keer nog eens.", "Dit oefenen we een andere keer nog eens. Dat komt goed."],
   slot: ["Nu kun je het uur lezen met de kleine wijzer.", "Je hebt goed gewerkt vandaag! Je kunt nu zien welk uur het is.", "Mooi gewerkt! Jij kunt nu de hele uren lezen op de klok."],
+  /** Ronde 51 punt 10 (19 november 2026, 15.37/15.50): ook bij de klok zegt Bliepo wat het kind met de kaart doet; die opdracht is het laatste in beeld. Dezelfde 3 als de andere gouden lessen. */
+  kaartTik: ["Tik op de kaart.", "Tik maar op de kaart.", "Kijk, een kaart voor jou! Tik erop."],
   /** Het hulphandje bij "zet de kleine wijzer op de …" (na de aanmoediging uit het vaste rijtje). */
   zetHand: (n: number) => [`Tik op de {${n}:oranje}, of sleep de kleine wijzer erheen.`, `Tik maar op de {${n}:oranje}. Slepen met de wijzer mag ook.`],
   /** Samen doen bij zetten (na de 2e keer mis): waar het getal staat. `metGetal` alleen als het getal niet net genoemd is. */

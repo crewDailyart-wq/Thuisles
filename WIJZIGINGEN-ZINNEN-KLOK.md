@@ -172,3 +172,12 @@ Opdracht van Sara: het woord "nagekeken" (en "nakijken") komt niet meer voor in 
 | squla-klok-hoelaat-1-gouden en de gedeelde rijtjes van ALLE gouden lessen | nagekeken weg | Klaar met nakijken. Daar komt er weer een. | Die is af. Ik heb er nog een. |
 | squla-klok-hoelaat-1-gouden en de gedeelde rijtjes van ALLE gouden lessen | nagekeken weg | Nagekeken en bewaard. Door naar de volgende! | Dat was hem. Door naar de volgende! |
 | squla-klok-hoelaat-1-gouden en de gedeelde rijtjes van ALLE gouden lessen | DEEL A | Weet jij hoe dit heet? | Hoe heet dit? |
+
+
+## 19 november 2026: "Tik op de kaart." aan het eind (Ronde 51 punt 10, BOUWREGELS 15.50)
+
+| Oud | Nieuw | Waarom |
+|---|---|---|
+| (eindzin uit het rijtje, zonder opdracht) | eindzin + "Tik op de kaart." / "Tik maar op de kaart." / "Kijk, een kaart voor jou! Tik erop." (`VAR.kaartTik`, dezelfde 3 als de andere gouden lessen); een afscheid ("Tot snel!") pas na de tik | terwijl de les op de tik wacht, moet de opdracht het laatste in beeld zijn (15.37); de eindzinnen zelf staan in WIJZIGINGEN-ZINNEN-RIJTJES.md |
+
+De klok had geen eigen Synthesis-zinnen meer: wat er in "Zinnen van Synthesis" hierboven staat, stond er al of is gewoon Nederlands ("Precies", "Dat klopt", "Dat ging snel!").

@@ -160,3 +160,12 @@ Opdracht van Sara: het woord "nagekeken" (en "nakijken") komt niet meer voor in 
 | squla-meten-oppervlakte-1-gouden | nagekeken weg | Nagekeken: even groot! | Zie je, het kaartje is niet groter of kleiner geworden. |
 | squla-meten-oppervlakte-1-gouden | nagekeken weg | Nagekeken: allebei ${n} stukken. | Zie je, geen mat is groter dan de andere. |
 | squla-meten-oppervlakte-1-gouden | nagekeken weg | Nagekeken: ${n} blaadjes. Klopt! | Zie je, je hebt geen blaadje overgeslagen. |
+
+
+## 19 november 2026: eigen zinnen in plaats van de vertaalde Synthesis-zinnen (besluit Sara, BOUWREGELS 15.41)
+
+Sara besliste: in onze gouden lessen geen zinnen van Synthesis, ook niet vertaald. Elke nieuwe zin staat op dezelfde plek in de rij, doet hetzelfde en is ongeveer even lang. Getallen, antwoorden, keuzes en robotplekken zijn niet veranderd. Fouttabel-script opnieuw gedraaid. Oude zinnen: WEGGEHAALD.md. Bleef staan: "Geeft niks. We tellen ze samen." (gewoon Nederlands).
+
+| Les | Waar | Oud (vertaald uit Synthesis) | Nieuw (eigen zin) |
+|---|---|---|---|
+| gouden | typen: eerste zin, een rij te weinig (variant 2) | Je typte 8. Dan mis je nog een hele rij. | Je typte 8. Er hoort nog een hele rij bij. |

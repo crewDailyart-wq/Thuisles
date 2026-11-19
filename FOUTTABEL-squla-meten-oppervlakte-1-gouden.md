@@ -277,7 +277,7 @@ De les kiest uit elk rijtje steeds 1 zin met de gedeelde kiezer (`nooit-dubbel.t
 | typen (10 blaadjes), alleen de bovenste rij: 5: hint | Er ligt nog een rij onder. Tel die ook mee. / Onder de bovenste rij liggen nog meer blaadjes. Tel ze ook. / De rij eronder hoort er ook bij. Tel alle blaadjes. |
 | typen (10 blaadjes), alleen de bovenste rij: 5: uitleg 2e keer | De rij eronder telt ook mee. / Alle rijen horen erbij, niet alleen de bovenste. / Onder de bovenste rij liggen ook blaadjes. Die horen erbij. |
 | typen (10 blaadjes), alleen de bovenste rij: 5: weer (2 keer dezelfde denkfout) | Je telde weer alleen de bovenste rij. / Weer alleen de bovenste rij, zie ik. / De rij eronder hoort er ook bij. / Elke rij telt mee, ook de onderste. |
-| typen (12 blaadjes), 1 rij overgeslagen: 8: eerste zin | Dan heb je een rij overgeslagen. / Je typte 8. Dan mis je nog een hele rij. / 8? Dan heb je een rij overgeslagen. |
+| typen (12 blaadjes), 1 rij overgeslagen: 8: eerste zin | Dan heb je een rij overgeslagen. / Je typte 8. Er hoort nog een hele rij bij. / 8? Dan heb je een rij overgeslagen. |
 | typen (12 blaadjes), 1 rij overgeslagen: 8: hint | Tel rij voor rij. Tik elk blaadje aan als je telt. / Tel elke rij. Tik de blaadjes aan, dan zie je wat je al telde. / Probeer het nog eens. Tel alle rijen, van boven naar beneden. |
 | typen (12 blaadjes), 1 rij overgeslagen: 8: uitleg 2e keer | Elke rij telt mee. / Alle rijen horen erbij. / We slaan geen rij over. |
 | typen (12 blaadjes), 1 rij overgeslagen: 8: weer (2 keer dezelfde denkfout) | Je sloeg weer een rij over. / Weer een rij overgeslagen, zie ik. / Elke rij telt mee. / Alle rijen horen erbij, van boven tot onder. |

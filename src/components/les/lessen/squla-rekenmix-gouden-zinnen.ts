@@ -318,7 +318,8 @@ export const foutenVan = (v: Rmvraag): Record<string, Fout> => Object.fromEntrie
  * Elke situatie die terugkomt heeft varianten; de les kiest met de gedeelde kiezer (nooit-dubbel.ts): nooit dezelfde
  * zin 2 keer achter elkaar, ook niet over vragen heen. Getallen, antwoorden, keuzes en de betekenis zijn niet veranderd.
  * De vraag "Hoeveel … zie je?" en "Tel ze en tik op het goede getal." blijven gelijk (3.11, 15.36).
- * Een deel is de tekst van Synthesis (Color Count), in het Nederlands (besluit Sara 17 nov 2026), net als bij Tellen.
+ * De zinnen die herkenbaar vertaald uit Synthesis (Color Count) kwamen, zijn sinds 19 nov 2026 eigen zinnen op dezelfde
+ * plek, net als bij Tellen (15.41; WIJZIGINGEN-ZINNEN-REKENMIX1.md).
  * ===================================================================================================================== */
 
 /** Wisselwoorden voor de kiezer: "Tik op elke bal." en "Tik op elk potlood." tellen als dezelfde zin. */
@@ -353,13 +354,13 @@ export const RM = {
   /** De vraag terug na de hint (15.37, F16), als de hint zelf niet zegt dat het kind op het getal tikt. Noemt nooit een getal. */
   opnieuw: (d: Ding) => [`Hoeveel ${d.naam} zie je?`, "Hoeveel zijn het er dan?", "Tik dan op het goede getal."],
   /** Draaiboek Tellen §3 A.1 (b): bij de eerste vraag telt Bliepo hardop na (zelfde zinnen als de gouden les Tellen). */
-  natellen: ["Ik tel ze hardop voor je. Tel maar mee!", "Kom, ik tel ze hardop. Tel maar mee!", "Laten we ze samen tellen. Ik tel hardop."],
+  natellen: ["Ik tel ze hardop voor je. Tel maar mee!", "Kom, ik tel ze hardop. Tel maar mee!", "Luister maar, ik tel ze hardop."],
   /** Na het hardop tellen. Het laatste getal zegt Bliepo hier (niet ook nog los ervoor): zo klinkt het maar 1 keer. */
   natellenKlaar: (n: number, d: Ding) => [`En ${gk(n, d)}! Je had het precies goed.`, `En de laatste is ${gk(n, d)}. Jij had het goed geteld.`, `En ${gk(n, d)}! Zie je? Je zat precies goed.`],
   /** Als het kind op de pijl tikte (alle nummers staan er meteen): Bliepo noemde nog geen getal. */
-  natellenKlaarSnel: (n: number, d: Ding) => [`Zie je? Het zijn er ${gk(n, d)}. Je had het precies goed.`, `Zie je wel? Het zijn er ${gk(n, d)}. Jij had het goed geteld.`, `Kijk, daar heb je het: ${gk(n, d)}. Je zat precies goed.`],
+  natellenKlaarSnel: (n: number, d: Ding) => [`Zie je? Het zijn er ${gk(n, d)}. Je had het precies goed.`, `Zie je wel? Het zijn er ${gk(n, d)}. Jij had het goed geteld.`, `Het zijn er echt ${gk(n, d)}. Dat koos jij ook.`],
   /** Na de 2e keer: samen tellen. */
-  samenHelp: ["Kom, we tellen ze samen.", "Weet je wat? We tellen ze samen.", "Geeft niks. We tellen ze samen.", "Ik help je even. We tellen ze samen.", "Laten we ze samen tellen en kijken."],
+  samenHelp: ["Kom, we tellen ze samen.", "Weet je wat? We tellen ze samen.", "Geeft niks. We tellen ze samen.", "Ik help je even. We tellen ze samen.", "Ik doe mee. We tellen ze samen."],
   samenTik: (d: Ding) => [`Tik op ${d.elk} ${d.een}. Ik tel mee.`, `Tik ${d.elk} ${d.een} aan. Ik zeg het getal.`, `Tik op alle ${d.naam}. Ik tel hardop mee.`],
   samenHand: (d: Ding) => [`Tik op een ${d.een} zonder nummer.`, `Zoek een ${d.een} zonder nummer en tik erop.`, `Welke ${d.een} heeft nog geen nummer? Tik erop.`],
   /** Het laatste getal is het aantal; het getal staat er 1 keer. */
@@ -407,16 +408,16 @@ const HINT_VEEL_RM: Record<Vorm, Z[]> = {
 };
 /** ZONDER richting (als de richting maar 1 keuze zou overlaten, 15.17): geen woord dat zegt of het meer of minder is. */
 const HINT_NEUTRAAL_RM: Record<Vorm, Z[]> = {
-  rijen: [(d) => `Begin bovenaan en tel opnieuw. Wijs ${d.elk} ${d.een} aan.`, (d) => `Tel nog eens, rij voor rij. Wijs ${d.elk} ${d.een} aan.`, (d) => `Tel ze nog eens rustig. Wijs ${d.elk} ${d.een} aan en zeg het getal.`, (d) => `Probeer het nog eens. Tel hardop en wijs ${d.elk} ${d.een} aan.`, (d) => `Probeer het nog eens. Tel de ${d.naam} en tik op het getal.`],
-  los: [(d) => `Tel ze opnieuw, van boven naar beneden. Wijs ${d.elk} ${d.een} aan.`, (d) => `Tel ze nog eens rustig. Wijs ${d.elk} ${d.een} aan.`, (d) => `Wijs ${d.elk} ${d.een} aan en zeg het getal.`, (d) => `Probeer het nog eens. Tel hardop en wijs ${d.elk} ${d.een} aan.`, (d) => `Probeer het nog eens. Tel de ${d.naam} en tik op het getal.`],
-  paren: [(d) => `Begin links en tel opnieuw. Wijs ${d.elk} ${d.een} aan.`, (d) => `Tel nog eens, van links naar rechts. Wijs ${d.elk} ${d.een} aan.`, (d) => `Tel ze nog eens rustig. Wijs ${d.elk} ${d.een} aan en zeg het getal.`, (d) => `Probeer het nog eens. Tel hardop en wijs ${d.elk} ${d.een} aan.`, (d) => `Probeer het nog eens. Tel de ${d.naam} en tik op het getal.`],
+  rijen: [(d) => `Begin bovenaan en tel opnieuw. Wijs ${d.elk} ${d.een} aan.`, (d) => `Tel nog eens, rij voor rij. Wijs ${d.elk} ${d.een} aan.`, (d) => `Tel ze nog eens rustig. Wijs ${d.elk} ${d.een} aan en zeg het getal.`, (d) => `Probeer het nog eens. Tel hardop en wijs ${d.elk} ${d.een} aan.`, (d) => `Kijk nog eens goed en tel de ${d.naam} opnieuw.`],
+  los: [(d) => `Tel ze opnieuw, van boven naar beneden. Wijs ${d.elk} ${d.een} aan.`, (d) => `Tel ze nog eens rustig. Wijs ${d.elk} ${d.een} aan.`, (d) => `Wijs ${d.elk} ${d.een} aan en zeg het getal.`, (d) => `Probeer het nog eens. Tel hardop en wijs ${d.elk} ${d.een} aan.`, (d) => `Kijk nog eens goed en tel de ${d.naam} opnieuw.`],
+  paren: [(d) => `Begin links en tel opnieuw. Wijs ${d.elk} ${d.een} aan.`, (d) => `Tel nog eens, van links naar rechts. Wijs ${d.elk} ${d.een} aan.`, (d) => `Tel ze nog eens rustig. Wijs ${d.elk} ${d.een} aan en zeg het getal.`, (d) => `Probeer het nog eens. Tel hardop en wijs ${d.elk} ${d.een} aan.`, (d) => `Kijk nog eens goed en tel de ${d.naam} opnieuw.`],
 };
 
 /* De eerste zin (1e keer): Bliepo zegt wat het kind koos, vriendelijk, nooit "fout". "Dichtbij", "bijna", "scheelt" en
    "iets" alleen als het gekozen getal hooguit 2 naast het goede ligt (in deze les liggen sommige keuzes 3 verder). */
 const DICHTBIJ_RM: ZX[] = [(X) => `Je koos ${X}. Je zit er dichtbij.`, (X) => `Je koos ${X}. Dat scheelt niet veel.`, (X) => `Bijna! ${X} is het net niet.`, (X) => `${X}? Dat is heel dichtbij.`, (X) => `Je tikte op ${X}. Het scheelt maar een klein beetje.`];
-const WEINIG_RM: ZX[] = [(X) => `Je koos ${X}. Er liggen er nog meer.`, (X) => `Je koos ${X}. Je hebt ze nog niet allemaal geteld.`, (X) => `Bijna! ${X} is nog iets te weinig.`, (X) => `${X}? Ik zie er nog meer.`, (X) => `Je zit er dichtbij met ${X}. Je hebt ze nog niet allemaal geteld.`, (X, d) => `${X} ${d.naam}? Je hebt ze nog niet allemaal geteld.`];
-const VEEL_RM: ZX[] = [(X) => `Je koos ${X}. Dat zijn er iets te veel.`, (X) => `${X}? Dat zijn er iets te veel.`, (X) => `Bijna! ${X} is iets te veel.`, (X) => `Je zit er dichtbij, maar ${X} is te veel.`, (X) => `Je tikte op ${X}. Zo veel liggen er niet.`, (X, d) => `${X} ${d.naam}? Ik denk dat je er te veel hebt geteld.`];
+const WEINIG_RM: ZX[] = [(X) => `Je koos ${X}. Er liggen er nog meer.`, (X) => `Je koos ${X}. Je hebt ze nog niet allemaal geteld.`, (X) => `Bijna! ${X} is nog iets te weinig.`, (X) => `${X}? Ik zie er nog meer.`, (X) => `Je zit er dichtbij met ${X}. Je hebt ze nog niet allemaal geteld.`, (X, d) => `${X} ${d.naam}? Er liggen er nog meer, kijk maar.`];
+const VEEL_RM: ZX[] = [(X) => `Je koos ${X}. Dat zijn er iets te veel.`, (X) => `${X}? Dat zijn er iets te veel.`, (X) => `Bijna! ${X} is iets te veel.`, (X) => `Je zit er dichtbij, maar ${X} is te veel.`, (X) => `Je tikte op ${X}. Zo veel liggen er niet.`, (X, d) => `Zoveel ${d.naam}? ${X} is te veel.`];
 /** Woorden die zeggen dat het bijna goed was: alleen als het hooguit 2 scheelt. */
 export const BIJNA_RM = /dichtbij|bijna|scheelt|net niet|\biets\b|klein beetje/i;
 

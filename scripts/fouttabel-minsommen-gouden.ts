@@ -102,7 +102,7 @@ for (const v of VRAGEN) {
     /* Elke variant noemt de som (a en b) en de uitkomst; de uitkomst staat er 1 keer (of 2 keer als hij ook b is: 10 − 5 = 5). */
     if (!g.includes(v.a) || !g.includes(v.b) || !g.includes(u)) fouten.push(`${v.id}: samenKlaar klopt niet: ${z}`);
     if (g.filter((n) => n === u).length > (u === v.b ? 2 : 1)) fouten.push(`${v.id}: samenKlaar noemt de uitkomst 2 keer: ${z}`);
-    if (!z.includes(`${v.a} − ${v.b}`) && !z.includes(`met ${v.a} en haalden er ${v.b} weg`)) fouten.push(`${v.id}: samenKlaar noemt de som niet: ${z}`);
+    if (!z.includes(`${v.a} − ${v.b}`) && !z.includes(`met ${v.a} en haalden er ${v.b} weg`) && !new RegExp(`Van de ${v.a} ging(en)? er ${v.b} weg`).test(z)) fouten.push(`${v.id}: samenKlaar noemt de som niet: ${z}`);
   }
   for (const z of ZIN.samenWeg(v).map(kaal)) if (getallenIn(z).join() !== String(v.b)) fouten.push(`${v.id}: samenWeg noemt niet precies 1 keer ${v.b}: ${z}`);
   for (const z of ZIN.samenStippen(v).map(kaal)) if (getallenIn(z).join() !== String(v.a)) fouten.push(`${v.id}: samenStippen noemt niet precies 1 keer ${v.a}: ${z}`);

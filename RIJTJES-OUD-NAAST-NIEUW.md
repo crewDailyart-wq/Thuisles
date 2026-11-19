@@ -4,7 +4,7 @@ Wat Bliepo zegt bij een goed antwoord, aan het begin en aan het eind.
 
 - **Oud** = de gewone Squla-lessen (niet aangeraakt, alleen gelezen): `squla-uitleg.ts` (`BEVESTIGINGEN`, `terugAankondiging`, `terugAfsluiting`), `squla-hulp.ts` (`squlaBegin`, `squlaEind`) en de beginzinnen in `src/lib/lessen/beginzinnen.json`.
 - **Nieuw** = de gedeelde rijtjes van alle gouden lessen: `src/components/les/lessen/squla-klok-gouden-zinnen.ts` (dezelfde als BLIEPO-KARAKTER.md §3, §5, §10, §11, §12).
-- Wat er veranderd is: WIJZIGINGEN-ZINNEN-RIJTJES.md. Vragen voor Sara: KEUZES-VOOR-SARA.md, Ronde 51. **Bijgewerkt 19 november 2026:** de punten met advies ja uit Ronde 51 zijn doorgevoerd (de tabellen hieronder tonen de nieuwe zinnen). Voorstel voor warmere zinnen: RIJTJES-VOORSTEL-WARMER.md (nog niet doorgevoerd).
+- Wat er veranderd is: WIJZIGINGEN-ZINNEN-RIJTJES.md. Vragen voor Sara: KEUZES-VOOR-SARA.md, Ronde 51. **Bijgewerkt 19 november 2026:** de punten met advies ja uit Ronde 51 zijn doorgevoerd (de tabellen hieronder tonen de nieuwe zinnen). Voorstel voor warmere zinnen: RIJTJES-VOORSTEL-WARMER.md; **doorgevoerd op 19 november 2026 (16 van de 25, besluit Sara), zie RIJTJES-RESULTAAT-WARMER.md**. Het afscheid aan het eind komt sinds dan pas na de tik op de kaart (BOUWREGELS 15.50). De tabellen hieronder tonen de nieuwste zinnen.
 - De zinnen van de lessen in Synthesis-stijl (zoals `klokkijken.tsx`) staan hier bewust niet (BOUWREGELS 15.41).
 
 ---
@@ -18,7 +18,7 @@ Wat Bliepo zegt bij een goed antwoord, aan het begin en aan het eind.
 | Geen robotzinnen. | Robotzinnen over het groene scherm en het geheugen, spaarzaam. |
 | "Goed gezien." bij elke vraag. | "Dat heb je goed gezien." alleen bij een kijkvraag. |
 
-**Nieuw, `LOF` (40):** Ja, dat is goed! · Helemaal goed! · Super gedaan! · Dat heb je goed gezien. *(kijkvraag)* · Knap gedaan! · Ja, zo is het! · Heel goed! · Wauw, goed zeg! · Dat zit goed! · Jij weet het! · Precies goed! · Goed zo! · Ja, die klopt! · Mooi zo! · Ja, die is het! · Prima gedaan! · Netjes! · Klopt helemaal! · Ja hoor, goed! · Wat goed van jou! · Top! · Heel knap! · Zo doe je dat! · Lekker bezig! · Dat ging goed! · Goed gekozen! *(alleen na een keuzevraag)* · Ja, dat is het goede antwoord! · Helemaal raak! · Dat weet jij al! · Fijn, die is goed! · *(robot)* Kijk, mijn scherm wordt er groen van! · *(robot)* Mijn scherm is helemaal groen. Goed zo! · *(robotplek)* Inderdaad, zo moet het! · *(robotplek)* Zie je, jij snapt het! · *(robot)* Groen scherm! Die is goed. · *(robot)* Dat stop ik in mijn geheugen: jij kunt dit! · *(robot)* Mijn scherm straalt groen! · *(robotplek)* Even kijken… ja, goed! · *(robot)* Die bewaar ik in mijn geheugen. Goed zo! · *(robot)* Mijn scherm kleurt groen. Knap!
+**Nieuw, `LOF` (40):** Ja, dat is goed! · Helemaal goed, knap van jou! · Super gedaan! · Dat heb je goed gezien, zeg! *(kijkvraag)* · Knap gedaan! · Ja, zo is het! · Heel goed, ik ben blij! · Wauw, goed zeg! · Dat zit goed! · Jij weet het! · Precies goed! · Goed zo, dat kun jij! · Ja, die klopt! · Mooi zo! · Ja, die is het! · Prima gedaan! · Netjes gedaan, hoor! · Klopt helemaal! · Ja hoor, goed! · Wat goed van jou! · Top, daar word ik blij van! · Heel knap! · Zo doe je dat! · Lekker bezig! · Dat ging goed! · Goed gekozen! *(alleen na een keuzevraag)* · Ja, dat is het goede antwoord! · Helemaal raak! · Dat weet jij al! · Fijn, die is goed! · *(robot)* Kijk, mijn scherm wordt er groen van! · *(robot)* Mijn scherm is helemaal groen. Dat komt door jou! · *(robotplek)* Inderdaad, zo moet het! · *(robotplek)* Zie je, jij snapt het! · *(robot)* Groen scherm! Die is goed. · *(robot)* Dat stop ik in mijn geheugen: jij kunt dit! · *(robot)* Mijn scherm straalt groen voor jou! · *(robotplek)* Even kijken… ja, goed! · *(robot)* Die bewaar ik in mijn geheugen. Fijn! · *(robot)* Mijn scherm kleurt groen. Knap!
 
 Zelfde zin in oud en nieuw: "Helemaal goed", "Goed zo", "Netjes", "Ja, zo is het", "Heel goed", "Dat klopt"/"Klopt helemaal".
 
@@ -43,7 +43,7 @@ Zelfde zin in oud en nieuw: "Helemaal goed", "Goed zo", "Netjes", "Ja, zo is het
 
 | Oud | Nieuw (`BEVESTIG`, alleen een korte bevestiging, geen naam) |
 |---|---|
-| Hetzelfde rijtje als bij lof (zie 1). | Ja, nu is het goed. · Nu heb je hem. · Die is goed. · Zo is het. · Ja, nu klopt het. · Gevonden! *(alleen na een keuzevraag)* · Nu zit het goed. · Ja, deze is het. · *(robot)* Nu wordt mijn scherm groen. · *(robotplek)* Inderdaad, nu is hij raak. |
+| Hetzelfde rijtje als bij lof (zie 1). | Ja, nu is het goed. · Nu heb je hem! · Die is goed. Fijn! · Zo is het. Goed doorgezet! · Ja, nu klopt het. · Gevonden! *(alleen na een keuzevraag)* · Nu zit het goed. Mooi! · Ja, deze is het. · *(robot)* Nu wordt mijn scherm groen. · *(robotplek)* Inderdaad, nu is hij raak. |
 
 ## 5. Heel snel geantwoord
 
@@ -64,9 +64,9 @@ BLIEPO-KARAKTER.md §5 heeft nog 5 andere groeten (Hallo! Kom, we beginnen. · H
 
 ## 7. Einde van de les
 
-| Oud | Nieuw (`EINDE`, 1 zin aan het eind; daarna vaak "Tik op de kaart.") |
+| Oud | Nieuw (`EINDE`, 1 zin aan het eind; daarna altijd "Tik op de kaart."; een afscheid pas na de tik, 15.50) |
 |---|---|
-| Bij de kaart: **"Alles goed!"** (geen enkele fout) of **"Goed gewerkt!"** (wel fouten), soms met de naam ("Goed gewerkt, Sam!"), en daarachter een eigen zin per les ("Je kent de munten en de briefjes."). | Goed gedaan! Tot de volgende keer. · De les is klaar. Wat heb jij goed gewerkt! · Klaar! Je hebt veel geoefend vandaag. · Dat was de laatste. Fijn dat je meedeed! · Je bent klaar. Ik vond het leuk met jou! · Klaar! Wat heb je goed je best gedaan! · Dat was de les. Tot snel! · *(robotplek)* Alles is af. De les is klaar! · *(robot)* Deze les bewaar ik in mijn geheugen. Tot de volgende keer! |
+| Bij de kaart: **"Alles goed!"** (geen enkele fout) of **"Goed gewerkt!"** (wel fouten), soms met de naam ("Goed gewerkt, Sam!"), en daarachter een eigen zin per les ("Je kent de munten en de briefjes."). | Goed gedaan! *(na de tik: Ik zie je graag de volgende keer.)* · De les is klaar. Wat heb jij goed gewerkt! · Klaar! Je hebt veel geoefend vandaag. · Dat was de laatste. Fijn dat je meedeed! · Je bent klaar. Ik vond het leuk met jou! · Klaar! Wat heb je goed je best gedaan! · Dat was de les. Ik vond het fijn. *(na de tik: Tot snel!)* · *(robotplek)* Alles is af. Wat ben jij goed bezig geweest! · *(robot)* Deze les bewaar ik in mijn geheugen. *(na de tik: Tot de volgende keer!)* |
 | — | Na veel fouten (de helft of meer niet in 1 keer goed): **"Je hebt goed doorgezet. Volgende keer gaat het nog beter."** |
 
 ## 8. Vragen die terugkomen

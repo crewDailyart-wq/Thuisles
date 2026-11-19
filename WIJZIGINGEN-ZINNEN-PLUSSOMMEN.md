@@ -226,3 +226,35 @@ Opdracht van Sara: het woord "nagekeken" (en "nakijken") komt niet meer voor in 
 | Les | Waar | Oud | Nieuw | Waarom |
 |---|---|---|---|---|
 | squla-plus-bakkerij-1-gouden-extra | som kiezen, keuze "p + q = pq", eerste zin (1 van de 3 varianten) | Je zette de getallen naast elkaar. | Je zette de getallen naast elkaar. Dan lees je {37:wit}. | het aan elkaar gezette getal staat apart en wit (2.1); in de andere varianten staan de {3} en de {7} los in de kleur van hun tegel. De keuzes zelf bleven ("3 + 7 = 37" met spaties rond + en =, en de somknop breekt nooit af). |
+
+
+## 19 november 2026: eigen zinnen in plaats van de vertaalde Synthesis-zinnen (besluit Sara, BOUWREGELS 15.41)
+
+Sara besliste: in onze gouden lessen geen zinnen van Synthesis, ook niet vertaald. Elke nieuwe zin staat op dezelfde plek in de rij, doet hetzelfde en is ongeveer even lang. Getallen, antwoorden, keuzes en robotplekken zijn niet veranderd. Fouttabel-script opnieuw gedraaid. Oude zinnen: WEGGEHAALD.md.
+
+| Les | Waar | Oud (vertaald uit Synthesis) | Nieuw (eigen zin) |
+|---|---|---|---|
+| gouden | eerste zin, te weinig (1 van 4) | 1 en 4 samen is meer dan 3. | 3 is te weinig voor 1 en 4 samen. |
+| gouden | eerste zin, te veel (1 van 4; spiegel van de vorige) | 1 en 4 samen is minder dan 6. | 6 is te veel voor 1 en 4 samen. |
+| gouden | hint zonder richting | Probeer het nog eens. Tel verder vanaf 1. | Begin nog een keer bij 1 en tel door. |
+| gouden | zin met de som na lof (plek 6) | Precies, 1 + 4 = 5. | Goed gerekend: 1 + 4 = 5. |
+| gouden | 2e keer mis, samen tellen (plek 4) | Ik help je even. We tellen samen. | Ik doe even mee. We tellen samen. |
+| gouden | 2e keer mis, samen tellen (plek 5) | Laten we samen tellen en kijken. | Kijk maar met mij mee. We tellen samen. |
+| extra | begin: een tegel kiezen | Kies maar een tegel die jij wilt. Zet hem op het veld. | Welke tegel wil jij? Zet die op het veld. |
+| extra | welk getal? (plek 2) | Welk getal heb je gekozen? | Welk getal past bij jouw tegel? |
+| extra | Bliepo telde de vakjes (plek 1) | Het zijn 5 vakjes. Dat is het getal van deze tegel. | Deze tegel heeft 5 vakjes. Dat is zijn getal. |
+| extra | welk getal, te weinig (plek 3) | 4? Ik tel er meer. | 4? Er zijn nog meer vakjes. |
+| extra | welk getal, te veel (plek 3) | 6? Ik tel er minder. | 6? Er zijn minder vakjes. |
+| extra | hint bij welk getal en bij 2 tegels (plek 4) | Probeer het nog eens. Tel de vakjes en tik op het getal. | Tel de vakjes. Tik dan op dat getal. |
+| extra | 2 tegels samen, te weinig (plek 3) | 2 en 3 samen is iets meer dan 4. | 4 is net te weinig voor 2 en 3 samen. |
+| extra | 2 tegels samen, te weinig (plek 4) | 4? Ik tel meer vakjes. | 4? Er horen nog meer vakjes bij. |
+| extra | 2 tegels samen, te veel (plek 3) | 2 en 3 samen is iets minder dan 6. | 6 is net te veel voor 2 en 3 samen. |
+| extra | 2 tegels samen, te veel (plek 4) | 6? Ik tel minder vakjes. | 6? Dat zijn te veel vakjes. |
+| extra | som kiezen, cijfers naast elkaar (plek 2) | Je hebt de 3 en de 7 naast elkaar gezet. | Je plakte de 3 en de 7 aan elkaar vast. |
+| extra | omdraaien: de vraag | Wat gebeurt er als ik de tegels omdraai? | Ik draai de tegels om. Wat zou er gebeuren? |
+| extra | omdraaien goed (plek 1) | 3 + 7 = 10 en 7 + 3 = 10. Je mag de getallen omdraaien. | 3 + 7 = 10 en 7 + 3 = 10. Andersom komt er hetzelfde uit. |
+| extra | omdraaien samen (plek 1) | Het zijn dezelfde tegels. Het is nog steeds 10. Omdraaien maakt niet uit. | Kijk, het zijn dezelfde tegels. Samen hebben ze 10 vakjes. |
+| extra | omdraaien samen (plek 2) | Het zijn dezelfde vakjes. Samen blijft het 10. Je mag de getallen omdraaien. | Het zijn dezelfde vakjes. Samen blijft het 10. Andersom mag ook. |
+| extra | omdraaien, eerste zin (plek 1) | 9? Dat is net te weinig. (bij 11: te veel) | 9 vakjes is te weinig. (bij 11: te veel) |
+| extra | omdraaien, hint (plek 1) | Tel de vakjes nog eens, stuk voor stuk. | Wijs elk vakje aan en tel ze. |
+| extra | zin met de som na lof (plek 6) | Precies, 3 + 4 = 7. | Goed gerekend: 3 + 4 = 7. |

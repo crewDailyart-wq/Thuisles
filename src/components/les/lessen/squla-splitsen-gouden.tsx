@@ -92,6 +92,7 @@ import {
 } from "./squla-splitsen-gouden-zinnen";
 import { deeltStuk, maakKiezer } from "./nooit-dubbel";
 import { alleenBijKeuze } from "./squla-klok-gouden-zinnen";
+import { afscheidNa } from "./squla-klok-gouden-zinnen";
 
 const LES_ID = "squla-splits-splitsen1-1-gouden";
 
@@ -1335,8 +1336,12 @@ const gouden: Lesdraaiboek = {
     const tik = l.kaart();
     speelLesgeluid("kaart");
     /* 1 uiting. */
-    await zeg(l, `${veelFouten(l) ? EINDE_VEEL_FOUTEN : kies(l, EINDE)} ${variant("kaartTik", ZIN.kaartTik)}`);
+    const eind = veelFouten(l) ? EINDE_VEEL_FOUTEN : kies(l, EINDE);
+    await zeg(l, `${eind} ${variant("kaartTik", ZIN.kaartTik)}`);
     await tik;
+    /* Ronde 51 punt 10 (15.50): het afscheid ("Tot snel!") pas na de tik op de kaart; zo blijft "Tik op de kaart." het laatste in beeld. */
+    const afscheid = afscheidNa(eind);
+    if (afscheid) await zeg(l, afscheid);
   },
 };
 

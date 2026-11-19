@@ -55,26 +55,26 @@ Gemaakt op 8 november 2026 (derde ronde, besluit Sara: "Lofzinnen komen in BLIEP
 **Gebruiksnoot:** bij een goed antwoord in 1 keer kiest Bliepo **1 korte lofzin** uit dit rijtje, eventueel gevolgd door een reactie op wat het kind koos (§4). Nooit 2 keer achter elkaar dezelfde. Geen lange of grote lof. Zin 4 alleen bij een **kijkvraag** (het kind moest iets zien of vinden). De robotzinnen over het groene scherm passen alleen bij goed, want dan is het scherm echt groen.
 
 1. Ja, dat is goed!
-2. Helemaal goed!
+2. Helemaal goed, knap van jou! *(warmer, Ronde 51 punt 13)*
 3. Super gedaan!
-4. Dat heb je goed gezien. *(alleen bij kijkvragen)*
+4. Dat heb je goed gezien, zeg! *(alleen bij kijkvragen; warmer, Ronde 51 punt 13)*
 5. Knap gedaan!
 6. Ja, zo is het!
-7. Heel goed!
+7. Heel goed, ik ben blij! *(warmer, Ronde 51 punt 13)*
 8. Wauw, goed zeg!
 9. Dat zit goed!
 10. Jij weet het!
 11. Precies goed!
-12. Goed zo!
+12. Goed zo, dat kun jij! *(warmer, Ronde 51 punt 13)*
 13. Ja, die klopt!
 14. Mooi zo!
 15. Ja, die is het!
 16. Prima gedaan!
-17. Netjes!
+17. Netjes gedaan, hoor! *(warmer, Ronde 51 punt 13)*
 18. Klopt helemaal!
 19. Ja hoor, goed!
 20. Wat goed van jou!
-21. Top!
+21. Top, daar word ik blij van! *(warmer, Ronde 51 punt 13)*
 22. Heel knap!
 23. Zo doe je dat!
 24. Lekker bezig!
@@ -85,14 +85,14 @@ Gemaakt op 8 november 2026 (derde ronde, besluit Sara: "Lofzinnen komen in BLIEP
 29. Dat weet jij al! *(was "Dat weet jij al goed!", Ronde 51 punt 7)*
 30. Fijn, die is goed!
 31. Kijk, mijn scherm wordt er groen van! *(robot)*
-32. Mijn scherm is helemaal groen. Goed zo! *(robot)*
+32. Mijn scherm is helemaal groen. Dat komt door jou! *(robot; warmer, Ronde 51 punt 13)*
 33. Inderdaad, zo moet het! *(robot-plek)*
 34. Zie je, jij snapt het! *(robot-plek)*
 35. Groen scherm! Die is goed. *(robot)*
 36. Dat stop ik in mijn geheugen: jij kunt dit! *(robot)*
-37. Mijn scherm straalt groen! *(robot)*
+37. Mijn scherm straalt groen voor jou! *(robot; warmer, Ronde 51 punt 13)*
 38. Even kijken… ja, goed! *(robot-plek)*
-39. Die bewaar ik in mijn geheugen. Goed zo! *(robot)*
+39. Die bewaar ik in mijn geheugen. Fijn! *(robot; warmer, Ronde 51 punt 13)*
 40. Mijn scherm kleurt groen. Knap! *(robot)*
 
 Telling: 40 zinnen, waarvan 10 robotzinnen. (1 t/m 10 zijn de zinnen van de vierde ronde, ongewijzigd.)
@@ -155,12 +155,12 @@ Telling: 10 zinnen, waarvan 2 robotzinnen.
 **Gebruiksnoot:** heeft het kind bij deze vraag eerst een fout gemaakt (1× of 2×; de 3e poging bestaat niet meer, 15.11), dan **geen grote lof**, alleen een korte bevestiging uit dit rijtje (5.11). Geen naam. Ook niet als het kind na het samen voordoen zelf tikt: dan zegt Bliepo meteen de volgende stap.
 
 1. Ja, nu is het goed.
-2. Nu heb je hem.
-3. Die is goed.
-4. Zo is het.
+2. Nu heb je hem! *(warmer, Ronde 51 punt 13)*
+3. Die is goed. Fijn! *(warmer, Ronde 51 punt 13)*
+4. Zo is het. Goed doorgezet! *(warmer, Ronde 51 punt 13)*
 5. Ja, nu klopt het.
 6. Gevonden! *(alleen na een keuzevraag; Ronde 51 punt 1)*
-7. Nu zit het goed.
+7. Nu zit het goed. Mooi! *(warmer, Ronde 51 punt 13)*
 8. Ja, deze is het.
 9. Nu wordt mijn scherm groen. *(robot)*
 10. Inderdaad, nu is hij raak. *(robot-plek)*
@@ -279,19 +279,19 @@ Telling: 62 zinnen (12 onderwerpen × 5, plus 10a en 10b bij Tellen), waarvan 12
 
 **Gebruiksnoot begin:** een korte groet, vóór de **eigen** beginzin van de les. De beginzin zelf blijft per les eigen (BOUWREGELS 4.3, 4.4): de groet vervangt die niet (vraag aan Sara in KEUZES-VOOR-SARA.md, Ronde 15). Bliepo zwaait bij de groet (3.16).
 
-**Gebruiksnoot einde:** 1 eindzin aan het eind van de les (3.13). Zin 6 ("Volgende keer gaat het nog beter") **alleen als het kind de helft of meer van de vragen niet in één keer goed had** (besluit Sara 9 november 2026, ronde 15; vervangt het voorstel "4 of meer vragen met een fout"). Zin 9 en 10 passen bij elke les.
+**Gebruiksnoot einde:** 1 eindzin aan het eind van de les (3.13). Zin 6 ("Volgende keer gaat het nog beter") **alleen als het kind de helft of meer van de vragen niet in één keer goed had** (besluit Sara 9 november 2026, ronde 15; vervangt het voorstel "4 of meer vragen met een fout"). Zin 9 en 10 passen bij elke les. **Eerst de eindzin, dan "Tik op de kaart."; een afscheid ("Tot snel!") zegt Bliepo pas na de tik op de kaart** (BOUWREGELS 15.50).
 
 **Einde**
-1. Goed gedaan! Tot de volgende keer.
+1. Goed gedaan! *(na de tik op de kaart: "Ik zie je graag de volgende keer."; Ronde 51 punt 10 en 13)*
 2. De les is klaar. Wat heb jij goed gewerkt!
 3. Klaar! Je hebt veel geoefend vandaag.
 4. Dat was de laatste. Fijn dat je meedeed!
 5. Je bent klaar. Ik vond het leuk met jou!
 6. Je hebt goed doorgezet. Volgende keer gaat het nog beter. *(alleen na veel fouten)*
 7. Klaar! Wat heb je goed je best gedaan! *(uitroepteken, Ronde 51 punt 5; de bewaarde stemopname moet bij de Ruth-ronde opnieuw)*
-8. Dat was de les. Tot snel!
-9. Alles is af. De les is klaar! *(robot-plek)*
-10. Deze les bewaar ik in mijn geheugen. Tot de volgende keer! *(robot)*
+8. Dat was de les. Ik vond het fijn. *(na de tik op de kaart: "Tot snel!"; Ronde 51 punt 10 en 13)*
+9. Alles is af. Wat ben jij goed bezig geweest! *(robot-plek; warmer, Ronde 51 punt 13)*
+10. Deze les bewaar ik in mijn geheugen. *(robot; na de tik op de kaart: "Tot de volgende keer!"; Ronde 51 punt 10)*
 
 **Begin** *(de code gebruikt nu alleen zin 11, als "Hoi {naam}! Fijn dat je er bent."; de andere groeten gaan later afwisselen, Ronde 51 punt 12)*
 11. Hoi! Fijn dat je er bent.

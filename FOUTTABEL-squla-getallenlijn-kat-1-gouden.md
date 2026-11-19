@@ -130,7 +130,7 @@ Na het vangnet (20 s niets, of bij op volgorde 3 keer anders gelegd) doet Bliepo
 
 Bij de 2e fout zegt Bliepo "Kom, we tellen de bogen samen.", telt hij de bogen (1, 2, 3; het rondje staat even om het getal waar elke boog landt), zegt "Zoveel sprongen maakte het raketje." en het kind tikt de 3 aan ("Tik jij op de 3?"). Daarna: "Ja, zo ver sprong het raketje." (na het vangnet: "Kijk, zo ver sprong het raketje."). Bij goed: een lofzin en "Het raketje sprong 3 keer vanaf de 0. Daarom staat het nu bij dat getal."
 
-Bij het springen in de uitleg (draaiboek §3 B): alleen de getallen 1, 2 en 3 zijn wit en tikbaar. Tikt het kind een getal verder dan het volgende (een sprong overslaan), dan blijft het raketje staan en zegt Bliepo "Dat is te ver voor 1 sprong. Tik op het getal vlak naast het raketje." (bij de 3 in 1 keer: "Je wilde het hele stuk in 1 keer doen. Het raketje maakt kleine sprongen. Tik op het volgende getal."; de 2e keer: "Het raketje springt steeds 1 streepje. Tik op het volgende getal."). Elke variant eindigt met wat het kind doet, want de les wacht daarna op een tik (F16). Na 3 keer, of 20 s niets, springt Bliepo zelf: "Kijk, zo springt het raketje: steeds 1 streepje verder." Dit telt niet als fout (geen rood scherm), zoals bij Synthesis.
+Bij het springen in de uitleg (draaiboek §3 B): alleen de getallen 1, 2 en 3 zijn wit en tikbaar. Tikt het kind een getal verder dan het volgende (een sprong overslaan), dan blijft het raketje staan en zegt Bliepo "Dat is te ver voor 1 sprong. Tik op het getal vlak naast het raketje." (bij de 3 in 1 keer: "Je tikte meteen op het eind. Het raketje maakt kleine sprongen. Tik op het volgende getal."; de 2e keer: "Het raketje springt steeds 1 streepje. Tik op het volgende getal."). Elke variant eindigt met wat het kind doet, want de les wacht daarna op een tik (F16). Na 3 keer, of 20 s niets, springt Bliepo zelf: "Kijk, zo springt het raketje: steeds 1 streepje verder." Dit telt niet als fout (geen rood scherm), zoals bij Synthesis.
 
 ## 5. Denkfouten: de vaste namen (voor de voortgang)
 
@@ -158,10 +158,10 @@ De les kiest uit elk rijtje steeds 1 zin met de gedeelde kiezer (`nooit-dubbel.t
 
 | Situatie | Varianten |
 |---|---|
-| begin (met de startvraag) | We zoeken bij welk getal het raketje staat. Wil je laten zien wat je al kunt? / Vandaag zoeken we het getal bij het raketje. Wil je het eerst zelf proberen? |
+| begin (met de startvraag) | We zoeken bij welk getal het raketje staat. Kun jij dat al? / Vandaag zoeken we het getal bij het raketje. Wil je het eerst zelf proberen? |
 | proef: begin | Laat maar zien! / Toe maar, laat maar zien! / Fijn! Laat maar zien wat je kunt. |
 | proef: goed | Dat gaat goed! We gaan verder. / Je kunt het al goed. We gaan door. / Dat gaat al heel goed. Kom, we gaan verder. |
-| proef: nog lastig | Dit is nog een beetje lastig. Geeft niks! We oefenen eerst samen. / Dit kan lastig zijn. Dat geeft niks. We doen samen een stapje terug. / Dat is nog best moeilijk, hè? Kom, we oefenen eerst samen. |
+| proef: nog lastig | Dit is nog een beetje lastig. Geeft niks! We oefenen eerst samen. / Dat is ook nog nieuw voor je. Geeft niks. We bekijken het eerst samen. / Dat is nog best moeilijk, hè? Kom, we oefenen eerst samen. |
 | uitleg: samen beginnen | Fijn, ik help je op weg. / Goed dat je het zegt. Ik help je. / Dan doen we het eerst samen. Ik help je. |
 | uitleg: de getallenlijn | Dit is een getallenlijn. Bij elk streepje hoort een getal. / Kijk, dit is een getallenlijn. Elk streepje heeft zijn eigen getal. |
 | uitleg: het raketje bij de 0 | Het raketje begint bij de 0. / Kijk, hier begint het raketje: bij de 0. |
@@ -169,7 +169,7 @@ De les kiest uit elk rijtje steeds 1 zin met de gedeelde kiezer (`nooit-dubbel.t
 | uitleg: hulphandje bij het springen | Tik op dit getal. / Tik maar op dit getal. / Hier springt het raketje heen. Tik erop. |
 | uitleg: een sprong overgeslagen | Dat is te ver voor 1 sprong. Tik op het getal vlak naast het raketje. / Zo ver springt het raketje niet in 1 keer. Tik op het volgende getal. |
 | uitleg: nog een keer overgeslagen | Het raketje springt steeds 1 streepje. Tik op het volgende getal. / Elke sprong is 1 streepje. Tik op het getal vlak naast het raketje. |
-| uitleg: het hele stuk in 1 keer | Je wilde het hele stuk in 1 keer doen. Het raketje maakt kleine sprongen. Tik op het volgende getal. / Jij wilt al naar het eind! Dat is te ver. Tik eerst op het getal vlak naast het raketje. |
+| uitleg: het hele stuk in 1 keer | Je tikte meteen op het eind. Het raketje maakt kleine sprongen. Tik op het volgende getal. / Daar wil het raketje straks heen. Nu nog niet. Tik eerst op het getal vlak naast het raketje. |
 | uitleg: Bliepo springt zelf | Kijk, zo springt het raketje: steeds 1 streepje verder. / Kijk, ik laat het zien. Het raketje springt steeds 1 streepje verder. |
 | uitleg: waarom (na goed) | Het raketje sprong 3 keer vanaf de 0. Daarom staat het nu bij dat getal. / Elke boog is 1 sprong. Het raketje sprong 3 keer vanaf de 0. / Het raketje maakte 3 sprongen vanaf de 0. Kijk maar naar de bogen. |
 | uitleg: samen de bogen tellen | Kom, we tellen de bogen samen. / Weet je wat? We tellen de bogen samen. / Geeft niks. We tellen de bogen samen. / Ik help je even. We tellen de bogen samen. |

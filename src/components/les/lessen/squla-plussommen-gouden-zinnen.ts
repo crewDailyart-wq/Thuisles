@@ -153,9 +153,9 @@ export const somTekst = (a: number, b: number) => `${a} + ${b} = ${a + b}`;
  * terugkomt heeft varianten: 3 tot 5 voor reacties en aanmoediging, 2 of 3 voor instructies en samen voordoen. De les
  * kiest met de gedeelde kiezer (nooit-dubbel.ts): nooit dezelfde zin 2 keer achter elkaar, ook niet over vragen heen.
  * Getal, antwoord en betekenis zijn niet veranderd. Oud naast nieuw: WIJZIGINGEN-ZINNEN-PLUSSOMMEN.md.
- * Een paar zinnen zijn de tekst van Synthesis (Adding below 10) in het Nederlands, passend gemaakt voor groep 3 (besluit
- * Sara 17 november 2026, BOUWREGELS 15.2): "1 en 4 samen is meer dan 4.", "Probeer het nog eens. Tel verder vanaf 1.",
- * "Precies, 1 + 4 = 5.", "Ik help je even. We tellen samen.".
+ * 19 november 2026 (besluit Sara, BOUWREGELS 15.41): de zinnen die vertaald uit Synthesis (Adding below 10) kwamen, zijn
+ * eigen zinnen geworden op dezelfde plek ("1 en 4 samen is meer dan 3." werd "3 is te weinig voor 1 en 4 samen.", enz.;
+ * oud naast nieuw onderaan WIJZIGINGEN-ZINNEN-PLUSSOMMEN.md).
  * Een lijst = varianten (de les kiest er 1). Schooltermen blijven gelijk: "samen", "erbij", "plus", "som", "plussom".
  */
 
@@ -185,7 +185,7 @@ export const ZIN = {
   verbindHand: ["Tik op een som. Tik dan op het antwoord dat erbij hoort.", "Kies eerst een som. Tik daarna op het antwoord dat erbij hoort."],
   verbindHandGekozen: (x: number, y: number) => [`Reken ${g(x)} + ${g(y)} uit en tik op het antwoord.`, `Hoeveel is ${g(x)} + ${g(y)}? Tik op dat antwoord.`],
   /** Samen tellen (2e keer mis, draaiboek §3 C.5 en D.4): Bliepo zet het begin klaar, het kind telt verder. */
-  samenHelp: ["Kom, we tellen samen.", "Weet je wat? We tellen samen.", "Geeft niks. We tellen samen.", "Ik help je even. We tellen samen.", "Laten we samen tellen en kijken."],
+  samenHelp: ["Kom, we tellen samen.", "Weet je wat? We tellen samen.", "Geeft niks. We tellen samen.", "Ik doe even mee. We tellen samen.", "Kijk maar met mij mee. We tellen samen."],
   samenKijk: ["Kom, we kijken samen.", "Weet je wat? We kijken er samen naar.", "Geeft niks. We kijken samen.", "Ik help je even. We kijken samen."],
   samenHier: (n: number, nm: Naam, k: string) => (n === 1 ? [`Hier ligt ${aantal(1, nm, k)}.`, `Kijk, hier ligt ${aantal(1, nm, k)}.`] : [`Hier liggen ${aantal(n, nm, k)}.`, `Kijk, hier liggen ${aantal(n, nm, k)}.`]),
   samenVerder: (a: number, ka: string, nm: Naam) => [`We tellen verder vanaf ${g(a, ka)}. Tik op ${nm.elk} ${nm.een} daar.`, `Na ${g(a, ka)} tellen we verder. Tik ${nm.elk} ${nm.een} daar aan.`, `We beginnen bij ${g(a, ka)}. Tik op ${nm.elk} ${nm.een} daar. Ik tel mee.`],
@@ -235,7 +235,7 @@ export const AANMOEDIG_TIKKEN = ZIN.aanmoedigTikken;
 
 /**
  * BLIEPO-KARAKTER.md §4 Optellen: zin 11, 12 en 15, plus 2 zinnen zonder "Ja" (voor na een lofzin met "Ja"); 5 en 6 zijn
- * erbij gekomen (18 november 2026; 5 is de zin van Synthesis: "precies; 2 + 3 = 5").
+ * erbij gekomen (18 november 2026; 5 was vertaald uit Synthesis en is sinds 19 november een eigen zin, 15.41).
  */
 export const PLUSREACTIE = (a: number, b: number, ka: string, kb: string) =>
   rij(
@@ -245,7 +245,7 @@ export const PLUSREACTIE = (a: number, b: number, ka: string, kb: string) =>
       `${g(a, ka)} en ${g(b, kb)} zijn samen ${g(a + b)}.`,
       `${g(a, ka)} + ${g(b, kb)} = ${g(a + b)}.`,
       `Zie je, ${g(a, ka)} en nog ${g(b, kb)} is ${g(a + b)}.`,
-      `Precies, ${g(a, ka)} + ${g(b, kb)} = ${g(a + b)}.`,
+      `Goed gerekend: ${g(a, ka)} + ${g(b, kb)} = ${g(a + b)}.`,
       `Dat klopt, ${g(a, ka)} en ${g(b, kb)} is samen ${g(a + b)}.`,
     ],
     [4],
@@ -351,7 +351,7 @@ export function totaalFout(v: Verhaal | Toonbank, x: number): Fout {
   const mag = a === b ? [a] : [];
   /* Hints zonder richting (mogen altijd): alleen hoe je telt. */
   const neutraal = isVerhaal
-    ? [`Tel alle ${wat} nog eens, stuk voor stuk.`, `Begin bij ${A} en tel de ${nm![1].meer} daar erbij.`, `Wijs ze stuk voor stuk aan en tel ze samen.`, `Probeer het nog eens. Tel verder vanaf ${A}.`, `Tel het nog eens na. Begin bij ${A}.`]
+    ? [`Tel alle ${wat} nog eens, stuk voor stuk.`, `Begin bij ${A} en tel de ${nm![1].meer} daar erbij.`, `Wijs ze stuk voor stuk aan en tel ze samen.`, `Begin nog een keer bij ${A} en tel door.`, `Tel het nog eens na. Begin bij ${A}.`]
     : [`Begin bij ${A} en tel ${B} verder.`, `Tel verder vanaf ${A}: nog ${B} erbij.`, `Begin bij ${A}. Tel er ${B} bij.`, `Probeer het nog eens. Tel verder vanaf het eerste getal.`];
   /* "Dichtbij" verklapt niets als er nog minstens 2 keuzes dichtbij liggen (en het goede antwoord er 1 van is). */
   const dichtbijMag = (bp: Beperking) => Math.abs(s - x) <= 2 && overNa(keuzes, x, bp).filter((k) => Math.abs(k - x) <= 2).length >= 2;
@@ -423,7 +423,7 @@ export function totaalFout(v: Verhaal | Toonbank, x: number): Fout {
     const bijna = een && dichtbijMag({ minderDan: x });
     return maak(een ? "een-te-veel" : "te-veel", "te-veel", een ? "telde 1 te veel" : "telde er te veel", { minderDan: x }, {
       eerste: [
-        `${A} en ${B} samen is minder dan ${X}.`,
+        `${X} is te veel voor ${A} en ${B} samen.`,
         isVerhaal ? `Je koos ${X}. Dat zijn er te veel.` : `Je koos ${X}. Dat is te veel.`,
         `${X}? Dat is meer dan ${A} en ${B} samen.`,
         bijna ? `Bijna! ${X} is iets te veel.` : isVerhaal ? `Je tikte op ${X}. Zo veel zijn het er niet.` : `Je tikte op ${X}. Zo veel is het niet.`,
@@ -443,7 +443,7 @@ export function totaalFout(v: Verhaal | Toonbank, x: number): Fout {
     const bijna = een && dichtbijMag({ meerDan: x });
     return maak(een ? "een-te-weinig" : "te-weinig", "te-weinig", een ? "telde 1 te weinig" : "telde er te weinig", { meerDan: x }, {
       eerste: [
-        `${A} en ${B} samen is meer dan ${X}.`,
+        `${X} is te weinig voor ${A} en ${B} samen.`,
         isVerhaal ? `Je koos ${X}. Dat zijn er te weinig.` : `Je koos ${X}. Dat is te weinig.`,
         `${X}? Dat is minder dan ${A} en ${B} samen.`,
         bijna ? `Bijna! ${X} is nog iets te weinig.` : isVerhaal ? `Je tikte op ${X}. Het zijn er meer.` : `Je tikte op ${X}. Het is meer.`,

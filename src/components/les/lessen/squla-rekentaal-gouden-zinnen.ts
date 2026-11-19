@@ -341,7 +341,7 @@ export const ZIN = {
   zelf: (klaar: string) => klaar.replace(/^Ja, /, "Kijk, "),
   /** Op volgorde: 45 s niets nagekeken; dan doen we het samen (zoals slepen bij de gouden les Dagen). Er zit al "samen" of
       "help" in: daarna niet nog eens "Kom, we kijken samen.". */
-  volgVangnet: ["Ik help je met deze.", "Kom, we zetten ze samen op volgorde.", "Geeft niks. We doen het samen."],
+  volgVangnet: ["Deze doen we samen.", "Kom, we zetten ze samen op volgorde.", "Geeft niks. We doen het samen."],
   /** Het hulphandje bij de kleine stap (het rondje staat om het goede voorwerp). */
   handDing: ["Tik in het rode rondje.", "Tik maar in het rode rondje.", "Hier is het. Tik in het rode rondje."],
   /** Het hulphandje bij op volgorde zetten: bij de eerste lege plek (nooit op het goede voorwerp, 15.17). */

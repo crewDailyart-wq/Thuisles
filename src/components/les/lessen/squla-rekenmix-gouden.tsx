@@ -44,6 +44,7 @@ import { speelLesgeluid } from "@/lib/lesgeluiden";
 import { bliepoScherm } from "@/lib/bliepo-scherm";
 import { bewaarUitkomst } from "@/app/lesuitkomstacties";
 import { BEVESTIG, EINDE, EINDE_VEEL_FOUTEN, LOF, LOF_KIJK_INDEX, MOMENT, NAAM_GROET, NAAM_LOF, ONDUIDELIJK, ONDUIDELIJK_NOG_1_KEER, OVERGANG, RM, TELREACTIE_JA, TELREACTIE_ROBOT, TELREACTIE_RM, VRAGEN, WISSEL_RM, foutReactie, foutenRm, gk, metNaam, opnieuwZin, plekken, type Fout, type Rijtje, type Rmvraag, type Varianten } from "./squla-rekenmix-gouden-zinnen";
+import { afscheidNa } from "./squla-klok-gouden-zinnen";
 import { maakKiezer } from "./nooit-dubbel";
 import { alleenBijKeuze } from "./squla-klok-gouden-zinnen";
 
@@ -500,8 +501,12 @@ const gouden: Lesdraaiboek = {
     const tik = l.kaart();
     speelLesgeluid("kaart");
     /* Draaiboek stap 10: Bliepo zegt kort wat het kind met de kaart doet. 1 uiting. */
-  await zeg(l, `${veelFouten(l) ? EINDE_VEEL_FOUTEN : kies(l, EINDE)} ${variant("kaartTik", RM.kaartTik)}`);
+    const eind = veelFouten(l) ? EINDE_VEEL_FOUTEN : kies(l, EINDE);
+    await zeg(l, `${eind} ${variant("kaartTik", RM.kaartTik)}`);
     await tik;
+    /* Ronde 51 punt 10 (15.50): het afscheid ("Tot snel!") pas na de tik op de kaart; zo blijft "Tik op de kaart." het laatste in beeld. */
+    const afscheid = afscheidNa(eind);
+    if (afscheid) await zeg(l, afscheid);
   },
 };
 

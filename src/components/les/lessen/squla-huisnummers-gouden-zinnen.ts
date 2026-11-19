@@ -135,7 +135,7 @@ export const ZIN = {
   /** Stap 1: openen. Eigen beginzin van de les (BOUWREGELS 4.3); geen startvraag (draaiboek §0). Samen met de groet 1 stuk. */
   begin: ["Vandaag zoeken we huisnummers. In elke straat ontbreekt er 1.", "We gaan samen huisnummers zoeken. In elke straat ontbreekt 1 nummer."],
   /** Een nieuw blok met grotere getallen (draaiboek §2 stap 2 en 4: "nu tellen we met grotere getallen", "we gaan een stukje verder"). */
-  blok: ["", "Nu komen er grotere huisnummers.", "We gaan nog een stukje verder. Nu komen de huisnummers tot 50."],
+  blok: ["", "Nu komen er grotere huisnummers.", "Nu lopen we verder de straat in. Hier gaan de huisnummers tot 50."],
   /** De zinnen van de oude les vóór de vraag; alleen de eerste keer per soort (bij terugtellen elke keer, dus daar 3 versies). */
   aanloop: (v: Vraag): string[] =>
     v.soort === "tussen"
@@ -464,8 +464,8 @@ function huisFoutRuw(x: number, v: Vraag): Fout {
       soort: "over",
       denkfout: vooruit(v) ? "telde 2 verder in plaats van 1 (sloeg een huis over)" : "telde 2 terug in plaats van 1 (sloeg een huis over)",
       v: {
-        /* "Je ging een beetje te ver" is de zin van Synthesis (draaiboek §3 C.2), in het Nederlands. */
-        eerste: [`Met ${X} sla je een huis over.`, `${X} ligt 1 huis te ver.`, `Bij ${X} ga je een huis te ver.`, `${koos} Je ging een beetje te ver.`, `${vraagt} Dat is net 1 huis te ver.`],
+        /* Was "Je ging een beetje te ver." (vertaald uit Synthesis, draaiboek §3 C.2); sinds 19 nov 2026 een eigen zin (15.41). */
+        eerste: [`Met ${X} sla je een huis over.`, `${X} ligt 1 huis te ver.`, `Bij ${X} ga je een huis te ver.`, `${koos} Dat huis ligt net te ver.`, `${vraagt} Dat is net 1 huis te ver.`],
         hint,
         uitleg: [vooruit(v) ? "Er komt steeds 1 bij, niet 2." : "Er gaat steeds 1 af, niet 2.", "Elk huis telt mee. We slaan er geen over.", "We zoeken het huis er vlak naast."],
         weerEerste: ["Je hebt weer een huis overgeslagen.", "Weer een huis te ver, zie ik.", "Dat is weer net te ver."],

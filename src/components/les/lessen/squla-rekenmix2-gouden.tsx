@@ -31,6 +31,7 @@ import { bewaarUitkomst } from "@/app/lesuitkomstacties";
 import { BEVESTIG, EINDE, EINDE_VEEL_FOUTEN, LOF, LOF_KIJK_INDEX, MOMENT, NAAM_GROET, NAAM_LOF, OVERGANG, VRAGEN, WISSEL, ZIN, foutReactie, foutenVan, goedPlaatje, goedReactie, handZin, metVoorbeeld, metNaam, opnieuwZin, samenKlaarZin, samenZinnen, vergelijkFout, woordenVan, type Rijtje, type Vraag2 as Rmvraag } from "./squla-rekenmix2-gouden-zinnen";
 import { maakKiezer } from "./nooit-dubbel";
 import { alleenBijKeuze } from "./squla-klok-gouden-zinnen";
+import { afscheidNa } from "./squla-klok-gouden-zinnen";
 
 const LES_ID = "squla-rekenmix-mix2-1-gouden";
 
@@ -471,8 +472,12 @@ const gouden: Lesdraaiboek = {
     l.verderWeg?.();
     const tik = l.kaart();
     speelLesgeluid("kaart");
-    await zeg(l, `${veelFouten(l) ? EINDE_VEEL_FOUTEN : kies(l, EINDE)} ${variant("kaartTik", ZIN.kaartTik)}`);
+    const eind = veelFouten(l) ? EINDE_VEEL_FOUTEN : kies(l, EINDE);
+    await zeg(l, `${eind} ${variant("kaartTik", ZIN.kaartTik)}`);
     await tik;
+    /* Ronde 51 punt 10 (15.50): het afscheid ("Tot snel!") pas na de tik op de kaart; zo blijft "Tik op de kaart." het laatste in beeld. */
+    const afscheid = afscheidNa(eind);
+    if (afscheid) await zeg(l, afscheid);
   },
 };
 
