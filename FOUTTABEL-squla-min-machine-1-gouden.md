@@ -145,8 +145,8 @@ De les kiest uit elk rijtje steeds 1 zin met de gedeelde kiezer (`nooit-dubbel.t
 | uitleg: begin | Kijk, dit is mijn stippenmachine. Hij helpt ons straks bij het aftrekken. / Eerst laat ik je mijn stippenmachine zien. Hij helpt ons straks bij het aftrekken. |
 | uitleg: hulphandje plusknop | Tik op de plusknop. / Tik maar op de plus. / Probeer de plusknop maar. |
 | uitleg: einde | Nu doen we het andersom. We gaan aftrekken: dan gaat er iets af. / Nu gaan we het andersom doen. Bij aftrekken gaat er iets af. |
-| reactie na lof (machine) | Ja, 10 min 3 is 7. / Ja, er gaan er 3 af. Er komen er 7 uit. / 10 − 3 = 7. / Er komen 7 blokjes uit. / Ik heb het nagekeken: 10 min 3 is 7. / Precies, 10 − 3 = 7. / Dat klopt, er komen 7 blokjes uit. |
-| reactie na lof (som) | Ja, 8 min 5 is 3. / Ja, van de 8 blijven er 3 over. / 8 − 5 = 3. / Van de 8 blijven er 3 over. / Ik heb het nagekeken: 8 min 5 is 3. / Precies, 8 − 5 = 3. / Dat klopt: 8 min 5 is 3. |
+| reactie na lof (machine) | Ja, 10 min 3 is 7. / Ja, er gaan er 3 af. Er komen er 7 uit. / 10 − 3 = 7. / Er komen 7 blokjes uit. / Zie je, 3 eraf en dan heb je er nog 7. / Precies, 10 − 3 = 7. / Dat klopt, er komen 7 blokjes uit. |
+| reactie na lof (som) | Ja, 8 min 5 is 3. / Ja, van de 8 blijven er 3 over. / 8 − 5 = 3. / Van de 8 blijven er 3 over. / Zie je, 5 eraf en dan heb je er nog 3. / Precies, 8 − 5 = 3. / Dat klopt: 8 min 5 is 3. |
 | 1e fout, eerste zin: te veel (machine, 10 − 3, koos 8) | Je koos 8. Dat is iets te veel. / Bijna! 8 is iets te veel. / 8? Er komen er minder uit. / 10 − 3 is minder dan 8. / Je tikte op 8. Zo veel blokjes komen er niet uit. |
 | 1e fout, eerste zin: te weinig (machine, koos 6) | Je koos 6. Dat is iets te weinig. / Bijna! 6 is nog iets te weinig. / 6? Er komen er meer uit. / 10 − 3 is meer dan 6. / Je tikte op 6. Er komen meer blokjes uit. |
 | 1e fout, eerste zin: te veel (som, 7 − 3, koos 5) | Je koos 5. Dat is iets te veel. / Bijna! 5 is iets te veel. / 5? Er blijft minder over. / 7 − 3 is minder dan 5. / Je tikte op 5. Zo veel blijft er niet over. |

@@ -119,7 +119,7 @@ for (const v of VRAGEN) {
       nietWaar(waar, z, /nog niet allemaal|te weinig|Er mist|Er missen|overgeslagen|niet geteld|nog meer/i, x < v.n, "te weinig, maar het kind koos meer");
       nietWaar(waar, z, /Er mist nog 1 |Er is 1 |Je hebt 1 /, Math.abs(x - v.n) === 1, "1 verschil, maar het is meer");
       nietWaar(waar, z, /een paar/, Math.abs(x - v.n) >= 2, "een paar, maar het is er 1");
-      nietWaar(waar, z, /rij voor rij|linksboven/, v.vorm === "rijen", "rij voor rij / linksboven, maar ze liggen niet in rijen");
+      nietWaar(waar, z, /rij voor rij|Begin bovenaan/, v.vorm === "rijen", "rij voor rij / begin bovenaan, maar ze liggen niet in rijen");
       nietWaar(waar, z, /van boven naar beneden/, v.vorm === "los", "van boven naar beneden, alleen bij door elkaar");
       nietWaar(waar, z, /alleen de (?!bovenste|onderste)|tellen niet mee|telt niet mee|Zoek (alle|de) |Kijk overal/, v.vorm === "druk", "alleen de …, maar het is geen druk plaatje");
       nietWaar(waar, z, /bovenste|onderste|beide rijen|andere rij|\brij\b(?! voor)/, v.vorm === "samen" || /rij voor rij/.test(kaal(z)), "bovenste/onderste rij, maar het zijn geen 2 rijen samen");

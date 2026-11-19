@@ -41,6 +41,7 @@
  * samen gedaan) in de tabel les_uitkomsten (bewaarUitkomst; zonder gekozen kind gebeurt er niets).
  */
 
+import { WAS_NAKIJKEN } from "./squla-klok-gouden-zinnen";
 import type { Lesdraaiboek, Lesgids, Vlakgebeurtenis } from "../soort";
 import { KaartHuisnummers } from "../vlakken/squla-huisnummers-straat";
 import { HuisnummersGoudenVlak, huisMidden, losMidden, type HNProps, type Punt } from "../vlakken/squla-huisnummers-gouden-vlak";
@@ -203,7 +204,8 @@ function veelFouten(l: Lesgids): boolean {
 
 /* ---------- het vaste rijtje (zelfde regels als de andere gouden lessen) ---------- */
 
-const NAKIJK = /nakijk|nagekeken/i;
+/* De zinnen die vroeger "nagekeken" zeiden (19 nov 2026: het woord is weg; zie WAS_NAKIJKEN). */
+const NAKIJK = WAS_NAKIJKEN;
 const woord = (z: string) => z.split(/[\s,:!.]/)[0].toLowerCase();
 
 /** Een zin uit een rijtje; `sleutel` = welk rijtje (een reactie-rijtje wordt per vraag opnieuw gemaakt). */

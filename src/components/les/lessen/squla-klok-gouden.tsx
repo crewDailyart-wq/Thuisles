@@ -215,7 +215,7 @@ function lofZinnen(l: Lesgids, o: { kijk?: boolean; lastig?: boolean; eerste?: b
   }
   const zin = kies(l, LOF, o.kijk ? [] : [LOF_KIJK_INDEX]);
   if (o.uur !== undefined && s.vraag % 3 === 0) {
-    /* Lof en reactie beginnen niet allebei met hetzelfde woord ("Ja, ... Ja, ..." of "Nagekeken: ... Nagekeken: ..."). */
+    /* Lof en reactie beginnen niet allebei met hetzelfde woord ("Ja, ... Ja, ..." of "Inderdaad, ... Inderdaad, ..."). */
     const eerste = (z: string) => z.split(/[\s,:!.]/)[0].toLowerCase();
     const reactie = KLOKREACTIE(o.uur);
     const zonder = reactie.zinnen.map((_, i) => i).filter((i) => eerste(reactie.zinnen[i]) === eerste(zin));

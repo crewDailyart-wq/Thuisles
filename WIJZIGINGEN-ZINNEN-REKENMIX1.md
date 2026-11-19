@@ -88,3 +88,11 @@ Dezelfde als bij Tellen (besluit Sara 17 november 2026): "11 ballen? Ik denk dat
 - **De zinnen van Rekenmix 2, 3 en 4:** niet aangeraakt (niet deze les). Ze gebruiken nog de oude `ZIN` en `TELREACTIE` uit dit bestand.
 - **De vaste rijtjes (lof, "nu is het goed", eindzinnen, groet, overgang):** niet herschreven. Die zijn van alle gouden lessen samen.
 - **"1." en "11." met de stem van Ruth:** `npm run stemdubbel` meldt dat die 2 opnames het woord 2 keer bevatten (al bekend, F8). Deze les telt hardop en gebruikt "1.". De gouden lessen knippen dat al af; een nieuwe opname kost tegoed en kan pas met Sara's ja.
+
+## 19 november 2026: "nagekeken" is weg
+
+Opdracht van Sara: het woord "nagekeken" (en "nakijken") komt niet meer voor in wat Bliepo zegt of laat zien. Elke zin is vervangen door een andere zin die zegt dat het klopt ("Zie je, …", "Inderdaad, …"), op dezelfde plek in het rijtje (de robotplek blijft de robotplek, hooguit 1 keer per les; de grens "hooguit 2 keer per les" geldt nu voor deze zinnen: `WAS_NAKIJKEN` in squla-klok-gouden-zinnen.ts). Het gekozen antwoord staat er hooguit 1 keer in. Reden ook in WEGGEHAALD.md.
+
+| Les | Soort | Oud | Nieuw |
+|---|---|---|---|
+| squla-rekenmix-mix1-1-gouden | nagekeken weg | Ik heb ze nagekeken: het zijn er ${gk(n, d)}. | Inderdaad, je telde tot ${gk(n, d)}. |

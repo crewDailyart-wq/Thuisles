@@ -127,7 +127,7 @@ export const TEL = {
  * met "Ja" (TELREACTIE_JA), 4 is de robotzin (TELREACTIE_ROBOT, hooguit 1 keer per les); 5 en 6 zijn erbij gekomen.
  */
 export const TELREACTIE_WARM = (n: number, f: Fruit) =>
-  rij([`Ja, er zijn er ${gk(n, f)}.`, `Ja, je hebt ze allemaal geteld: ${gk(n, f)}.`, `Het zijn er ${gk(n, f)}.`, `Je hebt er ${gk(n, f)} geteld.`, `Ik heb ze nagekeken: het zijn er ${gk(n, f)}.`, `Er liggen ${gk(n, f)} ${f.naam}.`, `${gk(n, f)} ${f.naam}, precies!`, `Precies, ${gk(n, f)} ${f.naam}.`, `Dat klopt, er zijn ${gk(n, f)} ${f.naam}.`], [4]);
+  rij([`Ja, er zijn er ${gk(n, f)}.`, `Ja, je hebt ze allemaal geteld: ${gk(n, f)}.`, `Het zijn er ${gk(n, f)}.`, `Je hebt er ${gk(n, f)} geteld.`, `Inderdaad, je telde tot ${gk(n, f)}.`, `Er liggen ${gk(n, f)} ${f.naam}.`, `${gk(n, f)} ${f.naam}, precies!`, `Precies, ${gk(n, f)} ${f.naam}.`, `Dat klopt, er zijn ${gk(n, f)} ${f.naam}.`], [4]);
 
 /* ---------- denkfouten (draaiboek Tellen §7; namen voor de voortgang) ---------- */
 

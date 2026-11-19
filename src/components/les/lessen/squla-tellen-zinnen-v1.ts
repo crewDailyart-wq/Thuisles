@@ -47,7 +47,7 @@ export const ZIN = {
 /** BLIEPO-KARAKTER.md §4 Tellen: zin 6, 7 en 10 (met het aantal, zoals de lof in het draaiboek). */
 /* Zin 3 en 4 zonder "Ja" (kind-test 9 nov: geen 2 keer "Ja" achter elkaar); eigen aanvulling op het rijtje. De robotzin
    (laatste) hooguit 1 keer per les. */
-export const TELREACTIE = (n: number, f: Fruit) => rij([`Ja, er zijn er ${gk(n, f)}.`, `Ja, je telde ze allemaal: ${gk(n, f)}.`, `Het zijn er ${gk(n, f)}.`, `Je telde er ${gk(n, f)}.`, `Ik heb ze nagekeken: het zijn er ${gk(n, f)}.`], [4]);
+export const TELREACTIE = (n: number, f: Fruit) => rij([`Ja, er zijn er ${gk(n, f)}.`, `Ja, je telde ze allemaal: ${gk(n, f)}.`, `Het zijn er ${gk(n, f)}.`, `Je telde er ${gk(n, f)}.`, `Inderdaad, je telde tot ${gk(n, f)}.`], [4]);
 export const TELREACTIE_JA = [0, 1];
 export const TELREACTIE_ROBOT = 4;
 /** Aanmoediging bij het hulphandje tijdens het samen tellen (het kind moet tikken, niet nadenken; 14.35). */

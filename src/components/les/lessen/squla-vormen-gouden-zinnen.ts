@@ -423,10 +423,10 @@ export const AANMOEDIG = ["Je bent goed bezig.", "Jij kunt dit.", "Het gaat goed
 
 /** De robotzin (index 4) hooguit 1 keer per les. Zin 0 en 1 beginnen met "Ja"; 5 en 6 zijn erbij sinds 18 november 2026. */
 export function patroonReactie(v: Vraag): Rijtje {
-  if (v.soort === "ketting") return rij(["Ja, de ketting gaat goed verder.", "Ja, zo gaat het patroon verder.", "De ketting is langer en klopt.", "Alle kralen liggen goed.", "Nagekeken: de ketting klopt.", "Precies, zo gaat de ketting verder.", "Dat klopt: elke kraal ligt op zijn plek."], [4]);
-  if (v.soort === "puzzel") return rij(["Ja, de puzzel is af.", "Ja, elk stukje ligt goed.", "De puzzel klopt.", "Alle stukjes liggen op hun plek.", "Nagekeken: de puzzel is af.", "Precies, het plaatje is heel.", "Dat klopt: alles zit op zijn plek."], [4]);
+  if (v.soort === "ketting") return rij(["Ja, de ketting gaat goed verder.", "Ja, zo gaat het patroon verder.", "De ketting is langer en klopt.", "Alle kralen liggen goed.", "Zie je, elke kraal past in het patroon.", "Precies, zo gaat de ketting verder.", "Dat klopt: elke kraal ligt op zijn plek."], [4]);
+  if (v.soort === "puzzel") return rij(["Ja, de puzzel is af.", "Ja, elk stukje ligt goed.", "De puzzel klopt.", "Alle stukjes liggen op hun plek.", "Zie je, er is geen gat meer.", "Precies, het plaatje is heel.", "Dat klopt: alles zit op zijn plek."], [4]);
   const n = namen(v.wat, v.kleur);
-  return rij([`Ja, ${n.de(v.goed)} past in het patroon.`, "Ja, zo gaat het patroon verder.", `${Hoofd(n.de(v.goed))} past precies.`, "Het patroon klopt weer.", "Nagekeken: het patroon klopt.", "Precies, zo loopt het patroon door.", `Dat klopt: ${n.de(v.goed)} hoort hier.`], [4]);
+  return rij([`Ja, ${n.de(v.goed)} past in het patroon.`, "Ja, zo gaat het patroon verder.", `${Hoofd(n.de(v.goed))} past precies.`, "Het patroon klopt weer.", `Zie je, met ${n.de(v.goed)} loopt het patroon door.`, "Precies, zo loopt het patroon door.", `Dat klopt: ${n.de(v.goed)} hoort hier.`], [4]);
 }
 export const REACTIE_JA = [0, 1];
 export const REACTIE_ROBOT = 4;
@@ -606,9 +606,10 @@ export function keuzeFout(v: Keuzevraag, x: string): Fout {
   }
   if (na.has(x)) {
     const p = paarVoor(v.eenheid, x, laatste);
-    const veel = `${g(p, kleurVan(v, laatste))} ${n.meer(laatste)}`;
+    /* 19 nov 2026 (Sara, ALLE-VRAGEN A16.5, 15.17): de eerste zin noemt de goede kleur niet meer (was: "… komt pas na 2 rode kralen."). */
+    const elk = v.wat === "kraal" ? "elke kleur" : "elke vorm";
     return maak("paar-vergeten", "paar-vergeten", {
-      eerste: [`Je koos ${X}. ${DIE} komt pas na ${veel}.`, `${H(X)}? Daarvoor komen eerst ${veel}.`, `In dit patroon komt ${n.noem(x)} pas na ${veel}.`],
+      eerste: [`Je koos ${X}. Kijk hoe vaak ${elk} achter elkaar komt.`, `${H(X)}? Tel hoe vaak ${elk} achter elkaar komt.`, `In dit patroon komt ${n.noem(x)} hier nog niet.`],
       hint: [...zoekBegin(woord), ...hoeVaak(v.wat)],
       uitleg: paarUitleg(v),
       weerEerste: [`Je koos weer ${n.een(x)}.`, `Weer ${X}, zie ik.`],

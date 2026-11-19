@@ -296,25 +296,25 @@ export const AANMOEDIG_DOEN = ["Je bent goed bezig.", "Jij kunt dit.", "Het gaat
 /** De robotzin (plek 4) hooguit 1 keer per les. Zin 0 en 1 beginnen met "Ja". Nieuwe versies (18 nov) komen achteraan. */
 export function dagenReactie(v: Vraag, dag: number): Rijtje {
   const d = v.dag;
-  if (v.soort === "tik") return rij([`Ja, dit is de wagon van ${naam(d)}.`, `Ja, op het bordje staat ${naam(d)}.`, `Dat is de wagon van ${naam(d)}.`, `${Naam(d)} heeft een eigen wagon.`, `Nagekeken: dit is echt ${naam(d)}.`, `Precies, dit is ${naam(d)}.`, `Dat klopt, daar rijdt ${naam(d)}.`], [4]);
+  if (v.soort === "tik") return rij([`Ja, dit is de wagon van ${naam(d)}.`, `Ja, op het bordje staat ${naam(d)}.`, `Dat is de wagon van ${naam(d)}.`, `${Naam(d)} heeft een eigen wagon.`, `Zie je, je vond ${naam(d)}.`, `Precies, dit is ${naam(d)}.`, `Dat klopt, daar rijdt ${naam(d)}.`], [4]);
   if (v.soort === "na")
     return d === 6
-      ? rij(["Ja, na zondag begint de week weer met maandag.", "Ja, na zondag komt maandag.", "Na de laatste dag begint de week opnieuw.", "Maandag komt direct na zondag.", "Nagekeken: na zondag komt echt maandag.", "Precies, dan begint de week weer.", "Dat klopt, maandag is weer de eerste dag."], [4])
-      : rij([`Ja, na ${naam(d)} komt ${naam(na(d))}.`, `Ja, ${naam(na(d))} hangt achter ${naam(d)}.`, `${Naam(na(d))} komt direct na ${naam(d)}.`, `Na ${naam(d)} is het ${naam(na(d))}.`, `Nagekeken: na ${naam(d)} komt echt ${naam(na(d))}.`, `Precies, daarna komt ${naam(na(d))}.`, `Dat klopt, ${naam(na(d))} hangt erachter.`], [4]);
+      ? rij(["Ja, na zondag begint de week weer met maandag.", "Ja, na zondag komt maandag.", "Na de laatste dag begint de week opnieuw.", "Maandag komt direct na zondag.", "Zie je, de trein begint weer bij maandag.", "Precies, dan begint de week weer.", "Dat klopt, maandag is weer de eerste dag."], [4])
+      : rij([`Ja, na ${naam(d)} komt ${naam(na(d))}.`, `Ja, ${naam(na(d))} hangt achter ${naam(d)}.`, `${Naam(na(d))} komt direct na ${naam(d)}.`, `Na ${naam(d)} is het ${naam(na(d))}.`, `Zie je, ${naam(na(d))} is de volgende dag.`, `Precies, daarna komt ${naam(na(d))}.`, `Dat klopt, ${naam(na(d))} hangt erachter.`], [4]);
   if (v.soort === "voor")
     return d === 0
-      ? rij(["Ja, vóór maandag komt zondag.", "Ja, de week ervoor eindigde met zondag.", "Zondag komt direct vóór maandag.", "Vóór maandag was het zondag.", "Nagekeken: vóór maandag komt echt zondag.", "Precies, de vorige week eindigde met zondag.", "Dat klopt, zondag was de laatste dag."], [4])
-      : rij([`Ja, vóór ${naam(d)} komt ${naam(voor(d))}.`, `Ja, ${naam(voor(d))} hangt vóór ${naam(d)}.`, `${Naam(voor(d))} komt direct vóór ${naam(d)}.`, `Vóór ${naam(d)} is het ${naam(voor(d))}.`, `Nagekeken: vóór ${naam(d)} komt echt ${naam(voor(d))}.`, `Precies, daarvoor komt ${naam(voor(d))}.`, `Dat klopt, ${naam(voor(d))} hangt ervoor.`], [4]);
+      ? rij(["Ja, vóór maandag komt zondag.", "Ja, de week ervoor eindigde met zondag.", "Zondag komt direct vóór maandag.", "Vóór maandag was het zondag.", "Zie je, zondag is de dag ervoor.", "Precies, de vorige week eindigde met zondag.", "Dat klopt, zondag was de laatste dag."], [4])
+      : rij([`Ja, vóór ${naam(d)} komt ${naam(voor(d))}.`, `Ja, ${naam(voor(d))} hangt vóór ${naam(d)}.`, `${Naam(voor(d))} komt direct vóór ${naam(d)}.`, `Vóór ${naam(d)} is het ${naam(voor(d))}.`, `Zie je, ${naam(voor(d))} is de dag ervoor.`, `Precies, daarvoor komt ${naam(voor(d))}.`, `Dat klopt, ${naam(voor(d))} hangt ervoor.`], [4]);
   if (v.soort === "mist")
-    return rij([`Ja, ${naam(d)} hoort op die plek.`, `Ja, nu zijn alle ${g(7)} dagen er weer.`, d === 0 ? "Maandag is de eerste dag van de week." : `${Naam(d)} komt na ${naam(voor(d))}.`, "De trein is weer heel.", `Nagekeken: de trein heeft weer ${g(7)} wagons.`, `Precies, nu rijdt ${naam(d)} weer mee.`, "Dat klopt, nu mist er niets meer."], [4]);
+    return rij([`Ja, ${naam(d)} hoort op die plek.`, `Ja, nu zijn alle ${g(7)} dagen er weer.`, d === 0 ? "Maandag is de eerste dag van de week." : `${Naam(d)} komt na ${naam(voor(d))}.`, "De trein is weer heel.", `Zie je, er hangen weer ${g(7)} wagons aan de trein.`, `Precies, nu rijdt ${naam(d)} weer mee.`, "Dat klopt, nu mist er niets meer."], [4]);
   if (v.soort === "gm" || v.soort === "gmMaandag") {
     const a = v.goed[0];
     return v.wat === "gisteren"
-      ? rij([`Ja, gisteren was het ${naam(a)}.`, `Ja, ${naam(a)} is ${g(1)} dag terug.`, `Gisteren was het ${naam(a)}.`, `${Naam(a)} komt direct vóór ${naam(d)}.`, `Nagekeken: gisteren was echt ${naam(a)}.`, `Precies, ${naam(a)} was gisteren.`, `Dat klopt, ${naam(a)} is al voorbij.`], [4])
-      : rij([`Ja, morgen is het ${naam(a)}.`, `Ja, ${naam(a)} is ${g(1)} dag verder.`, `Morgen is het ${naam(a)}.`, `${Naam(a)} komt direct na ${naam(d)}.`, `Nagekeken: morgen is echt ${naam(a)}.`, `Precies, ${naam(a)} is morgen.`, `Dat klopt, ${naam(a)} moet nog komen.`], [4]);
+      ? rij([`Ja, gisteren was het ${naam(a)}.`, `Ja, ${naam(a)} is ${g(1)} dag terug.`, `Gisteren was het ${naam(a)}.`, `${Naam(a)} komt direct vóór ${naam(d)}.`, `Zie je, ${naam(a)} was ${g(1)} dag geleden.`, `Precies, ${naam(a)} was gisteren.`, `Dat klopt, ${naam(a)} is al voorbij.`], [4])
+      : rij([`Ja, morgen is het ${naam(a)}.`, `Ja, ${naam(a)} is ${g(1)} dag verder.`, `Morgen is het ${naam(a)}.`, `${Naam(a)} komt direct na ${naam(d)}.`, `Zie je, ${naam(a)} komt over ${g(1)} dag.`, `Precies, ${naam(a)} is morgen.`, `Dat klopt, ${naam(a)} moet nog komen.`], [4]);
   }
-  if (v.soort === "weekend1") return rij([`Ja, ${naam(dag)} hoort bij het weekend.`, "Ja, dat is een dag van het weekend.", `${Naam(dag)} is een dag zonder school.`, "In het weekend is er geen school.", `Nagekeken: ${naam(dag)} is weekend.`, `Precies, ${naam(dag)} is weekend.`, "Dat klopt, dan is er geen school."], [4]);
-  return rij(["Ja, zaterdag en zondag zijn het weekend.", "Ja, nu heb je ze allebei.", `Het weekend heeft ${g(2)} dagen.`, "Dan is er geen school.", "Nagekeken: allebei de dagen van het weekend.", "Precies, nu heb je het hele weekend.", "Dat klopt, allebei de dagen zijn weekend."], [4]);
+  if (v.soort === "weekend1") return rij([`Ja, ${naam(dag)} hoort bij het weekend.`, "Ja, dat is een dag van het weekend.", `${Naam(dag)} is een dag zonder school.`, "In het weekend is er geen school.", `Zie je, op ${naam(dag)} ben je vrij.`, `Precies, ${naam(dag)} is weekend.`, "Dat klopt, dan is er geen school."], [4]);
+  return rij(["Ja, zaterdag en zondag zijn het weekend.", "Ja, nu heb je ze allebei.", `Het weekend heeft ${g(2)} dagen.`, "Dan is er geen school.", "Zie je, je vond allebei de vrije dagen.", "Precies, nu heb je het hele weekend.", "Dat klopt, allebei de dagen zijn weekend."], [4]);
 }
 export const REACTIE_JA = [0, 1];
 export const REACTIE_ROBOT = 4;

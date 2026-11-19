@@ -117,3 +117,17 @@ Synthesis heeft geen les over dagen, de week of de kalender (KOPPELING.md §10).
 - **"In deze les leer je hoe een week in elkaar zit."** (de oude beginzin): gebleven, met 2 warmere versies erbij. Vraag aan Sara in KEUZES-TIJD.md.
 - **"Hier is de hele weektrein."** (`samenTrein`): wordt al sinds 11 november niet meer gezegd; laten staan (harde regel 3).
 - **De oude les `squla-tijd.tsx`, de weektrein en de gouden les Dagen:** niet aangeraakt.
+
+## 19 november 2026: "nagekeken" is weg
+
+Opdracht van Sara: het woord "nagekeken" (en "nakijken") komt niet meer voor in wat Bliepo zegt of laat zien. Elke zin is vervangen door een andere zin die zegt dat het klopt ("Zie je, …", "Inderdaad, …"), op dezelfde plek in het rijtje (de robotplek blijft de robotplek, hooguit 1 keer per les; de grens "hooguit 2 keer per les" geldt nu voor deze zinnen: `WAS_NAKIJKEN` in squla-klok-gouden-zinnen.ts). Het gekozen antwoord staat er hooguit 1 keer in. Reden ook in WEGGEHAALD.md.
+
+| Les | Soort | Oud | Nieuw |
+|---|---|---|---|
+| squla-tijd-dagen-1-gouden | nagekeken weg | Nagekeken: de week begint echt met maandag. | Zie je, maandag is dag ${g(1)} van de week. |
+| squla-tijd-dagen-1-gouden | nagekeken weg | Nagekeken: zondag is echt de laatste dag. | Zie je, zondag is dag ${g(7)} van de week. |
+| squla-tijd-dagen-1-gouden | nagekeken weg | Nagekeken: zaterdag en zondag, ${g(2)} dagen. | Zie je, op zaterdag en zondag ben je ${g(2)} dagen vrij. |
+| squla-tijd-dagen-1-gouden | nagekeken weg | Nagekeken: dit is echt het weekend. | Zie je, je vond de ${g(2)} dagen zonder school. |
+| squla-tijd-dagen-1-gouden | nagekeken weg | Nagekeken: na zondag komt echt maandag. | Zie je, de trein begint weer bij maandag. |
+| squla-tijd-dagen-1-gouden | nagekeken weg | Nagekeken: na ${naam(d)} komt echt ${naam(na(d))}. | Zie je, ${naam(na(d))} is de volgende dag. |
+| squla-tijd-dagen-1-gouden | nagekeken weg | Nagekeken: de week heeft echt ${g(7)} dagen. | Zie je, de week telt ${g(7)} dagen. |

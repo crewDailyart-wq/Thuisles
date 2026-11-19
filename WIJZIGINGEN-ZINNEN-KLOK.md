@@ -153,3 +153,22 @@ Niet overgenomen: "probeer deze" met een extra klok na een fout (bij ons komen d
 ## Herstel 19 november 2026 (keuring F16, 15.37: het begin)
 
 Geen nieuwe woorden. De groet ("Hoi Testkind! Fijn dat je er bent.") en de startvraag waren 2 alinea's: soms stond de groet 3 seconden alleen wit in beeld, met Ja en Nee al tikbaar en de vraag nog gedimd. Nu zijn groet en startvraag 1 alinea: ze komen samen in beeld en Bliepo zegt ze in 1 keer.
+
+## 19 november 2026: "nagekeken" is weg (en ALLE-VRAGEN DEEL A)
+
+Opdracht van Sara: het woord "nagekeken" (en "nakijken") komt niet meer voor in wat Bliepo zegt of laat zien. Elke zin is vervangen door een andere zin die zegt dat het klopt ("Zie je, …", "Inderdaad, …"), op dezelfde plek in het rijtje (de robotplek blijft de robotplek, hooguit 1 keer per les; de grens "hooguit 2 keer per les" geldt nu voor deze zinnen: `WAS_NAKIJKEN` in squla-klok-gouden-zinnen.ts). Het gekozen antwoord staat er hooguit 1 keer in. Reden ook in WEGGEHAALD.md.
+
+| Les | Soort | Oud | Nieuw |
+|---|---|---|---|
+| squla-klok-hoelaat-1-gouden en de gedeelde rijtjes van ALLE gouden lessen | nagekeken weg | Nagekeken: helemaal goed! / Ik heb het nagekeken. Het klopt! | Inderdaad, zo moet het! / Zie je, jij snapt het! |
+| squla-klok-hoelaat-1-gouden en de gedeelde rijtjes van ALLE gouden lessen | nagekeken weg | Even nakijken… ja, goed! | Even kijken… ja, goed! |
+| squla-klok-hoelaat-1-gouden en de gedeelde rijtjes van ALLE gouden lessen | nagekeken weg | De eerste is nagekeken: goed! | Inderdaad, jij begint sterk! |
+| squla-klok-hoelaat-1-gouden en de gedeelde rijtjes van ALLE gouden lessen | nagekeken weg | Nagekeken: nu is het goed. | Inderdaad, nu is hij raak. |
+| squla-klok-hoelaat-1-gouden en de gedeelde rijtjes van ALLE gouden lessen | nagekeken weg | Nagekeken: de kleine wijzer wijst naar de {${uur}:oranje}. Klopt! | Inderdaad, de klok zegt {${uur}:oranje} uur. |
+| squla-klok-hoelaat-1-gouden en de gedeelde rijtjes van ALLE gouden lessen | nagekeken weg | Alles nagekeken. De les is klaar! | Alles is af. De les is klaar! |
+| squla-klok-hoelaat-1-gouden en de gedeelde rijtjes van ALLE gouden lessen | nagekeken weg | Ik heb nagekeken en ik weet een hulpje. | Ik weet een hulpje voor jou. |
+| squla-klok-hoelaat-1-gouden en de gedeelde rijtjes van ALLE gouden lessen | nagekeken weg | Ik sta klaar om na te kijken. / Als je kiest, kijk ik het meteen na. | Ik sta klaar voor jouw antwoord. / Als je kiest, zie ik meteen of het klopt. |
+| squla-klok-hoelaat-1-gouden en de gedeelde rijtjes van ALLE gouden lessen | nagekeken weg | Die is nagekeken. Nu de volgende. | Die zit erop. Daar komt er nog een. |
+| squla-klok-hoelaat-1-gouden en de gedeelde rijtjes van ALLE gouden lessen | nagekeken weg | Klaar met nakijken. Daar komt er weer een. | Die is af. Ik heb er nog een. |
+| squla-klok-hoelaat-1-gouden en de gedeelde rijtjes van ALLE gouden lessen | nagekeken weg | Nagekeken en bewaard. Door naar de volgende! | Dat was hem. Door naar de volgende! |
+| squla-klok-hoelaat-1-gouden en de gedeelde rijtjes van ALLE gouden lessen | DEEL A | Weet jij hoe dit heet? | Hoe heet dit? |

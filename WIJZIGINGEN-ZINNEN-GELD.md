@@ -129,3 +129,13 @@ Synthesis heeft geen les over geld (KOPPELING.md §8). Er is dus geen les-eigen 
 - **Het woord "rechthoek":** gebleven, met een versie zonder dat woord erbij ("van papier, met 4 hoeken"). Vraag aan Sara in KEUZES-GELD.md.
 - **Een aanmoediging met de naam van het kind bij een antwoord dat niet goed is:** niet gedaan (BOUWREGELS 3.17).
 - **De oude les `squla-geld.tsx` en de plaatjes van het geld:** niet aangeraakt.
+
+## 19 november 2026: "nagekeken" is weg
+
+Opdracht van Sara: het woord "nagekeken" (en "nakijken") komt niet meer voor in wat Bliepo zegt of laat zien. Elke zin is vervangen door een andere zin die zegt dat het klopt ("Zie je, …", "Inderdaad, …"), op dezelfde plek in het rijtje (de robotplek blijft de robotplek, hooguit 1 keer per les; de grens "hooguit 2 keer per les" geldt nu voor deze zinnen: `WAS_NAKIJKEN` in squla-klok-gouden-zinnen.ts). Het gekozen antwoord staat er hooguit 1 keer in. Reden ook in WEGGEHAALD.md.
+
+| Les | Soort | Oud | Nieuw |
+|---|---|---|---|
+| squla-geld-geldmachine-1-gouden | nagekeken weg | Nagekeken: alle ${n} zijn ${kn(v.zoek)} euro. | Inderdaad, elke munt die je vond is ${kn(v.zoek)} euro. |
+| squla-geld-geldmachine-1-gouden | nagekeken weg | ${kn(d)} ${e}, op een rechthoek van papier. / Nagekeken: het is precies ${kn(d)} ${e}. | ${kn(d)} ${e}, op een rechthoek van papier. / Zie je, ${kn(d)} ${e} is een briefje, geen munt. |
+| squla-geld-geldmachine-1-gouden | nagekeken weg | ${kn(d)} ${e}, en hij is rond. / Nagekeken: het is precies ${kn(d)} ${e}. | ${kn(d)} ${e}, en hij is rond. / Zie je, ${kn(d)} ${e} is een munt, geen briefje. |

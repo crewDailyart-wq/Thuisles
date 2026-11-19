@@ -215,27 +215,27 @@ export type Fout = {
 const SCHERM = "vraag en knoppen even weg; de dingen blijven staan, zonder nummers; Bliepo's scherm 1,5 s rood; met de hint komen de 3 knoppen meteen terug (geen pijl)";
 
 /**
- * De hints, per soort beeld en per denkfout, in 3 versies die per vraag wisselen. "Rij voor rij" en "linksboven" alleen
+ * De hints, per soort beeld en per denkfout, in 3 versies die per vraag wisselen. "Rij voor rij" en "bovenaan" (was: "linksboven", 19 nov 2026) alleen
  * bij rijen; "van boven naar beneden" alleen door elkaar; "alleen de raketjes" alleen in een druk plaatje; "de bovenste
  * rij" alleen bij 2 rijen samen.
  */
 type H = ((d: Ding) => string)[];
 const HINT: Record<"weinig" | "veel" | "neutraal", Record<Vorm4, H>> = {
   weinig: {
-    rijen: [(d) => `Tel nog eens, rij voor rij. Sla er geen ${d.een} over.`, (d) => `Begin linksboven en tel opnieuw. Wijs ${d.elk} ${d.een} aan.`, (d) => `Wijs ${d.elk} ${d.een} aan en zeg het getal. Sla er geen over.`],
+    rijen: [(d) => `Tel nog eens, rij voor rij. Sla er geen ${d.een} over.`, (d) => `Begin bovenaan en tel opnieuw. Wijs ${d.elk} ${d.een} aan.`, (d) => `Wijs ${d.elk} ${d.een} aan en zeg het getal. Sla er geen over.`],
     los: [(d) => `Tel nog eens. Sla er geen ${d.een} over.`, (d) => `Tel opnieuw, van boven naar beneden. Wijs ${d.elk} ${d.een} aan.`, (d) => `Wijs ${d.elk} ${d.een} aan en zeg het getal. Sla er geen over.`],
     druk: [(d) => `Zoek alle ${d.naam} en tel opnieuw. Sla er geen over.`, (d) => `Tel nog eens, alleen de ${d.naam}. Wijs ${d.elk} ${d.een} aan.`, (d) => `Wijs ${d.elk} ${d.een} aan en zeg het getal. Sla er geen over.`],
     samen: [(d) => `Begin bij de bovenste rij en tel dan door in de onderste. Sla er geen ${d.een} over.`, (d) => `Tel nog eens, beide rijen samen. Wijs ${d.elk} ${d.een} aan.`, (d) => `Wijs ${d.elk} ${d.een} aan en zeg het getal. Sla er geen over.`],
   },
   veel: {
-    rijen: [(d) => `Tel nog eens, rij voor rij. Wijs ${d.elk} ${d.een} ${w(1)} keer aan.`, (d) => `Begin opnieuw. ${Hoofd(d.elk)} ${d.een} tel je maar ${w(1)} keer.`, (d) => `Begin linksboven en tel rustig. Wijs ${d.elk} ${d.een} ${w(1)} keer aan.`],
+    rijen: [(d) => `Tel nog eens, rij voor rij. Wijs ${d.elk} ${d.een} ${w(1)} keer aan.`, (d) => `Begin opnieuw. ${Hoofd(d.elk)} ${d.een} tel je maar ${w(1)} keer.`, (d) => `Begin bovenaan en tel rustig. Wijs ${d.elk} ${d.een} ${w(1)} keer aan.`],
     los: [(d) => `Tel nog eens. Wijs ${d.elk} ${d.een} ${w(1)} keer aan.`, (d) => `Begin opnieuw. ${Hoofd(d.elk)} ${d.een} tel je maar ${w(1)} keer.`, (d) => `Tel rustig, van boven naar beneden. Wijs ${d.elk} ${d.een} ${w(1)} keer aan.`],
     druk: [(d) => `Let op, tel alleen de ${d.naam}. De rest telt niet mee.`, (d) => `Begin opnieuw. ${Hoofd(d.elk)} ${d.een} tel je maar ${w(1)} keer.`, (d) => `Tel rustig, alleen de ${d.naam}. Wijs ${d.elk} ${d.een} ${w(1)} keer aan.`],
     samen: [(d) => `Tel nog eens, beide rijen samen. Wijs ${d.elk} ${d.een} ${w(1)} keer aan.`, (d) => `Begin opnieuw. ${Hoofd(d.elk)} ${d.een} tel je maar ${w(1)} keer.`, (d) => `Begin bij de bovenste rij en tel dan door in de onderste. Wijs ${d.elk} ${d.een} ${w(1)} keer aan.`],
   },
   /** ZONDER richting (de richting zou maar 1 keuze overlaten, 15.17): geen "over", "1 keer", "maar 1", "te veel", "meer". */
   neutraal: {
-    rijen: [(d) => `Begin linksboven en tel opnieuw. Wijs ${d.elk} ${d.een} aan.`, (d) => `Tel nog eens, rij voor rij. Wijs ${d.elk} ${d.een} aan.`, (d) => `Tel nog eens rustig. Wijs ${d.elk} ${d.een} aan en zeg het getal.`],
+    rijen: [(d) => `Begin bovenaan en tel opnieuw. Wijs ${d.elk} ${d.een} aan.`, (d) => `Tel nog eens, rij voor rij. Wijs ${d.elk} ${d.een} aan.`, (d) => `Tel nog eens rustig. Wijs ${d.elk} ${d.een} aan en zeg het getal.`],
     los: [(d) => `Tel opnieuw, van boven naar beneden. Wijs ${d.elk} ${d.een} aan.`, (d) => `Tel nog eens rustig. Wijs ${d.elk} ${d.een} aan.`, (d) => `Wijs ${d.elk} ${d.een} aan en zeg het getal.`],
     druk: [(d) => `Zoek de ${d.naam} en tel opnieuw. Wijs ${d.elk} ${d.een} aan.`, (d) => `Tel nog eens rustig, alleen de ${d.naam}.`, (d) => `Wijs ${d.elk} ${d.een} aan en zeg het getal.`],
     samen: [(d) => `Begin bij de bovenste rij en tel dan door in de onderste. Wijs ${d.elk} ${d.een} aan.`, (d) => `Tel nog eens rustig, beide rijen samen.`, (d) => `Wijs ${d.elk} ${d.een} aan en zeg het getal.`],
@@ -461,7 +461,7 @@ export const RM4 = {
  * (TELREACTIE_JA), 4 is de robotzin (TELREACTIE_ROBOT, hooguit 1 keer per les); 5, 6 en 7 zijn erbij gekomen.
  */
 export const TELREACTIE_4 = (n: number, d: Ding): { zinnen: string[]; robot: number[] } => ({
-  zinnen: [`Ja, er zijn er ${gk(n, d)}.`, `Ja, je hebt ze allemaal geteld: ${gk(n, d)}.`, `Het zijn er ${gk(n, d)}.`, `Je hebt er ${gk(n, d)} geteld.`, `Ik heb ze nagekeken: het zijn er ${gk(n, d)}.`, `${gk(n, d)} ${d.naam}, precies!`, `Precies, ${gk(n, d)} ${d.naam}.`, `Dat klopt, er zijn ${gk(n, d)} ${d.naam}.`],
+  zinnen: [`Ja, er zijn er ${gk(n, d)}.`, `Ja, je hebt ze allemaal geteld: ${gk(n, d)}.`, `Het zijn er ${gk(n, d)}.`, `Je hebt er ${gk(n, d)} geteld.`, `Inderdaad, je telde tot ${gk(n, d)}.`, `${gk(n, d)} ${d.naam}, precies!`, `Precies, ${gk(n, d)} ${d.naam}.`, `Dat klopt, er zijn ${gk(n, d)} ${d.naam}.`],
   robot: [4],
 });
 

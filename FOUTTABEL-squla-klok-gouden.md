@@ -99,7 +99,7 @@ Bij klok 2 (12 uur) staan beide wijzers op de 12; daar is de hint: "Hier staat d
 
 | Stap en vraag (goed antwoord) | Fout antwoord | Denkfout | Bliepo's eerste zin | Hint | Wat op het scherm |
 |---|---|---|---|---|---|
-| uitleg, stap 4 (de klok is een getallenlijn geworden): "Weet jij hoe dit heet?" (een getallenlijn) | een klok | `beeld-van-net` — noemde wat er net nog op het scherm stond (de klok) | Net was het nog een klok, ja. | Nu staan de getallen op een rij. | de getallenlijn blijft recht in beeld |
+| uitleg, stap 4 (de klok is een getallenlijn geworden): "Hoe heet dit?" (een getallenlijn) | een klok | `beeld-van-net` — noemde wat er net nog op het scherm stond (de klok) | Net was het nog een klok, ja. | Nu staan de getallen op een rij. | de getallenlijn blijft recht in beeld |
 | uitleg, stap 6 (de lijn is weer rond): "Kijk, de getallenlijn is weer rond. Hoe heet dit nu?" (een klok) | een getallenlijn | `beeld-van-net` — noemde wat er net nog op het scherm stond (de getallenlijn) | Net was het een getallenlijn, ja. | Kijk: nu staan de getallen in een rondje. | de klok blijft in beeld, getallen in een rondje |
 | uitleg, stap 7 (het hoogste punt): "Kijk naar het hoogste punt van de klok. Welk getal staat daar?" (12) | 1 | `getal-ernaast` — nam een getal dat hoog staat, maar net naast de top | De 1 staat hoog, maar nog niet op het hoogste punt. | Ga langs de rand omhoog. | niets extra |
 | uitleg, stap 7 (het hoogste punt): "Kijk naar het hoogste punt van de klok. Welk getal staat daar?" (12) | 6 | `boven-onder-verwisseld` — haalde bovenaan en onderaan door elkaar | De 6 staat juist helemaal onderaan. | Ga langs de rand helemaal omhoog. | niets extra |
@@ -294,7 +294,7 @@ De les kiest uit elk rijtje steeds 1 zin met de gedeelde kiezer (`nooit-dubbel.t
 | samen voordoen bij de klok op 12 uur | Kijk, de 2 wijzers wijzen allebei naar de 12. Dat zie je in het oranje rondje. Dus het is 12 uur. / De kleine wijzer en de grote wijzer staan allebei op de 12. Kijk maar in het oranje rondje. Dus het is 12 uur. |
 | samen voordoen: naar welk getal wijst de kleine wijzer (voorbeeld: de 3) | De punt van de kleine wijzer staat bij de 3, in het oranje rondje. / Kijk, de kleine wijzer wijst naar de 3, in het oranje rondje. / In het oranje rondje staat de 3. Daar wijst de kleine wijzer naar. |
 | de kleine stap: het kind tikt zelf op het antwoord | Tik nu zelf op het antwoord. / Nu jij! Tik op het antwoord. / Tik jij het antwoord nu aan? |
-| reactie bij de klok na lof (voorbeeld: 3 uur) | Ja, de kleine wijzer staat op de 3. / Ja, de grote wijzer staat bovenaan, dus het is een heel uur. / Ja, het is precies 3 uur. / Nagekeken: de kleine wijzer wijst naar de 3. Klopt! / Precies, het is 3 uur. / Dat klopt, de kleine wijzer wijst naar de 3. |
+| reactie bij de klok na lof (voorbeeld: 3 uur) | Ja, de kleine wijzer staat op de 3. / Ja, de grote wijzer staat bovenaan, dus het is een heel uur. / Ja, het is precies 3 uur. / Inderdaad, de klok zegt 3 uur. / Precies, het is 3 uur. / Dat klopt, de kleine wijzer wijst naar de 3. |
 | de vraag opnieuw na de hint (stap4-hoe-heet) | Hoe heet dit, denk je? / Wat denk je nu? Hoe heet dit? |
 | de vraag opnieuw na de hint (stap6-hoe-heet-nu) | Hoe heet dit nu? / Hoe heet dit nu, denk je? |
 | de vraag opnieuw na de hint (stap7-hoogste) | Welk getal staat helemaal bovenaan? / Welk getal staat op het hoogste punt, denk je? |

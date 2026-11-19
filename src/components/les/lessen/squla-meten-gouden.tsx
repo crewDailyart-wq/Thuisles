@@ -38,6 +38,7 @@
  * samen gedaan) in de tabel les_uitkomsten (bewaarUitkomst; zonder gekozen kind gebeurt er niets).
  */
 
+import { WAS_NAKIJKEN } from "./squla-klok-gouden-zinnen";
 import type { Lesdraaiboek, Lesgids, Vlakgebeurtenis } from "../soort";
 import type { MetenProps, MDing } from "../vlakken/squla-meten-vlak";
 import { KaartOppervlakte } from "../vlakken/squla-meten-vlak";
@@ -222,7 +223,8 @@ function veelFouten(l: Lesgids): boolean {
 const KIEZER = nieuweKiezer();
 const variant = (sleutel: string, zinnen: readonly string[], mag?: (z: string) => boolean) => KIEZER.kies(sleutel, zinnen, mag);
 
-const NAKIJK = /nakijk|nagekeken/i;
+/* De zinnen die vroeger "nagekeken" zeiden (19 nov 2026: het woord is weg; zie WAS_NAKIJKEN). */
+const NAKIJK = WAS_NAKIJKEN;
 const woord = (z: string) => z.split(/[\s,:!.]/)[0].toLowerCase();
 
 /** Een zin uit een rijtje; `sleutel` = welk rijtje (een reactie-rijtje wordt per vraag opnieuw gemaakt). */

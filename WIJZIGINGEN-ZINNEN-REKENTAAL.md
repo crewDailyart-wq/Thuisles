@@ -101,3 +101,12 @@ Synthesis heeft geen les over groot en klein, vol en leeg (KOPPELING.md §12). A
 - **De vaste rijtjes (lof, "nu is het goed", eindzinnen, groet) herschrijven:** niet gedaan. Die staan in BLIEPO-KARAKTER.md en worden door alle gouden lessen gebruikt (`squla-klok-gouden-zinnen.ts`, niet aangeraakt).
 - **De plaatjes en het vlak** (`rt-*.png`, `squla-rekentaal-gouden-vlak.tsx`): niet aangeraakt (zojuist opnieuw met Magnific gemaakt).
 - **De oude les `squla-rekentaal.tsx`:** niet aangeraakt (harde regel 8 en de afspraak: alleen deze les).
+
+## 19 november 2026: "nagekeken" is weg
+
+Opdracht van Sara: het woord "nagekeken" (en "nakijken") komt niet meer voor in wat Bliepo zegt of laat zien. Elke zin is vervangen door een andere zin die zegt dat het klopt ("Zie je, …", "Inderdaad, …"), op dezelfde plek in het rijtje (de robotplek blijft de robotplek, hooguit 1 keer per les; de grens "hooguit 2 keer per les" geldt nu voor deze zinnen: `WAS_NAKIJKEN` in squla-klok-gouden-zinnen.ts). Het gekozen antwoord staat er hooguit 1 keer in. Reden ook in WEGGEHAALD.md.
+
+| Les | Soort | Oud | Nieuw |
+|---|---|---|---|
+| squla-rekentaal-gouden | nagekeken weg | Nagekeken: ze staan echt van klein naar groot. | Zie je, de kleinste staat vooraan. |
+| squla-rekentaal-gouden | nagekeken weg | Nagekeken: ${wie} is echt ${v.woord}. | Zie je, ${v.woord}: dat is ${wie}. |

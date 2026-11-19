@@ -380,7 +380,7 @@ export const RM = {
  * (TELREACTIE_JA), 4 is de robotzin (TELREACTIE_ROBOT, hooguit 1 keer per les); 5, 6 en 7 zijn erbij gekomen.
  */
 export const TELREACTIE_RM = (n: number, d: Ding): Rijtje => ({
-  zinnen: [`Ja, er zijn er ${gk(n, d)}.`, `Ja, je hebt ze allemaal geteld: ${gk(n, d)}.`, `Het zijn er ${gk(n, d)}.`, `Je hebt er ${gk(n, d)} geteld.`, `Ik heb ze nagekeken: het zijn er ${gk(n, d)}.`, `${gk(n, d)} ${d.naam}, precies!`, `Precies, ${gk(n, d)} ${d.naam}.`, `Dat klopt, er zijn ${gk(n, d)} ${d.naam}.`],
+  zinnen: [`Ja, er zijn er ${gk(n, d)}.`, `Ja, je hebt ze allemaal geteld: ${gk(n, d)}.`, `Het zijn er ${gk(n, d)}.`, `Je hebt er ${gk(n, d)} geteld.`, `Inderdaad, je telde tot ${gk(n, d)}.`, `${gk(n, d)} ${d.naam}, precies!`, `Precies, ${gk(n, d)} ${d.naam}.`, `Dat klopt, er zijn ${gk(n, d)} ${d.naam}.`],
   robot: [4],
 });
 

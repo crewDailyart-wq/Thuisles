@@ -31,7 +31,7 @@ const rij = (zinnen: string[], robot: number[] = []): Rijtje => ({ zinnen, robot
 
 /** §3.1 Gewone lofzinnen. Zin 4 ("Dat heb je goed gezien.") alleen bij een kijkvraag. Robot: 31 t/m 40. */
 export const LOF = rij(
-  ["Ja, dat is goed!", "Helemaal goed!", "Super gedaan!", "Dat heb je goed gezien.", "Knap gedaan!", "Ja, zo is het!", "Heel goed!", "Wauw, goed zeg!", "Dat zit goed!", "Jij weet het!", "Precies goed!", "Goed zo!", "Ja, die klopt!", "Mooi zo!", "Ja, die is het!", "Prima gedaan!", "Netjes!", "Klopt helemaal!", "Ja hoor, goed!", "Wat goed van jou!", "Top!", "Heel knap!", "Zo doe je dat!", "Lekker bezig!", "Dat ging goed!", "Goed gekozen!", "Ja, dat is het goede antwoord!", "Helemaal raak!", "Dat weet jij al goed!", "Fijn, die is goed!", "Kijk, mijn scherm wordt er groen van!", "Mijn scherm is helemaal groen. Goed zo!", "Nagekeken: helemaal goed!", "Ik heb het nagekeken. Het klopt!", "Groen scherm! Die is goed.", "Dat stop ik in mijn geheugen: jij kunt dit!", "Mijn scherm straalt groen!", "Even nakijken… ja, goed!", "Die bewaar ik in mijn geheugen. Goed zo!", "Mijn scherm kleurt groen. Knap!"],
+  ["Ja, dat is goed!", "Helemaal goed!", "Super gedaan!", "Dat heb je goed gezien.", "Knap gedaan!", "Ja, zo is het!", "Heel goed!", "Wauw, goed zeg!", "Dat zit goed!", "Jij weet het!", "Precies goed!", "Goed zo!", "Ja, die klopt!", "Mooi zo!", "Ja, die is het!", "Prima gedaan!", "Netjes!", "Klopt helemaal!", "Ja hoor, goed!", "Wat goed van jou!", "Top!", "Heel knap!", "Zo doe je dat!", "Lekker bezig!", "Dat ging goed!", "Goed gekozen!", "Ja, dat is het goede antwoord!", "Helemaal raak!", "Dat weet jij al goed!", "Fijn, die is goed!", "Kijk, mijn scherm wordt er groen van!", "Mijn scherm is helemaal groen. Goed zo!", "Inderdaad, zo moet het!", "Zie je, jij snapt het!", "Groen scherm! Die is goed.", "Dat stop ik in mijn geheugen: jij kunt dit!", "Mijn scherm straalt groen!", "Even kijken… ja, goed!", "Die bewaar ik in mijn geheugen. Goed zo!", "Mijn scherm kleurt groen. Knap!"],
   [30, 31, 32, 33, 34, 35, 36, 37, 38, 39],
 );
 export const LOF_KIJK_INDEX = 3;
@@ -40,7 +40,7 @@ export const LOF_KIJK_INDEX = 3;
 export const MOMENT = {
   drieOpRij: rij(["Al {3:wit} goed achter elkaar!", "{3:wit} keer op rij goed. Wauw!", "Het gaat steeds beter: al {3:wit} goed!", "{3:wit} keer goed! Dat zet ik in mijn geheugen."], [3]),
   moeilijk: rij(["Dit was een moeilijke, en jij weet het!", "Wauw, ook de lastige is goed!", "Die was echt lastig. Knap van jou!", "Moeilijke vraag, groen scherm. Super!"], [3]),
-  eerste: rij(["Goed begin!", "De eerste is al goed!", "Zo, wat een goede start!", "De eerste is nagekeken: goed!"], [3]),
+  eerste: rij(["Goed begin!", "De eerste is al goed!", "Zo, wat een goede start!", "Inderdaad, jij begint sterk!"], [3]),
   laatste: rij(["En de laatste is ook goed!", "Goed tot het eind!", "Ook de laatste klopt. Knap!", "De laatste vraag, en weer een groen scherm!"], [3]),
 };
 
@@ -49,32 +49,40 @@ export const NAAM_LOF = rij(["Goed zo, {naam}!", "Knap gedaan, {naam}!", "{naam}
 export const NAAM_GROET = "Hoi {naam}! Fijn dat je er bent.";
 
 /** §3.4 Goed na een fout: alleen een korte bevestiging. */
-export const BEVESTIG = rij(["Ja, nu is het goed.", "Nu heb je hem.", "Die is goed.", "Zo is het.", "Ja, nu klopt het.", "Gevonden!", "Nu zit het goed.", "Ja, deze is het.", "Nu wordt mijn scherm groen.", "Nagekeken: nu is het goed."], [8, 9]);
+export const BEVESTIG = rij(["Ja, nu is het goed.", "Nu heb je hem.", "Die is goed.", "Zo is het.", "Ja, nu klopt het.", "Gevonden!", "Nu zit het goed.", "Ja, deze is het.", "Nu wordt mijn scherm groen.", "Inderdaad, nu is hij raak."], [8, 9]);
 
 /** §3.5 Heel snel geantwoord. */
 export const SNEL = rij(["Dat ging snel!", "Wat was jij snel!", "Snel en goed!"]);
 
 /** §4 Reactie op wat het kind koos, bij de klok (zin 4, half, past niet bij hele uren). */
-export const KLOKREACTIE = (uur: number) => rij([`Ja, de kleine wijzer staat op de {${uur}:oranje}.`, "Ja, de grote wijzer staat bovenaan, dus het is een heel uur.", `Ja, het is precies {${uur}:oranje} uur.`, `Nagekeken: de kleine wijzer wijst naar de {${uur}:oranje}. Klopt!`, `Precies, het is {${uur}:oranje} uur.`, `Dat klopt, de kleine wijzer wijst naar de {${uur}:oranje}.`], [3]);
+export const KLOKREACTIE = (uur: number) => rij([`Ja, de kleine wijzer staat op de {${uur}:oranje}.`, "Ja, de grote wijzer staat bovenaan, dus het is een heel uur.", `Ja, het is precies {${uur}:oranje} uur.`, `Inderdaad, de klok zegt {${uur}:oranje} uur.`, `Precies, het is {${uur}:oranje} uur.`, `Dat klopt, de kleine wijzer wijst naar de {${uur}:oranje}.`], [3]);
 
 /** §5 Einde. Zin 6 alleen na veel fouten (4 of meer vragen met een fout). */
-export const EINDE = rij(["Goed gedaan! Tot de volgende keer.", "De les is klaar. Wat heb jij goed gewerkt!", "Klaar! Je hebt veel geoefend vandaag.", "Dat was de laatste. Fijn dat je meedeed!", "Je bent klaar. Ik vond het leuk met jou!", "Klaar! Wat heb je goed je best gedaan.", "Dat was de les. Tot snel!", "Alles nagekeken. De les is klaar!", "Deze les bewaar ik in mijn geheugen. Tot de volgende keer!"], [7, 8]);
+export const EINDE = rij(["Goed gedaan! Tot de volgende keer.", "De les is klaar. Wat heb jij goed gewerkt!", "Klaar! Je hebt veel geoefend vandaag.", "Dat was de laatste. Fijn dat je meedeed!", "Je bent klaar. Ik vond het leuk met jou!", "Klaar! Wat heb je goed je best gedaan.", "Dat was de les. Tot snel!", "Alles is af. De les is klaar!", "Deze les bewaar ik in mijn geheugen. Tot de volgende keer!"], [7, 8]);
 export const EINDE_VEEL_FOUTEN = "Je hebt goed doorgezet. Volgende keer gaat het nog beter.";
 
 /** §10 Eerste zin als de denkfout niet duidelijk is (binnen 1 vraag nooit 2 keer dezelfde). */
-export const ONDUIDELIJK = rij(["Die is lastig, hè.", "We zoeken het samen.", "Ik help je een stukje.", "Goed dat je het probeert.", "Kom, we kijken samen.", "Ik geef je een tip.", "Ik bedoelde een andere.", "Dat geeft niks, zo leer je het.", "Rustig maar, we doen het stap voor stap.", "Probeer het nog {1:wit} keer, met een tip.", "Even in mijn geheugen kijken… ik heb een tip!", "Mijn geheugen zegt: samen lukt dit vast.", "Ik heb nagekeken en ik weet een hulpje."], [10, 11, 12]);
+export const ONDUIDELIJK = rij(["Die is lastig, hè.", "We zoeken het samen.", "Ik help je een stukje.", "Goed dat je het probeert.", "Kom, we kijken samen.", "Ik geef je een tip.", "Ik bedoelde een andere.", "Dat geeft niks, zo leer je het.", "Rustig maar, we doen het stap voor stap.", "Probeer het nog {1:wit} keer, met een tip.", "Even in mijn geheugen kijken… ik heb een tip!", "Mijn geheugen zegt: samen lukt dit vast.", "Ik weet een hulpje voor jou."], [10, 11, 12]);
 
 /** Plaats in ONDUIDELIJK van twee zinnen die niet overal passen: "Ik bedoelde een andere." (alleen bij een keuzevraag) en "Probeer het nog {1:wit} keer, met een tip." (alleen na de 1e fout: na de 2e is er geen poging meer). */
 export const ONDUIDELIJK_ANDERE = 6;
 export const ONDUIDELIJK_NOG_1_KEER = 9;
-/** Plaats in AANMOEDIG van "Als je kiest, kijk ik het meteen na.": alleen bij een keuzevraag, niet bij tikken of zetten. */
+/** Plaats in AANMOEDIG van "Als je kiest, zie ik meteen of het klopt.": alleen bij een keuzevraag, niet bij tikken of zetten. */
 export const AANMOEDIG_KIEST = 9;
 
 /** §11 Aanmoedigen bij een opdracht waar het kind na het hulphandje nog steeds niets doet (± 15 s; 1 keer per opdracht). */
-export const AANMOEDIG = rij(["Neem rustig de tijd.", "Je mag goed kijken.", "Denk maar even na.", "Je bent goed bezig.", "Geen haast, hoor.", "Rustig kijken mag.", "Ik wacht wel even.", "Jij kunt dit.", "Ik sta klaar om na te kijken.", "Als je kiest, kijk ik het meteen na."], [8, 9]);
+export const AANMOEDIG = rij(["Neem rustig de tijd.", "Je mag goed kijken.", "Denk maar even na.", "Je bent goed bezig.", "Geen haast, hoor.", "Rustig kijken mag.", "Ik wacht wel even.", "Jij kunt dit.", "Ik sta klaar voor jouw antwoord.", "Als je kiest, zie ik meteen of het klopt."], [8, 9]);
 
 /** §12 Overgang tussen vragen (af en toe, niet na elke vraag). */
-export const OVERGANG = rij(["Daar komt de volgende.", "Op naar de volgende!", "Hier is er weer een.", "Nu de volgende.", "Kijk, een nieuwe.", "We gaan door.", "Daar gaan we weer.", "En nu deze.", "Dan de volgende vraag.", "Let goed op bij deze.", "Hop, verder!", "Nieuwe vraag!", "Kijk mee naar de volgende.", "Deze is voor jou.", "Verder maar weer.", "Die is nagekeken. Nu de volgende.", "Opgeslagen in mijn geheugen. Verder!", "Klaar met nakijken. Daar komt er weer een.", "Mijn geheugen heeft nog een vraag voor jou.", "Nagekeken en bewaard. Door naar de volgende!"], [15, 16, 17, 18, 19]);
+export const OVERGANG = rij(["Daar komt de volgende.", "Op naar de volgende!", "Hier is er weer een.", "Nu de volgende.", "Kijk, een nieuwe.", "We gaan door.", "Daar gaan we weer.", "En nu deze.", "Dan de volgende vraag.", "Let goed op bij deze.", "Hop, verder!", "Nieuwe vraag!", "Kijk mee naar de volgende.", "Deze is voor jou.", "Verder maar weer.", "Die zit erop. Daar komt er nog een.", "Opgeslagen in mijn geheugen. Verder!", "Die is af. Ik heb er nog een.", "Mijn geheugen heeft nog een vraag voor jou.", "Dat was hem. Door naar de volgende!"], [15, 16, 17, 18, 19]);
+
+/**
+ * De zinnen die tot 19 november 2026 "nagekeken" of "nakijken" zeiden (Sara: dat woord is weg uit de gouden lessen). Ze
+ * zeggen nu op een andere manier dat iets klopt: "Zie je, …", "Inderdaad, …", plus de vaste zinnen hieronder. Elke
+ * gouden les laat deze zinnen, net als vroeger de nakijkzinnen, hooguit 2 keer per les komen (NAKIJK in de les).
+ * Geen bestaande zin begint zo; een nieuwe zin die zo begint, telt dus mee.
+ */
+export const WAS_NAKIJKEN = /^(Zie je|Inderdaad), |^Even kijken… ja|^Alles is af\. |^Ik weet een hulpje|^Die zit erop\. |^Die is af\. |^Dat was hem\. /;
 
 /** {naam} invullen; zonder naam valt hij netjes weg (BOUWREGELS 3.17). */
 export function metNaam(zin: string, naam: string | undefined): string {
@@ -409,7 +417,7 @@ const bijKleine = (n: number, nu = false) => [`Bij de ${o(n)} staat ${nu ? "nu "
 /** De vragen van de uitleg (draaiboek stap 4 t/m 18), in volgorde. */
 export const UITLEGVRAGEN: Vraag[] = [
   {
-    id: "stap4-hoe-heet", waar: "uitleg, stap 4 (de klok is een getallenlijn geworden)", kijk: true, vraag: ["Weet jij hoe dit heet?"], opties: ["een getallenlijn", "een klok"], goed: "een getallenlijn",
+    id: "stap4-hoe-heet", waar: "uitleg, stap 4 (de klok is een getallenlijn geworden)", kijk: true, vraag: ["Hoe heet dit?"], opties: ["een getallenlijn", "een klok"], goed: "een getallenlijn",
     opnieuw: ["Hoe heet dit, denk je?", "Wat denk je nu? Hoe heet dit?"],
     samen: ["Kijk, de getallen staan op een rechte lijn. Dat is een getallenlijn."],
     fouten: { "een klok": F("beeld-van-net", "klok-van-net", "noemde wat er net nog op het scherm stond (de klok)", ["Net was het nog een klok, ja.", "Dat was het net nog, ja."], ["Nu staan de getallen op een rij.", "Kijk hoe de getallen nu staan: naast elkaar, op een rij."], "lijn") },

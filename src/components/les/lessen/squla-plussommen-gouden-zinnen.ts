@@ -244,7 +244,7 @@ export const PLUSREACTIE = (a: number, b: number, ka: string, kb: string) =>
       `Ja, ${g(a, ka)} plus ${g(b, kb)} is ${g(a + b)}.`,
       `${g(a, ka)} en ${g(b, kb)} zijn samen ${g(a + b)}.`,
       `${g(a, ka)} + ${g(b, kb)} = ${g(a + b)}.`,
-      `Nagekeken: ${g(a, ka)} plus ${g(b, kb)} is ${g(a + b)}. Klopt!`,
+      `Zie je, ${g(a, ka)} en nog ${g(b, kb)} is ${g(a + b)}.`,
       `Precies, ${g(a, ka)} + ${g(b, kb)} = ${g(a + b)}.`,
       `Dat klopt, ${g(a, ka)} en ${g(b, kb)} is samen ${g(a + b)}.`,
     ],

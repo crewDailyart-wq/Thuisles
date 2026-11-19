@@ -293,7 +293,7 @@ Na deze uitleg volgt altijd "Kom, we doen het samen." (of een variant) en het sa
 
 ## 4. Goed
 
-- **Goed in één keer:** scherm 1 s groen, de dingen wippen op met een lichtgolf; een lofzin uit het rijtje (BLIEPO-KARAKTER.md §3) en wat er gesplitst is ("Ja, 7 kun je splitsen in 4 en 3." / "Ja, alle 7 zijn verdeeld." / "7 kun je splitsen in 4 en 3." / "4 en 3 maken samen 7." / "Nagekeken: 4 en 3 maken samen 7." / "Precies, 7 is 4 en 3." / "Dat klopt: 4 en 3 is samen 7." / "Je hebt 7 gesplitst in 4 en 3."), als 1 uiting. Het andere deel komt onder het vak en het totaal in het dak. Begint de lofzin met "Ja", dan komt een reactie zonder "Ja"; de robotreactie hooguit 1 keer per les. **Daarna vanzelf door** (0,6 s na de zin; draaiboek §0).
+- **Goed in één keer:** scherm 1 s groen, de dingen wippen op met een lichtgolf; een lofzin uit het rijtje (BLIEPO-KARAKTER.md §3) en wat er gesplitst is ("Ja, 7 kun je splitsen in 4 en 3." / "Ja, alle 7 zijn verdeeld." / "7 kun je splitsen in 4 en 3." / "4 en 3 maken samen 7." / "Zie je, 7 is 4 en nog 3." / "Precies, 7 is 4 en 3." / "Dat klopt: 4 en 3 is samen 7." / "Je hebt 7 gesplitst in 4 en 3."), als 1 uiting. Het andere deel komt onder het vak en het totaal in het dak. Begint de lofzin met "Ja", dan komt een reactie zonder "Ja"; de robotreactie hooguit 1 keer per les. **Daarna vanzelf door** (0,6 s na de zin; draaiboek §0).
 - **Goed na een fout:** alleen een korte bevestiging (BLIEPO-KARAKTER.md §3.4); vanzelf door.
 - **Heel snel:** Bliepo zegt niets over snel (draaiboek §3 B.7 en F.8). Slepen tijdens Bliepo's zin telt gewoon mee.
 - **Lang niets doen:** na ± 6 s stilte bij een opdracht komt vanzelf het hulphandje: van het hoopje naar een leeg vak (nooit naar een vak dat al iets heeft: dat zou zeggen of het genoeg is). De eerste keer per opdracht met een aanmoediging en 1 korte zin ("Pak een pion en sleep hem naar een vak." of een variant). Ligt er bij de doos al iets in het vak, dan komt er niets (het kind is bezig). Bij een keuzevraag: niets.
@@ -350,8 +350,8 @@ De les kiest uit elk rijtje steeds een andere zin dan de vorige keer. Voorbeelde
 | Hetzelfde antwoord 2 keer (huisje) | Er liggen weer 5 pionnen in het paarse vak. / Weer 5 pionnen in het paarse vak, zie ik. / Je legde weer 5 pionnen in het paarse vak. |
 | Hetzelfde antwoord 2 keer (doos) | Je legde er weer 6. / Weer 6 ballen, zie ik. / Er liggen weer 6 ballen in het vak. |
 | Hetzelfde antwoord 2 keer (hoeveel samen?) | Je koos weer 4. / Je tikte weer op 4. / Weer 4, zie ik. |
-| Zin met de 2 delen na lof | Ja, 7 kun je splitsen in 4 en 3. / Ja, alle 7 zijn verdeeld. / 7 kun je splitsen in 4 en 3. / 4 en 3 maken samen 7. / Nagekeken: 4 en 3 maken samen 7. / Precies, 7 is 4 en 3. / Dat klopt: 4 en 3 is samen 7. / Je hebt 7 gesplitst in 4 en 3. |
-| Zin na lof bij de 3 huisjes | Ja, alle 3 huisjes kloppen. / In elk huisje klopt het. / Nagekeken: alle huisjes kloppen. / Alle 3 huisjes zijn goed gevuld. |
+| Zin met de 2 delen na lof | Ja, 7 kun je splitsen in 4 en 3. / Ja, alle 7 zijn verdeeld. / 7 kun je splitsen in 4 en 3. / 4 en 3 maken samen 7. / Zie je, 7 is 4 en nog 3. / Precies, 7 is 4 en 3. / Dat klopt: 4 en 3 is samen 7. / Je hebt 7 gesplitst in 4 en 3. |
+| Zin na lof bij de 3 huisjes | Ja, alle 3 huisjes kloppen. / In elk huisje klopt het. / Zie je, alle huisjes zijn vol. / Alle 3 huisjes zijn goed gevuld. |
 | Slot | Je hebt getallen gesplitst tot wel 10! / Wat heb jij goed gesplitst: getallen tot wel 10! / Knap, hoor! Je hebt getallen tot 10 gesplitst. |
 | Tik op de kaart | Tik op de kaart. / Tik maar op de kaart. / Kijk, een kaart voor jou! Tik erop. |
 

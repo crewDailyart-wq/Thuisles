@@ -170,3 +170,16 @@ Niet overgenomen: "tik op de kaart om je trofee te halen" (bij ons is er geen tr
 | (gouden, Bliepo telt "… 11. 12.") Zie je? Het zijn er 12. Je had het precies goed. | (Bliepo telt "… 10. 11.") En 12! Je had het precies goed. / En de laatste is 12. Jij had het goed geteld. / En 12! Zie je? Je zat precies goed. | het laatste getal klonk 2 keer achter elkaar (15.29); zoals Rekenmix 1. Tikt het kind op de pijl, dan blijven de oude zinnen ("Zie je? Het zijn er 12. …") |
 | (extra, lijstje, hint 1e fout) Op het lijstje staan 4 appels, 7 peren en 10 pruimen. | Op het lijstje staan 4 appels, 7 peren en 10 pruimen. Zet in elk vakje het goede fruit. / … Kies een fruit en tik op de vakjes. | er stond geen opdracht bij terwijl de les op het kind wachtte (F16, 15.37) |
 | (extra, lijstje, samen maken) Ik zet de rest klaar. Jij maakt de appels. / De rest leg ik vast neer. De appels zijn voor jou. | Ik zet de rest klaar. Jij maakt de appels: tik op de lege vakjes. / De rest leg ik vast neer. De appels zijn voor jou: tik op de lege vakjes. | het kind wist niet wat het moest doen (F16, 15.37) |
+
+## 19 november 2026: "nagekeken" is weg
+
+Opdracht van Sara: het woord "nagekeken" (en "nakijken") komt niet meer voor in wat Bliepo zegt of laat zien. Elke zin is vervangen door een andere zin die zegt dat het klopt ("Zie je, …", "Inderdaad, …"), op dezelfde plek in het rijtje (de robotplek blijft de robotplek, hooguit 1 keer per les; de grens "hooguit 2 keer per les" geldt nu voor deze zinnen: `WAS_NAKIJKEN` in squla-klok-gouden-zinnen.ts). Het gekozen antwoord staat er hooguit 1 keer in. Reden ook in WEGGEHAALD.md.
+
+| Les | Soort | Oud | Nieuw |
+|---|---|---|---|
+| squla-tellen-fruit-1-gouden | nagekeken weg | Ik heb ze nagekeken: het zijn er ${gk(n, f)}. | Inderdaad, je telde tot ${gk(n, f)}. |
+| squla-tellen-fruit-1-gouden (TELREACTIE, zelfde zin) | nagekeken weg | Ik heb ze nagekeken: het zijn er ${gk(n, f)}. | Inderdaad, je telde tot ${gk(n, f)}. |
+| squla-tellen-fruit-1-gouden-extra | nagekeken weg | Ik heb ze nagekeken: ${gk(n, f)} ${f.naam}. | Inderdaad, je telde tot ${gk(n, f)}. |
+| squla-tellen-fruit-1-gouden-extra | nagekeken weg | Ik heb ze nagekeken: samen ${gw(n)}. | Inderdaad, alles bij elkaar ${gw(n)}. |
+| squla-tellen-fruit-1-gouden-extra | nagekeken weg | Je maakte ${gk(n, f)} ${f.naam}. / Ik heb ze nagekeken: ${gk(n, f)} ${f.naam}. | Je maakte ${gk(n, f)} ${f.naam}. / Inderdaad, er liggen nu ${gk(n, f)} ${f.naam}. |
+| squla-tellen-fruit-1-gouden-extra | nagekeken weg | Ik heb alles nagekeken: het klopt. | Inderdaad, alles past bij het lijstje. |

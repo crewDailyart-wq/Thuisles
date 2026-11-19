@@ -248,14 +248,14 @@ export function geldReactie(v: Vraag): Rijtje {
   if (v.soort === "bellen") {
     const n = g(v.bellen.filter((b) => b === v.zoek).length, KLEUR[v.zoek]);
     return rij(
-      [`Ja, je vond ze alle ${n}.`, `Ja, dat zijn alle munten van ${kn(v.zoek)} euro.`, `Alle ${n} munten van ${kn(v.zoek)} euro gevonden.`, "En je tikte op geen andere munt.", `Nagekeken: alle ${n} zijn ${kn(v.zoek)} euro.`, `Precies, dat zijn ze alle ${n}.`, `Dat klopt, je hebt ze alle ${n}.`],
+      [`Ja, je vond ze alle ${n}.`, `Ja, dat zijn alle munten van ${kn(v.zoek)} euro.`, `Alle ${n} munten van ${kn(v.zoek)} euro gevonden.`, "En je tikte op geen andere munt.", `Inderdaad, elke munt die je vond is ${kn(v.zoek)} euro.`, `Precies, dat zijn ze alle ${n}.`, `Dat klopt, je hebt ze alle ${n}.`],
       [4],
     );
   }
   const d = v.soort === "waar" ? v.doel : v.ding;
   const e = eenheid(d);
-  if (isBriefje(d)) return rij([`Ja, dit briefje is ${kn(d)} ${e}.`, `Ja, er staat ${kn(d)} op.`, `Dit is het briefje van ${kn(d)} ${e}.`, `${kn(d)} ${e}, op een rechthoek van papier.`, `Nagekeken: het is precies ${kn(d)} ${e}.`, `Precies, dit is ${kn(d)} ${e}.`, `Dat klopt, het is het briefje van ${kn(d)} ${e}.`], [4]);
-  return rij([`Ja, deze munt is ${kn(d)} ${e} waard.`, `Ja, er staat een ${kn(d)} op.`, `Dit is de munt van ${kn(d)} ${e}.`, `${kn(d)} ${e}, en hij is rond.`, `Nagekeken: het is precies ${kn(d)} ${e}.`, `Precies, dit is ${kn(d)} ${e}.`, `Dat klopt, het is de munt van ${kn(d)} ${e}.`], [4]);
+  if (isBriefje(d)) return rij([`Ja, dit briefje is ${kn(d)} ${e}.`, `Ja, er staat ${kn(d)} op.`, `Dit is het briefje van ${kn(d)} ${e}.`, `${kn(d)} ${e}, op een rechthoek van papier.`, `Zie je, het getal op het briefje is ${kn(d)}.`, `Precies, dit is ${kn(d)} ${e}.`, `Dat klopt, het is het briefje van ${kn(d)} ${e}.`], [4]);
+  return rij([`Ja, deze munt is ${kn(d)} ${e} waard.`, `Ja, er staat een ${kn(d)} op.`, `Dit is de munt van ${kn(d)} ${e}.`, `${kn(d)} ${e}, en hij is rond.`, `Zie je, het getal op de munt is ${kn(d)}.`, `Precies, dit is ${kn(d)} ${e}.`, `Dat klopt, het is de munt van ${kn(d)} ${e}.`], [4]);
 }
 export const REACTIE_JA = [0, 1];
 export const REACTIE_ROBOT = 4;

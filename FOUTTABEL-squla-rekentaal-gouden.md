@@ -125,7 +125,7 @@ De les kiest uit elk rijtje steeds 1 zin met de gedeelde kiezer: nooit dezelfde 
 - De vraag: "Welke pannenkoek is groter? Tik erop."
 - De vraag opnieuw na de hint: "Welke pannenkoek is groter, denk je?" / "Tik op de pannenkoek die groter is." / "Kies de pannenkoek die groter is."
 - Samen: "Deze pannenkoek is klein." / "Kijk naar deze pannenkoek. Die is klein." — "En deze is groot." / "En deze is groot. Hij is veel breder." — "Tik jij op de grote pannenkoek?" / "Tik jij erop?" / "Nu jij! Tik in het rode rondje." — "Ja, deze pannenkoek is groter." / "Precies! Hij is breder dan de andere." / "Zo is het: deze pannenkoek is groter." (vangnet: "Kijk, deze pannenkoek is groter." / "Kijk, hij is breder dan de andere.")
-- Reactie na de lof: "Ja, deze pannenkoek is groter." / "Ja, hij is breder dan de andere." / "Hij is breder dan de andere." / "Deze pannenkoek is groter." / "Nagekeken: deze pannenkoek is echt groter." / "Precies, deze pannenkoek is groter." / "Dat klopt: hij is breder dan de andere."
+- Reactie na de lof: "Ja, deze pannenkoek is groter." / "Ja, hij is breder dan de andere." / "Hij is breder dan de andere." / "Deze pannenkoek is groter." / "Zie je, groter: dat is deze pannenkoek." / "Precies, deze pannenkoek is groter." / "Dat klopt: hij is breder dan de andere."
 
 
 **de kleine pannenkoek** (`groot-klein-verwisseld`)
@@ -139,7 +139,7 @@ De les kiest uit elk rijtje steeds 1 zin met de gedeelde kiezer: nooit dezelfde 
 - De vraag: "Welke beker is kleiner?"
 - De vraag opnieuw na de hint: "Welke beker is kleiner, denk je?" / "Tik op de beker die kleiner is." / "Kies de beker die kleiner is."
 - Samen: "Deze beker is groot." / "Kijk naar deze beker. Die is groot." — "En deze is klein." / "En deze is lager en smaller." — "Tik jij op de kleine beker?" / "Tik jij erop?" / "Nu jij! Tik in het rode rondje." — "Ja, deze beker is kleiner." / "Precies! Hij is lager en smaller dan de andere." / "Zo is het: deze beker is kleiner." (vangnet: "Kijk, deze beker is kleiner." / "Kijk, hij is lager en smaller dan de andere.")
-- Reactie na de lof: "Ja, deze beker is kleiner." / "Ja, hij is lager en smaller dan de andere." / "Hij is lager en smaller dan de andere." / "Deze beker is kleiner." / "Nagekeken: deze beker is echt kleiner." / "Precies, deze beker is kleiner." / "Dat klopt: hij is lager en smaller dan de andere."
+- Reactie na de lof: "Ja, deze beker is kleiner." / "Ja, hij is lager en smaller dan de andere." / "Hij is lager en smaller dan de andere." / "Deze beker is kleiner." / "Zie je, kleiner: dat is deze beker." / "Precies, deze beker is kleiner." / "Dat klopt: hij is lager en smaller dan de andere."
 
 
 **de grote beker** (`groot-klein-verwisseld`)
@@ -153,7 +153,7 @@ De les kiest uit elk rijtje steeds 1 zin met de gedeelde kiezer: nooit dezelfde 
 - De vraag: "Welk glas is vol?"
 - De vraag opnieuw na de hint: "Welk glas is vol, denk je?" / "Tik op het glas dat vol is." / "Kies het glas dat vol is."
 - Samen: "In dit glas zit niets." / "Kijk, dit glas is leeg." — "En dit zit tot de rand vol." / "En hier komt het sap tot de rand." — "Tik jij op het volle glas?" / "Tik jij erop?" / "Nu jij! Tik in het rode rondje." — "Ja, dit glas is vol." / "Precies! Het sap komt tot de rand." / "Zo is het: dit glas is vol." (vangnet: "Kijk, dit glas is vol." / "Kijk, het sap komt tot de rand.")
-- Reactie na de lof: "Ja, dit glas is vol." / "Ja, het sap komt tot de rand." / "Het sap komt tot de rand." / "Dit glas is vol." / "Nagekeken: dit glas is echt vol." / "Precies, dit glas is vol." / "Dat klopt: het sap komt tot de rand."
+- Reactie na de lof: "Ja, dit glas is vol." / "Ja, het sap komt tot de rand." / "Het sap komt tot de rand." / "Dit glas is vol." / "Zie je, vol: dat is dit glas." / "Precies, dit glas is vol." / "Dat klopt: het sap komt tot de rand."
 
 
 **het lege glas** (`vol-leeg-verwisseld`)
@@ -167,7 +167,7 @@ De les kiest uit elk rijtje steeds 1 zin met de gedeelde kiezer: nooit dezelfde 
 - De vraag: "Welk glas is leeg?"
 - De vraag opnieuw na de hint: "Welk glas is leeg, denk je?" / "Tik op het glas dat leeg is." / "Kies het glas dat leeg is."
 - Samen: "In dit glas zit sap." / "Kijk, dit glas is vol." — "En hier zit niets in." / "En dit glas is helemaal leeg." — "Tik jij op het lege glas?" / "Tik jij erop?" / "Nu jij! Tik in het rode rondje." — "Ja, dit glas is leeg." / "Precies! Er zit niets in." / "Zo is het: dit glas is leeg." (vangnet: "Kijk, dit glas is leeg." / "Kijk, er zit niets in.")
-- Reactie na de lof: "Ja, dit glas is leeg." / "Ja, er zit niets in." / "Er zit niets in." / "Dit glas is leeg." / "Nagekeken: dit glas is echt leeg." / "Precies, dit glas is leeg." / "Dat klopt: er zit niets in."
+- Reactie na de lof: "Ja, dit glas is leeg." / "Ja, er zit niets in." / "Er zit niets in." / "Dit glas is leeg." / "Zie je, leeg: dat is dit glas." / "Precies, dit glas is leeg." / "Dat klopt: er zit niets in."
 
 
 **het volle glas** (`vol-leeg-verwisseld`)
@@ -181,7 +181,7 @@ De les kiest uit elk rijtje steeds 1 zin met de gedeelde kiezer: nooit dezelfde 
 - De vraag: "Kijk naar de weegschaal. Wat is zwaarder?" / "Kijk goed naar de weegschaal. Wat is zwaarder?" / "Hier staat een weegschaal. Wat is zwaarder?"
 - De vraag opnieuw na de hint: "Wat is zwaarder, denk je?" / "Tik op wat zwaarder is." / "Kies wat zwaarder is."
 - Samen: "Deze kant zakt naar beneden." / "Kijk, de meloen hangt laag." — "De andere kant gaat omhoog." / "De appel gaat omhoog." — "Tik jij op de meloen?" / "Tik jij erop?" / "Nu jij! Tik in het rode rondje." — "Ja, de meloen is zwaarder." / "Precies! Die kant zakt naar beneden." / "Zo is het: de meloen is zwaarder." (vangnet: "Kijk, de meloen is zwaarder." / "Kijk, die kant zakt naar beneden.")
-- Reactie na de lof: "Ja, de meloen is zwaarder." / "Ja, die kant zakt naar beneden." / "Die kant zakt naar beneden." / "De meloen is zwaarder." / "Nagekeken: de meloen is echt zwaarder." / "Precies, de meloen is zwaarder." / "Dat klopt: die kant zakt naar beneden."
+- Reactie na de lof: "Ja, de meloen is zwaarder." / "Ja, die kant zakt naar beneden." / "Die kant zakt naar beneden." / "De meloen is zwaarder." / "Zie je, zwaarder: dat is de meloen." / "Precies, de meloen is zwaarder." / "Dat klopt: die kant zakt naar beneden."
 
 
 **de appel** (`zwaar-licht-verwisseld`)
@@ -195,7 +195,7 @@ De les kiest uit elk rijtje steeds 1 zin met de gedeelde kiezer: nooit dezelfde 
 - De vraag: "Kijk naar de weegschaal. Wat is lichter?" / "Kijk goed naar de weegschaal. Wat is lichter?" / "Hier staat een weegschaal. Wat is lichter?"
 - De vraag opnieuw na de hint: "Wat is lichter, denk je?" / "Tik op wat lichter is." / "Kies wat lichter is."
 - Samen: "Deze kant zakt naar beneden." / "Kijk, de zak meel hangt laag." — "De andere kant gaat omhoog." / "De aardbei gaat omhoog." — "Tik jij op de aardbei?" / "Tik jij erop?" / "Nu jij! Tik in het rode rondje." — "Ja, de aardbei is lichter." / "Precies! Die kant gaat omhoog." / "Zo is het: de aardbei is lichter." (vangnet: "Kijk, de aardbei is lichter." / "Kijk, die kant gaat omhoog.")
-- Reactie na de lof: "Ja, de aardbei is lichter." / "Ja, die kant gaat omhoog." / "Die kant gaat omhoog." / "De aardbei is lichter." / "Nagekeken: de aardbei is echt lichter." / "Precies, de aardbei is lichter." / "Dat klopt: die kant gaat omhoog."
+- Reactie na de lof: "Ja, de aardbei is lichter." / "Ja, die kant gaat omhoog." / "Die kant gaat omhoog." / "De aardbei is lichter." / "Zie je, lichter: dat is de aardbei." / "Precies, de aardbei is lichter." / "Dat klopt: die kant gaat omhoog."
 
 
 **de zak meel** (`zwaar-licht-verwisseld`)
@@ -209,7 +209,7 @@ De les kiest uit elk rijtje steeds 1 zin met de gedeelde kiezer: nooit dezelfde 
 - De vraag: "Kijk naar de slierten spaghetti. Welke sliert is langer?" / "Hier liggen slierten spaghetti. Welke sliert is langer?"
 - De vraag opnieuw na de hint: "Welke sliert is langer, denk je?" / "Tik op de sliert die langer is." / "Kies de sliert die langer is."
 - Samen: "De slierten beginnen bij dezelfde streep." / "Kijk, de slierten beginnen op dezelfde plek." — "Deze sliert stopt eerder." / "Deze sliert houdt eerder op." — "En deze loopt verder door." / "En deze gaat nog verder." — "Tik jij op de lange sliert?" / "Tik jij erop?" / "Nu jij! Tik in het rode rondje." — "Ja, deze sliert is langer." / "Precies! Hij loopt verder door." / "Zo is het: deze sliert is langer." (vangnet: "Kijk, deze sliert is langer." / "Kijk, hij loopt verder door.")
-- Reactie na de lof: "Ja, deze sliert is langer." / "Ja, hij loopt verder door." / "Hij loopt verder door." / "Deze sliert is langer." / "Nagekeken: deze sliert is echt langer." / "Precies, deze sliert is langer." / "Dat klopt: hij loopt verder door."
+- Reactie na de lof: "Ja, deze sliert is langer." / "Ja, hij loopt verder door." / "Hij loopt verder door." / "Deze sliert is langer." / "Zie je, langer: dat is deze sliert." / "Precies, deze sliert is langer." / "Dat klopt: hij loopt verder door."
 
 
 **de korte sliert** (`lang-kort-verwisseld`)
@@ -223,7 +223,7 @@ De les kiest uit elk rijtje steeds 1 zin met de gedeelde kiezer: nooit dezelfde 
 - De vraag: "Welke sliert is korter?"
 - De vraag opnieuw na de hint: "Welke sliert is korter, denk je?" / "Tik op de sliert die korter is." / "Kies de sliert die korter is."
 - Samen: "De slierten beginnen bij dezelfde streep." / "Kijk, de slierten beginnen op dezelfde plek." — "Deze sliert loopt verder door." / "Deze sliert gaat ver door." — "En deze stopt eerder." / "En deze houdt eerder op." — "Tik jij op de korte sliert?" / "Tik jij erop?" / "Nu jij! Tik in het rode rondje." — "Ja, deze sliert is korter." / "Precies! Hij stopt eerder." / "Zo is het: deze sliert is korter." (vangnet: "Kijk, deze sliert is korter." / "Kijk, hij stopt eerder.")
-- Reactie na de lof: "Ja, deze sliert is korter." / "Ja, hij stopt eerder." / "Hij stopt eerder." / "Deze sliert is korter." / "Nagekeken: deze sliert is echt korter." / "Precies, deze sliert is korter." / "Dat klopt: hij stopt eerder."
+- Reactie na de lof: "Ja, deze sliert is korter." / "Ja, hij stopt eerder." / "Hij stopt eerder." / "Deze sliert is korter." / "Zie je, korter: dat is deze sliert." / "Precies, deze sliert is korter." / "Dat klopt: hij stopt eerder."
 
 
 **de lange sliert** (`lang-kort-verwisseld`)
@@ -237,7 +237,7 @@ De les kiest uit elk rijtje steeds 1 zin met de gedeelde kiezer: nooit dezelfde 
 - De vraag: "Welke mand is het grootst?"
 - De vraag opnieuw na de hint: "Welke mand is het grootst, denk je?" / "Tik op de mand die het grootst is." / "Kies de mand die het grootst is."
 - Samen: "Deze mand is klein." / "Kijk, deze mand is klein." — "Die is groter." / "Die is al groter." — "En deze is het grootst." / "En deze is nog groter: het grootst." — "Tik jij op de grootste mand?" / "Tik jij erop?" / "Nu jij! Tik in het rode rondje." — "Ja, deze mand is het grootst." / "Precies! Hij is hoger en breder dan alle andere." / "Zo is het: deze mand is het grootst." (vangnet: "Kijk, deze mand is het grootst." / "Kijk, hij is hoger en breder dan alle andere.")
-- Reactie na de lof: "Ja, deze mand is het grootst." / "Ja, hij is hoger en breder dan alle andere." / "Hij is hoger en breder dan alle andere." / "Deze mand is het grootst." / "Nagekeken: deze mand is echt het grootst." / "Precies, deze mand is het grootst." / "Dat klopt: hij is hoger en breder dan alle andere."
+- Reactie na de lof: "Ja, deze mand is het grootst." / "Ja, hij is hoger en breder dan alle andere." / "Hij is hoger en breder dan alle andere." / "Deze mand is het grootst." / "Zie je, het grootst: dat is deze mand." / "Precies, deze mand is het grootst." / "Dat klopt: hij is hoger en breder dan alle andere."
 
 
 **de middelste mand** (`middelste-gekozen`)
@@ -257,7 +257,7 @@ De les kiest uit elk rijtje steeds 1 zin met de gedeelde kiezer: nooit dezelfde 
 - De vraag: "Welk glas is half vol?"
 - De vraag opnieuw na de hint: "Welk glas is half vol, denk je?" / "Tik op het glas dat half vol is." / "Kies het glas dat half vol is."
 - Samen: "Dit glas is vol." / "Kijk, dit glas is helemaal vol." — "Dat is leeg." / "Daar zit niets in." — "En hier komt het sap tot de helft." / "En in dit glas komt het sap tot het midden." — "Tik jij op het halfvolle glas?" / "Tik jij erop?" / "Nu jij! Tik in het rode rondje." — "Ja, dit glas is half vol." / "Precies! Het sap komt tot de helft." / "Zo is het: dit glas is half vol." (vangnet: "Kijk, dit glas is half vol." / "Kijk, het sap komt tot de helft.")
-- Reactie na de lof: "Ja, dit glas is half vol." / "Ja, het sap komt tot de helft." / "Het sap komt tot de helft." / "Dit glas is half vol." / "Nagekeken: dit glas is echt half vol." / "Precies, dit glas is half vol." / "Dat klopt: het sap komt tot de helft."
+- Reactie na de lof: "Ja, dit glas is half vol." / "Ja, het sap komt tot de helft." / "Het sap komt tot de helft." / "Dit glas is half vol." / "Zie je, half vol: dat is dit glas." / "Precies, dit glas is half vol." / "Dat klopt: het sap komt tot de helft."
 
 
 **het volle glas** (`helemaal-vol`)
@@ -277,7 +277,7 @@ De les kiest uit elk rijtje steeds 1 zin met de gedeelde kiezer: nooit dezelfde 
 - De vraag: "Welke appel is het kleinst?"
 - De vraag opnieuw na de hint: "Welke appel is het kleinst, denk je?" / "Tik op de appel die het kleinst is." / "Kies de appel die het kleinst is."
 - Samen: "Deze appel is groot." / "Kijk, deze appel is groot." — "Die is kleiner." / "Die is al kleiner." — "En deze is het kleinst." / "En deze is nog kleiner: het kleinst." — "Tik jij op de kleinste appel?" / "Tik jij erop?" / "Nu jij! Tik in het rode rondje." — "Ja, deze appel is het kleinst." / "Precies! Hij is kleiner dan alle andere." / "Zo is het: deze appel is het kleinst." (vangnet: "Kijk, deze appel is het kleinst." / "Kijk, hij is kleiner dan alle andere.")
-- Reactie na de lof: "Ja, deze appel is het kleinst." / "Ja, hij is kleiner dan alle andere." / "Hij is kleiner dan alle andere." / "Deze appel is het kleinst." / "Nagekeken: deze appel is echt het kleinst." / "Precies, deze appel is het kleinst." / "Dat klopt: hij is kleiner dan alle andere."
+- Reactie na de lof: "Ja, deze appel is het kleinst." / "Ja, hij is kleiner dan alle andere." / "Hij is kleiner dan alle andere." / "Deze appel is het kleinst." / "Zie je, het kleinst: dat is deze appel." / "Precies, deze appel is het kleinst." / "Dat klopt: hij is kleiner dan alle andere."
 
 
 **de grootste appel** (`groot-klein-verwisseld`)
@@ -297,7 +297,7 @@ De les kiest uit elk rijtje steeds 1 zin met de gedeelde kiezer: nooit dezelfde 
 - De vraag: "Welk broodje is het langst?"
 - De vraag opnieuw na de hint: "Welk broodje is het langst, denk je?" / "Tik op het broodje dat het langst is." / "Kies het broodje dat het langst is."
 - Samen: "De broodjes beginnen bij dezelfde streep." / "Kijk, de broodjes beginnen op dezelfde plek." — "Dit broodje is kort." / "Kijk, dit broodje is kort." — "Dat is langer." / "Dat is al langer." — "En dit gaat het verst door." / "En dit is nog langer: het langst." — "Tik jij op het langste broodje?" / "Tik jij erop?" / "Nu jij! Tik in het rode rondje." — "Ja, dit broodje is het langst." / "Precies! Het loopt het verst door." / "Zo is het: dit broodje is het langst." (vangnet: "Kijk, dit broodje is het langst." / "Kijk, het loopt het verst door.")
-- Reactie na de lof: "Ja, dit broodje is het langst." / "Ja, het loopt het verst door." / "Het loopt het verst door." / "Dit broodje is het langst." / "Nagekeken: dit broodje is echt het langst." / "Precies, dit broodje is het langst." / "Dat klopt: het loopt het verst door."
+- Reactie na de lof: "Ja, dit broodje is het langst." / "Ja, het loopt het verst door." / "Het loopt het verst door." / "Dit broodje is het langst." / "Zie je, het langst: dat is dit broodje." / "Precies, dit broodje is het langst." / "Dat klopt: het loopt het verst door."
 
 
 **het kortste broodje** (`lang-kort-verwisseld`)
@@ -317,7 +317,7 @@ De les kiest uit elk rijtje steeds 1 zin met de gedeelde kiezer: nooit dezelfde 
 - De vraag: "Kijk naar de weegschaal. Wat is zwaarder?" / "Kijk goed naar de weegschaal. Wat is zwaarder?" / "Hier staat een weegschaal. Wat is zwaarder?"
 - De vraag opnieuw na de hint: "Wat is zwaarder, denk je?" / "Tik op wat zwaarder is." / "Kies wat zwaarder is."
 - Samen: "De mand is groot, maar hij gaat omhoog." / "Kijk, de mand is groot. Toch gaat hij omhoog." — "Aan de andere kant zakt de meloen omlaag." / "De meloen zakt naar beneden." — "Tik jij op de meloen?" / "Tik jij erop?" / "Nu jij! Tik in het rode rondje." — "Ja, de meloen is zwaarder." / "Precies! Zijn kant zakt naar beneden." / "Zo is het: de meloen is zwaarder." (vangnet: "Kijk, de meloen is zwaarder." / "Kijk, zijn kant zakt naar beneden.")
-- Reactie na de lof: "Ja, de meloen is zwaarder." / "Ja, zijn kant zakt naar beneden." / "Zijn kant zakt naar beneden." / "De meloen is zwaarder." / "Nagekeken: de meloen is echt zwaarder." / "Precies, de meloen is zwaarder." / "Dat klopt: zijn kant zakt naar beneden."
+- Reactie na de lof: "Ja, de meloen is zwaarder." / "Ja, zijn kant zakt naar beneden." / "Zijn kant zakt naar beneden." / "De meloen is zwaarder." / "Zie je, zwaarder: dat is de meloen." / "Precies, de meloen is zwaarder." / "Dat klopt: zijn kant zakt naar beneden."
 
 
 **de lege mand** (`grootste-gekozen`)
@@ -331,7 +331,7 @@ De les kiest uit elk rijtje steeds 1 zin met de gedeelde kiezer: nooit dezelfde 
 - De vraag: "Welk broodje is het kortst?"
 - De vraag opnieuw na de hint: "Welk broodje is het kortst, denk je?" / "Tik op het broodje dat het kortst is." / "Kies het broodje dat het kortst is."
 - Samen: "De broodjes beginnen bij dezelfde streep." / "Kijk, de broodjes beginnen op dezelfde plek." — "Dit broodje is lang." / "Kijk, dit broodje is lang." — "Dat is korter." / "Dat is al korter." — "En dit stopt het eerst." / "En dit is nog korter: het kortst." — "Tik jij op het kortste broodje?" / "Tik jij erop?" / "Nu jij! Tik in het rode rondje." — "Ja, dit broodje is het kortst." / "Precies! Het stopt het eerst." / "Zo is het: dit broodje is het kortst." (vangnet: "Kijk, dit broodje is het kortst." / "Kijk, het stopt het eerst.")
-- Reactie na de lof: "Ja, dit broodje is het kortst." / "Ja, het stopt het eerst." / "Het stopt het eerst." / "Dit broodje is het kortst." / "Nagekeken: dit broodje is echt het kortst." / "Precies, dit broodje is het kortst." / "Dat klopt: het stopt het eerst."
+- Reactie na de lof: "Ja, dit broodje is het kortst." / "Ja, het stopt het eerst." / "Het stopt het eerst." / "Dit broodje is het kortst." / "Zie je, het kortst: dat is dit broodje." / "Precies, dit broodje is het kortst." / "Dat klopt: het stopt het eerst."
 
 
 **het middelste broodje** (`middelste-gekozen`)
@@ -351,7 +351,7 @@ De les kiest uit elk rijtje steeds 1 zin met de gedeelde kiezer: nooit dezelfde 
 - De vraag: "Zet de appels op volgorde. Van klein naar groot. Tik eerst op de kleinste."
 - De vraag opnieuw na de hint: "Zet de appels van klein naar groot." / "Zet ze nu van klein naar groot." / "Tik ze aan van klein naar groot."
 - Samen: "Deze appel is het kleinst. Die komt vooraan." / "Kijk, deze appel is het kleinst. Die zet ik vooraan." — "Dan komt deze appel." / "Daarna komt deze appel." — "Tik jij op de grootste appel?" / "Nu jij! Tik op de grootste appel." / "Tik jij in het rode rondje?" — "Ja, nu staan ze van klein naar groot." / "Precies, eerst de kleinste en als laatste de grootste." / "Zo is het: klein, groter, het grootst." (vangnet: "Kijk, nu staan ze van klein naar groot." / "Kijk, zo staan ze goed: van klein naar groot.")
-- Reactie na de lof: "Ja, van klein naar groot." / "Ja, eerst de kleinste en als laatste de grootste." / "Klein, groter, het grootst." / "Nu staan de appels van klein naar groot." / "Nagekeken: ze staan echt van klein naar groot." / "Precies, zo staan ze goed." / "Dat klopt: de grootste staat achteraan."
+- Reactie na de lof: "Ja, van klein naar groot." / "Ja, eerst de kleinste en als laatste de grootste." / "Klein, groter, het grootst." / "Nu staan de appels van klein naar groot." / "Zie je, de kleinste staat vooraan." / "Precies, zo staan ze goed." / "Dat klopt: de grootste staat achteraan."
 - Hulphandje: "Tik op een appel. Die komt dan hier." / "Tik maar op een appel. Die komt dan hier." / "Hier is een lege plek. Tik op een appel."
 
 
@@ -393,7 +393,7 @@ De les kiest uit elk rijtje steeds 1 zin met de gedeelde kiezer: nooit dezelfde 
 - De vraag: "En nu de bekers. Zet ze ook op volgorde, van klein naar groot. Tik eerst op de kleinste beker."
 - De vraag opnieuw na de hint: "Zet de bekers van klein naar groot." / "Zet ze nu van klein naar groot." / "Tik ze aan van klein naar groot."
 - Samen: "Deze beker is het kleinst. Die komt vooraan." / "Kijk, deze beker is het kleinst. Die zet ik vooraan." — "Dan komt deze beker." / "Daarna komt deze beker." — "Tik jij op de grootste beker?" / "Nu jij! Tik op de grootste beker." / "Tik jij in het rode rondje?" — "Ja, nu staan ze van klein naar groot." / "Precies, eerst de kleinste en als laatste de grootste." / "Zo is het: klein, groter, het grootst." (vangnet: "Kijk, nu staan ze van klein naar groot." / "Kijk, zo staan ze goed: van klein naar groot.")
-- Reactie na de lof: "Ja, van klein naar groot." / "Ja, eerst de kleinste en als laatste de grootste." / "Klein, groter, het grootst." / "Nu staan de bekers van klein naar groot." / "Nagekeken: ze staan echt van klein naar groot." / "Precies, zo staan ze goed." / "Dat klopt: de grootste staat achteraan."
+- Reactie na de lof: "Ja, van klein naar groot." / "Ja, eerst de kleinste en als laatste de grootste." / "Klein, groter, het grootst." / "Nu staan de bekers van klein naar groot." / "Zie je, de kleinste staat vooraan." / "Precies, zo staan ze goed." / "Dat klopt: de grootste staat achteraan."
 - Hulphandje: "Tik op een beker. Die komt dan hier." / "Tik maar op een beker. Die komt dan hier." / "Hier is een lege plek. Tik op een beker."
 
 

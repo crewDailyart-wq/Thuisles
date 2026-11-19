@@ -126,7 +126,7 @@ export const ZIN = {
 export const AANMOEDIG_TIKKEN = ["Je bent goed bezig.", "Jij kunt dit.", "Het gaat goed zo.", "Probeer het maar.", "Toe maar, je doet het goed."];
 
 /** Reactie bij goed (draaiboek §3 F.1: lof met de 2 delen erin). */
-export const SPLITSREACTIE = (a: number, b: number, t: number) => rij([`Dat klopt: ${som(a, b, t)}.`, `Ja, ${paar(a, b)} maken samen {${t}}.`, `Je hebt {${t}} gesplitst in ${paar(a, b)}.`, `Precies: {${t}} is ${paar(a, b)}.`, `Ik heb het nagekeken: ${som(a, b, t)}.`], [4]);
+export const SPLITSREACTIE = (a: number, b: number, t: number) => rij([`Dat klopt: ${som(a, b, t)}.`, `Ja, ${paar(a, b)} maken samen {${t}}.`, `Je hebt {${t}} gesplitst in ${paar(a, b)}.`, `Precies: {${t}} is ${paar(a, b)}.`, `Inderdaad, zo kun je {${t}} splitsen.`], [4]);
 export const SPLITSREACTIE_ROBOT = 4;
 
 /* ---------- denkfouten (draaiboek Splitsen §7; namen voor de voortgang) ---------- */

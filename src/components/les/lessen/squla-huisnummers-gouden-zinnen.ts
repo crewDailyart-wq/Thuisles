@@ -236,7 +236,7 @@ export function huisReactie(v: Vraag): Rijtje {
   const stap = vooruit(v) ? "Ja, er komt steeds 1 bij." : "Ja, er gaat steeds 1 af.";
   const plek =
     v.soort === "na" ? `Ja, na nummer ${w(buur(v))} komt nummer ${g}.` : v.soort === "tussen" || v.soort === "sleep" ? `Ja, het huis tussen ${w(v.goed - 1)} en ${w(v.goed + 1)} heeft nummer ${g}.` : `Ja, voor nummer ${w(buur(v))} komt nummer ${g}.`;
-  return rij([`Ja, het huisnummer is ${g}.`, plek, stap, `Het huisnummer is ${g}.`, `Nummer ${g} past precies.`, `Precies, nummer ${g}.`, `Dat klopt, het is nummer ${g}.`, `Op het bordje hoort ${g}.`, `Nagekeken: nummer ${g} hoort hier.`], [REACTIE_ROBOT]);
+  return rij([`Ja, het huisnummer is ${g}.`, plek, stap, `Het huisnummer is ${g}.`, `Nummer ${g} past precies.`, `Precies, nummer ${g}.`, `Dat klopt, het is nummer ${g}.`, `Op het bordje hoort ${g}.`, `Zie je, dit huis heeft nummer ${g}.`], [REACTIE_ROBOT]);
 }
 export const REACTIE_JA = [0, 1, 2];
 export const REACTIE_ROBOT = 8;

@@ -247,14 +247,14 @@ export const ZIN = {
 
 /** BLIEPO-KARAKTER.md §4 Splitsen: zin 21, 23 en 25, plus 2 zinnen zonder "Ja" (voor na een lofzin die al met "Ja" begint). */
 export const SPLITSREACTIE = (tot: number, a: number, b: number) =>
-  rij([`Ja, ${g(tot)} kun je splitsen in ${g(a, KA)} en ${g(b, KB)}.`, `Ja, alle ${g(tot)} zijn verdeeld.`, `${g(tot)} kun je splitsen in ${g(a, KA)} en ${g(b, KB)}.`, `${g(a, KA)} en ${g(b, KB)} maken samen ${g(tot)}.`, `Nagekeken: ${g(a, KA)} en ${g(b, KB)} maken samen ${g(tot)}.`], [4]);
+  rij([`Ja, ${g(tot)} kun je splitsen in ${g(a, KA)} en ${g(b, KB)}.`, `Ja, alle ${g(tot)} zijn verdeeld.`, `${g(tot)} kun je splitsen in ${g(a, KA)} en ${g(b, KB)}.`, `${g(a, KA)} en ${g(b, KB)} maken samen ${g(tot)}.`, `Zie je, ${g(tot)} is ${g(a, KA)} en nog ${g(b, KB)}.`], [4]);
 export const SPLITSREACTIE_JA = [0, 1];
 export const SPLITSREACTIE_ROBOT = 4;
 /** Dezelfde 5 (zelfde plekken: 0 en 1 met "Ja", 4 de robotzin) met 3 zinnen erbij (18 nov 2026). */
 export const SPLITSREACTIE_WARM = (tot: number, a: number, b: number) =>
   rij([...SPLITSREACTIE(tot, a, b).zinnen, `Precies, ${g(tot)} is ${g(a, KA)} en ${g(b, KB)}.`, `Dat klopt: ${g(a, KA)} en ${g(b, KB)} is samen ${g(tot)}.`, `Je hebt ${g(tot)} gesplitst in ${g(a, KA)} en ${g(b, KB)}.`], [4]);
 /** Bij de 3 huisjes (vraag 10). */
-export const PARENREACTIE = rij(["Ja, alle 3 huisjes kloppen.", "In elk huisje klopt het.", "Nagekeken: alle huisjes kloppen.", "Alle 3 huisjes zijn goed gevuld."], [2]);
+export const PARENREACTIE = rij(["Ja, alle 3 huisjes kloppen.", "In elk huisje klopt het.", "Zie je, alle huisjes zijn vol.", "Alle 3 huisjes zijn goed gevuld."], [2]);
 export const PARENREACTIE_JA = [0];
 /** Aanmoediging bij het hulphandje (het kind moet slepen, niet nadenken; 14.35). 5 versies. */
 export const AANMOEDIG_SLEPEN = ["Je bent goed bezig.", "Jij kunt dit.", "Geen haast, hoor.", "Het gaat goed zo.", "Probeer het maar."];

@@ -38,6 +38,7 @@
  * gewoon door.
  */
 
+import { WAS_NAKIJKEN } from "./squla-klok-gouden-zinnen";
 import type { Lesdraaiboek, Lesgids } from "../soort";
 import { KaartBakkerij, type Kaart, type Lijn, type PlusBeeld } from "../vlakken/squla-plussommen-vlak";
 import { GoudenPlusVlak, lekkersPlekken, stipPlek, verbindPlek, type GoudenPlusProps, type Punt } from "../vlakken/squla-plussommen-gouden-vlak";
@@ -213,7 +214,8 @@ function veelFouten(l: Lesgids): boolean {
 
 /* ---------- het vaste rijtje (zelfde regels als de gouden lessen klok, Tellen en Splitsen) ---------- */
 
-const NAKIJK = /nakijk|nagekeken/i;
+/* De zinnen die vroeger "nagekeken" zeiden (19 nov 2026: het woord is weg; zie WAS_NAKIJKEN). */
+const NAKIJK = WAS_NAKIJKEN;
 const woord = (z: string) => z.split(/[\s,:!.]/)[0].toLowerCase();
 
 /* Ronde 45: de reactie met het aantal heeft per vraag een nieuw rijtje; met een vaste sleutel ("reactie") onthoudt de les de

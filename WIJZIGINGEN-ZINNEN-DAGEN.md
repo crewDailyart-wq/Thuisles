@@ -101,3 +101,20 @@ Synthesis heeft geen les over dagen of de week (KOPPELING.md §9). Er is dus gee
 - **De vaste rijtjes (lof, "nu is het goed", eindzinnen, groet, overgang) herschrijven:** niet gedaan. Die zijn van alle gouden lessen samen.
 - **De uitleg "Een week eindigt met zondag. …" en "Het weekend is zaterdag en zondag." bij de 2e keer:** gebleven (ze noemen het antwoord, maar meteen daarna doet Bliepo het samen voor). Er zijn versies zonder het antwoord bij gekomen. Vraag aan Sara in KEUZES-DAGEN.md.
 - **De oude les `squla-dagen.tsx` en de weektrein:** niet aangeraakt.
+
+## 19 november 2026: "nagekeken" is weg
+
+Opdracht van Sara: het woord "nagekeken" (en "nakijken") komt niet meer voor in wat Bliepo zegt of laat zien. Elke zin is vervangen door een andere zin die zegt dat het klopt ("Zie je, …", "Inderdaad, …"), op dezelfde plek in het rijtje (de robotplek blijft de robotplek, hooguit 1 keer per les; de grens "hooguit 2 keer per les" geldt nu voor deze zinnen: `WAS_NAKIJKEN` in squla-klok-gouden-zinnen.ts). Het gekozen antwoord staat er hooguit 1 keer in. Reden ook in WEGGEHAALD.md.
+
+| Les | Soort | Oud | Nieuw |
+|---|---|---|---|
+| squla-dagen-van-de-week-gouden | nagekeken weg | Nagekeken: dit is echt ${naam(d)}. | Zie je, je vond ${naam(d)}. |
+| squla-dagen-van-de-week-gouden | nagekeken weg | Nagekeken: na zondag komt echt maandag. | Zie je, de trein begint weer bij maandag. |
+| squla-dagen-van-de-week-gouden | nagekeken weg | Nagekeken: na ${naam(d)} komt echt ${naam(na(d))}. | Zie je, ${naam(na(d))} is de volgende dag. |
+| squla-dagen-van-de-week-gouden | nagekeken weg | Nagekeken: vóór maandag komt echt zondag. | Zie je, zondag is de dag ervoor. |
+| squla-dagen-van-de-week-gouden | nagekeken weg | Nagekeken: vóór ${naam(d)} komt echt ${naam(voor(d))}. | Zie je, ${naam(voor(d))} is de dag ervoor. |
+| squla-dagen-van-de-week-gouden | nagekeken weg | Nagekeken: de trein heeft weer ${g(7)} wagons. | Zie je, er hangen weer ${g(7)} wagons aan de trein. |
+| squla-dagen-van-de-week-gouden | nagekeken weg | Nagekeken: gisteren was echt ${naam(a)}. | Zie je, ${naam(a)} was ${g(1)} dag geleden. |
+| squla-dagen-van-de-week-gouden | nagekeken weg | Nagekeken: morgen is echt ${naam(a)}. | Zie je, ${naam(a)} komt over ${g(1)} dag. |
+| squla-dagen-van-de-week-gouden | nagekeken weg | Nagekeken: ${naam(dag)} is weekend. | Zie je, op ${naam(dag)} ben je vrij. |
+| squla-dagen-van-de-week-gouden | nagekeken weg | Nagekeken: allebei de dagen van het weekend. | Zie je, je vond allebei de vrije dagen. |

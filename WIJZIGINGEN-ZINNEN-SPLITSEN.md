@@ -264,3 +264,13 @@ Getal, antwoord en betekenis zijn niet veranderd. De fouttabel (`npx tsx scripts
 | (extra, een deel leeg) Een cirkel onder heeft nog geen stippen. | Een cirkel onderaan heeft nog geen stippen. | idem |
 
 Gouden les Splitsen: de groet en de startvraag staan nu in 1 alinea (zelfde woorden, zie 15.37/F16 bij Getallenlijn en Klok); het dak van het huisje is hoger en het hoopje bij 6 tot 10 dingen iets kleiner, zodat de bovenste pionnen en ballen niet meer door de dakrand steken.
+
+## 19 november 2026: "nagekeken" is weg
+
+Opdracht van Sara: het woord "nagekeken" (en "nakijken") komt niet meer voor in wat Bliepo zegt of laat zien. Elke zin is vervangen door een andere zin die zegt dat het klopt ("Zie je, …", "Inderdaad, …"), op dezelfde plek in het rijtje (de robotplek blijft de robotplek, hooguit 1 keer per les; de grens "hooguit 2 keer per les" geldt nu voor deze zinnen: `WAS_NAKIJKEN` in squla-klok-gouden-zinnen.ts). Het gekozen antwoord staat er hooguit 1 keer in. Reden ook in WEGGEHAALD.md.
+
+| Les | Soort | Oud | Nieuw |
+|---|---|---|---|
+| squla-splits-splitsen1-1-gouden | nagekeken weg | Nagekeken: ${g(a, KA)} en ${g(b, KB)} maken samen ${g(tot)}. | Zie je, ${g(tot)} is ${g(a, KA)} en nog ${g(b, KB)}. |
+| squla-splits-splitsen1-1-gouden | nagekeken weg | Nagekeken: alle huisjes kloppen. | Zie je, alle huisjes zijn vol. |
+| squla-splits-splitsen1-1-gouden-extra | nagekeken weg | Ik heb het nagekeken: ${som(a, b, t)}. | Inderdaad, zo kun je {${t}} splitsen. |

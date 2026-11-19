@@ -45,6 +45,7 @@
  * gewoon door.
  */
 
+import { WAS_NAKIJKEN } from "./squla-klok-gouden-zinnen";
 import type { Lesdraaiboek, Lesgids } from "../soort";
 import { KaartMinsommen, machineDuur } from "../vlakken/squla-minsommen-vlak";
 import { GoudenMinVlak, wegPlek, PLUS_PLEK, type GoudenMinProps } from "../vlakken/squla-minsommen-gouden-vlak";
@@ -224,7 +225,8 @@ function veelFouten(l: Lesgids): boolean {
 
 /* ---------- het vaste rijtje (zelfde regels als de gouden lessen klok, Tellen, Splitsen en Plussommen) ---------- */
 
-const NAKIJK = /nakijk|nagekeken/i;
+/* De zinnen die vroeger "nagekeken" zeiden (19 nov 2026: het woord is weg; zie WAS_NAKIJKEN). */
+const NAKIJK = WAS_NAKIJKEN;
 /** Hebben 2 zinnen een woord van 5 letters of meer gemeen? (Niet "Klopt helemaal! Dat klopt, …" of 2 keer "precies".) */
 const deeltWoord = (a: string, b: string) => {
   const w = (z: string) => z.toLowerCase().replace(/\{[^}]*\}/g, " ").split(/[^a-zà-ÿ]+/).filter((x) => x.length >= 5);

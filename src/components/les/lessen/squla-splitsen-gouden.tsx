@@ -38,6 +38,7 @@
  * les gewoon door.
  */
 
+import { WAS_NAKIJKEN } from "./squla-klok-gouden-zinnen";
 import type { Lesdraaiboek, Lesgids } from "../soort";
 import { GoudenSplitsVlak, KaartSplitsenGouden, type GoudenSplitsProps, type Hand, type Punt } from "../vlakken/squla-splitsen-gouden-vlak";
 import { KLEUR, type Beeld, type Deel, type S1Spec, type S1Stand, type S1Zone } from "../vlakken/squla-splitsen-vlak";
@@ -238,7 +239,8 @@ function kies(l: Lesgids, r: Rijtje, zonder: number[] = [], sleutel: Rijtje | st
 }
 
 const woord = (z: string) => z.split(/[\s,:!.]/)[0].toLowerCase();
-const NAKIJK = /nakijk|nagekeken/i;
+/* De zinnen die vroeger "nagekeken" zeiden (19 nov 2026: het woord is weg; zie WAS_NAKIJKEN). */
+const NAKIJK = WAS_NAKIJKEN;
 
 /** Lof bij goed in 1 keer: een speciaal moment, soms de naam, anders een lofzin; daarna wat er gesplitst is (draaiboek: lof met de 2 delen). */
 function lofZinnen(l: Lesgids, reactie: Rijtje, jaIndex: number[], robotIndex: number | null, eerste: boolean): string[] {
@@ -259,7 +261,7 @@ function lofZinnen(l: Lesgids, reactie: Rijtje, jaIndex: number[], robotIndex: n
   lof ??= kies(l, LOF, [LOF_KIJK_INDEX, ...LOF.zinnen.map((z, i) => (/gekozen/i.test(z) ? i : -1)).filter((i) => i >= 0)]);
   /* Lof en reactie beginnen niet allebei met hetzelfde woord, nooit 2 keer "Ja" (BLIEPO-KARAKTER.md §2). */
   const zonder = reactie.zinnen.map((_, i) => i).filter((i) => woord(reactie.zinnen[i]) === woord(lof));
-  /* Ook "ja" midden in de lofzin telt ("Even nakijken… ja, goed!"; kind-test punt 13). */
+  /* Ook "ja" midden in de lofzin telt ("Even kijken… ja, goed!"; kind-test punt 13). */
   if (/\bja\b/i.test(lof)) zonder.push(...jaIndex);
   /* Een robotreactie hooguit 1 keer per les (keuring Tellen, 9 nov). */
   if (s.robotReactie && robotIndex !== null) zonder.push(robotIndex);

@@ -37,6 +37,7 @@
  * samen gedaan) in de tabel les_uitkomsten (bewaarUitkomst; zonder gekozen kind gebeurt er niets).
  */
 
+import { WAS_NAKIJKEN } from "./squla-klok-gouden-zinnen";
 import type { Lesdraaiboek, Lesgids } from "../soort";
 import { GetallenlijnGoudenVlak, KaartGetallenlijn, LIJN_Y, bordPlek, getalPlek, kaartThuis, vakPlek, wezenPlek, lijnX, type GLBeeld, type GLLicht, type GLProps, type Punt } from "../vlakken/squla-getallenlijn-gouden-vlak";
 import { GETALLENLIJN_VOORWERPEN } from "../vlakken/squla-getallenlijn-teken";
@@ -208,7 +209,8 @@ function veelFouten(l: Lesgids): boolean {
 
 /* ---------- het vaste rijtje (zelfde regels als de andere gouden lessen) ---------- */
 
-const NAKIJK = /nakijk|nagekeken/i;
+/* De zinnen die vroeger "nagekeken" zeiden (19 nov 2026: het woord is weg; zie WAS_NAKIJKEN). */
+const NAKIJK = WAS_NAKIJKEN;
 const woord = (z: string) => z.split(/[\s,:!.]/)[0].toLowerCase();
 
 /** Een zin uit een rijtje; `sleutel` = welk rijtje (een reactie-rijtje wordt per vraag opnieuw gemaakt). */

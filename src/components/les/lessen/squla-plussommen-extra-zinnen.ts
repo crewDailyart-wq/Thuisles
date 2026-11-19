@@ -21,7 +21,7 @@
  * gedeelde kiezer (nooit-dubbel.ts), nooit 2 keer achter elkaar dezelfde. "Rooster" is "veld" geworden en "totaal" is
  * "samen" (WOORDEN-GROEP3.md). Getallen, antwoorden en betekenis zijn niet veranderd. Oud naast nieuw:
  * WIJZIGINGEN-ZINNEN-PLUSSOMMEN.md. Een paar zinnen zijn de tekst van Synthesis (Adding below 10) in het Nederlands
- * (besluit Sara 17 november 2026, BOUWREGELS 15.2): "Kies maar een tegel, welke je wilt.", "7? Ik tel er meer.",
+ * (besluit Sara 17 november 2026, BOUWREGELS 15.2): "Kies maar een tegel die jij wilt." (19 nov 2026; was "…, welke je wilt."), "7? Ik tel er meer.",
  * "3 en 5 samen is iets meer dan 7.", "Je hebt de 3 en de 7 naast elkaar gezet.", "Wat gebeurt er als ik de tegels
  * omdraai?", "Je mag de getallen omdraaien.", "Precies, 3 + 4 = 7.".
  *
@@ -47,7 +47,7 @@ export const ZIN = {
   /** Stap 1: openen (het draaiboek heeft geen startvraag). Eerst wat we gaan doen (1 van de varianten), dan de tegels. */
   begin: ["Vandaag rekenen we met tegels.", "We gaan samen rekenen met tegels."],
   beginTegels: "Elke tegel heeft vakjes. Tel de vakjes, dan weet je welk getal het is.",
-  kies1: "Kies maar een tegel, welke je wilt. Zet hem op het veld.",
+  kies1: "Kies maar een tegel die jij wilt. Zet hem op het veld.",
   kiesAnder: ["Kies een andere tegel.", "Zet er nog {1:wit} op het veld.", "Nu een andere tegel. Kies maar."],
   /** Hulphandje bij een tegel kiezen en zetten (15.19). */
   kiesHand: ["Tik op een tegel. Tik dan op het veld.", "Tik eerst op een tegel. Tik daarna op het veld."],
@@ -95,7 +95,7 @@ export const AANMOEDIG_TIKKEN = ZIN.aanmoedigTikken;
 
 /** Reactie bij goed (draaiboek stap 7: lof met de som erin). 5 is de zin van Synthesis ("precies; 2 + 3 = 5"). */
 export const SOMREACTIE = (a: number, b: number, t: number) =>
-  rij([`Dat klopt: ${som(a, b, t)}.`, `Ja, ${g(a)} en ${g(b)} maken samen ${g(t)}.`, `${som(a, b, t)}, precies.`, `Je hebt ${g(t)} gemaakt met de ${g(a)} en de ${g(b)}.`, `Ik heb het nagekeken: ${som(a, b, t)}.`, `Precies, ${som(a, b, t)}.`], [4]);
+  rij([`Dat klopt: ${som(a, b, t)}.`, `Ja, ${g(a)} en ${g(b)} maken samen ${g(t)}.`, `${som(a, b, t)}, precies.`, `Je hebt ${g(t)} gemaakt met de ${g(a)} en de ${g(b)}.`, `Inderdaad, zo kom je op ${g(t)}.`, `Precies, ${som(a, b, t)}.`], [4]);
 export const SOMREACTIE_ROBOT = 4;
 
 /* ---------- denkfouten (draaiboek Plussommen §7; namen voor de voortgang) ---------- */

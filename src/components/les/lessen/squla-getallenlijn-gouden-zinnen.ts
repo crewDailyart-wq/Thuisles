@@ -174,7 +174,7 @@ export const eigenInvulling = (v: Vraag) => v.nr > 0;
 
 /* ---------- hulpjes voor de zinnen ---------- */
 
-export const NAAM: Record<Wezen, string> = { raketje: "het raketje", ufo: "de ufo", satelliet: "de satelliet" };
+export const NAAM: Record<Wezen, string> = { raketje: "het raketje", ufo: "de ufo", satelliet: "het ruimteschip" };
 export const Naam = (z: Wezen) => NAAM[z][0].toUpperCase() + NAAM[z].slice(1);
 
 /** Waar een ding staat. */
@@ -212,8 +212,8 @@ export function sprongStart(v: Vraag): number {
 /* ---------- vaste zinnen van het verloop (draaiboek Getallenlijn §2; eigen woorden) ---------- */
 
 const raketWoord = (v: Vraag) => (v.soort === "wie" ? NAAM[v.goed as Wezen] : "het raketje");
-/** "Die" of "dat" voor een ding: de ufo, de satelliet = die; het raketje = dat. */
-const die = (z: Wezen) => (z === "raketje" ? "Dat" : "Die");
+/** "Die" of "dat" voor een ding: de ufo = die; het raketje en het ruimteschip (id `satelliet`, 19 nov 2026) = dat. */
+const die = (z: Wezen) => (z === "raketje" || z === "satelliet" ? "Dat" : "Die");
 /** Volgt deze vraag op een vraag van dezelfde soort? Dan klinkt de vraag net anders (nooit 2 keer precies dezelfde zin). */
 const vervolg = (v: Vraag) => VRAGEN[v.nr - 2]?.soort === v.soort;
 
@@ -419,7 +419,7 @@ export const ZIN = {
 export const AANMOEDIG_TIKKEN = ["Je bent goed bezig.", "Jij kunt dit.", "Het gaat goed zo.", "Probeer het maar.", "Toe maar, je doet het goed."];
 
 /** De woorden die in dezelfde zin wisselen (voor de kiezer: "Je tikte weer op de ufo." = "Je tikte weer op het raketje."). */
-export const WISSELWOORDEN = ["het raketje", "de ufo", "de satelliet"];
+export const WISSELWOORDEN = ["het raketje", "de ufo", "het ruimteschip"];
 
 /**
  * Reactie na de lof (BLIEPO-KARAKTER.md §4 Getallenlijn, zin 26 t/m 30, plus zinnen zonder "Ja").
@@ -430,28 +430,28 @@ export function lijnReactie(v: Vraag): Rijtje {
   const g = Number(v.goed);
   const G = w(g);
   if (v.soort === "bij")
-    return rij([`Ja, het raketje staat bij de ${G}.`, `Ja, na de ${w(g - 1)} komt de ${G}.`, `Het raketje staat bij de ${G}.`, `Na de ${w(g - 1)} komt de ${G}.`, `Nagekeken: het raketje staat precies bij de ${G}.`, `Precies, het raketje staat bij de ${G}.`, `Dat klopt: na de ${w(g - 1)} komt de ${G}.`], [4]);
+    return rij([`Ja, het raketje staat bij de ${G}.`, `Ja, na de ${w(g - 1)} komt de ${G}.`, `Het raketje staat bij de ${G}.`, `Na de ${w(g - 1)} komt de ${G}.`, `Zie je, de ${G} hoort bij het raketje.`, `Precies, het raketje staat bij de ${G}.`, `Dat klopt: na de ${w(g - 1)} komt de ${G}.`], [4]);
   if (v.soort === "natien")
-    return rij([`Ja, na de ${w(10)} komt de ${w(11)}.`, "Ja, de lijn gaat gewoon door.", `Na de ${w(10)} komt de ${w(11)}.`, `De lijn gaat door: ${w(11)}.`, `Nagekeken: na de ${w(10)} komt echt de ${w(11)}.`, `Precies, na de ${w(10)} komt de ${w(11)}.`, `Dat klopt: de lijn telt gewoon verder.`], [4]);
+    return rij([`Ja, na de ${w(10)} komt de ${w(11)}.`, "Ja, de lijn gaat gewoon door.", `Na de ${w(10)} komt de ${w(11)}.`, `De lijn gaat door: ${w(11)}.`, `Zie je, na de ${w(10)} tel je verder: ${w(11)}.`, `Precies, na de ${w(10)} komt de ${w(11)}.`, `Dat klopt: de lijn telt gewoon verder.`], [4]);
   if (v.soort === "meer")
-    return rij([`Ja, ${G} is meer dan ${w(v.meer!.a)}.`, `Ja, ${G} zeg je later als je telt.`, `${G} is meer dan ${w(v.meer!.a)}.`, `${G} komt na ${w(v.meer!.a)}.`, `Nagekeken: ${G} is meer.`, `Precies, ${G} is meer dan ${w(v.meer!.a)}.`, `Dat klopt: ${G} komt later als je telt.`], [4]);
+    return rij([`Ja, ${G} is meer dan ${w(v.meer!.a)}.`, `Ja, ${G} zeg je later als je telt.`, `${G} is meer dan ${w(v.meer!.a)}.`, `${G} komt na ${w(v.meer!.a)}.`, `Zie je, ${G} is het grootst.`, `Precies, ${G} is meer dan ${w(v.meer!.a)}.`, `Dat klopt: ${G} komt later als je telt.`], [4]);
   if (v.soort === "orden") {
     const r = v.goed.split(",").map((n) => w(Number(n))).join(", ");
-    return rij([`Ja, van klein naar groot: ${r}.`, "Ja, er komt steeds 1 bij.", `Van klein naar groot: ${r}.`, "Er komt steeds 1 bij.", `Nagekeken: ${r}. Klopt!`, "Precies, er komt steeds 1 bij.", `Dat klopt: ${r}.`], [4]);
+    return rij([`Ja, van klein naar groot: ${r}.`, "Ja, er komt steeds 1 bij.", `Van klein naar groot: ${r}.`, "Er komt steeds 1 bij.", "Zie je, elk getal is 1 meer dan het vorige.", "Precies, er komt steeds 1 bij.", `Dat klopt: ${r}.`], [4]);
   }
   if (v.soort === "wie") {
     const z = v.goed as Wezen;
-    return rij([`Ja, ${NAAM[z]} staat bij de ${w(v.n!)}.`, `Ja, daar is de ${w(v.n!)}.`, `${Naam(z)} staat bij de ${w(v.n!)}.`, `Bij de ${w(v.n!)} staat ${NAAM[z]}.`, `Nagekeken: ${NAAM[z]} staat bij de ${w(v.n!)}.`, `Precies, ${NAAM[z]} staat bij de ${w(v.n!)}.`, `Dat klopt: bij de ${w(v.n!)} staat ${NAAM[z]}.`], [4]);
+    return rij([`Ja, ${NAAM[z]} staat bij de ${w(v.n!)}.`, `Ja, daar is de ${w(v.n!)}.`, `${Naam(z)} staat bij de ${w(v.n!)}.`, `Bij de ${w(v.n!)} staat ${NAAM[z]}.`, `Zie je, ${NAAM[z]} hoort bij de ${w(v.n!)}.`, `Precies, ${NAAM[z]} staat bij de ${w(v.n!)}.`, `Dat klopt: bij de ${w(v.n!)} staat ${NAAM[z]}.`], [4]);
   }
   if (v.soort === "dichtst") {
     const d = Math.abs(g - v.n!);
     /* "maar 2 sprongen van de 20 af" (was: "maar 2 van de 20 af"; de les telt overal in sprongen). */
     const ver = `${d} ${d === 1 ? "sprong" : "sprongen"}`;
-    return rij([`Ja, ${G} ligt maar ${ver} van de ${w(v.n!)} af.`, `Ja, ${G} ligt het dichtst bij de ${w(v.n!)}.`, `${G} ligt maar ${ver} van de ${w(v.n!)} af.`, `${G} ligt het dichtst bij de ${w(v.n!)}.`, `Nagekeken: ${G} ligt het dichtst bij.`, `Precies, ${G} ligt het dichtst bij de ${w(v.n!)}.`, `Dat klopt: ${G} ligt maar ${ver} van de ${w(v.n!)} af.`], [4]);
+    return rij([`Ja, ${G} ligt maar ${ver} van de ${w(v.n!)} af.`, `Ja, ${G} ligt het dichtst bij de ${w(v.n!)}.`, `${G} ligt maar ${ver} van de ${w(v.n!)} af.`, `${G} ligt het dichtst bij de ${w(v.n!)}.`, `Zie je, geen getal ligt dichter bij de ${w(v.n!)}.`, `Precies, ${G} ligt het dichtst bij de ${w(v.n!)}.`, `Dat klopt: ${G} ligt maar ${ver} van de ${w(v.n!)} af.`], [4]);
   }
   const a = anker(v);
   const kant = g > a ? "na" : "voor";
-  return rij([`Ja, het raketje staat ongeveer bij de ${G}.`, `Ja, vlak ${kant} de ${w(a)}.`, `Het raketje staat ongeveer bij de ${G}.`, `Vlak ${kant} de ${w(a)} staat de ${G}.`, `Nagekeken: ongeveer ${G}. Klopt!`, `Precies, het raketje staat ongeveer bij de ${G}.`, `Dat klopt: vlak ${kant} de ${w(a)} staat de ${G}.`], [4]);
+  return rij([`Ja, het raketje staat ongeveer bij de ${G}.`, `Ja, vlak ${kant} de ${w(a)}.`, `Het raketje staat ongeveer bij de ${G}.`, `Vlak ${kant} de ${w(a)} staat de ${G}.`, `Zie je, de ${G} ligt het dichtst bij het raketje.`, `Precies, het raketje staat ongeveer bij de ${G}.`, `Dat klopt: vlak ${kant} de ${w(a)} staat de ${G}.`], [4]);
 }
 export const REACTIE_JA = [0, 1];
 export const REACTIE_ROBOT = 4;
@@ -873,7 +873,7 @@ export function lijnFout(x: string, v: Vraag): Fout {
       x,
       code: voor ? "ding-ervoor" : "ding-erna",
       soort: voor ? "ervoor" : "erna",
-      denkfout: `tikte op ${NAAM[z]}, ${x === "raketje" ? "dat" : "die"} bij ${p} staat (${kant} de ${n})`,
+      denkfout: `tikte op ${NAAM[z]}, ${die(z).toLowerCase()} bij ${p} staat (${kant} de ${n})`,
       scherm: SCHERM_WIE,
       over: andere.filter((k) => (voor ? plekVan(v, k)! > p : plekVan(v, k)! < p)),
       bron: "eigen invulling (draaiboek §8: \"wat staat er bij\" zit niet in Count the Jumps)",

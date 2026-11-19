@@ -176,3 +176,20 @@ Ook (19 november 2026, dezelfde regel als bij Vormen: geen los "En" aan het begi
 |---|---|
 | En wat staat er bij 14? | Wat staat er nu bij 14? |
 | En welk getal ligt het dichtst bij 10? | Welk getal ligt nu het dichtst bij 10? |
+
+## 19 november 2026: "nagekeken" is weg (en ALLE-VRAGEN DEEL A)
+
+Opdracht van Sara: het woord "nagekeken" (en "nakijken") komt niet meer voor in wat Bliepo zegt of laat zien. Elke zin is vervangen door een andere zin die zegt dat het klopt ("Zie je, …", "Inderdaad, …"), op dezelfde plek in het rijtje (de robotplek blijft de robotplek, hooguit 1 keer per les; de grens "hooguit 2 keer per les" geldt nu voor deze zinnen: `WAS_NAKIJKEN` in squla-klok-gouden-zinnen.ts). Het gekozen antwoord staat er hooguit 1 keer in. Reden ook in WEGGEHAALD.md.
+
+| Les | Soort | Oud | Nieuw |
+|---|---|---|---|
+| squla-getallenlijn-kat-1-gouden | nagekeken weg | Nagekeken: het raketje staat precies bij de ${G}. | Zie je, de ${G} hoort bij het raketje. |
+| squla-getallenlijn-kat-1-gouden | nagekeken weg | Nagekeken: na de ${w(10)} komt echt de ${w(11)}. | Zie je, na de ${w(10)} tel je verder: ${w(11)}. |
+| squla-getallenlijn-kat-1-gouden | nagekeken weg | Nagekeken: ${G} is meer. | Zie je, ${G} is het grootst. |
+| squla-getallenlijn-kat-1-gouden | nagekeken weg | Nagekeken: ${r}. Klopt! | Zie je, elk getal is 1 meer dan het vorige. |
+| squla-getallenlijn-kat-1-gouden | nagekeken weg | Nagekeken: ${NAAM[z]} staat bij de ${w(v.n!)}. | Zie je, ${NAAM[z]} hoort bij de ${w(v.n!)}. |
+| squla-getallenlijn-kat-1-gouden | nagekeken weg | Nagekeken: ${G} ligt het dichtst bij. | Zie je, geen getal ligt dichter bij de ${w(v.n!)}. |
+| squla-getallenlijn-kat-1-gouden | nagekeken weg | Nagekeken: ongeveer ${G}. Klopt! | Zie je, de ${G} ligt het dichtst bij het raketje. |
+| squla-getallenlijn-kat-1-gouden | DEEL A | de satelliet | het ruimteschip |
+| squla-getallenlijn-kat-1-gouden | DEEL A | het raketje / de ufo / de satelliet | het raketje / de ufo / het ruimteschip |
+| squla-getallenlijn-kat-1-gouden | DEEL A | denkfout (voortgang, fouttabel): "tikte op de satelliet, die bij 19 staat" | "tikte op het ruimteschip, dat bij 19 staat" (die/dat volgt nu het woord; ook in het vlak: aria-label "Het ruimteschip") |

@@ -138,3 +138,14 @@ De 2e vraag van dezelfde soort direct erna kreeg "En … nu …". Een zin die me
 | En welke kraal hoort nu op de lege plek? | Welke kraal past op de lege plek? |
 | En wat hoort nu bij de pijl? | Wat komt er bij de pijl? |
 | En welke vorm komt er nu? | Welke vorm is de volgende? |
+
+## 19 november 2026: "nagekeken" is weg (en ALLE-VRAGEN DEEL A)
+
+Opdracht van Sara: het woord "nagekeken" (en "nakijken") komt niet meer voor in wat Bliepo zegt of laat zien. Elke zin is vervangen door een andere zin die zegt dat het klopt ("Zie je, …", "Inderdaad, …"), op dezelfde plek in het rijtje (de robotplek blijft de robotplek, hooguit 1 keer per les; de grens "hooguit 2 keer per les" geldt nu voor deze zinnen: `WAS_NAKIJKEN` in squla-klok-gouden-zinnen.ts). Het gekozen antwoord staat er hooguit 1 keer in. Reden ook in WEGGEHAALD.md.
+
+| Les | Soort | Oud | Nieuw |
+|---|---|---|---|
+| squla-vormen-patronen-1-gouden | nagekeken weg | Nagekeken: de ketting klopt. | Zie je, elke kraal past in het patroon. |
+| squla-vormen-patronen-1-gouden | nagekeken weg | Nagekeken: de puzzel is af. | Zie je, er is geen gat meer. |
+| squla-vormen-patronen-1-gouden | nagekeken weg | Nagekeken: het patroon klopt. | Zie je, met ${n.de(v.goed)} loopt het patroon door. |
+| squla-vormen-patronen-1-gouden | DEEL A | Je koos ${X}. ${DIE} komt pas na ${veel}. / ${H(X)}? Daarvoor komen eerst ${veel}. / In dit patroon komt ${n.noem(x)} pas na ${veel}. | Je koos ${X}. Kijk hoe vaak ${elk} achter elkaar komt. / ${H(X)}? Tel hoe vaak ${elk} achter elkaar komt. / In dit patroon komt ${n.noem(x)} hier nog niet. |

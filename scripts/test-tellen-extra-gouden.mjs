@@ -22,7 +22,7 @@ for (const route of routes) {
       if (route !== "goed" && route !== "allefout") return null;
       const v = taak?.vraag ?? "";
       if (taak?.soort === "kies" && v.startsWith("soort1") && taak.poging === 1) return `${route}-1-begin`;
-      if (z.pijl && /Klopt|Ja, je telde|Het zijn|precies|nagekeken/.test(z.tekst.join(" ")) && !z.taak) return `${route}-2-na-goed`;
+      if (z.pijl && /Klopt|Ja, je telde|Het zijn|precies|Inderdaad/.test(z.tekst.join(" ")) && !z.taak) return `${route}-2-na-goed`;
       if (v.startsWith("maak") && z.controleer && !z.antwoord) return `${route}-3-maak-klaar`;
       if (v.startsWith("lijstje") && z.controleer && !z.antwoord) return `${route}-4-lijstje-klaar`;
       if (route === "allefout" && taak?.soort === "tel" && z.hand) return `${route}-5-samen-hand`;

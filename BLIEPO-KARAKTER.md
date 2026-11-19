@@ -35,14 +35,15 @@ Gemaakt op 8 november 2026 (derde ronde, besluit Sara: "Lofzinnen komen in BLIEP
 - **Het werkwoord past bij wat het kind doet:** "kijk" als het kind kijkt, "luister" alleen als het echt iets hoort (14.35).
 - **Woorden passen bij het beeld:** hij noemt wat het kind echt ziet (3.12).
 - **Nooit dezelfde zin 2 keer achter elkaar** (5.10). Kies uit een rijtje steeds een andere zin dan de vorige keer. **Ook niet bij hetzelfde foute antwoord 2 keer:** dan wordt de eerste zin "Je koos weer {x}." (kind-test en keuring Tellen, 9 november 2026).
-- **Nooit 2 keer "Ja" achter elkaar** (bijvoorbeeld "Ja, die klopt! Ja, er zijn er 16."): begint de lofzin met "Ja", dan komt de reactie zonder "Ja" (§4, bij Tellen 10a en 10b). Een robotreactie als "Ik heb ze nagekeken …" hooguit 1 keer per les (keuring Tellen, 9 nov).
+- **Nooit 2 keer "Ja" achter elkaar** (bijvoorbeeld "Ja, die klopt! Ja, er zijn er 16."): begint de lofzin met "Ja", dan komt de reactie zonder "Ja" (§4, bij Tellen 10a en 10b). De reactie op de robotplek (nu "Inderdaad, je telde tot …", vroeger "Ik heb ze nagekeken …") hooguit 1 keer per les (keuring Tellen, 9 nov).
 - **"Weer" alleen als Bliepo het de 1e keer echt zei.** "Je telde er weer te veel." mag alleen als hij bij de 1e fout al "te veel" zei; anders komt "weer" uit het niets (kind-test Tellen, 9 nov).
-- **"Ja" ook midden in een zin telt** (kind-test Splitsen): na "Even nakijken… ja, goed!" komt geen reactie die met "Ja" begint. **"Nakijken" hooguit 2 keer per les** in alle lof- en reactiezinnen samen.
+- **"Ja" ook midden in een zin telt** (kind-test Splitsen): na "Even kijken… ja, goed!" komt geen reactie die met "Ja" begint. **De bevestigingszinnen die vroeger "nakijken" zeiden, hooguit 2 keer per les** in alle lof- en reactiezinnen samen (`WAS_NAKIJKEN` in squla-klok-gouden-zinnen.ts).
+- **Het woord "nagekeken" (en "nakijken") zegt Bliepo nooit** (Sara, 19 november 2026). Dat iets klopt, zegt hij op veel manieren: "Ja, …", "Precies, …", "Dat klopt, …", **"Zie je, …"** en **"Inderdaad, …"** (bijvoorbeeld "Zie je, maandag is dag 1 van de week.", "Inderdaad, je telde tot 8."). Het gekozen antwoord noemt hij daarin hooguit 1 keer. Oud naast nieuw per les: WIJZIGINGEN-ZINNEN-<les>.md.
 - **Bij slepen "sleep" en "legde"**, niet "leg" of "koos" (kind-test Splitsen). De zin bij de 2e fout is uitleg ("Er horen er 3 in."), geen opdracht die het kind niet meer kan doen, want daarna doet Bliepo het samen voor.
 - **Zegt Bliepo iets over een verkeerde plek, dan klopt het met het beeld** en wijst het handje naar die plek (kind-test Splitsen: "Sleep 1 pion naar het paarse vak" terwijl daar al 1 lag).
 - **Het werkwoord past bij de opdracht:** bij een tikopdracht geen "Denk maar even na." maar "Je bent goed bezig." of "Jij kunt dit." (14.35; kind-test Tellen).
 - **Geen omgekeerde zinnen en geen moeilijke woorden in uitleg:** niet "Krijgt elk stuk fruit 1 nummer, dan …", "dubbel", "te hoog uitkomen"; wel korte zinnen: "Geef elke appel 1 nummer. Dan tel je niets 2 keer." (kind-test Tellen).
-- **Robotzinnen** *(robot)*: ongeveer 1 op de 4 zinnen in de lijsten. Een robotzin gaat **alleen** over zijn **groene scherm**, over **nakijken** of over zijn **geheugen**. Nooit over zijn rode scherm, nooit over lampjes, nooit een geluid. **Niet bij elke vraag een robotzin:** na een robotzin komen eerst minstens 2 gewone zinnen voordat er weer een robotzin mag.
+- **Robotzinnen** *(robot)*: ongeveer 1 op de 4 zinnen in de lijsten. Een robotzin gaat **alleen** over zijn **groene scherm** of over zijn **geheugen** (niet meer over "nakijken", 19 nov 2026). Op de oude nakijkplekken staat nu een gewone bevestigingszin ("Zie je, …", "Inderdaad, …"); die plekken houden hun robotteken, zodat ze even spaarzaam komen. Nooit over zijn rode scherm, nooit over lampjes, nooit een geluid. **Niet bij elke vraag een robotzin:** na een robotzin komen eerst minstens 2 gewone zinnen voordat er weer een robotzin mag.
 - **De naam van het kind** (§3.3): af en toe, niet vaker dan 1 keer per paar vragen, nooit bij een fout. Zolang BOUWREGELS 3.17 geldt: hooguit 2 keer per les (vraag aan Sara in KEUZES-VOOR-SARA.md, Ronde 15).
 
 ---
@@ -85,12 +86,12 @@ Gemaakt op 8 november 2026 (derde ronde, besluit Sara: "Lofzinnen komen in BLIEP
 30. Fijn, die is goed!
 31. Kijk, mijn scherm wordt er groen van! *(robot)*
 32. Mijn scherm is helemaal groen. Goed zo! *(robot)*
-33. Nagekeken: helemaal goed! *(robot)*
-34. Ik heb het nagekeken. Het klopt! *(robot)*
+33. Inderdaad, zo moet het! *(robot-plek)*
+34. Zie je, jij snapt het! *(robot-plek)*
 35. Groen scherm! Die is goed. *(robot)*
 36. Dat stop ik in mijn geheugen: jij kunt dit! *(robot)*
 37. Mijn scherm straalt groen! *(robot)*
-38. Even nakijken… ja, goed! *(robot)*
+38. Even kijken… ja, goed! *(robot-plek)*
 39. Die bewaar ik in mijn geheugen. Goed zo! *(robot)*
 40. Mijn scherm kleurt groen. Knap! *(robot)*
 
@@ -122,7 +123,7 @@ Telling: 40 zinnen, waarvan 10 robotzinnen. (1 t/m 10 zijn de zinnen van de vier
 13. Goed begin!
 14. De eerste is al goed!
 15. Zo, wat een goede start!
-16. De eerste is nagekeken: goed! *(robot)*
+16. Inderdaad, jij begint sterk! *(robot-plek)*
 
 **Laatste vraag**
 17. En de laatste is ook goed!
@@ -162,7 +163,7 @@ Telling: 10 zinnen, waarvan 2 robotzinnen.
 7. Nu zit het goed.
 8. Ja, deze is het.
 9. Nu wordt mijn scherm groen. *(robot)*
-10. Nagekeken: nu is het goed. *(robot)*
+10. Inderdaad, nu is hij raak. *(robot-plek)*
 
 Telling: 10 zinnen, waarvan 2 robotzinnen. (1 t/m 4 zijn de zinnen van de vierde ronde.)
 
@@ -187,14 +188,14 @@ Telling: 3 zinnen (ongewijzigd uit de vierde ronde), geen robotzinnen.
 2. Ja, de grote wijzer staat bovenaan, dus het is een heel uur.
 3. Ja, het is precies {uur} uur.
 4. Ja, de grote wijzer staat onderaan. Het is half {volgend uur}.
-5. Nagekeken: de kleine wijzer wijst naar de {uur}. Klopt! *(robot)*
+5. Inderdaad, de klok zegt {uur} uur. *(robot-plek)*
 
 **Tellen**
 6. Ja, er zijn er {n}.
 7. Ja, je telde ze allemaal: {n}.
 8. Ja, na de {n} komt de {volgende}.
 9. Ja, je telde elk plaatje 1 keer.
-10. Ik heb ze nagekeken: het zijn er {n}. *(robot)*
+10. Inderdaad, je telde tot {n}. *(robot-plek)*
 10a. Het zijn er {n}. *(9 nov, gouden les Tellen: zonder "Ja", voor na een lofzin die al met "Ja" begint)*
 10b. Je telde er {n}. *(idem)*
 
@@ -203,14 +204,14 @@ Telling: 3 zinnen (ongewijzigd uit de vierde ronde), geen robotzinnen.
 12. Ja, {a} plus {b} is {c}.
 13. Ja, er kwamen er {b} bij. Nu zijn het er {c}.
 14. Ja, je telde verder vanaf {a}.
-15. Nagekeken: {a} plus {b} is {c}. Klopt! *(robot)*
+15. Zie je, {a} en nog {b} is {c}. *(robot-plek)*
 
 **Aftrekken**
 16. Ja, je telde {n} terug en kwam op {uitkomst}.
 17. Ja, {a} min {b} is {c}.
 18. Ja, er gingen er {b} weg. Er blijven er {c} over.
 19. Ja, van de {a} blijven er {c} over.
-20. Ik heb het nagekeken: {a} min {b} is {c}. *(robot)*
+20. Zie je, {b} eraf en dan heb je er nog {c}. *(robot-plek)*
 20a. {a} − {b} = {c}. *(10 nov, gouden les Minsommen: zonder "Ja", voor na een lofzin die al met "Ja" begint)*
 20b. Er komen {c} blokjes uit. / Van de {a} blijven er {c} over. *(idem; bij de machine "komen eruit")*
 
@@ -219,56 +220,56 @@ Telling: 3 zinnen (ongewijzigd uit de vierde ronde), geen robotzinnen.
 22. Ja, in het ene bakje {a}, in het andere {b}.
 23. Ja, alle {totaal} zijn verdeeld.
 24. Ja, dat is ook een goede manier om {totaal} te splitsen.
-25. Nagekeken: {a} en {b} maken samen {totaal}. *(robot)*
+25. Zie je, {totaal} is {a} en nog {b}. *(robot-plek)*
 
 **Getallenlijn**
 26. Ja, de {n} staat hier op de lijn.
 27. Ja, je sprong {b} verder en kwam op {c}.
 28. Ja, je sprong {b} terug en kwam op {c}.
 29. Ja, {n} staat tussen {m} en {k}.
-30. Nagekeken: je landde precies op de {c}. *(robot)*
+30. Zie je, de {c} hoort bij het raketje. *(robot-plek)*
 
 **Vergelijken**
 31. Ja, {n} is meer dan {m}.
 32. Ja, {n} is minder dan {m}.
 33. Ja, ze zijn evenveel.
 34. Ja, hier liggen de meeste.
-35. Ik heb geteld en nagekeken: hier zijn er meer. *(robot)*
+35. Zie je, op de andere kaarten liggen er minder. *(robot-plek)*
 
 **Geld**
 36. Ja, deze munt is {n} euro waard.
 37. Ja, samen is het {bedrag}.
 38. Ja, dit briefje is {n} euro.
 39. Ja, met deze munten betaal je precies {bedrag}.
-40. Nagekeken: het is precies {bedrag}. *(robot)*
+40. Zie je, het getal op de munt is {bedrag}. *(robot-plek)*
 
 **Meten**
 41. Ja, {het voorwerp} is het langst.
 42. Ja, {het voorwerp} is het kortst.
 43. Ja, {het voorwerp} is het zwaarst.
 44. Ja, je mat het goed: {n} blokjes lang.
-45. Nagekeken: {het voorwerp} is langer. *(robot)*
+45. Zie je, {het grootste} is groter dan {het kleinste}. *(robot-plek)*
 
 **Vormen**
 46. Ja, je koos {het voorwerp}, en dat past.
 47. Ja, dat is een {vorm}.
 48. Ja, een {vorm} heeft {n} hoeken.
 49. Ja, deze vorm is rond.
-50. Nagekeken: dat is echt een {vorm}. *(robot)*
+50. Zie je, met {de vorm} loopt het patroon door. *(robot-plek)*
 
 **Dagen en tijd**
 51. Ja, na {dag} komt {volgende dag}.
 52. Ja, {dag} komt vóór {andere dag}.
 53. Ja, een week heeft 7 dagen.
 54. Ja, eerst komt de ochtend, dan de middag.
-55. Nagekeken: na {dag} komt echt {volgende dag}. *(robot)*
+55. Zie je, {volgende dag} is de volgende dag. *(robot-plek)*
 
 **Huisnummers**
 56. Ja, het huisnummer is {n}.
 57. Ja, na nummer {n} komt nummer {volgende}.
 58. Ja, het huis tussen {m} en {k} heeft nummer {n}.
 59. Ja, er komt steeds 1 bij.
-60. Nagekeken: deur {n} is de goede. *(robot)*
+60. Zie je, dit huis heeft nummer {n}. *(robot-plek)*
 
 Telling: 62 zinnen (12 onderwerpen × 5, plus 10a en 10b bij Tellen), waarvan 12 robotzinnen. Zin 1, 6, 11, 16, 31 en 46 zijn de 6 zinnen van de vierde ronde. Vormen, Geld, Meten en Tijd/Dagen liggen nog stil (T28): die zinnen zijn er alvast, maar worden pas gebruikt als Sara over die onderwerpen beslist.
 
@@ -289,7 +290,7 @@ Telling: 62 zinnen (12 onderwerpen × 5, plus 10a en 10b bij Tellen), waarvan 12
 6. Je hebt goed doorgezet. Volgende keer gaat het nog beter. *(alleen na veel fouten)*
 7. Klaar! Wat heb je goed je best gedaan.
 8. Dat was de les. Tot snel!
-9. Alles nagekeken. De les is klaar! *(robot)*
+9. Alles is af. De les is klaar! *(robot-plek)*
 10. Deze les bewaar ik in mijn geheugen. Tot de volgende keer! *(robot)*
 
 **Begin**
@@ -367,10 +368,10 @@ Voorbeeld (gouden klokles, staat in FOUTTABEL-squla-klok-gouden.md): klok op 3 u
 9. Rustig maar, we doen het stap voor stap.
 10. Er is nog een betere keuze.
 11. Probeer het nog 1 keer, met een tip.
-12. Ik heb het nagekeken. Er past een andere beter. *(robot)*
+12. Ik zie een andere die beter past. *(robot-plek)*
 13. Even in mijn geheugen kijken… ik heb een tip! *(robot)*
 14. Mijn geheugen zegt: samen lukt dit vast. *(robot)*
-15. Ik heb nagekeken en ik weet een hulpje. *(robot)*
+15. Ik weet een hulpje voor jou. *(robot-plek)*
 
 Telling: 15 zinnen, waarvan 4 robotzinnen.
 
@@ -386,8 +387,8 @@ Telling: 15 zinnen, waarvan 4 robotzinnen.
 6. Rustig kijken mag.
 7. Ik wacht wel even.
 8. Jij kunt dit.
-9. Ik sta klaar om na te kijken. *(robot)*
-10. Als je kiest, kijk ik het meteen na. *(robot)*
+9. Ik sta klaar voor jouw antwoord. *(robot-plek)*
+10. Als je kiest, zie ik meteen of het klopt. *(robot-plek)*
 
 Telling: 10 zinnen, waarvan 2 robotzinnen.
 
@@ -410,11 +411,11 @@ Telling: 10 zinnen, waarvan 2 robotzinnen.
 13. Kijk mee naar de volgende.
 14. Deze is voor jou.
 15. Verder maar weer.
-16. Die is nagekeken. Nu de volgende. *(robot)*
+16. Die zit erop. Daar komt er nog een. *(robot-plek)*
 17. Opgeslagen in mijn geheugen. Verder! *(robot)*
-18. Klaar met nakijken. Daar komt er weer een. *(robot)*
+18. Die is af. Ik heb er nog een. *(robot-plek)*
 19. Mijn geheugen heeft nog een vraag voor jou. *(robot)*
-20. Nagekeken en bewaard. Door naar de volgende! *(robot)*
+20. Dat was hem. Door naar de volgende! *(robot-plek)*
 
 Telling: 20 zinnen, waarvan 5 robotzinnen.
 

@@ -280,12 +280,12 @@ export function minReactie(v: Minvraag): { rij: Rijtje; ja: number[]; robot: num
   const U = g(u, ka);
   if (v.soort === "machine")
     return {
-      rij: rij([`Ja, ${A} min ${B} is ${U}.`, `Ja, er ${v.b === 1 ? "gaat" : "gaan"} er ${B} af. Er komen er ${U} uit.`, `${A} ${MIN} ${B} = ${U}.`, `Er ${u === 1 ? "komt" : "komen"} ${U} ${blokjes(u)} uit.`, `Ik heb het nagekeken: ${A} min ${B} is ${U}.`, `Precies, ${A} ${MIN} ${B} = ${U}.`, `Dat klopt, er ${u === 1 ? "komt" : "komen"} ${U} ${blokjes(u)} uit.`], [4]),
+      rij: rij([`Ja, ${A} min ${B} is ${U}.`, `Ja, er ${v.b === 1 ? "gaat" : "gaan"} er ${B} af. Er komen er ${U} uit.`, `${A} ${MIN} ${B} = ${U}.`, `Er ${u === 1 ? "komt" : "komen"} ${U} ${blokjes(u)} uit.`, `Zie je, ${B} eraf en dan heb je er nog ${U}.`, `Precies, ${A} ${MIN} ${B} = ${U}.`, `Dat klopt, er ${u === 1 ? "komt" : "komen"} ${U} ${blokjes(u)} uit.`], [4]),
       ja: [0, 1],
       robot: 4,
     };
   return {
-    rij: rij([`Ja, ${A} min ${B} is ${U}.`, `Ja, van de ${A} ${blijft(u)} er ${U} over.`, `${A} ${MIN} ${B} = ${U}.`, `Van de ${A} ${blijft(u)} er ${U} over.`, `Ik heb het nagekeken: ${A} min ${B} is ${U}.`, `Precies, ${A} ${MIN} ${B} = ${U}.`, `Dat klopt: ${A} min ${B} is ${U}.`], [4]),
+    rij: rij([`Ja, ${A} min ${B} is ${U}.`, `Ja, van de ${A} ${blijft(u)} er ${U} over.`, `${A} ${MIN} ${B} = ${U}.`, `Van de ${A} ${blijft(u)} er ${U} over.`, `Zie je, ${B} eraf en dan heb je er nog ${U}.`, `Precies, ${A} ${MIN} ${B} = ${U}.`, `Dat klopt: ${A} min ${B} is ${U}.`], [4]),
     ja: [0, 1],
     robot: 4,
   };

@@ -400,20 +400,20 @@ export function metenReactie(v: Vraag): Rijtje {
   if (v.thema === "schilderij") {
     const [kl, gr] = [v.kaarten!.find((k) => k.label === "kleinst" && v.goed.split(",").includes(k.id))!, v.kaarten!.find((k) => k.label === "grootst")!];
     return rij(
-      [`Ja, ${kl.naam} bedekt de minste tegels.`, `Ja, ${gr.naam} bedekt de meeste tegels.`, `${Hoofd(kl.naam)} is het kleinst, ${gr.naam} het grootst.`, `${Hoofd(gr.naam)} bedekt de meeste tegels.`, `Nagekeken: ${kl.naam} het kleinst, ${gr.naam} het grootst.`, `Precies, ${kl.naam} bedekt de minste tegels.`, `Dat klopt, ${gr.naam} is het grootst.`],
+      [`Ja, ${kl.naam} bedekt de minste tegels.`, `Ja, ${gr.naam} bedekt de meeste tegels.`, `${Hoofd(kl.naam)} is het kleinst, ${gr.naam} het grootst.`, `${Hoofd(gr.naam)} bedekt de meeste tegels.`, `Zie je, ${gr.naam} is groter dan ${kl.naam}.`, `Precies, ${kl.naam} bedekt de minste tegels.`, `Dat klopt, ${gr.naam} is het grootst.`],
       [4],
     );
   }
-  if (v.thema === "ruitjes") return rij([`Ja, ze zijn allebei ${g(8, "wit")} hokjes groot.`, "Ja, een andere vorm, maar even groot.", `Allebei ${g(8, "wit")} hokjes.`, "Een andere vorm, maar even groot.", `Nagekeken: allebei ${g(8, "wit")} hokjes. Klopt!`, `Precies, blauw en geel hebben allebei ${g(8, "wit")} hokjes.`, "Dat klopt, de vormen zijn even groot."], [4]);
-  if (v.thema === "tafels") return rij(["Ja, van klein naar groot.", "Ja, de tafels worden steeds groter.", "Op de grootste tafel is nog plek over.", "De tafels worden steeds groter.", "Nagekeken: van klein naar groot!", "Precies, de kleinste tafel ligt vooraan.", "Dat klopt, zo liggen ze van klein naar groot."], [4]);
-  if (v.thema === "muurtjes") return rij(["Ja, van smal naar breed.", "Ja, elk muurtje is breder dan het vorige.", "Elk muurtje is breder dan het vorige.", "Van smal naar breed.", "Nagekeken: van smal naar breed!", "Precies, het smalste muurtje ligt vooraan.", "Dat klopt, zo liggen ze van smal naar breed."], [4]);
-  if (v.thema === "vellen") return rij(["Ja, ze zijn allebei even groot.", "Ja, draaien maakt het kaartje niet groter.", `Kaartje ${g(2, "oranje")} is alleen gedraaid.`, "Draaien maakt het kaartje niet groter.", "Nagekeken: even groot!", "Precies, het kaartje is alleen gedraaid.", "Dat klopt, de kaartjes zijn even groot."], [4]);
+  if (v.thema === "ruitjes") return rij([`Ja, ze zijn allebei ${g(8, "wit")} hokjes groot.`, "Ja, een andere vorm, maar even groot.", `Allebei ${g(8, "wit")} hokjes.`, "Een andere vorm, maar even groot.", "Zie je, de ene vorm is niet groter dan de andere.", `Precies, blauw en geel hebben allebei ${g(8, "wit")} hokjes.`, "Dat klopt, de vormen zijn even groot."], [4]);
+  if (v.thema === "tafels") return rij(["Ja, van klein naar groot.", "Ja, de tafels worden steeds groter.", "Op de grootste tafel is nog plek over.", "De tafels worden steeds groter.", "Zie je, elke tafel is groter dan de vorige.", "Precies, de kleinste tafel ligt vooraan.", "Dat klopt, zo liggen ze van klein naar groot."], [4]);
+  if (v.thema === "muurtjes") return rij(["Ja, van smal naar breed.", "Ja, elk muurtje is breder dan het vorige.", "Elk muurtje is breder dan het vorige.", "Van smal naar breed.", "Zie je, het breedste muurtje ligt achteraan.", "Precies, het smalste muurtje ligt vooraan.", "Dat klopt, zo liggen ze van smal naar breed."], [4]);
+  if (v.thema === "vellen") return rij(["Ja, ze zijn allebei even groot.", "Ja, draaien maakt het kaartje niet groter.", `Kaartje ${g(2, "oranje")} is alleen gedraaid.`, "Draaien maakt het kaartje niet groter.", "Zie je, het kaartje is niet groter of kleiner geworden.", "Precies, het kaartje is alleen gedraaid.", "Dat klopt, de kaartjes zijn even groot."], [4]);
   if (v.thema === "matten") {
     const n = g(v.stukken!, "wit");
-    return rij([`Ja, allebei ${n} stukken.`, "Ja, ze zijn even groot.", `Allebei ${n} stukken.`, "Ze zien er anders uit, maar ze zijn even groot.", `Nagekeken: allebei ${n} stukken.`, `Precies, elke mat heeft ${n} stukken.`, "Dat klopt, de matten zijn even groot."], [4]);
+    return rij([`Ja, allebei ${n} stukken.`, "Ja, ze zijn even groot.", `Allebei ${n} stukken.`, "Ze zien er anders uit, maar ze zijn even groot.", "Zie je, geen mat is groter dan de andere.", `Precies, elke mat heeft ${n} stukken.`, "Dat klopt, de matten zijn even groot."], [4]);
   }
   const n = g(v.k! * v.r!, v.kleur!);
-  return rij([`Ja, de tafel is ${n} blaadjes groot.`, `Ja, je telde ze allemaal: ${n}.`, `De tafel is ${n} blaadjes groot.`, `Je telde ${n} blaadjes.`, `Nagekeken: ${n} blaadjes. Klopt!`, `Precies, het zijn ${n} blaadjes.`, `Dat klopt, er liggen ${n} blaadjes op de tafel.`], [4]);
+  return rij([`Ja, de tafel is ${n} blaadjes groot.`, `Ja, je telde ze allemaal: ${n}.`, `De tafel is ${n} blaadjes groot.`, `Je telde ${n} blaadjes.`, "Zie je, je hebt geen blaadje overgeslagen.", `Precies, het zijn ${n} blaadjes.`, `Dat klopt, er liggen ${n} blaadjes op de tafel.`], [4]);
 }
 export const REACTIE_JA = [0, 1];
 export const REACTIE_ROBOT = 4;

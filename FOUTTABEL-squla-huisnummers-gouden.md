@@ -217,6 +217,6 @@ Huisnummers staan wit op een donker bordje; in de les zijn de getallen in Bliepo
 | Bliepo deed de stap zelf (vangnet) | 4 | Kijk, hier staat huis 8. / Kijk, dit is huis 8. / Kijk, huis 10 staat nu op zijn plek. / Kijk, ik zet huis 10 op de lege plek. |
 | Hulphandje bij slepen: aanmoediging | 5 | Je bent goed bezig. / Jij kunt dit. / Het gaat goed zo. / Probeer het maar. / Toe maar, je doet het goed. |
 | Hulphandje bij slepen: wat te doen | 3 | Hier moet een huis staan. Welk huis past hier? / Sleep het goede huis naar deze plek. / Kijk, deze plek is leeg. Sleep het goede huis erheen. |
-| Zin met het nummer na lof (erna) | 9 | Ja, het huisnummer is 8. / Ja, na nummer 7 komt nummer 8. / Ja, er komt steeds 1 bij. / Het huisnummer is 8. / Nummer 8 past precies. / Precies, nummer 8. / Dat klopt, het is nummer 8. / Op het bordje hoort 8. / Nagekeken: nummer 8 hoort hier. |
+| Zin met het nummer na lof (erna) | 9 | Ja, het huisnummer is 8. / Ja, na nummer 7 komt nummer 8. / Ja, er komt steeds 1 bij. / Het huisnummer is 8. / Nummer 8 past precies. / Precies, nummer 8. / Dat klopt, het is nummer 8. / Op het bordje hoort 8. / Zie je, dit huis heeft nummer 8. |
 | Slot | 3 | Je weet nu welk huisnummer erna, ervoor en ertussen komt. / Knap, hoor! Je weet welk huisnummer erna, ervoor en ertussen komt. / Wat heb jij goed geteld: verder en terug, tot wel 50! |
 | Bij de kaart | 3 | Tik op de kaart. / Tik maar op de kaart. / Kijk, een kaart voor jou! Tik erop. |

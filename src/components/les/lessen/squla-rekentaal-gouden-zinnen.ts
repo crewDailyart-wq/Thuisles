@@ -373,9 +373,9 @@ export const AANMOEDIG_DOEN = ["Je bent goed bezig.", "Jij kunt dit.", "Het gaat
     Elk rijtje heeft dezelfde volgorde, zodat de les "niet 2 keer dezelfde zin achter elkaar" over de vragen heen bewaakt. */
 export function rekenReactie(v: Vraag): Rijtje {
   if (v.soort === "volgorde")
-    return rij(["Ja, van klein naar groot.", "Ja, eerst de kleinste en als laatste de grootste.", "Klein, groter, het grootst.", `Nu staan de ${meervoud(v)} van klein naar groot.`, "Nagekeken: ze staan echt van klein naar groot.", "Precies, zo staan ze goed.", "Dat klopt: de grootste staat achteraan."], [4]);
+    return rij(["Ja, van klein naar groot.", "Ja, eerst de kleinste en als laatste de grootste.", "Klein, groter, het grootst.", `Nu staan de ${meervoud(v)} van klein naar groot.`, "Zie je, de kleinste staat vooraan.", "Precies, zo staan ze goed.", "Dat klopt: de grootste staat achteraan."], [4]);
   const wie = ditDing(v, v.goed);
-  return rij([`Ja, ${wie} is ${v.woord}.`, `Ja, ${v.reden}.`, `${Hoofd(v.reden)}.`, `${Hoofd(wie)} is ${v.woord}.`, `Nagekeken: ${wie} is echt ${v.woord}.`, `Precies, ${wie} is ${v.woord}.`, `Dat klopt: ${v.reden}.`], [4]);
+  return rij([`Ja, ${wie} is ${v.woord}.`, `Ja, ${v.reden}.`, `${Hoofd(v.reden)}.`, `${Hoofd(wie)} is ${v.woord}.`, `Zie je, ${v.woord}: dat is ${wie}.`, `Precies, ${wie} is ${v.woord}.`, `Dat klopt: ${v.reden}.`], [4]);
 }
 export const REACTIE_JA = [0, 1];
 export const REACTIE_ROBOT = 4;

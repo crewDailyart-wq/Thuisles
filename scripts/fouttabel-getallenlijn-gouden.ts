@@ -115,8 +115,9 @@ VRAGEN.forEach((v, i) => {
 type C = { v: Vraag; x: string; X: number; raket: number; g: number; f: Fout; xs: number[] };
 type Uit = boolean | { ok: boolean; houdt?: (k: string) => boolean; richting?: boolean; nabij?: boolean };
 type Regel = [RegExp, (m: RegExpMatchArray, c: C) => Uit];
-const DING = "(Het raketje|De ufo|De satelliet|het raketje|de ufo|de satelliet)";
-const dingVan = (s: string) => s.toLowerCase().split(" ")[1];
+/* "Het ruimteschip" is het ding met id `satelliet` (19 nov 2026: "satelliet" was een moeilijk woord). */
+const DING = "(Het raketje|De ufo|Het ruimteschip|het raketje|de ufo|het ruimteschip)";
+const dingVan = (s: string) => s.toLowerCase().split(" ")[1].replace("ruimteschip", "satelliet");
 const opLijn = (c: C, n: number) => c.v.van !== undefined && n >= c.v.van && n <= c.v.tot!;
 const lijnvraag = (c: C) => c.v.soort === "bij" || c.v.soort === "natien" || c.v.soort === "ongeveer";
 const kantKlopt = (c: C, kant: string) => (kant === "verder") === ((c.v.n ?? 0) > anker(c.v));
@@ -209,8 +210,8 @@ const REGELS: Regel[] = [
   [new RegExp(`^${DING} staat (vóór|na) de (\\d+)$`), (m, c) => dingVan(m[1]) === c.x && plekKlopt(c, m[2], +m[3])],
   [new RegExp(`^Je tikte op ${DING}$`), (m, c) => dingVan(m[1]) === c.x],
   [new RegExp(`^${DING}$`), (m, c) => dingVan(m[1]) === c.x],
-  [/^(Die|Dat) staat (?:nog )?(vóór|na) de (\d+)$/, (m, c) => (m[1] === "Dat") === (c.x === "raketje") && plekKlopt(c, m[2], +m[3])],
-  [/^(Die|Dat) staat al voorbij de (\d+)$/, (m, c) => (m[1] === "Dat") === (c.x === "raketje") && plekKlopt(c, "na", +m[2])],
+  [/^(Die|Dat) staat (?:nog )?(vóór|na) de (\d+)$/, (m, c) => (m[1] === "Dat") === (c.x === "raketje" || c.x === "satelliet") && plekKlopt(c, m[2], +m[3])],
+  [/^(Die|Dat) staat al voorbij de (\d+)$/, (m, c) => (m[1] === "Dat") === (c.x === "raketje" || c.x === "satelliet") && plekKlopt(c, "na", +m[2])],
   [/^Tel dan de streepjes (verder|terug)$|^Tel streepje voor streepje (verder|terug)$|^Tel vanaf daar de streepjes (verder|terug)$/, (m, c) => c.v.soort === "wie" && kantKlopt(c, m[1] ?? m[2] ?? m[3])],
   [new RegExp(`^(?:${DING}|Die|Dat) staat bij de (\\d+)$`), (m, c) => (!m[1] || dingVan(m[1]) === c.x) && plekVan(c.v, c.x) === +m[2]],
   [/^Dat is (\d+) streepjes? (vóór|na) de (\d+)$|^(?:Die|Dat) staat (\d+) streepjes? (vóór|na) de (\d+)$/, (m, c) => {
@@ -673,7 +674,7 @@ const alleVarianten = [
   lijst("1e keer, eerste zin: op volgorde, getal overgeslagen (5, 7, 6, 8)", F(6, "5,7,6,8").eerste),
   lijst("1e keer, eerste zin: op volgorde, van groot naar klein (5, 8, 7, 6)", F(6, "5,8,7,6").eerste),
   lijst("1e keer, eerste zin: wat staat er bij 17 (tikte op de ufo)", F(10, "ufo").eerste),
-  lijst("1e keer, eerste zin: wat staat er bij 17 (tikte op de satelliet)", F(10, "satelliet").eerste),
+  lijst("1e keer, eerste zin: wat staat er bij 17 (tikte op het ruimteschip)", F(10, "satelliet").eerste),
   lijst("1e keer, eerste zin: het dichtst bij 20 (koos 8)", F(12, "8").eerste),
   lijst("1e keer, eerste zin: ongeveer (vraag 14, koos 16)", F(14, "16").eerste),
   lijst("1e keer, eerste zin: ongeveer (vraag 15, koos 13)", F(15, "13").eerste),

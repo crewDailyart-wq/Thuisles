@@ -55,7 +55,7 @@ Gemaakt op 12 november 2026, bijgewerkt op 18 november 2026 (warmere zinnen in v
 
 ## 3. Goed
 
-- **Goed in één keer:** scherm 1 s groen, een lofzin uit het rijtje (BLIEPO-KARAKTER.md §3) en de som of het aantal ("Dat klopt: 4 + 3 = 7." / "Ja, 4 en 3 maken samen 7." / "Je hebt 7 gesplitst in 4 en 3." / "Precies: 7 is 4 en 3." / "Ik heb het nagekeken: 4 + 3 = 7."). Een gevonden som komt in het lijstje rechtsboven (draaiboek §3 F.1).
+- **Goed in één keer:** scherm 1 s groen, een lofzin uit het rijtje (BLIEPO-KARAKTER.md §3) en de som of het aantal ("Dat klopt: 4 + 3 = 7." / "Ja, 4 en 3 maken samen 7." / "Je hebt 7 gesplitst in 4 en 3." / "Precies: 7 is 4 en 3." / "Inderdaad, zo kun je 7 splitsen."). Een gevonden som komt in het lijstje rechtsboven (draaiboek §3 F.1).
 - **Goed na een fout:** alleen een korte bevestiging (BLIEPO-KARAKTER.md §3.4); vanzelf door.
 - **Bij 5 omgedraaid (3 + 2 wordt 2 + 3):** "Je hebt de delen omgedraaid. Dat mag ook!" (draaiboek §3 F.5).
 
@@ -95,7 +95,7 @@ De les kiest uit elk rijtje steeds een andere zin dan de vorige keer.
 | Hulphandje bij een plus | Tik op de plus. / Tik maar op de plus. / Zoek de plus en tik erop. |
 | Hulphandje bij een splitsopdracht | Tik op de plus of de min. / Tik maar op de plus of de min. / Probeer de plus of de min. |
 | Goed gesplitst (zoek 2 delen) | Je hebt 7 gesplitst in 3 en 4. / 3 en 4 zijn samen 7. / Dat klopt: 7 is 3 en 4. |
-| Zin met de som na lof | Dat klopt: 3 + 4 = 7. / Ja, 3 en 4 maken samen 7. / Je hebt 7 gesplitst in 3 en 4. / Precies: 7 is 3 en 4. / Ik heb het nagekeken: 3 + 4 = 7. |
+| Zin met de som na lof | Dat klopt: 3 + 4 = 7. / Ja, 3 en 4 maken samen 7. / Je hebt 7 gesplitst in 3 en 4. / Precies: 7 is 3 en 4. / Inderdaad, zo kun je 7 splitsen. |
 | Al gevonden (telt niet als mis) | Zo heb je 7 al gesplitst, in 3 en 4. Zoek een andere manier. / 3 en 4 hadden we al. Zoek een andere manier om 7 te splitsen. |
 | Omgedraaid bij 7, 8 en 10 (telt niet als mis) | Je hebt de delen omgedraaid. Het zijn dezelfde getallen. Zoek een andere manier. / Dit zijn dezelfde getallen, alleen omgedraaid. Zoek een andere manier. |
 | Samen: Bliepo zet het deel links | Ik zet 3 stippen in het deel links. Zoek jij het andere deel? / In het deel links zet ik 3 stippen. Maak jij het andere deel? / Kijk, links staan nu 3 stippen. Zoek jij het andere deel? |

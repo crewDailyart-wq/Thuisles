@@ -160,3 +160,11 @@ Alleen de tekst, passend gemaakt voor groep 3. Geen audio, beeld of code.
 | oké, we gaan een stukje verder | We gaan nog een stukje verder. Nu komen de huisnummers tot 50. | begin van het laatste blok | VERVANGEN: "En nu de huisnummers tot 50." |
 | precies, je komt op 42 / zeker, 45 | Precies, nummer 8. / Dat klopt, het is nummer 8. | zin met het nummer na lof | erbij (nu 9) |
 | goed geteld (+ naam) | Wat heb jij goed geteld: verder en terug, tot wel 50! | slotzin | erbij (nu 3) |
+
+## 19 november 2026: "nagekeken" is weg
+
+Opdracht van Sara: het woord "nagekeken" (en "nakijken") komt niet meer voor in wat Bliepo zegt of laat zien. Elke zin is vervangen door een andere zin die zegt dat het klopt ("Zie je, …", "Inderdaad, …"), op dezelfde plek in het rijtje (de robotplek blijft de robotplek, hooguit 1 keer per les; de grens "hooguit 2 keer per les" geldt nu voor deze zinnen: `WAS_NAKIJKEN` in squla-klok-gouden-zinnen.ts). Het gekozen antwoord staat er hooguit 1 keer in. Reden ook in WEGGEHAALD.md.
+
+| Les | Soort | Oud | Nieuw |
+|---|---|---|---|
+| squla-huisnummers-gouden | nagekeken weg | Nagekeken: nummer ${g} hoort hier. | Zie je, dit huis heeft nummer ${g}. |

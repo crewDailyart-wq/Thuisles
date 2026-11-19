@@ -102,7 +102,7 @@ Na deze uitleg volgt altijd: "Kom, we tellen ze samen." (of een variant) en het 
 
 ## 4. Goed
 
-- **Goed in één keer:** scherm 1 s groen, een lofzin uit het rijtje (BLIEPO-KARAKTER.md §3) en het aantal ("Ja, er zijn er 12." / "Ja, je hebt ze allemaal geteld: 12." / "Het zijn er 12." / "Je hebt er 12 geteld." / "Ik heb ze nagekeken: het zijn er 12." / "Er liggen 12 appels." / "12 appels, precies!" / "Precies, 12 appels." / "Dat klopt, er zijn 12 appels."), samen als 1 uiting. Begint de lofzin met "Ja", dan komt een telzin zonder "Ja". De robotzin "Ik heb ze nagekeken …" hooguit 1 keer per les. Niet 2 keer achter elkaar dezelfde telzin.
+- **Goed in één keer:** scherm 1 s groen, een lofzin uit het rijtje (BLIEPO-KARAKTER.md §3) en het aantal ("Ja, er zijn er 12." / "Ja, je hebt ze allemaal geteld: 12." / "Het zijn er 12." / "Je hebt er 12 geteld." / "Inderdaad, je telde tot 12." / "Er liggen 12 appels." / "12 appels, precies!" / "Precies, 12 appels." / "Dat klopt, er zijn 12 appels."), samen als 1 uiting. Begint de lofzin met "Ja", dan komt een telzin zonder "Ja". De robotzin "Inderdaad, je telde tot …" hooguit 1 keer per les. Niet 2 keer achter elkaar dezelfde telzin.
 - **Eerste vraag in één keer goed:** lofzin, "Ik tel ze hardop voor je. Tel maar mee!", Bliepo telt hardop 1 t/m 11 (± 1,15 s per nummer); het laatste getal zegt hij in de slotzin, zodat het maar 1 keer klinkt: "En 12! Je had het precies goed." Een tik op de pijl zet alle nummers er meteen bij: dan "Zie je? Het zijn er 12. Je had het precies goed." Alles vanzelf door.
 - **Goed na een fout:** alleen een korte bevestiging (BLIEPO-KARAKTER.md §3.4); de nummers staan erbij; vanzelf door.
 - **Heel snel:** Bliepo zegt niets over snel (BOUWREGELS 6.10).

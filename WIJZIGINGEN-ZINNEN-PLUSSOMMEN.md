@@ -210,3 +210,13 @@ Niet overgenomen: "ah, ik snap wat je denkt" (een vaste opening die Bliepo niet 
 - **De som weglaten na samen tellen** ("En 5! Zoveel taartjes zijn het samen." zonder "1 + 4 = 5"): alleen in 1 van de 3 varianten. De som staat dan nog wel bovenaan in beeld; in de 2 andere varianten zegt Bliepo de som (met het antwoord 1 keer).
 - **Een aanmoediging met de naam van het kind bij een keuze die niet goed is:** niet gedaan (BOUWREGELS 3.17).
 - **De oude les `squla-plussommen.tsx` en de les Optellen onder de 10 (die ook "rooster" zegt):** niet aangeraakt (harde regel 8 en de afspraak: alleen deze 2 lessen).
+
+## 19 november 2026: "nagekeken" is weg (en ALLE-VRAGEN DEEL A)
+
+Opdracht van Sara: het woord "nagekeken" (en "nakijken") komt niet meer voor in wat Bliepo zegt of laat zien. Elke zin is vervangen door een andere zin die zegt dat het klopt ("Zie je, …", "Inderdaad, …"), op dezelfde plek in het rijtje (de robotplek blijft de robotplek, hooguit 1 keer per les; de grens "hooguit 2 keer per les" geldt nu voor deze zinnen: `WAS_NAKIJKEN` in squla-klok-gouden-zinnen.ts). Het gekozen antwoord staat er hooguit 1 keer in. Reden ook in WEGGEHAALD.md.
+
+| Les | Soort | Oud | Nieuw |
+|---|---|---|---|
+| squla-plus-bakkerij-1-gouden | nagekeken weg | Nagekeken: ${g(a, ka)} plus ${g(b, kb)} is ${g(a + b)}. Klopt! | Zie je, ${g(a, ka)} en nog ${g(b, kb)} is ${g(a + b)}. |
+| squla-plus-bakkerij-1-gouden-extra | nagekeken weg | Ik heb het nagekeken: ${som(a, b, t)}. | Inderdaad, zo kom je op ${g(t)}. |
+| squla-plus-bakkerij-1-gouden-extra | DEEL A | Kies maar een tegel, welke je wilt. Zet hem op het veld. | Kies maar een tegel die jij wilt. Zet hem op het veld. |

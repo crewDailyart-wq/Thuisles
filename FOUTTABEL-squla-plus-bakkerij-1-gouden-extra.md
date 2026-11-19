@@ -101,7 +101,7 @@ De les kiest uit elk rijtje steeds een andere zin dan de vorige keer.
 | Situatie | Zinnen (een / = varianten) |
 |---|---|
 | Begin van de les | Vandaag rekenen we met tegels. Elke tegel heeft vakjes. Tel de vakjes, dan weet je welk getal het is. / We gaan samen rekenen met tegels. Elke tegel heeft vakjes. Tel de vakjes, dan weet je welk getal het is. |
-| De eerste tegel | Kies maar een tegel, welke je wilt. Zet hem op het veld. |
+| De eerste tegel | Kies maar een tegel die jij wilt. Zet hem op het veld. |
 | Nog een tegel | Kies een andere tegel. / Zet er nog 1 op het veld. / Nu een andere tegel. Kies maar. |
 | Het hulphandje (aanmoediging) | Je bent goed bezig. / Jij kunt dit. / Het gaat goed zo. / Probeer het maar. / Toe maar, je doet het goed. |
 | Het hulphandje (wat te doen) | Tik op een tegel. Tik dan op het veld. / Tik eerst op een tegel. Tik daarna op het veld. |
@@ -126,4 +126,4 @@ De les kiest uit elk rijtje steeds een andere zin dan de vorige keer.
 | Hetzelfde antwoord 2 keer | Je koos weer 4. / Je tikte weer op 4. / Weer 4, zie ik. |
 | Slotzin | Je hebt sommen gemaakt tot wel 10! / Wat heb jij goed opgeteld met de tegels: tot wel 10! / Knap, hoor! Je kunt al optellen tot 10. |
 | De kaart | Tik op de kaart. / Tik maar op de kaart. / Kijk, een kaart voor jou! Tik erop. |
-| Zin met de som na lof | Dat klopt: 3 + 4 = 7. / Ja, 3 en 4 maken samen 7. / 3 + 4 = 7, precies. / Je hebt 7 gemaakt met de 3 en de 4. / Ik heb het nagekeken: 3 + 4 = 7. / Precies, 3 + 4 = 7. |
+| Zin met de som na lof | Dat klopt: 3 + 4 = 7. / Ja, 3 en 4 maken samen 7. / 3 + 4 = 7, precies. / Je hebt 7 gemaakt met de 3 en de 4. / Inderdaad, zo kom je op 7. / Precies, 3 + 4 = 7. |

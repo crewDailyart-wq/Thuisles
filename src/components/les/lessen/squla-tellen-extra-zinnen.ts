@@ -148,11 +148,11 @@ export function lijstZin(): string {
 }
 
 /** Reactie bij goed (draaiboek §3 A.1 (a): lof met het aantal en de soort). Elk rijtje heeft het aantal erin. */
-export const TELREACTIE = (n: number, f: Fruit) => rij([`Klopt, er zijn er ${gk(n, f)}.`, `Ja, je telde ${gk(n, f)} ${f.naam}.`, `Het zijn ${gk(n, f)} ${f.naam}.`, `${gk(n, f)} ${f.naam}, precies.`, `Ik heb ze nagekeken: ${gk(n, f)} ${f.naam}.`], [4]);
+export const TELREACTIE = (n: number, f: Fruit) => rij([`Klopt, er zijn er ${gk(n, f)}.`, `Ja, je telde ${gk(n, f)} ${f.naam}.`, `Het zijn ${gk(n, f)} ${f.naam}.`, `${gk(n, f)} ${f.naam}, precies.`, `Inderdaad, je telde tot ${gk(n, f)}.`], [4]);
 export const TELREACTIE_ROBOT = 4;
-export const TELREACTIE_TWEE = (n: number, a: Fruit, b: Fruit) => rij([`Klopt, ${gw(n)} samen.`, `Ja, ${a.naam} en ${b.naam} zijn samen ${gw(n)}.`, `Het zijn er ${gw(n)}.`, `${gw(n)} stuks fruit, precies.`, `Ik heb ze nagekeken: samen ${gw(n)}.`], [4]);
-export const MAAKREACTIE = (n: number, f: Fruit) => rij([`Zo is het goed: ${gk(n, f)} ${f.naam}.`, `Precies, ${gk(n, f)} ${f.naam}.`, `Klopt, ${gk(n, f)} ${f.naam}.`, `Je maakte ${gk(n, f)} ${f.naam}.`, `Ik heb ze nagekeken: ${gk(n, f)} ${f.naam}.`], [4]);
-export const LIJSTREACTIE = rij(["Perfect, alle vakjes zijn vol.", "Het lijstje klopt helemaal.", "Alles staat goed. Elk vakje heeft fruit.", "Precies zoals op het lijstje.", "Ik heb alles nagekeken: het klopt.", "Perfect, je hebt alle vakjes gevuld."], [4]);
+export const TELREACTIE_TWEE = (n: number, a: Fruit, b: Fruit) => rij([`Klopt, ${gw(n)} samen.`, `Ja, ${a.naam} en ${b.naam} zijn samen ${gw(n)}.`, `Het zijn er ${gw(n)}.`, `${gw(n)} stuks fruit, precies.`, `Inderdaad, alles bij elkaar ${gw(n)}.`], [4]);
+export const MAAKREACTIE = (n: number, f: Fruit) => rij([`Zo is het goed: ${gk(n, f)} ${f.naam}.`, `Precies, ${gk(n, f)} ${f.naam}.`, `Klopt, ${gk(n, f)} ${f.naam}.`, `Je maakte ${gk(n, f)} ${f.naam}.`, `Inderdaad, er liggen nu ${gk(n, f)} ${f.naam}.`], [4]);
+export const LIJSTREACTIE = rij(["Perfect, alle vakjes zijn vol.", "Het lijstje klopt helemaal.", "Alles staat goed. Elk vakje heeft fruit.", "Precies zoals op het lijstje.", "Inderdaad, alles past bij het lijstje.", "Perfect, je hebt alle vakjes gevuld."], [4]);
 
 /* ---------- denkfouten (draaiboek Tellen §7; namen voor de voortgang) ---------- */
 

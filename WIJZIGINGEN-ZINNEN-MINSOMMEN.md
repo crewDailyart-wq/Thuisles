@@ -124,3 +124,12 @@ Alleen de tekst, passend gemaakt voor groep 3. Geen audio, beeld of code.
 - **De richting noemen bij elke keuze:** niet waar er dan nog maar 1 keuze overblijft (BOUWREGELS 15.17). Daar zegt Bliepo alleen dat het dichtbij is.
 - **De zinnen van de 2 uitlegvragen bij een keuze die niet goed is ("Je koos dat het kleiner wordt.", "Je koos aftrekken. Dat doen we straks.") in varianten:** niet gedaan. Ze komen hooguit 1 keer per les voor en zijn al duidelijk.
 - **Een aanmoediging met de naam van het kind bij een keuze die niet goed is:** niet gedaan (BOUWREGELS 3.17).
+
+## 19 november 2026: "nagekeken" is weg
+
+Opdracht van Sara: het woord "nagekeken" (en "nakijken") komt niet meer voor in wat Bliepo zegt of laat zien. Elke zin is vervangen door een andere zin die zegt dat het klopt ("Zie je, …", "Inderdaad, …"), op dezelfde plek in het rijtje (de robotplek blijft de robotplek, hooguit 1 keer per les; de grens "hooguit 2 keer per les" geldt nu voor deze zinnen: `WAS_NAKIJKEN` in squla-klok-gouden-zinnen.ts). Het gekozen antwoord staat er hooguit 1 keer in. Reden ook in WEGGEHAALD.md.
+
+| Les | Soort | Oud | Nieuw |
+|---|---|---|---|
+| squla-min-machine-1-gouden | nagekeken weg | Er ${u === 1 ?  /  :  / } ${U} ${blokjes(u)} uit. / Ik heb het nagekeken: ${A} min ${B} is ${U}. | Er ${u === 1 ?  /  :  / } ${U} ${blokjes(u)} uit. / Zie je, ${B} eraf en dan heb je er nog ${U}. |
+| squla-min-machine-1-gouden | nagekeken weg | Van de ${A} ${blijft(u)} er ${U} over. / Ik heb het nagekeken: ${A} min ${B} is ${U}. | Van de ${A} ${blijft(u)} er ${U} over. / Zie je, ${B} eraf en dan heb je er nog ${U}. |

@@ -613,7 +613,7 @@ export function GetallenlijnGoudenVlak({ beeld, raketje = null, bogen = [], extr
                 style={{ left: p.x - p.b / 2, top: p.y - p.h / 2, width: p.b, height: p.h }}
                 data-ding={z.soort}
                 data-plek="wezen"
-                aria-label={z.soort === "raketje" ? "Het raketje" : z.soort === "ufo" ? "De ufo" : "De satelliet"}
+                aria-label={z.soort === "raketje" ? "Het raketje" : z.soort === "ufo" ? "De ufo" : "Het ruimteschip"}
                 aria-pressed={wezens.gekozen === z.soort}
                 disabled={!wezens.tikbaar}
                 onClick={() => wezens.tikbaar && meld({ soort: "wezenTik", naam: z.soort })}

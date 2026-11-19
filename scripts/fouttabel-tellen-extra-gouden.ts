@@ -103,7 +103,7 @@ ${tabel(rijen)}
 
 ## 3. Goed
 
-- **Goed in één keer (stap 5 en 6):** scherm 1 s groen, een lofzin uit het rijtje (BLIEPO-KARAKTER.md §3) en het aantal met de soort ("Klopt, er zijn er 8." / "Ja, je telde 8 peren." / "Het zijn 8 peren." / "8 peren, precies." / "Ik heb ze nagekeken: 8 peren."); alle nummers 1 t/m N verschijnen tegelijk bij dat fruit (leesvolgorde), de rest wordt dof (draaiboek §3 A.1 (a)).
+- **Goed in één keer (stap 5 en 6):** scherm 1 s groen, een lofzin uit het rijtje (BLIEPO-KARAKTER.md §3) en het aantal met de soort ("Klopt, er zijn er 8." / "Ja, je telde 8 peren." / "Het zijn 8 peren." / "8 peren, precies." / "Inderdaad, je telde tot 8."); alle nummers 1 t/m N verschijnen tegelijk bij dat fruit (leesvolgorde), de rest wordt dof (draaiboek §3 A.1 (a)).
 - **Goed in één keer (stap 8 en 9):** lofzin en het aantal; bij het lijstje "Perfect, alle vakjes zijn vol." (draaiboek §3 D.1).
 - **Goed na een fout:** alleen een korte bevestiging (BLIEPO-KARAKTER.md §3.4); vanzelf door.
 - **Telhulp (stap 5 en 6):** een tik op het fruit zet een zwart stipje, nog een tik haalt het weg; Bliepo zegt er niets bij (draaiboek §2 stap 5).

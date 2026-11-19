@@ -144,14 +144,14 @@ export { OVERGANG } from "./squla-klok-gouden-zinnen";
  * Reactie na de lof bij de kralen (BLIEPO-KARAKTER.md §4 Tellen zin 6 en 10, Vergelijken zin 33, plus zinnen zonder "Ja").
  * De robotzin (laatste) hooguit 1 keer per les.
  */
-export const TELREACTIE = (n: number) => rij([`Ja, het zijn ${kr(n)} kralen.`, `Ja, ${kr(n)} is evenveel.`, `Het zijn er ${kr(n)}.`, `${kr(n)} kralen, precies evenveel.`, `Ik heb ze nagekeken: ${kr(n)} kralen.`, `Er liggen ${kr(n)} kralen.`, `Dat klopt, het zijn ${kr(n)} kralen.`], [4]);
+export const TELREACTIE = (n: number) => rij([`Ja, het zijn ${kr(n)} kralen.`, `Ja, ${kr(n)} is evenveel.`, `Het zijn er ${kr(n)}.`, `${kr(n)} kralen, precies evenveel.`, `Zie je, ${kr(n)} past bij de kralen.`, `Er liggen ${kr(n)} kralen.`, `Dat klopt, het zijn ${kr(n)} kralen.`], [4]);
 export const TELREACTIE_JA = [0, 1];
 export const TELREACTIE_ROBOT = 4;
 
 /** Reactie na de lof bij de koekjes (BLIEPO-KARAKTER.md §4 Vergelijken zin 31, 34, 35, plus zinnen zonder "Ja"). */
 export function drieReactie(v: Driekaart): Rijtje {
   const [max, ...rest] = [...v.kaarten].sort((a, b) => b - a);
-  return rij([`Ja, hier liggen de meeste.`, `Ja, ${ko(max)} is meer dan ${ko(rest[0])} en ${ko(rest[1])}.`, `Hier liggen er ${ko(max)}: de meeste.`, `${ko(max)} koekjes, dat is het meest.`, "Ik heb geteld en nagekeken: hier zijn er meer.", "Op deze kaart liggen de meeste koekjes.", `Dat klopt, ${ko(max)} koekjes is het meest.`], [4]);
+  return rij([`Ja, hier liggen de meeste.`, `Ja, ${ko(max)} is meer dan ${ko(rest[0])} en ${ko(rest[1])}.`, `Hier liggen er ${ko(max)}: de meeste.`, `${ko(max)} koekjes, dat is het meest.`, "Zie je, op de andere kaarten liggen er minder.", "Op deze kaart liggen de meeste koekjes.", `Dat klopt, ${ko(max)} koekjes is het meest.`], [4]);
 }
 export const DRIEREACTIE_JA = [0, 1];
 export const DRIEREACTIE_ROBOT = 4;

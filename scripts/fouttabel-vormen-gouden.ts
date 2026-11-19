@@ -159,6 +159,9 @@ function waarZin(c: C, z: string): string | null {
   if ((m = z.match(/^(Die kleur|Die|Dat) komt pas na (\d+) (.+)\.$/))) return dieKlopt(v, m[1], x) && paarKlopt(c, Number(m[2]), m[3]) ? null : "klopt niet met het patroon";
   if ((m = z.match(/^Daarvoor komen eerst (\d+) (.+)\.$/))) return paarKlopt(c, Number(m[1]), m[2]) ? null : "klopt niet met het patroon";
   if ((m = z.match(/^In dit patroon komt (.+) pas na (\d+) (.+)\.$/))) return lees(v, m[1]) === x && paarKlopt(c, Number(m[2]), m[3]) ? null : "klopt niet met het patroon";
+  /* 19 nov 2026 (A16.5, 15.17): de eerste zin bij de paar-fout noemt de goede kleur niet meer. */
+  if ((m = z.match(/^(?:Kijk|Tel) hoe vaak elke (kleur|vorm) achter elkaar komt\.$/))) return (m[1] === "kleur") === (v.wat === "kraal") && v.eenheid.some((e, i) => v.eenheid[(i + 1) % v.eenheid.length] === e) ? null : "er komt niets 2 keer achter elkaar";
+  if ((m = z.match(/^In dit patroon komt (.+) hier nog niet\.$/))) return lees(v, m[1]) === x && naVan(v.eenheid, L).has(x) ? null : "klopt niet met het patroon";
   /* Uitleg. */
   if (/^(Een patroon gaat steeds in dezelfde volgorde|In een patroon komt steeds hetzelfde stukje terug|In een patroon blijft de volgorde steeds hetzelfde)\.$/.test(z)) return null;
   if (/^(Het patroon loopt ook door op de lege plek|Ook op de lege plek gaat het patroon gewoon verder|De lege plek hoort ook bij het patroon)\.$/.test(z)) return gat ? null : "geen lege plek in de rij";

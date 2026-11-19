@@ -146,3 +146,17 @@ Niet overgenomen: "1 te veel" (dan is het antwoord verklapt, 15.17), "hij wordt 
 - **De opdracht laten staan terwijl Bliepo bij samen tellen de getallen zegt:** niet gedaan. Dat is geen zin maar een plek op het scherm, en het moet voor alle lessen tegelijk op dezelfde manier (zie KEUZES-METEN.md).
 - **Een aanmoediging met de naam van het kind bij een antwoord dat niet goed is:** niet gedaan (BOUWREGELS 3.17).
 - **De oude les `squla-meten.tsx`:** niet aangeraakt.
+
+## 19 november 2026: "nagekeken" is weg
+
+Opdracht van Sara: het woord "nagekeken" (en "nakijken") komt niet meer voor in wat Bliepo zegt of laat zien. Elke zin is vervangen door een andere zin die zegt dat het klopt ("Zie je, …", "Inderdaad, …"), op dezelfde plek in het rijtje (de robotplek blijft de robotplek, hooguit 1 keer per les; de grens "hooguit 2 keer per les" geldt nu voor deze zinnen: `WAS_NAKIJKEN` in squla-klok-gouden-zinnen.ts). Het gekozen antwoord staat er hooguit 1 keer in. Reden ook in WEGGEHAALD.md.
+
+| Les | Soort | Oud | Nieuw |
+|---|---|---|---|
+| squla-meten-oppervlakte-1-gouden | nagekeken weg | Nagekeken: ${kl.naam} het kleinst, ${gr.naam} het grootst. | Zie je, ${gr.naam} is groter dan ${kl.naam}. |
+| squla-meten-oppervlakte-1-gouden | nagekeken weg | Nagekeken: allebei ${g(8,  / )} hokjes. Klopt! | Zie je, de ene vorm is niet groter dan de andere. |
+| squla-meten-oppervlakte-1-gouden | nagekeken weg | Nagekeken: van klein naar groot! | Zie je, elke tafel is groter dan de vorige. |
+| squla-meten-oppervlakte-1-gouden | nagekeken weg | Nagekeken: van smal naar breed! | Zie je, het breedste muurtje ligt achteraan. |
+| squla-meten-oppervlakte-1-gouden | nagekeken weg | Nagekeken: even groot! | Zie je, het kaartje is niet groter of kleiner geworden. |
+| squla-meten-oppervlakte-1-gouden | nagekeken weg | Nagekeken: allebei ${n} stukken. | Zie je, geen mat is groter dan de andere. |
+| squla-meten-oppervlakte-1-gouden | nagekeken weg | Nagekeken: ${n} blaadjes. Klopt! | Zie je, je hebt geen blaadje overgeslagen. |

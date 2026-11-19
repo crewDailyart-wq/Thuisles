@@ -131,3 +131,12 @@ Alleen de tekst, passend gemaakt voor groep 3. Geen audio, beeld of code.
 - **De richting noemen bij elke keuze:** niet waar er dan nog maar 1 keuze overblijft. Daar zegt Bliepo alleen dat het dichtbij is.
 - **"Hier liggen er 11. / Op deze kaart 13. / En hier 12." (samen tellen, 3 kaarten achter elkaar) in varianten:** niet gedaan. Het zijn al 3 verschillende zinnen in 1 rijtje van 3 kaarten.
 - **De antwoorden bij de koekjes naar rechts onder Bliepo verplaatsen:** niet gedaan. De kaarten zijn voorwerpen in het beeld; die blijven in het beeld (BOUWREGELS 15.32, "niet te letterlijk").
+
+## 19 november 2026: "nagekeken" is weg
+
+Opdracht van Sara: het woord "nagekeken" (en "nakijken") komt niet meer voor in wat Bliepo zegt of laat zien. Elke zin is vervangen door een andere zin die zegt dat het klopt ("Zie je, …", "Inderdaad, …"), op dezelfde plek in het rijtje (de robotplek blijft de robotplek, hooguit 1 keer per les; de grens "hooguit 2 keer per les" geldt nu voor deze zinnen: `WAS_NAKIJKEN` in squla-klok-gouden-zinnen.ts). Het gekozen antwoord staat er hooguit 1 keer in. Reden ook in WEGGEHAALD.md.
+
+| Les | Soort | Oud | Nieuw |
+|---|---|---|---|
+| squla-meer-minder-evenveel2-1-gouden | nagekeken weg | Ik heb ze nagekeken: ${kr(n)} kralen. | Zie je, ${kr(n)} past bij de kralen. |
+| squla-meer-minder-evenveel2-1-gouden | nagekeken weg | Ik heb geteld en nagekeken: hier zijn er meer. | Zie je, op de andere kaarten liggen er minder. |

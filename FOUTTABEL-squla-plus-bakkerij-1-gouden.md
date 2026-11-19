@@ -199,5 +199,5 @@ De les kiest uit elk rijtje steeds een andere zin dan de vorige keer.
 | Verbinden: dezelfde lijn 2 keer | Je verbond 3 + 4 weer met 9. / Weer 3 + 4 bij 9, zie ik. |
 | Slotzin | Je hebt plussommen gemaakt tot 10! / Wat heb jij goed opgeteld: tot wel 10! / Knap, hoor! Je kunt al goed optellen tot 10. |
 | De kaart | Tik op de kaart. / Tik maar op de kaart. / Kijk, een kaart voor jou! Tik erop. |
-| Zin met de som na lof | Ja, 1 en 4 zijn samen 5. / Ja, 1 plus 4 is 5. / 1 en 4 zijn samen 5. / 1 + 4 = 5. / Nagekeken: 1 plus 4 is 5. Klopt! / Precies, 1 + 4 = 5. / Dat klopt, 1 en 4 is samen 5. |
+| Zin met de som na lof | Ja, 1 en 4 zijn samen 5. / Ja, 1 plus 4 is 5. / 1 en 4 zijn samen 5. / 1 + 4 = 5. / Zie je, 1 en nog 4 is 5. / Precies, 1 + 4 = 5. / Dat klopt, 1 en 4 is samen 5. |
 | Zin na lof bij het verbinden | Ja, elke som heeft het goede antwoord. / Elke lijn klopt. / Alle 3 de sommen kloppen. / Bij elke som staat het goede antwoord. |

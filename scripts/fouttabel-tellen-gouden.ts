@@ -246,7 +246,7 @@ ${uitleg}
 
 ## 4. Goed
 
-- **Goed in één keer:** scherm 1 s groen, een lofzin uit het rijtje (BLIEPO-KARAKTER.md §3) en het aantal (${TELREACTIE_WARM(12, APPEL).zinnen.map((z) => `"${kaal(z)}"`).join(" / ")}), samen als 1 uiting. Begint de lofzin met "Ja", dan komt een telzin zonder "Ja". De robotzin "Ik heb ze nagekeken …" hooguit 1 keer per les. Niet 2 keer achter elkaar dezelfde telzin.
+- **Goed in één keer:** scherm 1 s groen, een lofzin uit het rijtje (BLIEPO-KARAKTER.md §3) en het aantal (${TELREACTIE_WARM(12, APPEL).zinnen.map((z) => `"${kaal(z)}"`).join(" / ")}), samen als 1 uiting. Begint de lofzin met "Ja", dan komt een telzin zonder "Ja". De robotzin "Inderdaad, je telde tot …" hooguit 1 keer per les. Niet 2 keer achter elkaar dezelfde telzin.
 - **Eerste vraag in één keer goed:** lofzin, "${TEL.natellen[0]}", Bliepo telt hardop 1 t/m 11 (± 1,15 s per nummer); het laatste getal zegt hij in de slotzin, zodat het maar 1 keer klinkt: "${kaal(TEL.natellenKlaar(12, APPEL)[0])}" Een tik op de pijl zet alle nummers er meteen bij: dan "${kaal(TEL.natellenKlaarSnel(12, APPEL)[0])}" Alles vanzelf door.
 - **Goed na een fout:** alleen een korte bevestiging (BLIEPO-KARAKTER.md §3.4); de nummers staan erbij; vanzelf door.
 - **Heel snel:** Bliepo zegt niets over snel (BOUWREGELS 6.10).

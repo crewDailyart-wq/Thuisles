@@ -180,7 +180,7 @@ function lofZinnen(l: Lesgids, v: Telvraag, eerste: boolean): string[] {
   const zonder = r.zinnen.map((_, i) => i).filter((i) => woord(r.zinnen[i]) === woord(lof));
   /* Nooit 2 keer "Ja" achter elkaar, ook niet als de lof met "Ja" begint en het rijtje anders vastloopt (kind-test 9 nov). */
   if (woord(lof) === "ja") zonder.push(...TELREACTIE_JA);
-  /* De robotzin "Ik heb ze nagekeken …" hooguit 1 keer per les (kind-test 9 nov). */
+  /* De robotzin (plek 4, "Inderdaad, je telde tot …") hooguit 1 keer per les (kind-test 9 nov). */
   if (s.robotTel) zonder.push(TELREACTIE_ROBOT);
   /* Niet 2 keer achter elkaar dezelfde zin met het aantal, ook niet bij een ander aantal ("Het zijn er 12." en daarna
      "Het zijn er 14."): elk aantal heeft een eigen rijtje, dus onthoud de vorige zin over de hele les (Ronde 45, zelfde

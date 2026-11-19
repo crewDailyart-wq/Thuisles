@@ -114,3 +114,14 @@ Rekenmix 4 is tellen, net als Color Count van Synthesis; dezelfde zinnen als bij
 | 4 | Hoeveel satellieten zie je? De planeten en de sterren tellen niet mee. (en alle zinnen bij vraag 11: "satelliet", "elke satelliet") | Hoeveel ruimteschepen zie je? De planeten en de sterren tellen niet mee. ("ruimteschip", "elk ruimteschip") | "satelliet" is te moeilijk voor groep 3; "ruimteschip" past bij het plaatje (een groen ruimteding met blauwe panelen) en heet overal hetzelfde, in tekst en zin. Plaatje, kleur, aantal en vraag-id blijven. |
 | 4 | Welke raketje heeft nog geen nummer? Tik erop. | Welk raketje heeft nog geen nummer? Tik erop. | bij een het-woord hoort "Welk" (gold ook voor "ruimteschip"); bij de-woorden blijft "Welke" |
 | 3 | (tekening) het totaal in het splitsbeen wit, in de zin rood | het totaal ook in de tekening in de kleur van de ballen | kleurregel 2.1/2.2: zin en tekening gelijk. Geen zin veranderd. |
+
+## 19 november 2026: "nagekeken" is weg (en ALLE-VRAGEN DEEL A)
+
+Opdracht van Sara: het woord "nagekeken" (en "nakijken") komt niet meer voor in wat Bliepo zegt of laat zien. Elke zin is vervangen door een andere zin die zegt dat het klopt ("Zie je, …", "Inderdaad, …"), op dezelfde plek in het rijtje (de robotplek blijft de robotplek, hooguit 1 keer per les; de grens "hooguit 2 keer per les" geldt nu voor deze zinnen: `WAS_NAKIJKEN` in squla-klok-gouden-zinnen.ts). Het gekozen antwoord staat er hooguit 1 keer in. Reden ook in WEGGEHAALD.md.
+
+| Les | Soort | Oud | Nieuw |
+|---|---|---|---|
+| squla-rekenmix-mix4-1-gouden | nagekeken weg | Ik heb ze nagekeken: het zijn er ${gk(n, d)}. | Inderdaad, je telde tot ${gk(n, d)}. |
+| squla-rekenmix-mix4-1-gouden | DEEL A | Begin linksboven en tel opnieuw. Wijs ${d.elk} ${d.een} aan. / Wijs ${d.elk} ${d.een} aan en zeg het getal. Sla er geen over. | Begin bovenaan en tel opnieuw. Wijs ${d.elk} ${d.een} aan. / Wijs ${d.elk} ${d.een} aan en zeg het getal. Sla er geen over. |
+| squla-rekenmix-mix4-1-gouden | DEEL A | Begin linksboven en tel rustig. Wijs ${d.elk} ${d.een} ${w(1)} keer aan. | Begin bovenaan en tel rustig. Wijs ${d.elk} ${d.een} ${w(1)} keer aan. |
+| squla-rekenmix-mix4-1-gouden | DEEL A | Begin linksboven en tel opnieuw. Wijs ${d.elk} ${d.een} aan. | Begin bovenaan en tel opnieuw. Wijs ${d.elk} ${d.een} aan. |
