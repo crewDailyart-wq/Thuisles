@@ -84,11 +84,23 @@ export const OVERGANG = rij(["Daar komt de volgende.", "Op naar de volgende!", "
  */
 export const WAS_NAKIJKEN = /^(Zie je|Inderdaad), |^Even kijken… ja|^Alles is af\. |^Ik weet een hulpje|^Die zit erop\. |^Die is af\. |^Dat was hem\. /;
 
-/** {naam} invullen; zonder naam valt hij netjes weg (BOUWREGELS 3.17). */
+/**
+ * {naam} invullen; zonder naam valt hij netjes weg (BOUWREGELS 3.17), met de komma's goed:
+ * "Goed zo, {naam}!" → "Goed zo!", "Ja {naam}, zo is het!" → "Ja, zo is het!", "{naam}, dat is …" → "Dat is …",
+ * "Hoi {naam}! …" → "Hoi! …" (zelfde uitkomst als zonderNaam in lib/stem-server.ts).
+ * 19 november 2026 (B9, rijtjes nalopen): tot dan bleef bij "Goed zo, {naam}!" de komma staan ("Goed zo,!") en werd
+ * "Ja {naam}, zo is het!" zonder komma "Ja zo is het!" (WIJZIGINGEN-ZINNEN-RIJTJES.md).
+ */
 export function metNaam(zin: string, naam: string | undefined): string {
   const n = (naam ?? "").trim();
   if (n) return zin.replace(/\{naam\}/g, n);
-  return zin.replace(/\s+\{naam\}!/g, "!").replace(/,\s*\{naam\}/g, "").replace(/\{naam\},\s*/g, "").replace(/\s*\{naam\}/g, "").replace(/^\s*(\p{Ll})/u, (m) => m.toUpperCase());
+  return zin
+    .replace(/,\s*\{naam\}(?=[!.?:,])/g, "")
+    .replace(/(\p{L})\s+\{naam\},/gu, "$1,")
+    .replace(/\{naam\},\s*/g, "")
+    .replace(/\s+\{naam\}!/g, "!")
+    .replace(/\s*\{naam\}/g, "")
+    .replace(/^\s*(\p{Ll})/u, (m) => m.toUpperCase());
 }
 
 /* ---------- vaste zinnen van het verloop (draaiboek klokkijken §1.1; eigen beginzin per les, BOUWREGELS 4.3) ---------- */
