@@ -541,9 +541,21 @@ function klink(c: AudioContext, naam: Lesgeluid, stap = 0) {
   }
 }
 
+/*
+  Gouden lessen (Sara, 19 november 2026; BOUWREGELS 15.40): daar klinkt bij goed het geluid van de vaste plek
+  "goed-in-een-keer" of "goed-na-hulp" (lib/reactiegeluid.ts, public/geluiden/). Het oude goed-belletje hieronder zou er
+  dan direct vóór klinken (2 geluiden na elkaar); het lesscherm zet het daarom alleen in de gouden lessen stil. Alle
+  andere lessen houden het oude belletje. Terugzetten: deze functie niet meer aanroepen in Lesscherm.tsx.
+*/
+let goedVervangen = false;
+export function zetGoedGeluidVervangen(waarde: boolean): void {
+  goedVervangen = waarde;
+}
+
 /** Speelt een lesgeluidje. Doet niets op de server, zonder geluid of vóór de eerste aanraking. */
 export function speelLesgeluid(naam: Lesgeluid, stap = 0): void {
   if (uit || !aan || !magKlinken()) return;
+  if (naam === "goed" && goedVervangen) return;
   /* Een sfeergeluidje gaat nooit door de stem heen: het wacht tot Bliepo klaar is. */
   if (naam.startsWith("sfeer") && praat) {
     wachtend = { naam, tot: performance.now() + 4000 };

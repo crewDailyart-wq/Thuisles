@@ -581,6 +581,23 @@ async function speel(c, id) {
       for (const f of vf) fouten.add(f);
       console.log(`  F16 ${id}: ${vf.length} keer wachten zonder vraag of opdracht in beeld (${r16.n ?? 0} wachtmomenten van 3 s beoordeeld${process.env.RUSTIG ? ", rustig" : `, ${r16.g ?? 0} keer stond de vraag er al toen de speler antwoordde`})`);
     }
+    /* 15.39/15.40 (19 nov 2026): stilte bij goed en de reactiegeluiden in de gouden lessen (Lesscherm.tsx). */
+    if (id.includes("gouden")) {
+      const rs = JSON.parse((await ev(`JSON.stringify({ s: window.__stilte ?? [], g: window.__geluiden ?? [] })`)) ?? "{}");
+      const s = rs.s ?? [];
+      let opRij = 0;
+      for (let i = 0; i < s.length; i++) {
+        const stil = s[i].soort === "stil" || s[i].soort === "geen-zin";
+        if (s[i].soort === "stil" && i === 0) fouten.add("15.39: het eerste goede antwoord was stil");
+        if (s[i].soort === "stil" && s[i].naHulp) fouten.add("15.39: stil na hulp");
+        if (s[i].soort === "stil" && opRij) fouten.add("15.39: 2 keer achter elkaar zonder zin");
+        opRij = stil ? opRij + 1 : 0;
+      }
+      const tel = (w) => s.filter((x) => x.soort === w).length;
+      const plekken = {};
+      for (const g of rs.g ?? []) plekken[`${g.plek}${g.gespeeld ? "" : ` (stil: ${g.reden})`}`] = (plekken[`${g.plek}${g.gespeeld ? "" : ` (stil: ${g.reden})`}`] ?? 0) + 1;
+      console.log(`  GOED-REACTIE ${id}: ${tel("zin")} met zin, ${tel("stil")} stil, ${tel("geen-zin")} zonder zin van de les; geluiden: ${JSON.stringify(plekken)}`);
+    }
     if (f11) {
       const dt = dubbeleTekstFouten(JSON.parse((await ev(`JSON.stringify(window.__dubbeleTekst ?? [])`)) ?? "[]"));
       for (const f of dt) fouten.add(f);

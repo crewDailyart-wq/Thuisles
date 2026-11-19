@@ -58,3 +58,6 @@ De proef voor taal en spelling (spelling groep 3) bewaren we voor later. Nu niet
 
 ## Afspeelknop bij het begin: nog meten op telefoon en tablet (19 november 2026, BOUWREGELS 15.38)
 De ronde afspeelknop (geplakte link of verversen in een gouden les) is alleen gemeten op de laptop in Chrome (1440 x 900). Nog meten op een telefoon en een tablet (staand en liggend; Safari op iPad/iPhone en Chrome op Android): staat de knop in het midden, is hij groot genoeg (minstens 96 px), reageert de hele ronde, en begint Bliepo na de tik meteen met de groet. Let op Safari: die heeft eigen regels voor geluid zonder tik.
+
+## PROPOSED / UNDECIDED: een beloning bij een goed antwoord (Sara, 19 november 2026)
+Idee van Sara: bij een goed antwoord een beloning, zoals een sleutel of iets anders. **Nog niet besloten en nu NIET bouwen.** Wat er al is: alleen een lege geluidsplek "beloning" (`public/geluiden/beloning.wav`, lib/reactiegeluid.ts, BOUWREGELS 15.40); niets speelt hem af. Nog te beslissen: wat de beloning is (sleutel, ster, iets anders), wanneer (elk goed antwoord, een paar op rij, aan het eind), hoe hij eruitziet en klinkt, en of hij bewaard wordt (voortgang, harde regel 2).

@@ -406,3 +406,11 @@ export function neemGeluidsvoorkeurOver(uitleg: boolean, opgave: boolean): void 
     for (const f of opgaveLuisteraars) f();
   }
 }
+
+/*
+  Het geluidssysteem van de gouden lessen (Sara, 19 november 2026; BOUWREGELS 15.40): vaste geluidsplekken
+  (goed-in-een-keer, goed-na-hulp, nog-niet-goed, beloning), elk 1 bestand in public/geluiden/. De code staat in
+  lib/reactiegeluid.ts; hier alleen doorverwezen, zodat `speelGeluid(plek)` ook uit lib/geluid.ts te halen is.
+  De geluidjes hierboven blijven zoals ze waren.
+*/
+export { speelGeluid, GELUIDSBESTAND, type Geluidsplek } from "./reactiegeluid";

@@ -16,7 +16,10 @@
 import { MERKNAAM } from "@/lib/merk";
 import { useCallback, useEffect, useMemo, useRef, useState, useSyncExternalStore, type CSSProperties, type ReactNode } from "react";
 import { abonneerEersteTik, abonneerPraten, meldStemOnderweg, praatVos, stopPraten, wachtOpEersteTik, zegNaElkaar, zetLesStem } from "@/lib/stem";
-import { speelLesgeluid, zetLesgeluiden } from "@/lib/lesgeluiden";
+import { speelLesgeluid, zetGoedGeluidVervangen, zetLesgeluiden } from "@/lib/lesgeluiden";
+import { magGeluidSpelen, speelGeluid, zetGeluidenAan, type Geluidsplek } from "@/lib/reactiegeluid";
+import { abonneerBliepoScherm, huidigeBliepoScherm } from "@/lib/bliepo-scherm";
+import { isLofReactie, maakStilteKiezer } from "./lessen/stilte-bij-goed";
 import { GeluidjesKnop } from "./GeluidjesKnop";
 import { wachtOpBliepo } from "@/lib/bliepo-in-beeld";
 import { LosPraatknop } from "@/components/gesprek/Gesprek";
@@ -550,6 +553,20 @@ function Lesscherm({
     };
   }, [goudenStart]);
   const startLaag = goudenStart && (startTik || !geluidBeslist);
+  /*
+    15.40 (Sara, 19 november 2026): het geluidssysteem met vaste plekken (lib/reactiegeluid.ts, public/geluiden/), alleen
+    in de nieuwe gouden lessen. Daar vervangt het geluid van de plek "goed-in-een-keer"/"goed-na-hulp" het oude
+    goed-belletje (anders 2 geluiden na elkaar). Alle andere lessen: niets veranderd.
+  */
+  useEffect(() => {
+    if (!goudenStart) return;
+    zetGeluidenAan(true);
+    zetGoedGeluidVervangen(true);
+    return () => {
+      zetGeluidenAan(false);
+      zetGoedGeluidVervangen(false);
+    };
+  }, [goudenStart]);
 
   /* Het vaste speelvlak zo groot als het scherm toelaat. */
   /* De nagebouwde lessen: alleen de bewaarde stem van Ruth, nooit de browserstem; de naam gaat mee voor het naamfragment (28 okt 2026). */
@@ -763,6 +780,75 @@ function Lesscherm({
     };
     const benoemStil = (stappen: { knop: string; zin: string }[]) => void benoem(stappen).catch(() => {});
 
+    /*
+      DE GOED/FOUT-REACTIE VAN DE GOUDEN LESSEN (Sara, 19 november 2026; BOUWREGELS 15.39 en 15.40). Alleen in de nieuwe
+      gouden lessen (stemHeelUitpraten én "-gouden" in de id, zoals de afspeelknop van 15.38); andere lessen: niets anders.
+      Elke gouden les meldt een antwoord met bliepoScherm("goed"/"fout") (groen 1 s / rood 1,5 s) en zegt daarna zijn
+      reactie met l.zeg. Hier, op 1 plek voor alle gouden lessen:
+        - eerst het geluid van de plek (nog-niet-goed, goed-in-een-keer of goed-na-hulp); Bliepo's zin start pas na het
+          geluid (hooguit ±0,55 s later, lib/reactiegeluid.ts MAX_WACHT_MS);
+        - stilte bij goed (15.39): is de zin na goed een gewone lofreactie in 1 keer (stilte-bij-goed.ts isLofReactie) en
+          kiest de stiltekiezer stilte, dan blijft Bliepo stil: alleen het groene scherm, zijn tekstvak wordt leeg, en na
+          1 s gaat de les gewoon door met de volgende vraag (F16). Na hulp of een tweede poging altijd een zin.
+      Komt er binnen 60 ms na goed geen zin (de les zegt zelf niets), dan klinkt alleen het geluid en telt dat als "zonder
+      zin" (zodat er nooit 2 keer achter elkaar niets gezegd wordt).
+    */
+    const reactieAan = les.stemHeelUitpraten === true && les.id.includes("-gouden");
+    const stilte = maakStilteKiezer();
+    const GROEN_MS = 1000;
+    let foutSindsGoed = false;
+    let wachtGoed: { fout: boolean; t: number; timer: ReturnType<typeof setTimeout> } | null = null;
+    let geluidBezig: Promise<void> | null = null;
+    const reactieLog = (x: Record<string, unknown>) => {
+      if (typeof window === "undefined") return;
+      const w = window as unknown as { __stilte?: unknown[] };
+      (w.__stilte ??= []).push({ t: Math.round(performance.now()), ...x });
+    };
+    const speelReactie = (plek: Geluidsplek) => {
+      if (!magGeluidSpelen()) {
+        void speelGeluid(plek);
+        return;
+      }
+      const deze: Promise<void> = speelGeluid(plek).then(() => {
+        if (geluidBezig === deze) geluidBezig = null;
+      });
+      geluidBezig = deze;
+    };
+    const goedZonderZin = (w: { fout: boolean }) => {
+      stilte.goedZonderZin();
+      reactieLog({ soort: "geen-zin", naHulp: w.fout });
+      speelReactie(w.fout ? "goed-na-hulp" : "goed-in-een-keer");
+    };
+    const stopReactie = reactieAan
+      ? abonneerBliepoScherm(() => {
+          if (!levend) return;
+          const m = huidigeBliepoScherm();
+          if (!m) return;
+          if (wachtGoed) {
+            const w = wachtGoed;
+            wachtGoed = null;
+            clearTimeout(w.timer);
+            goedZonderZin(w);
+          }
+          if (m.soort === "fout") {
+            foutSindsGoed = true;
+            speelReactie("nog-niet-goed");
+            return;
+          }
+          const w = {
+            fout: foutSindsGoed,
+            t: performance.now(),
+            timer: setTimeout(() => {
+              if (wachtGoed !== w || !levend) return;
+              wachtGoed = null;
+              goedZonderZin(w);
+            }, 60),
+          };
+          foutSindsGoed = false;
+          wachtGoed = w;
+        })
+      : () => {};
+
     const gids: Lesgids = {
       lesId: les.id,
       naam,
@@ -771,7 +857,28 @@ function Lesscherm({
       zeg: (...zinnen) => {
         const z = zinnen.filter((zin) => zin && !/vinkje/i.test(zin));
         /* Bleef er niets over, dan blijft de vorige zin van Bliepo gewoon staan. */
-        return z.length || !zinnen.length ? spreek(z) : Promise.resolve();
+        const gewoon = () => (z.length || !zinnen.length ? spreek(z) : Promise.resolve());
+        if (!reactieAan) return gewoon();
+        /* 15.39/15.40: de reactie op een goed antwoord (zie boven). */
+        if (wachtGoed && z.length) {
+          const w = wachtGoed;
+          wachtGoed = null;
+          clearTimeout(w.timer);
+          const lof = isLofReactie(z);
+          /* Lof uit het gedeelde rijtje = goed in 1 keer (na een fout zegt een gouden les alleen een bevestiging). */
+          const naHulp = w.fout || !lof;
+          const stil = stilte.goed({ naHulp, magStil: lof });
+          speelReactie(!lof && w.fout ? "goed-na-hulp" : "goed-in-een-keer");
+          reactieLog({ soort: stil ? "stil" : "zin", naHulp, lof, zin: z.join(" ") });
+          if (stil) {
+            /* Alleen het groene scherm: Bliepo's tekstvak leeg, en na het groen (1 s) gaat de les door. */
+            const rest = Math.max(0, GROEN_MS - (performance.now() - w.t));
+            return spreek([]).then(() => pauzeer(rest));
+          }
+        }
+        /* Eerst het geluid, dan pas Bliepo's zin. */
+        if (geluidBezig) return geluidBezig.then(() => (levend ? gewoon() : Promise.reject(STOP)));
+        return gewoon();
       },
       wijsAan: async (knop, ...zinnen) => {
         /*
@@ -1021,6 +1128,8 @@ function Lesscherm({
 
     return () => {
       levend = false;
+      stopReactie();
+      if (wachtGoed) clearTimeout(wachtGoed.timer);
       breekBeheerstapAf?.();
       stopStem?.();
       stopPraten();
