@@ -216,7 +216,9 @@ export function somFout(x: string, p: number, q: number): FoutV {
   const [, naast, min] = somKeuzes(p, q);
   if (x === naast)
     return metV({ code: "cijfers-naast-elkaar", soort: "cijfers-naast-elkaar", denkfout: "zette de getallen naast elkaar (3 en 7 werd 37)", scherm: SCHERM }, 0, {
-      eerste: ["Je zette de getallen naast elkaar.", `Je hebt de ${g(p)} en de ${g(q)} naast elkaar gezet.`, "In deze som staan de getallen naast elkaar."],
+      /* 19 nov 2026 (Sara: losse cijfers nooit als 1 groter getal lezen; KEUZES Ronde 52): het aan elkaar gezette getal
+         wit (verwijst nergens naar, 2.1), de 2 losse getallen in de kleur van hun tegel. Was: "Je zette de getallen naast elkaar." */
+      eerste: [`Je zette de getallen naast elkaar. Dan lees je {${p}${q}:wit}.`, `Je hebt de ${g(p)} en de ${g(q)} naast elkaar gezet.`, "In deze som staan de getallen naast elkaar."],
       hint: ["Je telt de tegels bij elkaar op. Hoeveel is dat samen?", "Achter het is-teken staat hoeveel het samen is. Welke som hoort erbij?", "Tel de vakjes van de tegels. Dat getal komt achter het is-teken."],
       uitleg: ["Achter het is-teken staat hoeveel de tegels samen zijn.", "Naast elkaar is een ander getal. We tellen de tegels juist bij elkaar op."],
       weerEerste: ["Je zette de getallen weer naast elkaar.", "Dat zijn weer de getallen naast elkaar.", "Weer naast elkaar, zie ik."],

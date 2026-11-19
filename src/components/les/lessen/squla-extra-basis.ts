@@ -18,6 +18,7 @@ import { bliepoScherm } from "@/lib/bliepo-scherm";
 import { bewaarUitkomst } from "@/app/lesuitkomstacties";
 import { BEVESTIG, EINDE, EINDE_VEEL_FOUTEN, LOF, LOF_KIJK_INDEX, MOMENT, NAAM_LOF, ONDUIDELIJK, ONDUIDELIJK_NOG_1_KEER, OND_FOUT, metNaam, zaad, type Fout, type Rijtje } from "./squla-extra-zuiver";
 import { zetTestAntwoord } from "./squla-hulp";
+import { alleenBijKeuze } from "./squla-klok-gouden-zinnen";
 
 export { BEVESTIG, EINDE, EINDE_VEEL_FOUTEN, LOF, MOMENT, NAAM_LOF, ONDUIDELIJK, OND_FOUT, metNaam, zaad, type Fout, type Rijtje };
 
@@ -140,11 +141,11 @@ export function maakBasis(LES_ID: string) {
       s.naamVraag = s.vraag;
       uit = kies(l, NAAM_LOF);
     }
-    return uit ?? kies(l, LOF, [LOF_KIJK_INDEX]);
+    return uit ?? kies(l, LOF, [LOF_KIJK_INDEX, ...alleenBijKeuze(l, LOF)]);
   }
   const bevestig = (l: Lesgids) => {
     st(l).opRij = 0;
-    return kies(l, BEVESTIG);
+    return kies(l, BEVESTIG, alleenBijKeuze(l, BEVESTIG));
   };
 
   /* ---------- zeggen met en zonder pijl (15.27) ---------- */

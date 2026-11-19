@@ -80,6 +80,7 @@ import {
   type Rijtje,
   type Vraag,
 } from "./squla-meten-gouden-zinnen";
+import { alleenBijKeuze } from "./squla-klok-gouden-zinnen";
 
 const LES_ID = "squla-meten-oppervlakte-1-gouden";
 
@@ -263,7 +264,7 @@ function lofZin(l: Lesgids, kijk: boolean, eerste: boolean): string {
     lof = kies(l, NAAM_LOF);
   }
   /* "Dat heb je goed gezien" alleen bij kijkvragen. */
-  lof ??= kies(l, LOF, kijk ? [] : [LOF_KIJK_INDEX]);
+  lof ??= kies(l, LOF, [...(kijk ? [] : [LOF_KIJK_INDEX]), ...alleenBijKeuze(l, LOF)]);
   return lof;
 }
 
@@ -283,7 +284,7 @@ function lofZinnen(l: Lesgids, v: Vraag, eerste: boolean): string[] {
 }
 const bevestig = (l: Lesgids) => {
   st(l).opRij = 0;
-  return kies(l, BEVESTIG);
+  return kies(l, BEVESTIG, alleenBijKeuze(l, BEVESTIG));
 };
 
 function schud<T>(lijst: T[]): T[] {

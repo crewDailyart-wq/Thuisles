@@ -45,6 +45,7 @@ import { bliepoScherm } from "@/lib/bliepo-scherm";
 import { bewaarUitkomst } from "@/app/lesuitkomstacties";
 import { BEVESTIG, EINDE, EINDE_VEEL_FOUTEN, LOF, LOF_KIJK_INDEX, MOMENT, NAAM_GROET, NAAM_LOF, ONDUIDELIJK, ONDUIDELIJK_NOG_1_KEER, OVERGANG, TEL, TELREACTIE_JA, TELREACTIE_ROBOT, TELREACTIE_WARM, VRAGEN, foutenVan, gk, metNaam, tweedeEerste, type Fout, type Rijtje, type Telvraag } from "./squla-tellen-gouden-zinnen";
 import { deeltStuk, maakKiezer } from "./nooit-dubbel";
+import { alleenBijKeuze } from "./squla-klok-gouden-zinnen";
 
 const LES_ID = "squla-tellen-fruit-1-gouden";
 
@@ -173,7 +174,7 @@ function lofZinnen(l: Lesgids, v: Telvraag, eerste: boolean): string[] {
     s.naamVraag = s.vraag;
     lof = kies(l, NAAM_LOF);
   }
-  lof ??= kies(l, LOF, [LOF_KIJK_INDEX]);
+  lof ??= kies(l, LOF, [LOF_KIJK_INDEX, ...alleenBijKeuze(l, LOF)]);
   /* Lof en aantal beginnen niet allebei met hetzelfde woord ("Ja, … Ja, …"). */
   const woord = (z: string) => z.split(/[\s,:!.]/)[0].toLowerCase();
   const r = TELREACTIE_WARM(v.n, v.fruit);
@@ -194,7 +195,7 @@ function lofZinnen(l: Lesgids, v: Telvraag, eerste: boolean): string[] {
 }
 const bevestig = (l: Lesgids) => {
   st(l).opRij = 0;
-  return kies(l, BEVESTIG);
+  return kies(l, BEVESTIG, alleenBijKeuze(l, BEVESTIG));
 };
 
 function schud<T>(lijst: T[]): T[] {

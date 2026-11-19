@@ -31,21 +31,57 @@ const rij = (zinnen: string[], robot: number[] = []): Rijtje => ({ zinnen, robot
 
 /** §3.1 Gewone lofzinnen. Zin 4 ("Dat heb je goed gezien.") alleen bij een kijkvraag. Robot: 31 t/m 40. */
 export const LOF = rij(
-  ["Ja, dat is goed!", "Helemaal goed!", "Super gedaan!", "Dat heb je goed gezien.", "Knap gedaan!", "Ja, zo is het!", "Heel goed!", "Wauw, goed zeg!", "Dat zit goed!", "Jij weet het!", "Precies goed!", "Goed zo!", "Ja, die klopt!", "Mooi zo!", "Ja, die is het!", "Prima gedaan!", "Netjes!", "Klopt helemaal!", "Ja hoor, goed!", "Wat goed van jou!", "Top!", "Heel knap!", "Zo doe je dat!", "Lekker bezig!", "Dat ging goed!", "Goed gekozen!", "Ja, dat is het goede antwoord!", "Helemaal raak!", "Dat weet jij al goed!", "Fijn, die is goed!", "Kijk, mijn scherm wordt er groen van!", "Mijn scherm is helemaal groen. Goed zo!", "Inderdaad, zo moet het!", "Zie je, jij snapt het!", "Groen scherm! Die is goed.", "Dat stop ik in mijn geheugen: jij kunt dit!", "Mijn scherm straalt groen!", "Even kijken… ja, goed!", "Die bewaar ik in mijn geheugen. Goed zo!", "Mijn scherm kleurt groen. Knap!"],
+  ["Ja, dat is goed!", "Helemaal goed!", "Super gedaan!", "Dat heb je goed gezien.", "Knap gedaan!", "Ja, zo is het!", "Heel goed!", "Wauw, goed zeg!", "Dat zit goed!", "Jij weet het!", "Precies goed!", "Goed zo!", "Ja, die klopt!", "Mooi zo!", "Ja, die is het!", "Prima gedaan!", "Netjes!", "Klopt helemaal!", "Ja hoor, goed!", "Wat goed van jou!", "Top!", "Heel knap!", "Zo doe je dat!", "Lekker bezig!", "Dat ging goed!", "Goed gekozen!", "Ja, dat is het goede antwoord!", "Helemaal raak!", "Dat weet jij al!", "Fijn, die is goed!", "Kijk, mijn scherm wordt er groen van!", "Mijn scherm is helemaal groen. Goed zo!", "Inderdaad, zo moet het!", "Zie je, jij snapt het!", "Groen scherm! Die is goed.", "Dat stop ik in mijn geheugen: jij kunt dit!", "Mijn scherm straalt groen!", "Even kijken… ja, goed!", "Die bewaar ik in mijn geheugen. Goed zo!", "Mijn scherm kleurt groen. Knap!"],
   [30, 31, 32, 33, 34, 35, 36, 37, 38, 39],
 );
 export const LOF_KIJK_INDEX = 3;
+/**
+ * Ronde 51 punt 1 (19 november 2026, advies ja): "Goed gekozen!" (LOF) en "Gevonden!" (BEVESTIG) alleen als het kind
+ * net op een keuzeknop tikte (l.kies), niet na tikken in het vlak, slepen of de wijzer zetten. Net als "Dat heb je goed
+ * gezien." alleen bij een kijkvraag. De zinnen blijven op hun plek in het rijtje (zelfde index); ze worden alleen
+ * overgeslagen. Gebruik: `kies(l, LOF, [..., ...alleenBijKeuze(l, LOF)])` en `kies(l, BEVESTIG, alleenBijKeuze(l, BEVESTIG))`.
+ */
+export const LOF_KIES_INDEX = 25;
+export const BEVESTIG_KIES_INDEX = 5;
+const laatsteWasKeuze = new WeakMap<object, boolean>();
+const gevolgd = new WeakSet<object>();
+/**
+ * Onthoudt per les (per gids) of het laatste antwoord van een keuzeknop kwam. Wikkelt de wacht-functies van de gids 1 keer
+ * in; verder verandert er niets aan hoe ze werken. Vóór de eerste meting geldt "geen keuze" (de zin wordt dan overgeslagen).
+ */
+export function volgKeuzes(l: object): void {
+  if (gevolgd.has(l)) return;
+  gevolgd.add(l);
+  const g = l as Record<string, unknown>;
+  for (const naam of ["kies", "wachtOpVlak", "getal", "pak", "somVak", "knoppen", "verder"]) {
+    const f = g[naam];
+    if (typeof f !== "function") continue;
+    g[naam] = (...a: unknown[]) => {
+      const p = (f as (...x: unknown[]) => unknown).apply(l, a);
+      Promise.resolve(p).then(() => laatsteWasKeuze.set(l, naam === "kies"), () => {});
+      return p;
+    };
+  }
+}
+/** De plekken die bij dit rijtje overgeslagen worden als het laatste antwoord geen keuzeknop was. `keuze` = de les weet het zelf. */
+export function alleenBijKeuze(l: object, r: Rijtje, keuze?: boolean): number[] {
+  volgKeuzes(l);
+  if (keuze ?? laatsteWasKeuze.get(l) ?? false) return [];
+  if (r === LOF) return [LOF_KIES_INDEX];
+  if (r === BEVESTIG) return [BEVESTIG_KIES_INDEX];
+  return [];
+}
 
 /** §3.2 Lof voor speciale momenten (per les hooguit 1 keer per soort). */
 export const MOMENT = {
-  drieOpRij: rij(["Al {3:wit} goed achter elkaar!", "{3:wit} keer op rij goed. Wauw!", "Het gaat steeds beter: al {3:wit} goed!", "{3:wit} keer goed! Dat zet ik in mijn geheugen."], [3]),
+  drieOpRij: rij(["Al {3:wit} goed achter elkaar!", "{3:wit} keer op rij goed. Wauw!", "Het gaat lekker: al {3:wit} goed!", "{3:wit} keer goed! Dat zet ik in mijn geheugen."], [3]),
   moeilijk: rij(["Dit was een moeilijke, en jij weet het!", "Wauw, ook de lastige is goed!", "Die was echt lastig. Knap van jou!", "Moeilijke vraag, groen scherm. Super!"], [3]),
-  eerste: rij(["Goed begin!", "De eerste is al goed!", "Zo, wat een goede start!", "Inderdaad, jij begint sterk!"], [3]),
-  laatste: rij(["En de laatste is ook goed!", "Goed tot het eind!", "Ook de laatste klopt. Knap!", "De laatste vraag, en weer een groen scherm!"], [3]),
+  eerste: rij(["Goed begin!", "De eerste is al goed!", "Zo, wat een goede start!", "Zie je, jij begint meteen goed!"], [3]),
+  laatste: rij(["En de laatste is ook goed!", "Goed tot het eind!", "Ook de laatste klopt. Knap!", "De laatste vraag, en een groen scherm!"], [3]),
 };
 
 /** §3.3 Lof met de naam (nooit bij een fout of na een fout; minstens 3 vragen ertussen; hooguit 2 keer per les). */
-export const NAAM_LOF = rij(["Goed zo, {naam}!", "Knap gedaan, {naam}!", "{naam}, dat is helemaal goed!", "Ja {naam}, zo is het!", "Wat goed, {naam}!", "Jij weet het, {naam}!", "{naam}, mijn scherm wordt groen van jou!", "Dat onthoud ik, {naam}: jij kunt dit!"], [6, 7]);
+export const NAAM_LOF = rij(["Goed zo, {naam}!", "Knap gedaan, {naam}!", "{naam}, dat is helemaal goed!", "Ja, {naam}, zo is het!", "Wat goed, {naam}!", "Jij weet het, {naam}!", "{naam}, mijn scherm wordt groen van jou!", "{naam}, dat zet ik in mijn geheugen!"], [6, 7]);
 export const NAAM_GROET = "Hoi {naam}! Fijn dat je er bent.";
 
 /** §3.4 Goed na een fout: alleen een korte bevestiging. */
@@ -58,7 +94,7 @@ export const SNEL = rij(["Dat ging snel!", "Wat was jij snel!", "Snel en goed!"]
 export const KLOKREACTIE = (uur: number) => rij([`Ja, de kleine wijzer staat op de {${uur}:oranje}.`, "Ja, de grote wijzer staat bovenaan, dus het is een heel uur.", `Ja, het is precies {${uur}:oranje} uur.`, `Inderdaad, de klok zegt {${uur}:oranje} uur.`, `Precies, het is {${uur}:oranje} uur.`, `Dat klopt, de kleine wijzer wijst naar de {${uur}:oranje}.`], [3]);
 
 /** §5 Einde. Zin 6 alleen na veel fouten (4 of meer vragen met een fout). */
-export const EINDE = rij(["Goed gedaan! Tot de volgende keer.", "De les is klaar. Wat heb jij goed gewerkt!", "Klaar! Je hebt veel geoefend vandaag.", "Dat was de laatste. Fijn dat je meedeed!", "Je bent klaar. Ik vond het leuk met jou!", "Klaar! Wat heb je goed je best gedaan.", "Dat was de les. Tot snel!", "Alles is af. De les is klaar!", "Deze les bewaar ik in mijn geheugen. Tot de volgende keer!"], [7, 8]);
+export const EINDE = rij(["Goed gedaan! Tot de volgende keer.", "De les is klaar. Wat heb jij goed gewerkt!", "Klaar! Je hebt veel geoefend vandaag.", "Dat was de laatste. Fijn dat je meedeed!", "Je bent klaar. Ik vond het leuk met jou!", "Klaar! Wat heb je goed je best gedaan!", "Dat was de les. Tot snel!", "Alles is af. De les is klaar!", "Deze les bewaar ik in mijn geheugen. Tot de volgende keer!"], [7, 8]);
 export const EINDE_VEEL_FOUTEN = "Je hebt goed doorgezet. Volgende keer gaat het nog beter.";
 
 /** §10 Eerste zin als de denkfout niet duidelijk is (binnen 1 vraag nooit 2 keer dezelfde). */
@@ -69,6 +105,8 @@ export const ONDUIDELIJK_ANDERE = 6;
 export const ONDUIDELIJK_NOG_1_KEER = 9;
 /** Plaats in AANMOEDIG van "Als je kiest, zie ik meteen of het klopt.": alleen bij een keuzevraag, niet bij tikken of zetten. */
 export const AANMOEDIG_KIEST = 9;
+/** Plaats in AANMOEDIG van "Denk maar even na.": niet bij een tik- of zetopdracht (BLIEPO-KARAKTER.md §2; Ronde 51 punt 11). */
+export const AANMOEDIG_DENK = 2;
 
 /** §11 Aanmoedigen bij een opdracht waar het kind na het hulphandje nog steeds niets doet (± 15 s; 1 keer per opdracht). */
 export const AANMOEDIG = rij(["Neem rustig de tijd.", "Je mag goed kijken.", "Denk maar even na.", "Je bent goed bezig.", "Geen haast, hoor.", "Rustig kijken mag.", "Ik wacht wel even.", "Jij kunt dit.", "Ik sta klaar voor jouw antwoord.", "Als je kiest, zie ik meteen of het klopt."], [8, 9]);
@@ -86,7 +124,7 @@ export const WAS_NAKIJKEN = /^(Zie je|Inderdaad), |^Even kijken… ja|^Alles is 
 
 /**
  * {naam} invullen; zonder naam valt hij netjes weg (BOUWREGELS 3.17), met de komma's goed:
- * "Goed zo, {naam}!" → "Goed zo!", "Ja {naam}, zo is het!" → "Ja, zo is het!", "{naam}, dat is …" → "Dat is …",
+ * "Goed zo, {naam}!" → "Goed zo!", "Ja, {naam}, zo is het!" → "Ja, zo is het!", "{naam}, dat is …" → "Dat is …",
  * "Hoi {naam}! …" → "Hoi! …" (zelfde uitkomst als zonderNaam in lib/stem-server.ts).
  * 19 november 2026 (B9, rijtjes nalopen): tot dan bleef bij "Goed zo, {naam}!" de komma staan ("Goed zo,!") en werd
  * "Ja {naam}, zo is het!" zonder komma "Ja zo is het!" (WIJZIGINGEN-ZINNEN-RIJTJES.md).

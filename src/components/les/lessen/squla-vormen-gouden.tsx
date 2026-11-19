@@ -82,6 +82,7 @@ import {
   type Vraag,
 } from "./squla-vormen-gouden-zinnen";
 import { maakKiezer } from "./nooit-dubbel";
+import { alleenBijKeuze } from "./squla-klok-gouden-zinnen";
 
 const LES_ID = "squla-vormen-patronen-1-gouden";
 
@@ -342,7 +343,7 @@ function lofZinnen(l: Lesgids, v: Vraag, eerste: boolean): string[] {
     lof = kies(l, NAAM_LOF);
   }
   /* "Dat heb je goed gezien" alleen bij een kijkvraag (kiezen); niet bij de ketting en de puzzel (slepen). */
-  lof ??= kies(l, LOF, v.soort === "keuze" ? [] : [LOF_KIJK_INDEX]);
+  lof ??= kies(l, LOF, [...(v.soort === "keuze" ? [] : [LOF_KIJK_INDEX]), ...alleenBijKeuze(l, LOF)]);
   const reactie = patroonReactie(v);
   /* Lof en reactie beginnen niet met hetzelfde woord, en nooit 2 keer "Ja" (ook "ja" midden in de lofzin telt). */
   const zonder = reactie.zinnen.map((_, i) => i).filter((i) => woord(reactie.zinnen[i]) === woord(lof));
@@ -355,7 +356,7 @@ function lofZinnen(l: Lesgids, v: Vraag, eerste: boolean): string[] {
 }
 const bevestig = (l: Lesgids) => {
   st(l).opRij = 0;
-  return kies(l, BEVESTIG);
+  return kies(l, BEVESTIG, alleenBijKeuze(l, BEVESTIG));
 };
 
 function schud<T>(lijst: T[]): T[] {

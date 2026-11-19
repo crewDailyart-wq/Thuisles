@@ -83,6 +83,7 @@ import {
   type Rijtje,
   type Vraag,
 } from "./squla-tijd-gouden-zinnen";
+import { alleenBijKeuze } from "./squla-klok-gouden-zinnen";
 
 const LES_ID = "squla-tijd-dagen-1-gouden";
 
@@ -263,7 +264,7 @@ function lofZinnen(l: Lesgids, v: Vraag, eerste: boolean): string[] {
     lof = kies(l, NAAM_LOF);
   }
   /* "Dat heb je goed gezien" niet: dit zijn geen kijkvragen (je zoekt niets in beeld, je weet het). */
-  lof ??= kies(l, LOF, [LOF_KIJK_INDEX]);
+  lof ??= kies(l, LOF, [LOF_KIJK_INDEX, ...alleenBijKeuze(l, LOF)]);
   const reactie = tijdReactie(v);
   /* Lof en reactie beginnen niet met hetzelfde woord, en nooit 2 keer "Ja" (ook "ja" midden in de lofzin telt). */
   const zonder = reactie.zinnen.map((_, i) => i).filter((i) => woord(reactie.zinnen[i]) === woord(lof));
@@ -278,7 +279,7 @@ function lofZinnen(l: Lesgids, v: Vraag, eerste: boolean): string[] {
 }
 const bevestig = (l: Lesgids) => {
   st(l).opRij = 0;
-  return kies(l, BEVESTIG);
+  return kies(l, BEVESTIG, alleenBijKeuze(l, BEVESTIG));
 };
 /** "Kom, we kijken samen." in 5 versies (de eerste zin bij een ander antwoord de 2e keer, "Nu koos je …", staat in het zinnenbestand: `foutStuk`). */
 const samenZin = (l: Lesgids) => variant(l, "samen", ZIN.samen);

@@ -220,3 +220,9 @@ Opdracht van Sara: het woord "nagekeken" (en "nakijken") komt niet meer voor in 
 | squla-plus-bakkerij-1-gouden | nagekeken weg | Nagekeken: ${g(a, ka)} plus ${g(b, kb)} is ${g(a + b)}. Klopt! | Zie je, ${g(a, ka)} en nog ${g(b, kb)} is ${g(a + b)}. |
 | squla-plus-bakkerij-1-gouden-extra | nagekeken weg | Ik heb het nagekeken: ${som(a, b, t)}. | Inderdaad, zo kom je op ${g(t)}. |
 | squla-plus-bakkerij-1-gouden-extra | DEEL A | Kies maar een tegel, welke je wilt. Zet hem op het veld. | Kies maar een tegel die jij wilt. Zet hem op het veld. |
+
+## 19 november 2026: "3 + 7 = 37" duidelijk (verzoek Sara; KEUZES-VOOR-SARA.md Ronde 52)
+
+| Les | Waar | Oud | Nieuw | Waarom |
+|---|---|---|---|---|
+| squla-plus-bakkerij-1-gouden-extra | som kiezen, keuze "p + q = pq", eerste zin (1 van de 3 varianten) | Je zette de getallen naast elkaar. | Je zette de getallen naast elkaar. Dan lees je {37:wit}. | het aan elkaar gezette getal staat apart en wit (2.1); in de andere varianten staan de {3} en de {7} los in de kleur van hun tegel. De keuzes zelf bleven ("3 + 7 = 37" met spaties rond + en =, en de somknop breekt nooit af). |

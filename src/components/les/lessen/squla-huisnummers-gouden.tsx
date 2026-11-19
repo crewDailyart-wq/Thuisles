@@ -81,6 +81,7 @@ import {
   type Vraag,
 } from "./squla-huisnummers-gouden-zinnen";
 import { maakKiezer } from "./nooit-dubbel";
+import { alleenBijKeuze } from "./squla-klok-gouden-zinnen";
 
 /**
  * NOOIT 2 KEER HETZELFDE (Sara, 18 november 2026; zelfde aanpak als de proefles Tellen en de les Splitsen): alle zinnen in
@@ -244,7 +245,7 @@ function lofZinnen(l: Lesgids, v: Vraag, eerste: boolean): string[] {
     lof = kies(l, NAAM_LOF);
   }
   /* "Dat heb je goed gezien" alleen bij kijkvragen: hier tel je (verder of terug), dus niet. */
-  lof ??= kies(l, LOF, [LOF_KIJK_INDEX]);
+  lof ??= kies(l, LOF, [LOF_KIJK_INDEX, ...alleenBijKeuze(l, LOF)]);
   const reactie = huisReactie(v);
   /* Lof en reactie beginnen niet met hetzelfde woord, en nooit 2 keer "Ja" (ook "ja" midden in de lofzin telt). */
   const zonder = reactie.zinnen.map((_, i) => i).filter((i) => woord(reactie.zinnen[i]) === woord(lof));
@@ -257,7 +258,7 @@ function lofZinnen(l: Lesgids, v: Vraag, eerste: boolean): string[] {
 }
 const bevestig = (l: Lesgids) => {
   st(l).opRij = 0;
-  return kies(l, BEVESTIG);
+  return kies(l, BEVESTIG, alleenBijKeuze(l, BEVESTIG));
 };
 
 function schud<T>(lijst: T[]): T[] {

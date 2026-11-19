@@ -84,10 +84,8 @@ export { AANMOEDIG_TIKKEN, TELREACTIE, TELREACTIE_JA, TELREACTIE_ROBOT, ZIN } fr
  * varianten: 3 tot 5 voor reacties en aanmoediging, 2 of 3 voor instructies en samen voordoen. De les kiest met de
  * gedeelde kiezer (nooit-dubbel.ts): nooit dezelfde zin 2 keer achter elkaar, ook niet over vragen heen.
  * Getal, antwoord en betekenis zijn niet veranderd. Oud naast nieuw: WIJZIGINGEN-ZINNEN-TELLEN.md.
- * Een deel van de zinnen is de tekst van Synthesis (Color Count), in het Nederlands en passend gemaakt voor groep 3
- * (besluit Sara 17 november 2026, BOUWREGELS 15.2): "13 pruimen? Ik denk dat je er te veel hebt geteld.", "Probeer het
- * nog eens. Tel de appels en tik op het getal.", "Laten we ze samen tellen en kijken.", "Kijk, daar heb je het: 12. Je
- * zat precies goed.", "Precies, 12 appels.", "Dat klopt, er zijn 12 appels.", "Je hebt helemaal tot 17 geteld.".
+ * 19 november 2026 (besluit Sara, BOUWREGELS 15.41): de zinnen die op 17 november uit Synthesis (Color Count) waren
+ * vertaald, zijn vervangen door eigen zinnen op dezelfde plek (oud naast nieuw: WIJZIGINGEN-ZINNEN-TELLEN.md).
  * Een lijst = varianten (de les kiest er 1). Schooltermen blijven gelijk: "tellen", "samen tellen", "rij", "nummer".
  */
 export const TEL = {
@@ -98,14 +96,14 @@ export const TEL = {
   vraag: (f: Fruit) => `Hoeveel ${f.naam} zie je?`,
   vraagEerste: "Tel ze en tik op het goede getal.",
   /** Draaiboek §3 A.1 (b): bij de eerste telvraag telt Bliepo hardop na (het kind tikt niet). */
-  natellen: ["Ik tel ze hardop voor je. Tel maar mee!", "Kom, ik tel ze hardop. Tel maar mee!", "Laten we ze samen tellen. Ik tel hardop."],
+  natellen: ["Ik tel ze hardop voor je. Tel maar mee!", "Kom, ik tel ze hardop. Tel maar mee!", "Luister maar, ik tel ze hardop."],
   /* Het laatste getal zegt Bliepo in deze zin, niet ook nog bij het hardop tellen: zo klinkt het maar 1 keer (18 nov 2026,
      zoals Rekenmix 1; was "… 11. 12. Zie je? Het zijn er 12."). */
   natellenKlaar: (n: number, f: Fruit) => [`En ${gk(n, f)}! Je had het precies goed.`, `En de laatste is ${gk(n, f)}. Jij had het goed geteld.`, `En ${gk(n, f)}! Zie je? Je zat precies goed.`],
   /** Tikte het kind op de pijl (alle nummers staan er meteen, Bliepo telde niet hardop af), dan de oude zinnen. */
-  natellenKlaarSnel: (n: number, f: Fruit) => [`Zie je? Het zijn er ${gk(n, f)}. Je had het precies goed.`, `Zie je wel? Het zijn er ${gk(n, f)}. Jij had het goed geteld.`, `Kijk, daar heb je het: ${gk(n, f)}. Je zat precies goed.`],
+  natellenKlaarSnel: (n: number, f: Fruit) => [`Zie je? Het zijn er ${gk(n, f)}. Je had het precies goed.`, `Zie je wel? Het zijn er ${gk(n, f)}. Jij had het goed geteld.`, `Het zijn er echt ${gk(n, f)}. Dat koos jij ook.`],
   /** Draaiboek §3 A.3: na de 2e keer samen tellen. */
-  samenHelp: ["Kom, we tellen ze samen.", "Weet je wat? We tellen ze samen.", "Geeft niks. We tellen ze samen.", "Ik help je even. We tellen ze samen.", "Laten we ze samen tellen en kijken."],
+  samenHelp: ["Kom, we tellen ze samen.", "Weet je wat? We tellen ze samen.", "Geeft niks. We tellen ze samen.", "Ik help je even. We tellen ze samen.", "Ik doe mee. We tellen ze samen."],
   samenTik: (f: Fruit) => [`Tik op elke ${f.een}. Ik tel mee.`, `Tik elke ${f.een} aan. Ik zeg het getal.`, `Tik op alle ${f.naam}. Ik tel hardop mee.`],
   samenHand: (f: Fruit) => [`Tik op een ${f.een} zonder nummer.`, `Zoek een ${f.een} zonder nummer en tik erop.`, `Welke ${f.een} heeft nog geen nummer? Tik erop.`],
   /** Het laatste getal is het aantal. Het getal staat er 1 keer (was: "12. Samen telden we 12 appels."). */
@@ -113,7 +111,7 @@ export const TEL = {
   /** Vangnet: 20 s geen tik, dan telt Bliepo de rest zelf (geen "Ja", geen "samen"; begint met "Kijk,"). */
   samenZelf: (n: number, f: Fruit) => [`Kijk, ik tel de rest. Het zijn er ${gk(n, f)}.`, `Kijk, ik tel even verder. Het zijn er ${gk(n, f)}.`],
   /** Stap 10: einde. */
-  slot: ["Je hebt fruit geteld tot wel 17!", "Wat heb jij veel fruit geteld: tot wel 17!", "Knap, hoor! Je hebt helemaal tot 17 geteld."],
+  slot: ["Je hebt fruit geteld tot wel 17!", "Wat heb jij veel fruit geteld: tot wel 17!", "Tot 17 tellen: dat kun jij nu!"],
   /** Draaiboek stap 10: Bliepo zegt kort wat het kind met de kaart doet. */
   kaartTik: ["Tik op de kaart.", "Tik maar op de kaart.", "Kijk, een kaart voor jou! Tik erop."],
   /** Hetzelfde getal 2 keer gekozen: niet 2 keer dezelfde eerste zin. */
@@ -127,7 +125,7 @@ export const TEL = {
  * met "Ja" (TELREACTIE_JA), 4 is de robotzin (TELREACTIE_ROBOT, hooguit 1 keer per les); 5 en 6 zijn erbij gekomen.
  */
 export const TELREACTIE_WARM = (n: number, f: Fruit) =>
-  rij([`Ja, er zijn er ${gk(n, f)}.`, `Ja, je hebt ze allemaal geteld: ${gk(n, f)}.`, `Het zijn er ${gk(n, f)}.`, `Je hebt er ${gk(n, f)} geteld.`, `Inderdaad, je telde tot ${gk(n, f)}.`, `Er liggen ${gk(n, f)} ${f.naam}.`, `${gk(n, f)} ${f.naam}, precies!`, `Precies, ${gk(n, f)} ${f.naam}.`, `Dat klopt, er zijn ${gk(n, f)} ${f.naam}.`], [4]);
+  rij([`Ja, er zijn er ${gk(n, f)}.`, `Ja, je hebt ze allemaal geteld: ${gk(n, f)}.`, `Het zijn er ${gk(n, f)}.`, `Je hebt er ${gk(n, f)} geteld.`, `Inderdaad, je telde tot ${gk(n, f)}.`, `Er liggen ${gk(n, f)} ${f.naam}.`, `${gk(n, f)} ${f.naam}, precies!`, `Dat zijn ${gk(n, f)} ${f.naam}.`, `Hier liggen ${gk(n, f)} ${f.naam}.`], [4]);
 
 /* ---------- denkfouten (draaiboek Tellen §7; namen voor de voortgang) ---------- */
 
@@ -170,7 +168,7 @@ const HINT_VEEL = [(f: Fruit) => `Tel nog eens, rij voor rij. Elke ${f.een} tel 
  * "maar 1", "te veel" of "ook de laatste": dat zou alsnog zeggen of het kind te weinig of te veel had, en dan blijft er
  * maar 1 keuze over (15.17; keuring 9 nov). `npx tsx scripts/fouttabel-tellen-gouden.ts` controleert dit.
  */
-const HINT_NEUTRAAL = [(f: Fruit) => `Begin bovenaan en tel opnieuw. Wijs elke ${f.een} aan.`, (f: Fruit) => `Tel nog eens, rij voor rij. Wijs elke ${f.een} aan.`, (f: Fruit) => `Tel ze nog eens rustig. Wijs elke ${f.een} aan en zeg het getal.`, (f: Fruit) => `Probeer het nog eens. Tel hardop en wijs elke ${f.een} aan.`, (f: Fruit) => `Probeer het nog eens. Tel de ${f.naam} en tik op het getal.`];
+const HINT_NEUTRAAL = [(f: Fruit) => `Begin bovenaan en tel opnieuw. Wijs elke ${f.een} aan.`, (f: Fruit) => `Tel nog eens, rij voor rij. Wijs elke ${f.een} aan.`, (f: Fruit) => `Tel ze nog eens rustig. Wijs elke ${f.een} aan en zeg het getal.`, (f: Fruit) => `Probeer het nog eens. Tel hardop en wijs elke ${f.een} aan.`, (f: Fruit) => `Kijk nog eens goed. Tel de ${f.naam} en kies het goede getal.`];
 /** Alleen de volle rijen geteld (en de richting verklapt niets). */
 const HINT_VOLLE = [() => "Kijk ook naar de laatste rij en tel opnieuw.", () => "De laatste rij telt ook mee. Tel nog eens.", (f: Fruit) => `Tel ook de ${f.naam} in de laatste rij.`];
 
@@ -182,9 +180,9 @@ const HINT_VOLLE = [() => "Kijk ook naar de laatste rij en tel opnieuw.", () => 
  */
 const DICHTBIJ: ((X: string, f: Fruit) => string)[] = [(X: string) => `Je koos ${X}. Je zit er dichtbij.`, (X: string) => `Je koos ${X}. Dat scheelt niet veel.`, (X: string) => `Bijna! ${X} is het net niet.`, (X: string) => `${X}? Dat is heel dichtbij.`, (X: string) => `Je tikte op ${X}. Het scheelt maar een klein beetje.`];
 /** Te weinig, met richting. */
-const WEINIG: ((X: string, f: Fruit) => string)[] = [(X: string) => `Je koos ${X}. Er liggen er nog meer.`, (X: string) => `Je koos ${X}. Je hebt ze nog niet allemaal geteld.`, (X: string) => `Bijna! ${X} is nog iets te weinig.`, (X: string) => `${X}? Ik zie er nog meer.`, (X: string) => `Je zit er dichtbij met ${X}. Je hebt ze nog niet allemaal geteld.`, (X: string, f: Fruit) => `${X} ${f.naam}? Je hebt ze nog niet allemaal geteld.`];
+const WEINIG: ((X: string, f: Fruit) => string)[] = [(X: string) => `Je koos ${X}. Er liggen er nog meer.`, (X: string) => `Je koos ${X}. Je hebt ze nog niet allemaal geteld.`, (X: string) => `Bijna! ${X} is nog iets te weinig.`, (X: string) => `${X}? Ik zie er nog meer.`, (X: string) => `Je zit er dichtbij met ${X}. Je hebt ze nog niet allemaal geteld.`, (X: string, f: Fruit) => `${X} ${f.naam}? Er liggen er nog meer, kijk maar.`];
 /** Te veel, met richting. */
-const VEEL: ((X: string, f: Fruit) => string)[] = [(X: string) => `Je koos ${X}. Dat zijn er iets te veel.`, (X: string) => `${X}? Dat zijn er iets te veel.`, (X: string) => `Bijna! ${X} is iets te veel.`, (X: string) => `Je zit er dichtbij, maar ${X} is te veel.`, (X: string) => `Je tikte op ${X}. Zo veel liggen er niet.`, (X: string, f: Fruit) => `${X} ${f.naam}? Ik denk dat je er te veel hebt geteld.`];
+const VEEL: ((X: string, f: Fruit) => string)[] = [(X: string) => `Je koos ${X}. Dat zijn er iets te veel.`, (X: string) => `${X}? Dat zijn er iets te veel.`, (X: string) => `Bijna! ${X} is iets te veel.`, (X: string) => `Je zit er dichtbij, maar ${X} is te veel.`, (X: string) => `Je tikte op ${X}. Zo veel liggen er niet.`, (X: string, f: Fruit) => `Zoveel ${f.naam}? ${X} is te veel.`];
 /** Alleen de volle rijen geteld. */
 const VOLLE: ((X: string, f: Fruit) => string)[] = [(X: string) => `Je hebt alleen de volle rijen geteld. Dat zijn er ${X}.`, (X: string) => `Je koos ${X}. Zoveel liggen er in de volle rijen.`, (X: string) => `Je kwam op ${X}. Dat zijn alleen de volle rijen.`];
 

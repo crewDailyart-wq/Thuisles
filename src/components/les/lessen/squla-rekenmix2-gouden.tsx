@@ -30,6 +30,7 @@ import { bliepoScherm } from "@/lib/bliepo-scherm";
 import { bewaarUitkomst } from "@/app/lesuitkomstacties";
 import { BEVESTIG, EINDE, EINDE_VEEL_FOUTEN, LOF, LOF_KIJK_INDEX, MOMENT, NAAM_GROET, NAAM_LOF, OVERGANG, VRAGEN, WISSEL, ZIN, foutReactie, foutenVan, goedPlaatje, goedReactie, handZin, metVoorbeeld, metNaam, opnieuwZin, samenKlaarZin, samenZinnen, vergelijkFout, woordenVan, type Rijtje, type Vraag2 as Rmvraag } from "./squla-rekenmix2-gouden-zinnen";
 import { maakKiezer } from "./nooit-dubbel";
+import { alleenBijKeuze } from "./squla-klok-gouden-zinnen";
 
 const LES_ID = "squla-rekenmix-mix2-1-gouden";
 
@@ -160,7 +161,7 @@ function lofZinnen(l: Lesgids, v: Rmvraag, eerste: boolean): string[] {
     s.naamVraag = s.vraag;
     lof = kies(l, NAAM_LOF);
   }
-  lof ??= kies(l, LOF, [LOF_KIJK_INDEX]);
+  lof ??= kies(l, LOF, [LOF_KIJK_INDEX, ...alleenBijKeuze(l, LOF)]);
   /* De reactie na de lof: zegt wat er goed was, zonder een woord van de lofzin te herhalen ("Precies goed! Precies, …")
      en nooit 2 keer achter elkaar dezelfde zin, ook niet over vragen heen (gedeelde kiezer, 18 nov). */
   const aantal = goedReactie(variant, v, lof);
@@ -168,7 +169,7 @@ function lofZinnen(l: Lesgids, v: Rmvraag, eerste: boolean): string[] {
 }
 const bevestig = (l: Lesgids) => {
   st(l).opRij = 0;
-  return kies(l, BEVESTIG);
+  return kies(l, BEVESTIG, alleenBijKeuze(l, BEVESTIG));
 };
 
 function schud<T>(lijst: T[]): T[] {

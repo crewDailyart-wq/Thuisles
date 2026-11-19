@@ -73,6 +73,7 @@ import {
   type Vraag,
 } from "./squla-rekentaal-gouden-zinnen";
 import { deeltStuk, maakKiezer } from "./nooit-dubbel";
+import { alleenBijKeuze } from "./squla-klok-gouden-zinnen";
 
 const LES_ID = "squla-rekentaal-gouden";
 
@@ -256,7 +257,7 @@ function lofZinnen(l: Lesgids, v: Vraag, eerste: boolean): string[] {
     lof = kies(l, NAAM_LOF);
   }
   /* Dit zijn kijkvragen (je zoekt iets in beeld): "Dat heb je goed gezien" mag. */
-  lof ??= kies(l, LOF);
+  lof ??= kies(l, LOF, alleenBijKeuze(l, LOF));
   const reactie = rekenReactie(v);
   /* Lof en reactie beginnen niet met hetzelfde woord, en nooit 2 keer "Ja" (ook "ja" midden in de lofzin telt). Alle
      reactie-rijtjes hebben dezelfde volgorde: met 1 sleutel komt dezelfde zin ook over vragen heen niet 2 keer achter
@@ -271,7 +272,7 @@ function lofZinnen(l: Lesgids, v: Vraag, eerste: boolean): string[] {
 }
 const bevestig = (l: Lesgids) => {
   st(l).opRij = 0;
-  return kies(l, BEVESTIG);
+  return kies(l, BEVESTIG, alleenBijKeuze(l, BEVESTIG));
 };
 
 function schud<T>(lijst: T[]): T[] {

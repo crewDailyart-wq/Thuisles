@@ -86,6 +86,7 @@ import {
   type Verhaal,
 } from "./squla-plussommen-gouden-zinnen";
 import { maakKiezer } from "./nooit-dubbel";
+import { alleenBijKeuze } from "./squla-klok-gouden-zinnen";
 
 const LES_ID = "squla-plus-bakkerij-1-gouden";
 
@@ -255,7 +256,7 @@ function lofZinnen(l: Lesgids, reactie: Rijtje, jaIndex: number[], robotIndex: n
     lof = kies(l, NAAM_LOF);
   }
   /* "Dat heb je goed gezien" alleen bij kijkvragen (dit zijn rekenvragen). */
-  lof ??= kies(l, LOF, [LOF_KIJK_INDEX]);
+  lof ??= kies(l, LOF, [LOF_KIJK_INDEX, ...alleenBijKeuze(l, LOF)]);
   /* Lof en reactie beginnen niet met hetzelfde woord, en nooit 2 keer "Ja" (ook "ja" midden in de lofzin telt). */
   const zonder = reactie.zinnen.map((_, i) => i).filter((i) => woord(reactie.zinnen[i]) === woord(lof));
   if (/\bja\b/i.test(lof)) zonder.push(...jaIndex);
@@ -267,7 +268,7 @@ function lofZinnen(l: Lesgids, reactie: Rijtje, jaIndex: number[], robotIndex: n
 }
 const bevestig = (l: Lesgids) => {
   st(l).opRij = 0;
-  return kies(l, BEVESTIG);
+  return kies(l, BEVESTIG, alleenBijKeuze(l, BEVESTIG));
 };
 
 function schud<T>(lijst: T[]): T[] {

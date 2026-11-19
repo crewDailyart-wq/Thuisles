@@ -274,3 +274,9 @@ Opdracht van Sara: het woord "nagekeken" (en "nakijken") komt niet meer voor in 
 | squla-splits-splitsen1-1-gouden | nagekeken weg | Nagekeken: ${g(a, KA)} en ${g(b, KB)} maken samen ${g(tot)}. | Zie je, ${g(tot)} is ${g(a, KA)} en nog ${g(b, KB)}. |
 | squla-splits-splitsen1-1-gouden | nagekeken weg | Nagekeken: alle huisjes kloppen. | Zie je, alle huisjes zijn vol. |
 | squla-splits-splitsen1-1-gouden-extra | nagekeken weg | Ik heb het nagekeken: ${som(a, b, t)}. | Inderdaad, zo kun je {${t}} splitsen. |
+
+## 19 november 2026: "32" duidelijk als 1 getal apart (verzoek Sara; KEUZES-VOOR-SARA.md Ronde 52)
+
+| Les | Waar | Oud | Nieuw | Waarom |
+|---|---|---|---|---|
+| squla-splits-splitsen1-1-gouden-extra | tussenvraag, keuze 32 | Je zette de cijfers naast elkaar: {32}. Maar we tellen ze op: {3} + {2} = {5}. | Je zette de cijfers naast elkaar. Dan lees je {32:wit}. Maar we tellen ze op: {3} + {2} = {5}. | 32 staat in een eigen zin en is wit (verwijst nergens naar, 2.1); de 3 en de 2 houden de kleur van hun deel. Zo leest een kind de losse 3 en 2 niet als 32. De keuzes 5, 4 en 32 bleven. |

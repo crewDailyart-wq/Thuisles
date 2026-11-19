@@ -43,8 +43,9 @@ import { zetTestAntwoord } from "./squla-hulp";
 import { speelLesgeluid } from "@/lib/lesgeluiden";
 import { bliepoScherm } from "@/lib/bliepo-scherm";
 import { bewaarUitkomst } from "@/app/lesuitkomstacties";
-import { AANMOEDIG, AANMOEDIG_KIEST, BEVESTIG, EINDE, EINDE_VEEL_FOUTEN, KLOKKEN, KLOKREACTIE, LOF, LOF_KIJK_INDEX, MOMENT, NAAM_GROET, NAAM_LOF, ONDUIDELIJK, ONDUIDELIJK_ANDERE, ONDUIDELIJK_NOG_1_KEER, OVERGANG, SNEL, VAR, VOORDOEN, ZIN, foutReactie, kiesStuk, kleineStap as kleineStapZin, metNaam, nieuweKiezer, vraagMet, vraagOpnieuw, zetFout, zetSamen, type Fout, type Rijtje, type Scherm } from "./squla-klok-gouden-zinnen";
+import { AANMOEDIG, AANMOEDIG_DENK, AANMOEDIG_KIEST, BEVESTIG, EINDE, EINDE_VEEL_FOUTEN, KLOKKEN, KLOKREACTIE, LOF, LOF_KIJK_INDEX, MOMENT, NAAM_GROET, NAAM_LOF, ONDUIDELIJK, ONDUIDELIJK_ANDERE, ONDUIDELIJK_NOG_1_KEER, OVERGANG, SNEL, VAR, VOORDOEN, ZIN, foutReactie, kiesStuk, kleineStap as kleineStapZin, metNaam, nieuweKiezer, vraagMet, vraagOpnieuw, zetFout, zetSamen, type Fout, type Rijtje, type Scherm } from "./squla-klok-gouden-zinnen";
 import type { Kiezer } from "./nooit-dubbel";
+import { alleenBijKeuze } from "./squla-klok-gouden-zinnen";
 
 /**
  * Draaiboekstappen die vragen toevoegen aan het oefenblok (stap 19: "welke wijzer liet het uur zien?" en "waar wijst
@@ -213,7 +214,7 @@ function lofZinnen(l: Lesgids, o: { kijk?: boolean; lastig?: boolean; eerste?: b
     s.naamVraag = s.vraag;
     return [kies(l, NAAM_LOF)];
   }
-  const zin = kies(l, LOF, o.kijk ? [] : [LOF_KIJK_INDEX]);
+  const zin = kies(l, LOF, [...(o.kijk ? [] : [LOF_KIJK_INDEX]), ...alleenBijKeuze(l, LOF)]);
   if (o.uur !== undefined && s.vraag % 3 === 0) {
     /* Lof en reactie beginnen niet allebei met hetzelfde woord ("Ja, ... Ja, ..." of "Inderdaad, ... Inderdaad, ..."). */
     const eerste = (z: string) => z.split(/[\s,:!.]/)[0].toLowerCase();
@@ -232,7 +233,7 @@ function lofZinnen(l: Lesgids, o: { kijk?: boolean; lastig?: boolean; eerste?: b
 }
 const bevestig = (l: Lesgids) => {
   st(l).opRij = 0;
-  return kies(l, BEVESTIG);
+  return kies(l, BEVESTIG, alleenBijKeuze(l, BEVESTIG));
 };
 /** Elke snel-zin hooguit 1 keer per les (kind-test 8 nov); daarna niets meer over snel. */
 const snelZin = (l: Lesgids): string | null => {
@@ -251,7 +252,8 @@ const DENK_MS = 200;
 /** Bij een opdracht (tikken, zetten): na zoveel stilte komt vanzelf het hulphandje met 1 korte zin (6.10b, 5.10). */
 const AANWIJZING_MS = 5500;
 /** Bij een opdracht komt de aanmoediging SAMEN met het hulphandje (ronde 15); bij een keuzevraag zegt Bliepo niets. */
-const handZinnen = (l: Lesgids, hint: string) => [kies(l, AANMOEDIG, [AANMOEDIG_KIEST]), hint];
+/* Ronde 51 punt 11 (19 nov 2026): bij zetten/tikken ook geen "Denk maar even na." (BLIEPO-KARAKTER.md §2). */
+const handZinnen = (l: Lesgids, hint: string) => [kies(l, AANMOEDIG, [AANMOEDIG_KIEST, AANMOEDIG_DENK]), hint];
 
 function schud<T>(lijst: T[]): T[] {
   const a = [...lijst];

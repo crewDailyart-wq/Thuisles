@@ -4,7 +4,7 @@ Wat Bliepo zegt bij een goed antwoord, aan het begin en aan het eind.
 
 - **Oud** = de gewone Squla-lessen (niet aangeraakt, alleen gelezen): `squla-uitleg.ts` (`BEVESTIGINGEN`, `terugAankondiging`, `terugAfsluiting`), `squla-hulp.ts` (`squlaBegin`, `squlaEind`) en de beginzinnen in `src/lib/lessen/beginzinnen.json`.
 - **Nieuw** = de gedeelde rijtjes van alle gouden lessen: `src/components/les/lessen/squla-klok-gouden-zinnen.ts` (dezelfde als BLIEPO-KARAKTER.md §3, §5, §10, §11, §12).
-- Wat er veranderd is: WIJZIGINGEN-ZINNEN-RIJTJES.md. Vragen voor Sara: KEUZES-VOOR-SARA.md, Ronde 51.
+- Wat er veranderd is: WIJZIGINGEN-ZINNEN-RIJTJES.md. Vragen voor Sara: KEUZES-VOOR-SARA.md, Ronde 51. **Bijgewerkt 19 november 2026:** de punten met advies ja uit Ronde 51 zijn doorgevoerd (de tabellen hieronder tonen de nieuwe zinnen). Voorstel voor warmere zinnen: RIJTJES-VOORSTEL-WARMER.md (nog niet doorgevoerd).
 - De zinnen van de lessen in Synthesis-stijl (zoals `klokkijken.tsx`) staan hier bewust niet (BOUWREGELS 15.41).
 
 ---
@@ -18,7 +18,7 @@ Wat Bliepo zegt bij een goed antwoord, aan het begin en aan het eind.
 | Geen robotzinnen. | Robotzinnen over het groene scherm en het geheugen, spaarzaam. |
 | "Goed gezien." bij elke vraag. | "Dat heb je goed gezien." alleen bij een kijkvraag. |
 
-**Nieuw, `LOF` (40):** Ja, dat is goed! · Helemaal goed! · Super gedaan! · Dat heb je goed gezien. *(kijkvraag)* · Knap gedaan! · Ja, zo is het! · Heel goed! · Wauw, goed zeg! · Dat zit goed! · Jij weet het! · Precies goed! · Goed zo! · Ja, die klopt! · Mooi zo! · Ja, die is het! · Prima gedaan! · Netjes! · Klopt helemaal! · Ja hoor, goed! · Wat goed van jou! · Top! · Heel knap! · Zo doe je dat! · Lekker bezig! · Dat ging goed! · Goed gekozen! · Ja, dat is het goede antwoord! · Helemaal raak! · Dat weet jij al goed! · Fijn, die is goed! · *(robot)* Kijk, mijn scherm wordt er groen van! · *(robot)* Mijn scherm is helemaal groen. Goed zo! · *(robotplek)* Inderdaad, zo moet het! · *(robotplek)* Zie je, jij snapt het! · *(robot)* Groen scherm! Die is goed. · *(robot)* Dat stop ik in mijn geheugen: jij kunt dit! · *(robot)* Mijn scherm straalt groen! · *(robotplek)* Even kijken… ja, goed! · *(robot)* Die bewaar ik in mijn geheugen. Goed zo! · *(robot)* Mijn scherm kleurt groen. Knap!
+**Nieuw, `LOF` (40):** Ja, dat is goed! · Helemaal goed! · Super gedaan! · Dat heb je goed gezien. *(kijkvraag)* · Knap gedaan! · Ja, zo is het! · Heel goed! · Wauw, goed zeg! · Dat zit goed! · Jij weet het! · Precies goed! · Goed zo! · Ja, die klopt! · Mooi zo! · Ja, die is het! · Prima gedaan! · Netjes! · Klopt helemaal! · Ja hoor, goed! · Wat goed van jou! · Top! · Heel knap! · Zo doe je dat! · Lekker bezig! · Dat ging goed! · Goed gekozen! *(alleen na een keuzevraag)* · Ja, dat is het goede antwoord! · Helemaal raak! · Dat weet jij al! · Fijn, die is goed! · *(robot)* Kijk, mijn scherm wordt er groen van! · *(robot)* Mijn scherm is helemaal groen. Goed zo! · *(robotplek)* Inderdaad, zo moet het! · *(robotplek)* Zie je, jij snapt het! · *(robot)* Groen scherm! Die is goed. · *(robot)* Dat stop ik in mijn geheugen: jij kunt dit! · *(robot)* Mijn scherm straalt groen! · *(robotplek)* Even kijken… ja, goed! · *(robot)* Die bewaar ik in mijn geheugen. Goed zo! · *(robot)* Mijn scherm kleurt groen. Knap!
 
 Zelfde zin in oud en nieuw: "Helemaal goed", "Goed zo", "Netjes", "Ja, zo is het", "Heel goed", "Dat klopt"/"Klopt helemaal".
 
@@ -26,10 +26,10 @@ Zelfde zin in oud en nieuw: "Helemaal goed", "Goed zo", "Netjes", "Ja, zo is het
 
 | Oud | Nieuw (`MOMENT`, per les hooguit 1 keer per soort) |
 |---|---|
-| Bestaat niet. | **3 goed op rij:** Al 3 goed achter elkaar! · 3 keer op rij goed. Wauw! · Het gaat steeds beter: al 3 goed! · *(robot)* 3 keer goed! Dat zet ik in mijn geheugen. |
+| Bestaat niet. | **3 goed op rij:** Al 3 goed achter elkaar! · 3 keer op rij goed. Wauw! · Het gaat lekker: al 3 goed! · *(robot)* 3 keer goed! Dat zet ik in mijn geheugen. |
 | | **Moeilijke vraag:** Dit was een moeilijke, en jij weet het! · Wauw, ook de lastige is goed! · Die was echt lastig. Knap van jou! · *(robot)* Moeilijke vraag, groen scherm. Super! |
-| | **Eerste vraag:** Goed begin! · De eerste is al goed! · Zo, wat een goede start! · *(robotplek)* Inderdaad, jij begint sterk! |
-| | **Laatste vraag:** En de laatste is ook goed! · Goed tot het eind! · Ook de laatste klopt. Knap! · *(robot)* De laatste vraag, en weer een groen scherm! |
+| | **Eerste vraag:** Goed begin! · De eerste is al goed! · Zo, wat een goede start! · *(robotplek)* Zie je, jij begint meteen goed! |
+| | **Laatste vraag:** En de laatste is ook goed! · Goed tot het eind! · Ook de laatste klopt. Knap! · *(robot)* De laatste vraag, en een groen scherm! |
 
 "Na lang nadenken" staat wel in BLIEPO-KARAKTER.md §3.2, maar (nog) niet in de code.
 
@@ -37,13 +37,13 @@ Zelfde zin in oud en nieuw: "Helemaal goed", "Goed zo", "Netjes", "Ja, zo is het
 
 | Oud | Nieuw (`NAAM_LOF`, hooguit 2 keer per les, nooit bij of na een fout) |
 |---|---|
-| Soms (± 1 op 5) de naam achter het korte woord: "Klopt, Sam." Hooguit 2 keer per les. | Goed zo, {naam}! · Knap gedaan, {naam}! · {naam}, dat is helemaal goed! · Ja {naam}, zo is het! · Wat goed, {naam}! · Jij weet het, {naam}! · *(robot)* {naam}, mijn scherm wordt groen van jou! · *(robot)* Dat onthoud ik, {naam}: jij kunt dit! |
+| Soms (± 1 op 5) de naam achter het korte woord: "Klopt, Sam." Hooguit 2 keer per les. | Goed zo, {naam}! · Knap gedaan, {naam}! · {naam}, dat is helemaal goed! · Ja, {naam}, zo is het! · Wat goed, {naam}! · Jij weet het, {naam}! · *(robot)* {naam}, mijn scherm wordt groen van jou! · *(robot)* {naam}, dat zet ik in mijn geheugen! |
 
 ## 4. Goed na een fout
 
 | Oud | Nieuw (`BEVESTIG`, alleen een korte bevestiging, geen naam) |
 |---|---|
-| Hetzelfde rijtje als bij lof (zie 1). | Ja, nu is het goed. · Nu heb je hem. · Die is goed. · Zo is het. · Ja, nu klopt het. · Gevonden! · Nu zit het goed. · Ja, deze is het. · *(robot)* Nu wordt mijn scherm groen. · *(robotplek)* Inderdaad, nu is hij raak. |
+| Hetzelfde rijtje als bij lof (zie 1). | Ja, nu is het goed. · Nu heb je hem. · Die is goed. · Zo is het. · Ja, nu klopt het. · Gevonden! *(alleen na een keuzevraag)* · Nu zit het goed. · Ja, deze is het. · *(robot)* Nu wordt mijn scherm groen. · *(robotplek)* Inderdaad, nu is hij raak. |
 
 ## 5. Heel snel geantwoord
 
@@ -66,7 +66,7 @@ BLIEPO-KARAKTER.md §5 heeft nog 5 andere groeten (Hallo! Kom, we beginnen. · H
 
 | Oud | Nieuw (`EINDE`, 1 zin aan het eind; daarna vaak "Tik op de kaart.") |
 |---|---|
-| Bij de kaart: **"Alles goed!"** (geen enkele fout) of **"Goed gewerkt!"** (wel fouten), soms met de naam ("Goed gewerkt, Sam!"), en daarachter een eigen zin per les ("Je kent de munten en de briefjes."). | Goed gedaan! Tot de volgende keer. · De les is klaar. Wat heb jij goed gewerkt! · Klaar! Je hebt veel geoefend vandaag. · Dat was de laatste. Fijn dat je meedeed! · Je bent klaar. Ik vond het leuk met jou! · Klaar! Wat heb je goed je best gedaan. · Dat was de les. Tot snel! · *(robotplek)* Alles is af. De les is klaar! · *(robot)* Deze les bewaar ik in mijn geheugen. Tot de volgende keer! |
+| Bij de kaart: **"Alles goed!"** (geen enkele fout) of **"Goed gewerkt!"** (wel fouten), soms met de naam ("Goed gewerkt, Sam!"), en daarachter een eigen zin per les ("Je kent de munten en de briefjes."). | Goed gedaan! Tot de volgende keer. · De les is klaar. Wat heb jij goed gewerkt! · Klaar! Je hebt veel geoefend vandaag. · Dat was de laatste. Fijn dat je meedeed! · Je bent klaar. Ik vond het leuk met jou! · Klaar! Wat heb je goed je best gedaan! · Dat was de les. Tot snel! · *(robotplek)* Alles is af. De les is klaar! · *(robot)* Deze les bewaar ik in mijn geheugen. Tot de volgende keer! |
 | — | Na veel fouten (de helft of meer niet in 1 keer goed): **"Je hebt goed doorgezet. Volgende keer gaat het nog beter."** |
 
 ## 8. Vragen die terugkomen

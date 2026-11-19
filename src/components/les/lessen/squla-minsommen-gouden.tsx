@@ -83,6 +83,7 @@ import {
   type Rijtje,
 } from "./squla-minsommen-gouden-zinnen";
 import { beginVan, deeltStuk, maakKiezer } from "./nooit-dubbel";
+import { alleenBijKeuze } from "./squla-klok-gouden-zinnen";
 
 const LES_ID = "squla-min-machine-1-gouden";
 
@@ -272,7 +273,7 @@ function lofZinnen(l: Lesgids, v: Minvraag, eerste: boolean): string[] {
     lof = kies(l, NAAM_LOF);
   }
   /* "Dat heb je goed gezien" alleen bij kijkvragen (dit zijn rekenvragen). */
-  lof ??= kies(l, LOF, [LOF_KIJK_INDEX]);
+  lof ??= kies(l, LOF, [LOF_KIJK_INDEX, ...alleenBijKeuze(l, LOF)]);
   const { rij: reactie, ja, robot } = minReactie(v);
   /* Lof en reactie beginnen niet met hetzelfde woord, en nooit 2 keer "Ja" (ook "ja" midden in de lofzin telt). */
   const zonder = reactie.zinnen.map((_, i) => i).filter((i) => woord(reactie.zinnen[i]) === woord(lof) || deeltWoord(reactie.zinnen[i], lof));
@@ -285,7 +286,7 @@ function lofZinnen(l: Lesgids, v: Minvraag, eerste: boolean): string[] {
 }
 const bevestig = (l: Lesgids) => {
   st(l).opRij = 0;
-  return kies(l, BEVESTIG);
+  return kies(l, BEVESTIG, alleenBijKeuze(l, BEVESTIG));
 };
 
 function schud<T>(lijst: T[]): T[] {
@@ -550,7 +551,7 @@ async function introVraag(l: Lesgids, q: IntroVraag, stippen: number): Promise<n
       bliepoScherm("goed");
       zet(l, { goed: ++s.goed });
       /* Lof (zonder de bijzondere momenten van de 15 vragen), en wat er klopt; geen woord dat in beide zinnen begint. */
-      const lof = poging === 1 ? kies(l, LOF, [LOF_KIJK_INDEX]) : bevestig(l);
+      const lof = poging === 1 ? kies(l, LOF, [LOF_KIJK_INDEX, ...alleenBijKeuze(l, LOF)]) : bevestig(l);
       const reactie = rijtjeIntro(q);
       const r = kies(l, reactie, reactie.zinnen.map((_, i) => i).filter((i) => woord(reactie.zinnen[i]) === woord(lof)), `reactie-${q.id}`);
       log(l, "reactie", { soort: poging === 1 ? "goed" : "goed-na-fout", vraag: q.id, zin: `${lof} ${r}` });

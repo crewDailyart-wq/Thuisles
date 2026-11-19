@@ -79,6 +79,7 @@ import {
   type Rijtje,
   type Vraag,
 } from "./squla-dagen-gouden-zinnen";
+import { alleenBijKeuze } from "./squla-klok-gouden-zinnen";
 
 const LES_ID = "squla-dagen-van-de-week-gouden";
 
@@ -259,7 +260,7 @@ function lofZinnen(l: Lesgids, v: Vraag, dag: number, eerste: boolean): string[]
     lof = kies(l, NAAM_LOF);
   }
   /* "Dat heb je goed gezien" alleen bij een kijkvraag: een wagon zoeken in de trein (tik). */
-  lof ??= kies(l, LOF, v.soort === "tik" ? [] : [LOF_KIJK_INDEX]);
+  lof ??= kies(l, LOF, [...(v.soort === "tik" ? [] : [LOF_KIJK_INDEX]), ...alleenBijKeuze(l, LOF)]);
   const reactie = dagenReactie(v, dag);
   /* Lof en reactie beginnen niet met hetzelfde woord, en nooit 2 keer "Ja" (ook "ja" midden in de lofzin telt). */
   const zonder = reactie.zinnen.map((_, i) => i).filter((i) => woord(reactie.zinnen[i]) === woord(lof));
@@ -274,7 +275,7 @@ function lofZinnen(l: Lesgids, v: Vraag, dag: number, eerste: boolean): string[]
 }
 const bevestig = (l: Lesgids) => {
   st(l).opRij = 0;
-  return kies(l, BEVESTIG);
+  return kies(l, BEVESTIG, alleenBijKeuze(l, BEVESTIG));
 };
 /** "Kom, we kijken samen." in 5 versies (de eerste zin bij een ander antwoord de 2e keer, "Nu koos je …", staat in het zinnenbestand: `foutStuk`). */
 const samenZin = (l: Lesgids) => variant(l, "samen", ZIN.samen);

@@ -91,6 +91,7 @@ import {
   type TienVraag,
 } from "./squla-splitsen-gouden-zinnen";
 import { deeltStuk, maakKiezer } from "./nooit-dubbel";
+import { alleenBijKeuze } from "./squla-klok-gouden-zinnen";
 
 const LES_ID = "squla-splits-splitsen1-1-gouden";
 
@@ -258,7 +259,7 @@ function lofZinnen(l: Lesgids, reactie: Rijtje, jaIndex: number[], robotIndex: n
     lof = kies(l, NAAM_LOF);
   }
   /* "Goed gekozen!" past niet bij slepen (14.35; keuring punt 4); "Dat heb je goed gezien" alleen bij kijkvragen. */
-  lof ??= kies(l, LOF, [LOF_KIJK_INDEX, ...LOF.zinnen.map((z, i) => (/gekozen/i.test(z) ? i : -1)).filter((i) => i >= 0)]);
+  lof ??= kies(l, LOF, [LOF_KIJK_INDEX, ...LOF.zinnen.map((z, i) => (/gekozen/i.test(z) ? i : -1)).filter((i) => i >= 0), ...alleenBijKeuze(l, LOF)]);
   /* Lof en reactie beginnen niet allebei met hetzelfde woord, nooit 2 keer "Ja" (BLIEPO-KARAKTER.md §2). */
   const zonder = reactie.zinnen.map((_, i) => i).filter((i) => woord(reactie.zinnen[i]) === woord(lof));
   /* Ook "ja" midden in de lofzin telt ("Even kijken… ja, goed!"; kind-test punt 13). */
@@ -271,7 +272,7 @@ function lofZinnen(l: Lesgids, reactie: Rijtje, jaIndex: number[], robotIndex: n
 }
 const bevestig = (l: Lesgids) => {
   st(l).opRij = 0;
-  return kies(l, BEVESTIG);
+  return kies(l, BEVESTIG, alleenBijKeuze(l, BEVESTIG));
 };
 
 function schud<T>(lijst: T[]): T[] {

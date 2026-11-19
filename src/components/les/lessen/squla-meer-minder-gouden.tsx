@@ -86,6 +86,7 @@ import {
   type Vraag,
 } from "./squla-meer-minder-gouden-zinnen";
 import { deeltStuk, maakKiezer } from "./nooit-dubbel";
+import { alleenBijKeuze } from "./squla-klok-gouden-zinnen";
 
 const LES_ID = "squla-meer-minder-evenveel2-1-gouden";
 
@@ -270,7 +271,7 @@ function lofZinnen(l: Lesgids, v: Vraag, eerste: boolean): string[] {
     lof = kies(l, NAAM_LOF);
   }
   /* "Dat heb je goed gezien" alleen bij kijkvragen: wel bij de koekjes (kijken waar de meeste liggen), niet bij tellen. */
-  lof ??= kies(l, LOF, v.soort === "tel" ? [LOF_KIJK_INDEX] : []);
+  lof ??= kies(l, LOF, [...(v.soort === "tel" ? [LOF_KIJK_INDEX] : []), ...alleenBijKeuze(l, LOF)]);
   const reactie = v.soort === "tel" ? TELREACTIE(v.n) : drieReactie(v);
   const ja = v.soort === "tel" ? TELREACTIE_JA : DRIEREACTIE_JA;
   const robot = v.soort === "tel" ? TELREACTIE_ROBOT : DRIEREACTIE_ROBOT;
@@ -285,7 +286,7 @@ function lofZinnen(l: Lesgids, v: Vraag, eerste: boolean): string[] {
 }
 const bevestig = (l: Lesgids) => {
   st(l).opRij = 0;
-  return kies(l, BEVESTIG);
+  return kies(l, BEVESTIG, alleenBijKeuze(l, BEVESTIG));
 };
 
 function schud<T>(lijst: T[]): T[] {

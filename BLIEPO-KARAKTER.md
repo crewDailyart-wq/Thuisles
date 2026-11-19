@@ -79,10 +79,10 @@ Gemaakt op 8 november 2026 (derde ronde, besluit Sara: "Lofzinnen komen in BLIEP
 23. Zo doe je dat!
 24. Lekker bezig!
 25. Dat ging goed!
-26. Goed gekozen!
+26. Goed gekozen! *(alleen na een keuzevraag; Ronde 51 punt 1)*
 27. Ja, dat is het goede antwoord!
 28. Helemaal raak!
-29. Dat weet jij al goed!
+29. Dat weet jij al! *(was "Dat weet jij al goed!", Ronde 51 punt 7)*
 30. Fijn, die is goed!
 31. Kijk, mijn scherm wordt er groen van! *(robot)*
 32. Mijn scherm is helemaal groen. Goed zo! *(robot)*
@@ -104,10 +104,10 @@ Telling: 40 zinnen, waarvan 10 robotzinnen. (1 t/m 10 zijn de zinnen van de vier
 **3 goed op rij**
 1. Al 3 goed achter elkaar!
 2. 3 keer op rij goed. Wauw!
-3. Het gaat steeds beter: al 3 goed!
+3. Het gaat lekker: al 3 goed! *(was "Het gaat steeds beter: …", Ronde 51 punt 3)*
 4. 3 keer goed! Dat zet ik in mijn geheugen. *(robot)*
 
-**Na lang nadenken**
+**Na lang nadenken** *(staat nog niet in de code: geen enkele gouden les gebruikt deze 4 zinnen; Ronde 51 punt 12)*
 5. Goed nagedacht, en het klopt!
 6. Je nam de tijd, en het is goed.
 7. Rustig kijken helpt, zie je wel?
@@ -123,13 +123,13 @@ Telling: 40 zinnen, waarvan 10 robotzinnen. (1 t/m 10 zijn de zinnen van de vier
 13. Goed begin!
 14. De eerste is al goed!
 15. Zo, wat een goede start!
-16. Inderdaad, jij begint sterk! *(robot-plek)*
+16. Zie je, jij begint meteen goed! *(robot-plek; was "Inderdaad, jij begint sterk!", Ronde 51 punt 4)*
 
 **Laatste vraag**
 17. En de laatste is ook goed!
 18. Goed tot het eind!
 19. Ook de laatste klopt. Knap!
-20. De laatste vraag, en weer een groen scherm! *(robot)*
+20. De laatste vraag, en een groen scherm! *(robot; was "… en weer een groen scherm!", Ronde 51 punt 2)*
 
 Telling: 20 zinnen (5 momenten × 4), waarvan 5 robotzinnen.
 
@@ -140,13 +140,13 @@ Telling: 20 zinnen (5 momenten × 4), waarvan 5 robotzinnen.
 1. Goed zo, {naam}!
 2. Knap gedaan, {naam}!
 3. {naam}, dat is helemaal goed!
-4. Ja {naam}, zo is het!
+4. Ja, {naam}, zo is het! *(komma na "Ja", Ronde 51 punt 6)*
 5. Wat goed, {naam}!
 6. Jij weet het, {naam}!
 7. Hoi {naam}! Fijn dat je er bent.
 8. Tot de volgende keer, {naam}!
 9. {naam}, mijn scherm wordt groen van jou! *(robot)*
-10. Dat onthoud ik, {naam}: jij kunt dit! *(robot)*
+10. {naam}, dat zet ik in mijn geheugen! *(robot; was "Dat onthoud ik, {naam}: jij kunt dit!", Ronde 51 punt 9)*
 
 Telling: 10 zinnen, waarvan 2 robotzinnen.
 
@@ -159,7 +159,7 @@ Telling: 10 zinnen, waarvan 2 robotzinnen.
 3. Die is goed.
 4. Zo is het.
 5. Ja, nu klopt het.
-6. Gevonden!
+6. Gevonden! *(alleen na een keuzevraag; Ronde 51 punt 1)*
 7. Nu zit het goed.
 8. Ja, deze is het.
 9. Nu wordt mijn scherm groen. *(robot)*
@@ -288,12 +288,12 @@ Telling: 62 zinnen (12 onderwerpen × 5, plus 10a en 10b bij Tellen), waarvan 12
 4. Dat was de laatste. Fijn dat je meedeed!
 5. Je bent klaar. Ik vond het leuk met jou!
 6. Je hebt goed doorgezet. Volgende keer gaat het nog beter. *(alleen na veel fouten)*
-7. Klaar! Wat heb je goed je best gedaan.
+7. Klaar! Wat heb je goed je best gedaan! *(uitroepteken, Ronde 51 punt 5; de bewaarde stemopname moet bij de Ruth-ronde opnieuw)*
 8. Dat was de les. Tot snel!
 9. Alles is af. De les is klaar! *(robot-plek)*
 10. Deze les bewaar ik in mijn geheugen. Tot de volgende keer! *(robot)*
 
-**Begin**
+**Begin** *(de code gebruikt nu alleen zin 11, als "Hoi {naam}! Fijn dat je er bent."; de andere groeten gaan later afwisselen, Ronde 51 punt 12)*
 11. Hoi! Fijn dat je er bent.
 12. Hallo! Kom, we beginnen.
 13. Hoi, daar ben je!
@@ -366,14 +366,12 @@ Voorbeeld (gouden klokles, staat in FOUTTABEL-squla-klok-gouden.md): klok op 3 u
 7. Ik bedoelde een andere.
 8. Dat geeft niks, zo leer je het.
 9. Rustig maar, we doen het stap voor stap.
-10. Er is nog een betere keuze.
-11. Probeer het nog 1 keer, met een tip.
-12. Ik zie een andere die beter past. *(robot-plek)*
-13. Even in mijn geheugen kijken… ik heb een tip! *(robot)*
-14. Mijn geheugen zegt: samen lukt dit vast. *(robot)*
-15. Ik weet een hulpje voor jou. *(robot-plek)*
+10. Probeer het nog 1 keer, met een tip.
+11. Even in mijn geheugen kijken… ik heb een tip! *(robot)*
+12. Mijn geheugen zegt: samen lukt dit vast. *(robot)*
+13. Ik weet een hulpje voor jou. *(robot-plek)*
 
-Telling: 15 zinnen, waarvan 4 robotzinnen.
+Telling: 13 zinnen, waarvan 3 robotzinnen. *(19 november 2026, Ronde 51 punt 12: gelijk gemaakt aan de code. "Er is nog een betere keuze." en "Ik zie een andere die beter past." zijn weg: ze verklapten bijna dat er een betere keuze is, en de code gebruikte ze niet. Reden in WEGGEHAALD.md.)*
 
 ## 11. Aanmoedigen tijdens het nadenken
 
@@ -381,7 +379,7 @@ Telling: 15 zinnen, waarvan 4 robotzinnen.
 
 1. Neem rustig de tijd.
 2. Je mag goed kijken.
-3. Denk maar even na.
+3. Denk maar even na. *(niet bij een tik- of zetopdracht, ook niet bij de klok; Ronde 51 punt 11)*
 4. Je bent goed bezig.
 5. Geen haast, hoor.
 6. Rustig kijken mag.

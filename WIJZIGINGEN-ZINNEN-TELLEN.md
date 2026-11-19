@@ -183,3 +183,29 @@ Opdracht van Sara: het woord "nagekeken" (en "nakijken") komt niet meer voor in 
 | squla-tellen-fruit-1-gouden-extra | nagekeken weg | Ik heb ze nagekeken: samen ${gw(n)}. | Inderdaad, alles bij elkaar ${gw(n)}. |
 | squla-tellen-fruit-1-gouden-extra | nagekeken weg | Je maakte ${gk(n, f)} ${f.naam}. / Ik heb ze nagekeken: ${gk(n, f)} ${f.naam}. | Je maakte ${gk(n, f)} ${f.naam}. / Inderdaad, er liggen nu ${gk(n, f)} ${f.naam}. |
 | squla-tellen-fruit-1-gouden-extra | nagekeken weg | Ik heb alles nagekeken: het klopt. | Inderdaad, alles past bij het lijstje. |
+
+## 19 november 2026: eigen zinnen in plaats van de vertaalde Synthesis-zinnen (besluit Sara, BOUWREGELS 15.41)
+
+Sara besliste: in onze gouden lessen geen zinnen van Synthesis, ook niet vertaald. De zinnen uit het stuk "Zinnen van Synthesis (Color Count)" hierboven zijn vervangen door eigen zinnen. Elke nieuwe zin staat op dezelfde plek in de rij, doet hetzelfde en is ongeveer even lang. Getallen, antwoorden en de plek van de robotzin zijn niet veranderd. Fouttabel-scripts Tellen en Tellen extra opnieuw gedraaid: goed. Oude zinnen staan in WEGGEHAALD.md.
+
+| Les | Waar | Oud (vertaald uit Synthesis) | Nieuw (eigen zin) |
+|---|---|---|---|
+| gouden | eerste zin, te veel | 14 pruimen? Ik denk dat je er te veel hebt geteld. | Zoveel pruimen? 14 is te veel. |
+| gouden | eerste zin, te weinig | 12 pruimen? Je hebt ze nog niet allemaal geteld. | 12 pruimen? Er liggen er nog meer, kijk maar. |
+| gouden | hint zonder richting | Probeer het nog eens. Tel de appels en tik op het getal. | Kijk nog eens goed. Tel de appels en kies het goede getal. |
+| gouden | Bliepo telt na (1e vraag) | Laten we ze samen tellen. Ik tel hardop. | Luister maar, ik tel ze hardop. |
+| gouden | na het natellen (na de pijl) | Kijk, daar heb je het: 12. Je zat precies goed. | Het zijn er echt 12. Dat koos jij ook. |
+| gouden | 2e keer mis, samen tellen | Laten we ze samen tellen en kijken. | Ik doe mee. We tellen ze samen. |
+| gouden | zin met het aantal na lof | Precies, 12 appels. | Dat zijn 12 appels. |
+| gouden | zin met het aantal na lof | Dat klopt, er zijn 12 appels. | Hier liggen 12 appels. |
+| gouden | slotzin | Knap, hoor! Je hebt helemaal tot 17 geteld. | Tot 17 tellen: dat kun jij nu! |
+| extra | 2e vraag | Probeer deze eens. Van welk fruit tel je er 7? | Nu ligt het fruit anders. Van welk fruit tel je er 7? (niet "Hier ligt ander fruit.": het zijn dezelfde 4 soorten, alleen anders verdeeld) |
+| extra | eerste zin bij fruit kiezen | 8 appels? Ik tel er 9. | Bij de appels tel ik er 9, niet 8. |
+| extra | 2e keer mis, samen tellen | Laten we samen tellen en kijken. | Ik doe mee. We tellen samen. |
+| extra | te veel gemaakt (2 of meer) | Je maakte 6 peren. Dat zijn er een paar te veel. | Je maakte 6 peren. Dat zijn er een paar meer dan nodig. |
+| extra | het lijstje goed | Perfect, je hebt alle vakjes gevuld. | Alle vakjes zijn netjes gevuld. |
+| extra | slotzin | Knap, hoor! Je hebt helemaal tot 10 geteld en gemaakt. | Tot 10 tellen en fruit maken: dat kun jij nu! |
+
+Waarom "Zoveel pruimen? 14 is te veel." en "… Er liggen er nog meer, kijk maar.": de fouttabel controleert dat een eerste zin met richting echt "te veel" of "nog meer" zegt (anders kan de "weer"-zin bij de 2e fout niet kloppen). Een zin als "Er zijn er minder dan dat." werd daarom afgekeurd.
+
+De bewaarde stemopname "Probeer deze eens." hoort bij andere lessen en blijft staan. Nieuwe opnames van deze zinnen komen pas bij de Ruth-ronde aan het eind.

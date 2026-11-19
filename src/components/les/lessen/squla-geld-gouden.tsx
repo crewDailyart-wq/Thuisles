@@ -81,6 +81,7 @@ import {
   type Waarvraag,
   type Watvraag,
 } from "./squla-geld-gouden-zinnen";
+import { alleenBijKeuze } from "./squla-klok-gouden-zinnen";
 
 const LES_ID = "squla-geld-geldmachine-1-gouden";
 
@@ -263,7 +264,7 @@ function lofZinnen(l: Lesgids, v: Vraag, eerste: boolean): string[] {
     lof = kies(l, NAAM_LOF);
   }
   /* Elke vraag in deze les is een kijkvraag (het kind moet het geld goed bekijken): "Dat heb je goed gezien" mag. */
-  lof ??= kies(l, LOF);
+  lof ??= kies(l, LOF, alleenBijKeuze(l, LOF));
   const reactie = geldReactie(v);
   /* Lof en reactie beginnen niet met hetzelfde woord, en nooit 2 keer "Ja" (ook "ja" midden in de lofzin telt). */
   const zonder = reactie.zinnen.map((_, i) => i).filter((i) => woord(reactie.zinnen[i]) === woord(lof));
@@ -278,7 +279,7 @@ function lofZinnen(l: Lesgids, v: Vraag, eerste: boolean): string[] {
 }
 const bevestig = (l: Lesgids) => {
   st(l).opRij = 0;
-  return kies(l, BEVESTIG);
+  return kies(l, BEVESTIG, alleenBijKeuze(l, BEVESTIG));
 };
 /** "Kom, we kijken samen." in 5 versies (de eerste zin bij een ander antwoord de 2e keer, "Nu koos je …", staat in het zinnenbestand: `foutStuk`). */
 const samenZin = (l: Lesgids, v: Vraag) => variant(l, "samen", ZIN.samen(v));

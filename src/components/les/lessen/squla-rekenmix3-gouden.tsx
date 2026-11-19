@@ -30,6 +30,7 @@ import { bliepoScherm } from "@/lib/bliepo-scherm";
 import { bewaarUitkomst } from "@/app/lesuitkomstacties";
 import { BEVESTIG, EINDE, EINDE_VEEL_FOUTEN, LOF, LOF_KIJK_INDEX, MOMENT, NAAM_GROET, NAAM_LOF, ONDUIDELIJK, ONDUIDELIJK_NOG_1_KEER, OVERGANG, RM3, SPLITSREACTIE_3, SPLITSREACTIE_JA, VRAGEN, WISSEL_3, binnenIdx, buitenIdx, deeltStuk3, foutReactie3, fouten3, gk, hard4, herhaling4, metNaam, opnieuw3, past4, plekken, type Fout, type Fout3, type Rijtje, type Vraag3 as Rmvraag } from "./squla-rekenmix3-gouden-zinnen";
 import { maakKiezer } from "./nooit-dubbel";
+import { alleenBijKeuze } from "./squla-klok-gouden-zinnen";
 
 const LES_ID = "squla-rekenmix-mix3-4-gouden";
 
@@ -160,7 +161,7 @@ function lofZinnen(l: Lesgids, v: Rmvraag, eerste: boolean): string[] {
     s.naamVraag = s.vraag;
     lof = kies(l, NAAM_LOF);
   }
-  lof ??= kies(l, LOF, [LOF_KIJK_INDEX]);
+  lof ??= kies(l, LOF, [LOF_KIJK_INDEX, ...alleenBijKeuze(l, LOF)]);
   /* De zin met wat er in de doos zat (18 nov 2026: in varianten, 1 sleutel voor de hele les, dus nooit 2 keer achter
      elkaar dezelfde zin, ook niet bij een andere vraag). Harde eisen: niet met hetzelfde woord beginnen als de lof, geen
      "Ja" na een lof met "ja" (ook midden in de zin), geen woord 2 keer met de lof samen. */
@@ -174,7 +175,7 @@ function lofZinnen(l: Lesgids, v: Rmvraag, eerste: boolean): string[] {
 }
 const bevestig = (l: Lesgids) => {
   st(l).opRij = 0;
-  return kies(l, BEVESTIG);
+  return kies(l, BEVESTIG, alleenBijKeuze(l, BEVESTIG));
 };
 
 function schud<T>(lijst: T[]): T[] {

@@ -81,7 +81,9 @@ export const ZIN = {
   tussen: "Wat is {3} + {2}?",
   /* De som staat er 1 keer (was: "Ja, 3 + 2 = 5. Dus de som is 3 + 2 = 5."). */
   tussenGoed: `Ja, ${som(A, B_DEEL, TOTAAL5)}. Dat is de som die je hebt gemaakt.`,
-  tussenFout: (x: string) => (x === "32" ? `Je zette de cijfers naast elkaar: {32}. Maar we tellen ze op: {3} + {2} = {5}.` : `Je koos ${`{${x}}`}. Dat is dichtbij. {3} en dan nog {2} erbij is {5}.`),
+  /* 19 nov 2026 (Sara: losse cijfers nooit als 1 groter getal lezen; KEUZES Ronde 52): 32 staat apart en wit (het verwijst
+     nergens naar, 2.1); de 3 en de 2 houden de kleur van hun deel. Was: "Je zette de cijfers naast elkaar: {32}. …". */
+  tussenFout: (x: string) => (x === "32" ? `Je zette de cijfers naast elkaar. Dan lees je {32:wit}. Maar we tellen ze op: {3} + {2} = {5}.` : `Je koos ${`{${x}}`}. Dat is dichtbij. {3} en dan nog {2} erbij is {5}.`),
   /** Stap 10: een andere manier voor 5. */
   /* 19 nov 2026 (keuring 15.36): "Verander de stippen onder." was geen goede zin; nu zegt Bliepo wat het kind doet en waar. */
   anders: [`{5} kun je splitsen in ${paar(A, B_DEEL)}.`, "Kun jij het ook op een andere manier? Tik op de plus en de min bij de 2 delen onderaan. Het totaal blijft hetzelfde."],
