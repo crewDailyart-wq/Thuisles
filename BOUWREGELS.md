@@ -1,5 +1,20 @@
 # BOUWREGELS — alle verbeteringen van Sara voor de lessen
 
+## ⭐ WAT BEWUST PAS AAN HET EINDE KOMT (besluit Sara, 19 november 2026)
+
+**Pas aan het einde van het hele project, als de hele website klaar is, komen deze drie dingen, in deze volgorde:**
+
+1. **De vloeiendheidsmeting en alle prestatie- en telefoontests.**
+2. **De stem van Ruth** (ElevenLabs), alleen als Sara ja zegt.
+3. **Online zetten**, alleen als Sara "zet online" zegt.
+
+**Reden:** tijdens het bouwen veranderen de lessen en zinnen nog steeds. Metingen op een drukke computer geven valse cijfers, en een stem of een publicatie van zinnen die nog veranderen is weggegooid werk en tegoed.
+
+**Tot die tijd:** meet de vloeiendheid niet, noem hem niet als openstaand punt en maak er geen taak van. De haperingen op de telefoon (57 ms en 84 ms) staan in DESIGN-LATER.md als "later" en blokkeren niets. In `npm run bewaak` telt de vloeiendheidsmeting alleen mee met `EINDCONTROLE=1` (dus pas aan het einde). De regels voor vloeiend (HARDE REGEL 7) blijven gelden voor het moment van de eindcontrole.
+
+---
+
+
 > ## ⭐ BELANGRIJKSTE REGEL VAN BLIEPO
 > **Bliepo probeert altijd de denkfout van het kind te begrijpen en reageert daarop.**
 >
