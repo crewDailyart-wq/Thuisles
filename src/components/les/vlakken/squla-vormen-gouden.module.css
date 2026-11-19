@@ -7,6 +7,9 @@
 .wortel {
   position: absolute;
   inset: 0;
+  /* Boven Bliepo's tekstvak (z-index 2): de keuzes rechts onder zijn zin moeten tikbaar zijn (19 nov 2026, 15.32). Het vlak
+     zelf loopt niet onder het tekstvak; alleen de keuzes staan daar. */
+  z-index: 3;
   font-family: var(--font-les), "Work Sans", system-ui, sans-serif;
 }
 

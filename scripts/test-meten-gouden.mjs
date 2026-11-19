@@ -341,9 +341,9 @@ async function speel(P, o = {}) {
     const zonderHand = async () => {
       if (o.vraagWacht && (await P.ev(`!!document.querySelector("[data-hulphand]")`))) fout(`hulphandje bij een vraag (${taak.vraag})`);
     };
-    /* Vaste zone (15.30, keuring Meer-minder): het speelvlak (tot x = 927 van 980, kleiner gezet) blijft links van het tekstvak. */
+    /* Vaste zone (15.30, keuring Meer-minder): het speelvlak (tot x = 927 van 980, kleiner gezet) blijft links van het tekstvak. De kaartjes rechts onder Bliepo's zin (data-keuze-rechts, 15.32, 19 nov 2026) horen daar wel. */
     const zone = async () => {
-      const r = await P.ev(`(() => { const v = document.querySelector(".bliepo-vloer-ballon"); const w = document.querySelector("[data-meten-gouden]"); if (!v || !w) return null; const k = w.getBoundingClientRect(); const rechts = k.left + 927 * k.width / 980; const dingen = [...document.querySelectorAll("[data-meten-gouden] [data-ding], [data-meten-gouden] [data-merk], [data-meten-gouden] input, [data-meten-gouden] [data-label]")].map((b) => b.getBoundingClientRect()).filter((b) => b.width > 2).map((b) => b.right); return { vlak: Math.round(rechts - v.getBoundingClientRect().left), ding: dingen.length ? Math.round(Math.max(...dingen) - v.getBoundingClientRect().left) : null }; })()`);
+      const r = await P.ev(`(() => { const v = document.querySelector(".bliepo-vloer-ballon"); const w = document.querySelector("[data-meten-gouden]"); if (!v || !w) return null; const k = w.getBoundingClientRect(); const rechts = k.left + 927 * k.width / 980; const dingen = [...document.querySelectorAll("[data-meten-gouden] [data-ding]:not([data-keuze-rechts]), [data-meten-gouden] [data-merk], [data-meten-gouden] input, [data-meten-gouden] [data-label]")].map((b) => b.getBoundingClientRect()).filter((b) => b.width > 2).map((b) => b.right); return { vlak: Math.round(rechts - v.getBoundingClientRect().left), ding: dingen.length ? Math.round(Math.max(...dingen) - v.getBoundingClientRect().left) : null }; })()`);
       if (r && (r.vlak > 0 || (r.ding ?? -1) > 0)) fout(`het speelvlak loopt onder het tekstvak (${JSON.stringify(r)}, ${taak.vraag})`);
       globalThis.__zone = r;
     };
