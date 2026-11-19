@@ -1,5 +1,59 @@
 # Overzicht van alle regels voor de lessen
 
+## ⭐ ACTUELE HOOFDREGELS OP 1 PAGINA (bijgewerkt 19 november 2026)
+
+Kort en simpel. De volledige regel staat in **BOUWREGELS.md** onder het nummer. Gaat iets hieronder tegen een oudere regel verderop in dit bestand in, dan geldt deze lijst (en BOUWREGELS.md).
+
+**Bliepo en zijn zinnen**
+1. Bliepo probeert altijd de denkfout van het kind te begrijpen; elke vraag heeft een fouttabel (15.9, 14.36).
+2. 2 pogingen: 1e fout = hint, 2e fout = uitleg en samen voordoen, dan door. Nooit stoppen of naar het menu (15.11, 15.18).
+3. Nooit het woord "fout"; geen naam bij een fout; naam hooguit 2 keer per les (5.3, 15.13).
+4. Hints verklappen nooit het antwoord (15.17).
+5. Niets wordt 2 keer gezegd; dezelfde tekst staat nooit 2 keer tegelijk op het scherm (15.29, 15.31).
+6. Elke stap waarin het kind iets doet, heeft een vraag of opdracht in beeld (15.37). Ook terwijl Bliepo hardop telt (15.47, nog uit te voeren).
+7. Alle nieuwe zinnen zijn grammaticaal correct, kort en kindvriendelijk voor groep 3; hoeveelheden in cijfers (15.48, 3.11, 3.20, 15.36).
+8. Lof en eindzinnen uit het vaste rijtje in BLIEPO-KARAKTER.md (5.11, 3.13). Rijtjes nalopen = volgende klus (DESIGN-LATER.md).
+9. Het woord "nagekeken" is weg (15.45).
+10. Bij goed in 1 keer soms alleen het groene scherm, zonder zin (ongeveer 1 op 3; nooit 2 keer achter elkaar; 15.39).
+11. Synthesis: inspiratie mag, maar in onze gouden lessen nooit hun zinnen kopiëren of vertalen. Alleen de lessen in Synthesis-stijl mogen Synthesis-tekst vertalen (15.41).
+
+**Verloop van de les**
+12. Skelet van Synthesis, karakter van Bliepo; inhoud (vragen, getallen) van Squla (15.10, 15.22).
+13. Pijlregel: Bliepo praat door (± 0,7 s na de zin); de blauwe pijl rechts onder de tekst is een snelkoppeling; geen pijl bij vragen, opdrachten, hulphandje en eindkaart (15.27).
+14. Stemopties per les (skelet): `pijlZoalsSynthesis`, `stemHeelUitpraten`, `woordenMeeMetStem` aan (15.27 punt 5, 3.7).
+15. Afspeelknop als vangnet: alleen bij een geplakte link of na verversen; via het lesoverzicht praat Bliepo meteen (15.38).
+16. Startvraag in elk onderwerp waar Synthesis hem heeft (bijvoorbeeld Klok, Splitsen, Getallenlijn). Ja = proef van 2, Nee = uitleg; groet en startvraag in 1 alinea (hoofdstuk 4).
+17. Hulphandje komt vanzelf na ± 6 s, alleen bij opdrachten, nooit als knop (15.19, 5.10).
+18. Eindkaart links naast het tekstvak (15.46). Vaste zones: niets overlapt of verspringt (15.30).
+
+**Scherm en beeld**
+19. Keuzes rechts, direct onder Bliepo's zin; ook bij Vormen en Meten (15.32).
+20. Een gekozen keuze krijgt alleen een vinkje, geen gloed; ook bij Meten (7.6, 7.8a, 15.33).
+21. Na een tik op een keuze verdwijnen de knoppen; alleen Bliepo's scherm kleurt (rood 1,5 s, groen 1 s) (5.3, 7.6).
+22. Rondje alleen als Bliepo iets noemt; klok: gloed om de wijzer en oranje ring (7.8, 7.9).
+23. Kleur van een getal = kleur van het voorwerp; wit als het nergens naar verwijst (2.1, 2.2, 14.27).
+24. Geen witte rand om plaatjes, niets zweeft, geen disco (15.33, 15.34, 15.35). Geen mensen, geen gezichtjes (1.1, 1.2).
+
+**Geluid**
+25. Geluidssysteem met vaste plekken in `public/geluiden/` (goed, goed na hulp, nog niet goed, beloning); eerst geluid, dan zin (15.40).
+26. Beloning bij een goed antwoord (zoals een sleutel): PROPOSED / UNDECIDED, niet bouwen (DESIGN-LATER.md).
+
+**Inhoud**
+27. Vragen, getallen en antwoordkeuzes van Squla blijven; niets weglaten (15.8, 15.22, 1.25).
+28. Eigen foute keuzes mogen als ze een duidelijke denkfout laten zien, leerdoel/getallen/antwoord gelijk blijven en groep 3 ze snapt; elke zelf bedachte keuze in KEUZES-VOOR-SARA.md (11.5, 15.44).
+29. Splitsen extra: plus/min-machine (tikken) en doel 8 of 10 mogen (15.43, uitzondering op 14.26).
+30. Eén juist antwoord, óf alle juiste antwoorden goed gerekend (14.30).
+
+**Werkwijze en harde regels**
+31. Privacy (naam hardop, denkfouten bewaren, voorbeeldpagina alleen Testkind): PRIVACY.md; regelen vóór echte kinderen, met juridische controle (15.42).
+32. Testen alleen als Testkind (12.1). Oude lessen van vóór 27 oktober niet aanraken (12.6). Geen content in de database (12.7).
+33. Geen Ruth/tegoed boven 5.000 zonder Sara; nieuwe opnames pas aan het eind (3.4).
+34. Online alleen als alles groen is en Sara "zet online" zegt (12.9). Back-upbranch mag zonder controle (12.7).
+35. Vloeiend: 55–60 beelden/s, geen hapering boven 50 ms (10.1). Telefoon en tablet: latere fase (15.23).
+
+---
+
+
 Gemaakt op 8 november 2026 en bijgewerkt na de tweede ronde besluiten van Sara (8 november 2026). De tekst van de botsingen is zoals hij was bij het maken; bij elke botsing staat wat Sara in de tweede ronde besloot. Er is niets aan lessen of code veranderd. De oude versie staat in `regels-backup-20261108/REGELS-OVERZICHT-voor-verschillen.md` en de vorige regels in `regels-backup-20261108/BOUWREGELS-voor-verschillen.md`.
 
 ---
@@ -22,7 +76,7 @@ Na de vergelijking met Synthesis (zie `SYNTHESIS-VERSCHILLEN.md`) heeft Sara bes
 |---|---|---|
 | B1 Rondje bij een tik | Na een tik verdwijnen de knoppen meteen; geen rondje, geen gloed. Tikken op een groep krijgt een vinkje. | 7.6, 7.8a, 6.5 |
 | B2 Rood bij fout | Alleen Bliepo's scherm kleurt: rood 1,5 s, groen 1 s. | 5.3 |
-| B3 Fout-geluidje | Ongewijzigd: geen fout-geluidje. | 6.8 |
+| B3 Fout-geluidje | Ongewijzigd: geen fout-geluidje. **[In de gouden lessen VERVALLEN 19 nov 2026: heel zacht `nog-niet-goed.wav`, 15.40.]** | 6.8 |
 | B4 Hoeveel rondjes | Geen zachte rondjes. Wat al genoemd is blijft zichtbaar als gekleurd getal, boog of nummer. | 7.8d |
 | B5 Klok / oplichten | Klok: gloed om de wijzer én een ring om het getal. Wagons: rondje. | 7.8e, 7.9 |
 | B6 Nakijken | Keuzevraag meteen; groep tikken = vinkje; invullen = Controleer; splitsen vanzelf nagekeken zodra het totaal klopt. | 6.5, 14.30 |
@@ -58,7 +112,7 @@ Sara heeft over een deel van de twijfels besloten. De oude versie staat in `rege
 
 | Twijfel / botsing | Besluit Sara (3e ronde, letterlijk) | Regel in BOUWREGELS | Stand |
 |---|---|---|---|
-| T15, T28 / B36 Meten | "Meten laten liggen (geen verandering aan Meten)." | 7.6, 7.8e, 7.9 | deels (lichtflits bij goed nog open; andere onderwerpen nog open) |
+| T15, T28 / B36 Meten | "Meten laten liggen (geen verandering aan Meten)." **[Gouden les Meten 19 nov 2026: keuzes rechts, alleen vinkje, geen gloed (15.32, 7.6); oude les blijft.]** | 7.6, 7.8e, 7.9 | deels (lichtflits bij goed nog open; andere onderwerpen nog open) |
 | T17 / B38, B24 Kleur van getallen | "Getallen zijn niet standaard wit: de kleur van een getal past bij het voorwerp waar het naar verwijst." Kleurkoppeling in sommen blijft. | 2.1, 2.2, 14.20, 14.24 | besloten |
 | T18 / B39 Ring bij de klok | "Bij de klok wordt de ring om het getal oranje, niet rood." | 7.8e, 7.9 | deels (wanneer de ring komt, nog open) |
 | T19 / B40 Lofzinnen | "Lofzinnen komen in BLIEPO-KARAKTER.md." | 3.11, 3.13, 5.11 | besloten |
@@ -119,7 +173,7 @@ Sara besliste over alle 14 punten. Akkoord met het advies bij 1, 3, 4, 5, 6, 7, 
 | 1 / T15 / B36 Lichtflits bij goed | De flits blijft. | 7.6 | besloten |
 | 2 / T16 / B37 Gekozen groep | Alleen het vinkje, geen gele rand; nog een tik haalt het vinkje weg. | 6.5, 7.8a | besloten |
 | 3 / T18 / B39 Oranje ring klok | Alleen bij een hint, een doel (klok zetten) of na 2× fout; 1 ring tegelijk. | 7.8e, 7.9 | besloten |
-| 4 / T21 / B42 Startvraag | Alleen waar het draaiboek er een heeft (klok). Ja = proef van 2 opgaven; 2 fouten = alsnog de uitleg. | hoofdstuk 4 | besloten |
+| 4 / T21 / B42 Startvraag | Alleen waar het draaiboek er een heeft (klok). Ja = proef van 2 opgaven; 2 fouten = alsnog de uitleg. **[VERVALLEN 19 nov 2026 wat "alleen de klok" betreft: elk onderwerp waar Synthesis hem heeft, bv. Klok, Splitsen, Getallenlijn.]** | hoofdstuk 4 | besloten |
 | 5 / T22 / B43 Na de 2e fout | Uitleg zonder het antwoord; antwoord pas na de 3e fout. | 5.1, 5.4 | besloten |
 | 6 / T24 Verder-pijl | Een tik breekt de zin af; de pijl is de knop (5.7 klopt). | 6.9 | besloten |
 | 7 / T25 Aanwijzing na 5 à 6 s | Hulphandje vanzelf met 1 korte zin bij tik- en sleepopdrachten; rondje alleen als Bliepo iets noemt. | 6.10, 5.10 | besloten |

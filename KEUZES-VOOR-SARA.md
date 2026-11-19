@@ -2100,3 +2100,45 @@ http://localhost:3000/voorbeeld/les/squla-tellen-fruit-1-gouden-extra?naam=Testk
 4. De Rekenmix-lessen gebruiken nog de oude telzinnen ("Laten we ze samen natellen.", "12. Samen telden we 12 appels.").
    Mogen die ook de nieuwe zinnen krijgen? Advies: ja.
 5. Mag Ruth de nieuwe zinnen inspreken (zie de schatting hierboven)? Advies: pas na jouw ja op punt 1.
+
+## Ronde 50 — jouw antwoorden op ALLE-VRAGEN.md DEEL B (19 november 2026) en de lijst met zelf bedachte keuzes
+
+**Besloten door Sara (alle 9: ja).** Vastgelegd in BOUWREGELS.md (kader bovenaan, "Besluiten van 19 november 2026").
+- B1 ja: eigen invulling Rekenmix 2, 3 en 4 goedgekeurd (15.25).
+- B2 ja: de 12 andere Rekenmix-lessen wachten (15.16, 15.25).
+- B3 ja: Splitsen extra houdt de plus/min-machine en het doel 8 of 10 (15.43, uitzondering op 14.26).
+- B4 ja: "Delen" mag; eigen foute keuzes mogen onder voorwaarden (11.5 aangepast, 15.44). Lijst hieronder.
+- B5 ja: voorbeeldpagina strenger: alleen voor Testkind bewaren. **Code-klus, nog niet gedaan** (TODO in PRIVACY.md punt C).
+- B6 ja: naam hardop en denkfouten bewaren regelen vóór echte kinderen, met juridische controle (PRIVACY.md, 15.42).
+- B7 ja: de opdracht blijft in beeld terwijl Bliepo hardop telt, in alle gouden lessen (15.47). **Code-klus, nog niet gedaan.**
+- B8 ja: "Optellen onder de 10" later "veld" in plaats van "rooster" (DESIGN-LATER.md; pas als die les wordt omgezet).
+- B9 ja: de vaste rijtjes nalopen met oud naast nieuw. **Volgende klus, nu niet uitgevoerd** (DESIGN-LATER.md).
+
+**Volgende klus (niet nu): de vaste rijtjes nalopen.** Lof, "nu is het goed", eindzinnen en groet (gedeeld, `squla-klok-gouden-zinnen.ts`; rijtje in BLIEPO-KARAKTER.md). Oud naast nieuw, jij kiest per zin. Daarbij ook het woord "nagekeken" eruit (15.45).
+
+### Zelf bedachte antwoordkeuzes (niet uit Squla) in de gouden lessen (regel 11.5 / 15.44)
+
+Alleen gezocht en gelezen; **er is niets aan de lessen veranderd.** In de gewone vragen van de gouden lessen zijn de keuzes die van Squla (de WIJZIGINGEN-ZINNEN-bestanden zeggen overal "keuzes niet veranderd"). Zelf bedachte keuzes staan alleen in uitleg-, tussen- en bonusvragen en in de 3 extra lessen. "Afgeleid" = de code zegt niet of de foute keuze uit het Synthesis-draaiboek komt of zelf is gekozen.
+
+| Les | Vraag | Keuzes (goed vet) | Zelf bedachte foute keuze en denkfout | Bron |
+|---|---|---|---|---|
+| Minsommen (squla-min-machine-1-gouden), uitleg machine | Wat gebeurt er met het totaal als er een stip bij komt? | **Het wordt groter.** / Het wordt kleiner. | "Het wordt kleiner." (denkfout: aan aftrekken gedacht of niet naar de teller gekeken; niet zeker) | squla-minsommen-gouden-zinnen.ts r. 213–233; uitleg uit het Synthesis-draaiboek (Ronde 46, 24.5) |
+| Minsommen, uitleg machine | Hoe heet het als je er steeds stippen bij doet? | **Optellen** / Aftrekken / Delen | "Aftrekken" (plus en min verwisseld) en **"Delen"** (zelf bedacht; jij zei ja, B4) | squla-minsommen-gouden-zinnen.ts r. 235–258 |
+| Klok (squla-klok-hoelaat-1-gouden), tussendoor (draaiboek stap 19) | Welke wijzer liet het uur zien? | **de kleine wijzer** / de grote wijzer | "de grote wijzer" (wijzers verwisseld) | squla-klok-gouden-zinnen.ts r. 541–544 |
+| Klok, tussendoor | Waar wijst de grote wijzer? | **12** / het uur van de klok | het uur (wijzers verwisseld) | squla-klok-gouden-zinnen.ts r. 547 |
+| Klok, bonus (stap 20) | Het is nu 12 uur. Hoe laat is het over 1 uur? | **1 uur** / 11 uur / 12 uur | "11 uur" (terug in de tijd), "12 uur" (bleef bij nu) | squla-klok-gouden-zinnen.ts r. 553–557 |
+| Splitsen extra (squla-splits-splitsen1-1-gouden-extra) | Wat staat er in het totaal? | **5** / 3 / 2 | 3 en 2 (een deel genoemd in plaats van het totaal) | squla-splitsen-extra-zinnen.ts r. 151; draaiboek §3 B.2 |
+| Splitsen extra | Welke som heb je gemaakt? | **de som van de machine** / 4 + 2 = 6 / 2 + 5 = 7 | 4 + 2 = 6 en 2 + 5 = 7 (afgeleid) | squla-splitsen-extra-zinnen.ts r. 167 |
+| Splitsen extra | Tussenvraag na een fout | **5** / 4 / 32 | 4 (1 te weinig), 32 (cijfers naast elkaar gezet) | squla-splitsen-extra-zinnen.ts r. 189–193; draaiboek §3 C.2 |
+| Splitsen extra | Nieuw totaal van 7 | **7** / 8 / 6 | 8 en 6 ("net iets te veel"/te weinig) | squla-splitsen-extra-zinnen.ts r. 196–197; draaiboek §3 B.2 |
+| Splitsen extra | Nog een getal: Splits 8 of Splits 10 | geen goed of fout (eigen keuze) | doel 10 in plaats van 12 (B3: ja) | squla-splitsen-extra-zinnen.ts r. 42–43 |
+| Plussommen extra (squla-plus-bakkerij-1-gouden-extra) | Welk getal is dit? / Hoeveel samen? | **het getal** en 2 getallen er vlak naast (1 of 2 ernaast) | 1 of 2 ernaast (verkeerd geteld; afgeleid) | squla-plussommen-extra-zinnen.ts r. 126 (`dichtbij`) |
+| Plussommen extra | Welke som hoort erbij? | **p + q = 10** / p + q = pq (bv. 3 + 7 = 37) / groot − klein = 10 | cijfers naast elkaar, min in plaats van plus | squla-plussommen-extra-zinnen.ts r. 212–214 |
+| Plussommen extra | Omwisselen: hoeveel nu? | **10** / 9 / 11 | 9 en 11 ("net te hoog", verkeerd geteld) | squla-plussommen-extra-gouden.tsx (omwisselen); draaiboek §3 F |
+| Tellen extra (squla-tellen-fruit-1-gouden-extra) | Welk fruit heeft er … ? | **het goede fruit** / de andere fruitsoorten | ander fruit (verkeerde soort geteld; afgeleid) | squla-tellen-extra-gouden.tsx r. 209 |
+| Tellen extra | Peren en pruimen samen | **7** / 4 / 6 | 4 (alleen de pruimen), 6 (1 te weinig) | squla-tellen-extra-zinnen.ts r. 77, 202 |
+
+**Graag een besluit (ja of nee):**
+1. Zijn deze zelf bedachte keuzes goed volgens jouw nieuwe regel (11.5 / 15.44)? Advies: ja; ze laten allemaal een duidelijke denkfout zien en het juiste antwoord blijft gelijk. Twijfel: "32" (Splitsen extra) en "p + q = pq" (Plussommen extra) zijn lastig voor groep 3; die komen uit het Synthesis-draaiboek (32 zeker, pq afgeleid).
+2. **Botsing:** jij zei op 19 november "inspiratie uit Synthesis mag, maar nooit hun zinnen vertalen of kopiëren" voor onze gouden lessen (15.41). Op 17 november zijn in de gouden les **Tellen** 12 zinnen van Synthesis (Color Count) in het Nederlands verwerkt (onderaan WIJZIGINGEN-ZINNEN-TELLEN.md). Moeten die 12 zinnen in eigen woorden herschreven worden? Advies: ja, als aparte klus met oud naast nieuw. Er is nu niets veranderd.
+3. CLAUDE.md zegt nog "een startvraag alleen waar het draaiboek er een heeft (nu de klok; vierde ronde)". Jouw nieuwe besluit: in elk onderwerp waar Synthesis hem heeft (Klok, Splitsen, Getallenlijn). CLAUDE.md pas ik niet zelf aan. Wil je dat het daar ook wordt bijgewerkt? Advies: ja.

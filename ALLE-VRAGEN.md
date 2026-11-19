@@ -15,6 +15,8 @@ Dit is alleen een lijst. Er is niets aan de lessen veranderd.
 
 # DEEL B — Sara moet echt beslissen
 
+> **BEANTWOORD (Sara, 19 november 2026): B1 t/m B9 allemaal "ja".** Vastgelegd in BOUWREGELS.md (kader "Besluiten van 19 november 2026", 11.5, 15.41 t/m 15.48), PRIVACY.md, DESIGN-LATER.md en KEUZES-VOOR-SARA.md Ronde 50. Nog uit te voeren als aparte klus: B5 (code voorbeeldpagina), B7 (opdracht in beeld bij hardop tellen), B9 (rijtjes nalopen).
+
 Zet achter elk nummer **ja** of **nee**.
 
 **B1. Rekenmix 2, 3 en 4: eigen invulling goedkeuren?**

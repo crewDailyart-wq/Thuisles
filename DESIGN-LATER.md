@@ -61,3 +61,9 @@ De ronde afspeelknop (geplakte link of verversen in een gouden les) is alleen ge
 
 ## PROPOSED / UNDECIDED: een beloning bij een goed antwoord (Sara, 19 november 2026)
 Idee van Sara: bij een goed antwoord een beloning, zoals een sleutel of iets anders. **Nog niet besloten en nu NIET bouwen.** Wat er al is: alleen een lege geluidsplek "beloning" (`public/geluiden/beloning.wav`, lib/reactiegeluid.ts, BOUWREGELS 15.40); niets speelt hem af. Nog te beslissen: wat de beloning is (sleutel, ster, iets anders), wanneer (elk goed antwoord, een paar op rij, aan het eind), hoe hij eruitziet en klinkt, en of hij bewaard wordt (voortgang, harde regel 2).
+
+## Later: "Optellen onder de 10" ook "veld" in plaats van "rooster" (besluit Sara, 19 november 2026)
+In de gouden lessen werd het woord "rooster" "veld" (WIJZIGINGEN-ZINNEN-PLUSSOMMEN.md). De gewone les "Optellen onder de 10" (geen gouden les) krijgt dat ook, **maar pas als die les naar het gouden skelet wordt omgezet** (bestaande lessen pas later, na akkoord van Sara; BOUWREGELS 15.8, 15.14). Nu niets aan die les veranderen. Bron: ALLE-VRAGEN.md B8, KEUZES-PLUSSOMMEN.md vraag 6.
+
+## Volgende klus: de vaste rijtjes nalopen (besluit Sara, 19 november 2026)
+De gedeelde vaste rijtjes (lof, "nu is het goed", eindzinnen, groet; o.a. in `src/components/les/lessen/squla-klok-gouden-zinnen.ts`, die alle gouden lessen gebruiken, en het rijtje in BLIEPO-KARAKTER.md) nalopen: warmer maken, kale cijfers, het woord "nagekeken" eruit (BOUWREGELS 15.45). **Een aparte klus, nu NIET uitvoeren.** Werkwijze: oud naast nieuw in een eigen WIJZIGINGEN-ZINNEN-RIJTJES.md, zodat Sara het eerst ziet en per zin ja of nee zegt. Pas daarna in de code. Geen Ruth-opnames (pas aan het eind). Bron: ALLE-VRAGEN.md B9, KEUZES-VOOR-SARA.md Ronde 49 punt 3 en Ronde 50.

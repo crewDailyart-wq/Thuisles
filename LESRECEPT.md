@@ -1,5 +1,19 @@
 # LESRECEPT — zo bouw je een gouden les
 
+> ## ⭐ BESLUITEN VAN 10 TOT 19 NOVEMBER 2026 — geldt voor elke gouden les (kort; de volledige regel staat in BOUWREGELS.md)
+> - **Bliepo praat door; de pijl rechts is een snelkoppeling** (15.27). **Afspeelknop als vangnet** bij een geplakte link of na verversen (15.38).
+> - **Niets dubbel:** niets 2 keer uitgesproken (15.29), dezelfde tekst nooit 2 keer tegelijk op het scherm (15.31).
+> - **Elke stap waarin het kind iets doet heeft een vraag of opdracht in beeld** (15.37, F16). **De opdracht blijft ook in beeld terwijl Bliepo hardop telt** (15.47; nog uit te voeren).
+> - **Keuzes rechts onder Bliepo's zin**, ook bij Vormen en Meten (15.32). **Een gekozen keuze krijgt alleen een vinkje, geen gloed**, ook bij Meten (7.6, 15.33).
+> - **Geen witte rand om plaatjes, niets zweeft, geen disco** (15.33, 15.34, 15.35). **Opdrachtzinnen helder en kort** (15.36); **alle nieuwe zinnen grammaticaal correct en kindvriendelijk voor groep 3** (15.48).
+> - **Bij goed in 1 keer soms alleen het groene scherm** (ongeveer 1 op 3, 15.39). **Geluidssysteem met vaste plekken** (15.40). **Een beloning** (zoals een sleutel) is PROPOSED / UNDECIDED: niet bouwen (DESIGN-LATER.md).
+> - **Het woord "nagekeken" is weg** (15.45). **De eindkaart staat links naast het tekstvak** (15.46).
+> - **De startvraag komt in elk onderwerp waar Synthesis hem heeft** (bijvoorbeeld Klok, Splitsen, Getallenlijn; BOUWREGELS hoofdstuk 4, aanpassing 19 nov).
+> - **Synthesis: inspiratie mag, maar nooit hun zinnen kopiëren of vertalen** in onze gouden lessen (15.41). Alleen de lessen in Synthesis-stijl mogen Synthesis-tekst vertalen.
+> - **Stemopties per les (skelet):** `pijlZoalsSynthesis`, `stemHeelUitpraten` en `woordenMeeMetStem` aan (15.27 punt 5, 3.7).
+> - **Eigen foute antwoordkeuzes** alleen onder de voorwaarden van 11.5 en 15.44, en elke zelf bedachte keuze in KEUZES-VOOR-SARA.md.
+> - **Privacy:** PRIVACY.md (15.42). **Splitsen extra:** plus/min-machine en doel 8 of 10 (15.43).
+
 > ## ⭐ UITGANGSPUNT (Sara, 9 november 2026, zesde ronde; BOUWREGELS 15.10)
 > **Het skelet van elke les komt van Synthesis; het karakter en de foutaanpak zijn van Bliepo.**
 > - **Van Synthesis (skelet):** het verloop, het tempo, het hulphandje, het oplichten, de bonusvraag, alles in eigen woorden.
@@ -40,7 +54,7 @@
 > - **Geen getal over een ding dat het kind moet pakken** (het totaal in het dak pas als het hoopje leeg is).
 > - **Een knop die voor het eerst verschijnt, 1 keer uitleggen** (3.15), en hem daarna niet vanzelf laten oplichten terwijl het kind nog bezig is. Let op: het lesscherm haalt elke zin met het woord "vinkje" weg (besluit 30 oktober); zeg dus "deze knop" terwijl de knop oplicht.
 > - **Dezelfde lange opdrachtzin niet steeds herhalen:** de eerste keer(en) helemaal, daarna korter en afwisselend, met dezelfde getallen en dezelfde handeling.
-> - **"Ja" ook midden in de lofzin tellen** ("Even nakijken… ja, goed!" + "Ja, …" mag niet); **"nakijken" hooguit 2 keer per les** in lof, momenten en reacties samen.
+> - **"Ja" ook midden in de lofzin tellen** ("Even nakijken… ja, goed!" + "Ja, …" mag niet); **"nakijken" hooguit 2 keer per les** in lof, momenten en reacties samen. **[19 november 2026: het woord "nagekeken" komt helemaal niet meer voor (BOUWREGELS 15.45); voor dat woord is "hooguit 2 keer" VERVALLEN.]**
 > - **Komt de blauwe pijl voor het eerst na een hint,** dan niet "Klaar met kijken?" maar "Tik op de blauwe pijl als je het nog eens wilt proberen."
 > - **Het beginscherm heeft altijd een uitlegdeel** (wat je in deze les doet), ook vóór een startvraag (4.3).
 > - **Geldt ook voor eerder gebouwde gouden lessen** (niet door mij veranderd, eerst Sara): Tellen en de klokles kijken alleen naar "ja" vooraan in de lofzin en zeggen "Klaar met kijken?" ook als de eerste pijl na een fout komt; de klokles herhaalt het uitlegvoorbeeld (3 uur) als eerste vraag.
@@ -262,7 +276,7 @@ Lees in deze volgorde:
 
 ## 2. Voorbereiden
 
-1. **Kies het draaiboek.** Zoek je onderwerp op in KOPPELING.md. Is de les "vervangend" of staat het onderwerp op "laten liggen" (Vormen, Rekenmix, Geld, Tijd/Dagen, Meten), dan bouw je niet en meld je dat.
+1. **Kies het draaiboek.** Zoek je onderwerp op in KOPPELING.md. Is de les "vervangend" of staat het onderwerp op "laten liggen" (Vormen, Rekenmix, Geld, Tijd/Dagen, Meten), dan bouw je niet en meld je dat. **[VERVALLEN sinds 9 november 2026 (BOUWREGELS 15.25, reden: Sara besloot alle gouden lessen achter elkaar te bouwen): ook Meten, Geld, Vormen, Dagen, Tijd, Rekentaal en Rekenmix krijgen een gouden les; zonder Synthesis-les met exact hetzelfde skelet en "eigen invulling, niet van Synthesis". Rekenmix-lessen zonder gouden les voor hun soort vraag wachten (besluit Sara 19 nov, B2).]**
 2. **Check of het draaiboek bouwklaar is** (15.4). Staan er punten onder NIET GEZIEN die jouw les raken, schrijf ze op. Vul ze nooit op met een gok.
 3. **Maak een koppellijst.** Zet in een tabel naast elkaar: elke stap van het draaiboek, en welke Squla-vraag of -uitleg daar komt. Elke draaiboekstap krijgt een stap in onze les, in dezelfde volgorde.
 4. **Tel de vragen.** Alle vragen van de Squla-les komen erin, geen enkele valt weg en er komt er geen bij (zie 4). Minimaal 15 (11.1).
@@ -289,7 +303,7 @@ Volg per stap het draaiboek. Hieronder staat wat bij elke stap altijd geldt.
 
 ### 3.1 Beginscherm
 - Standaard **geen startvraag** (hoofdstuk 4, besluit 12). Bliepo vertelt in een eigen zin wat het kind in deze les gaat doen (4.3, 4.4), en dan komt de eerste stap.
-- Heeft het draaiboek wél een startvraag (nu alleen de klok), dan: **Ja = een proef van 2 opgaven; maakt het kind in de proef 2 fouten, dan krijgt het alsnog de uitleg (de Nee-route van BOUWREGELS 4.5). Nee = de uitleg.** Heeft het draaiboek geen startvraag, dan komt er ook geen (4e ronde).
+- Heeft het draaiboek wél een startvraag (nu alleen de klok **[VERVALLEN 19 november 2026: in elk onderwerp waar Synthesis hem heeft, bijvoorbeeld Klok, Splitsen en Getallenlijn; groet en startvraag in 1 alinea, 15.37]**), dan: **Ja = een proef van 2 opgaven; maakt het kind in de proef 2 fouten, dan krijgt het alsnog de uitleg (de Nee-route van BOUWREGELS 4.5). Nee = de uitleg.** Heeft het draaiboek geen startvraag, dan komt er ook geen (4e ronde).
 - Nooit een "Weet ik niet"-knop (1.27).
 - **Afspeelknop als vangnet (DEFINITIEF, Sara 19 november 2026, BOUWREGELS 15.38):** via een klik in het lesoverzicht geen knop, Bliepo praat meteen. Houdt de browser het geluid tegen (geplakte link, verversen), dan alleen de lesachtergrond met 1 grote ronde oranje afspeelknop (Magnific-plaatje, stijl B), zonder tekst en zonder tekstvak; na de tik begint de les meteen met Bliepo's groet. Dit regelt het gedeelde lesscherm vanzelf voor elke les met `stemHeelUitpraten` en "-gouden" in de id; niets aan de les zelf bouwen, en geen startzin zoals "Tik op het scherm" toevoegen.
 
@@ -309,10 +323,12 @@ Volg per stap het draaiboek. Hieronder staat wat bij elke stap altijd geldt.
 - Het goede antwoord staat niet steeds op dezelfde plek (1.23).
 - Kleur van een getal = kleur van het voorwerp waar het naar verwijst; **wit alleen voor een getal zonder voorwerp** (2.1, 2.2, 14.27).
 - Een vakje om een getal alleen als de plek anders niet als invulplek of keuze te herkennen is (1.4, 2.4).
+- **Keuzes staan rechts, direct onder Bliepo's zin** (15.32), ook bij Vormen en Meten. Alleen keuzes die zelf voorwerpen in het beeld zijn (munten, kaartjes op de toonbank) blijven in het beeld.
+- **Eigen foute keuzes** alleen onder de voorwaarden van BOUWREGELS 11.5 en 15.44; zet elke zelf bedachte keuze in KEUZES-VOOR-SARA.md.
 
 ### 3.5 Nakijken
 - **Keuzevraag:** de tik is het antwoord, de knoppen verdwijnen meteen; geen gloed en geen rood om de keuze (6.5, 7.6, 7.8a).
-- **Tikken op een groep in beeld:** de gekozen groep krijgt **alleen een vinkje**, geen gele rand en geen gloed. Nog een tik haalt het vinkje weg (6.5, 7.8a).
+- **Tikken op een groep in beeld:** de gekozen groep krijgt **alleen een vinkje**, geen gele rand en geen gloed. Nog een tik haalt het vinkje weg (6.5, 7.8a). **Ook bij Meten** (gouden les, 19 november 2026): het gekozen kaartje krijgt alleen een vinkje, geen gloed (7.6, 15.33).
 - **Invullen, slepen, zetten:** de knop Controleer (vinkje).
 - **Splitsen:** vanzelf nagekeken zodra het totaal klopt. Elk juist antwoord telt als goed (14.30).
 - De reactie van Bliepo begint 0,2 tot 0,4 seconde na de klik (6.10).
@@ -329,7 +345,7 @@ Volg per stap het draaiboek. Hieronder staat wat bij elke stap altijd geldt.
 ### 3.7 Fout (1e, 2e) — 9 november 2026: 2 pogingen, de 3e is vervangen (15.11)
 **Nieuw (15.11):** 1e fout = hint uit de fouttabel en nog 1 keer proberen. 2e fout = Bliepo legt het uit **en doet het samen voor** (het goede antwoord nu in beeld, het kind doet 1 kleine stap); daarna gaat de les verder. Goed na een fout = alleen een korte bevestiging. Wat hieronder over de 3e poging staat, is vervangen.
 
-Bij elke fout: Bliepo's scherm kleurt 1,5 seconde rood, geen fout-geluidje, nooit het woord "fout", geen rood op de keuze (5.3).
+Bij elke fout: Bliepo's scherm kleurt 1,5 seconde rood, geen fout-geluidje, nooit het woord "fout", geen rood op de keuze (5.3). **["geen fout-geluidje" is in de gouden lessen VERVALLEN op 19 november 2026: zie de regel Geluid hieronder (15.40).]**
 **Geluid (Sara, 19 november 2026, BOUWREGELS 15.40):** in de gouden lessen klinkt bij nog niet goed eerst het heel zachte, neutrale `public/geluiden/nog-niet-goed.wav` (geen zoemer), daarna Bliepo's zin. Het lesscherm doet dit vanzelf bij `bliepoScherm("fout")`.
 **Vijfde ronde (BOUWREGELS 15.9):** alles hieronder komt uit de **fouttabel** van de vraag (stap 2.7). 1e fout: vraag en knoppen even weg, eerste zin plus hint voor de denkfout, het beeld uit de tabel, dan komt de vraag terug. 2e fout: uitleg die past bij de denkfout van de nieuwe keuze, zonder het antwoord. 3e fout: samen voordoen en door. **Twee keer dezelfde denkfout:** Bliepo zegt dat vriendelijk en legt het op een andere manier uit. Nooit dezelfde zin 2 keer achter elkaar. De denkfout gaat naar de voortgang.
 - **1e fout:** een korte reactie op wat het kind koos. Een hint in beeld alleen als die bij de vraag past. Het kind probeert meteen opnieuw (5.1). Bij een keuzevraag verdwijnt de vraag tijdens de hint, maar de hint zegt waar het over gaat; bij een opdracht blijft de opdrachtregel staan (14.32). De hint wijst naar precies 1 keuze (14.31).
@@ -371,6 +387,7 @@ Bij elke fout: Bliepo's scherm kleurt 1,5 seconde rood, geen fout-geluidje, nooi
 ### 3.12 Einde
 - Een eindzin uit het rijtje in BLIEPO-KARAKTER.md (3.13).
 - Verder zoals het draaiboek (bijvoorbeeld een eindkaart), in onze eigen stijl.
+- **De eindkaart staat links naast het vaste tekstvak** (BOUWREGELS 15.46; regelt het gedeelde lesscherm bij `stemHeelUitpraten`). Bliepo's laatste zin loopt nooit over de kaart; geen pijl op de eindkaart.
 
 ---
 
@@ -379,7 +396,7 @@ Bij elke fout: Bliepo's scherm kleurt 1,5 seconde rood, geen fout-geluidje, nooi
 > **⭐ DEFINITIEF (Sara, 10 november 2026, nieuwe regel; BOUWREGELS 15.27): Bliepo praat door.** Na elk stuk tekst gaat de les vanzelf verder, ±0,7 s nadat de zin klaar is, ook na lof, uitleg en de hint na een fout. Het kind hoeft nooit op de pijl te wachten. De pijl staat rechts onder de tekst als snelkoppeling (Sara's keuze; Synthesis: links): een tik stopt de stem en gaat meteen door. Alleen bij vragen en opdrachten wacht de les op het antwoord; daar staat geen pijl (ook niet tijdens de opdrachtzin). Geen pijl bij het hulphandje en de eindkaart. **Skelet van elke nieuwe of omgezette gouden les:** `pijlZoalsSynthesis: true` en `stemHeelUitpraten: true` in het draaiboek (zie zegDoor en zegOpdracht in squla-klok-gouden.tsx; lib/stem.ts heelUitpraten). Nu alleen in de gouden klokles.
 > *[VERVANGEN op 10 november 2026, was een foutje; ter herinnering.] Eerdere regel: "de hint na de 1e fout en uitleg die iets nieuws afsluit wachten op een tik; bij een opdracht een pijl tijdens de opdrachtzin". Daarvóór: "elk blok eindigt met de pijl, nooit vanzelf door".*
 
-- **Letterlijk overnemen** van Synthesis: geen tekst, audio, beelden of code, ook niet vertaald (15.2). Wel dezelfde betekenis op hetzelfde moment.
+- **Letterlijk overnemen** van Synthesis: geen tekst, audio, beelden of code, ook niet vertaald (15.2). Wel dezelfde betekenis op hetzelfde moment. **[Bevestigd 19 november 2026 (BOUWREGELS 15.41): in onze gouden lessen nooit Synthesis-zinnen kopiëren of vertalen; inspiratie mag. De uitzondering van 17 november ("tekst mag vertaald") geldt alleen nog voor de lessen in Synthesis-stijl.]**
 - **Letterlijk overnemen van Squla:** geen teksten, plaatjes of geluiden (11.5).
 - **Eigen vragen toevoegen** die niet in de Squla-les staan, of nieuwe leerdoelen bedenken (11.11).
 - **Vragen of keuzes weglaten**, ook foute keuzes niet (1.25, harde regel 3). Wat toch weg moet, eerst vragen.
@@ -411,7 +428,7 @@ Test als **Testkind** (groep 3), nooit als een echt kind (12.1). Speel elke situ
 | Voortgang | Per vraag: goed in één keer, goed na een fout of samen gedaan; alleen "goed in één keer" telt mee voor beheersing |
 | Spiegelbeeld | Bijvoorbeeld 10 kiezen bij 2: eigen denkfout `spiegelbeeld`, eerste zin zegt links/rechts |
 | Lang wachten (30 s of meer) | Opdracht: hulphandje vanzelf met 1 korte zin na 5 à 6 s. Keuzevraag: geen aanwijzing. Les loopt nooit vast (5.7) |
-| Startvraag (alleen klok) | Ja = proef van 2 opgaven; 2 fouten in de proef = alsnog de uitleg |
+| Startvraag (alleen klok; **19 nov: elk onderwerp waar Synthesis hem heeft, bv. Klok, Splitsen, Getallenlijn**) | Ja = proef van 2 opgaven; 2 fouten in de proef = alsnog de uitleg; groet en startvraag samen in 1 alinea (F16) |
 | Groep tikken | Alleen een vinkje, geen rand of gloed; nog een tik haalt het vinkje weg |
 | Heel snel (0,3 s) | Alleen een korte opmerking als het draaiboek er een heeft; bij Tellen, Min en Getallenlijn niets |
 | **Elk fout antwoord apart** (vijfde ronde) | Kies per vraag elk fout antwoord uit de fouttabel minstens 1 keer. Klopt de eerste zin met de denkfout? Past de hint bij wat je ziet? Verklapt niets het antwoord? Is de denkfout bewaard? |
