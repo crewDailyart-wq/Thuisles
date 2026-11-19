@@ -21,6 +21,8 @@ import { spawn, execFileSync } from "node:child_process";
 import { mkdtempSync, rmSync, existsSync, mkdirSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
+import { langsStartknop, PIJL_PUNT_JS } from "./startknop-hulp.mjs";
+import { gesteldOp } from "./f8-hulp.mjs";
 
 const BASIS = "http://localhost:3000";
 const LES = process.env.LES ?? "squla-meten-oppervlakte-1-gouden";
@@ -187,13 +189,25 @@ async function pagina() {
     const p = await ev(`(() => { const r = document.body.getBoundingClientRect(); return { x: r.width * 0.3, y: r.height * 0.1 }; })()`);
     if (p) await tik(p);
   }
+  /* 15.38: de afspeelknop-laag (alleen tot de browser geluid toestaat): zoals een kind op de startknop tikken of wachten tot hij weg is. */
+  if ((await langsStartknop(ev, tik)).weg === false) console.log("  LET OP: de afspeelknop-laag lag er na 9 s nog");
   const log = () => ev(`JSON.stringify(window.__gouden ?? [])`).then((x) => JSON.parse(x ?? "[]"));
   const nu = () => ev(`(() => { const b = document.querySelector('[data-knop="verder"]'); const taak = (window.__phaser?.mtTaak ?? null); return { pijl: !!b && b.getBoundingClientRect().width > 3, tekst: [...document.querySelectorAll(".bliepo-tekst")].map((e) => e.textContent.replace(/\\s+/g, " ").trim()).filter(Boolean), taak, kaart: !!document.querySelector('button[aria-label$="af te vinken"], [data-kaart] button, button[aria-label*="kaart"]'), t: Math.round(performance.now()) }; })()`);
   const klikTekst = (t) => ev(`(() => { const b = [...document.querySelectorAll("button")].find((b) => (b.textContent || "").trim() === ${JSON.stringify(t)} && b.getBoundingClientRect().width > 3); if (!b) return false; b.click(); return true; })()`);
   /* Zoals een kind: een echte muisklik op de plek waar de pijl staat (geen b.click()). Meldt als er iets anders boven de pijl ligt. */
   const klikPijl = async () => {
-    const p = await ev(`(() => { const b = document.querySelector('[data-knop="verder"]'); if (!b) return null; const r = b.getBoundingClientRect(); if (r.width < 3) return null; const x = r.left + r.width / 2, y = r.top + r.height / 2; const e = document.elementFromPoint(x, y); return { x, y, raak: !!e && (e === b || b.contains(e)), wat: e ? (e.getAttribute("aria-label") || e.className || e.tagName) : null }; })()`);
+    const p = await ev(PIJL_PUNT_JS);
     if (!p) return false;
+    /* 15.38: ligt de afspeelknop-laag er nog, dan is hij nog bedoeld (geen storende laag): eerst zoals een kind langs de
+       startknop (scripts/startknop-hulp.mjs), daarna opnieuw de pijl zoeken. */
+    if (!p.raak && p.laag) {
+      const st = await langsStartknop(ev, tik);
+      if (!st.weg) {
+        fout("de afspeelknop-laag bleef over de les liggen");
+        return false;
+      }
+      return klikPijl();
+    }
     if (!p.raak) fout(`iets anders ligt boven de pijl: ${p.wat}`);
     await tik(p);
     return true;
@@ -505,7 +519,8 @@ async function controleer(P, naam) {
     for (let i = 0; i < starts.length; i++)
       for (let j = i - 1; j >= 0 && starts[i].t - starts[j].t < 20000; j--)
         if (starts[j].z === starts[i].z) {
-          if (!acties.some((t) => t > starts[j].t && t <= starts[i].t)) {
+          /* F8: een actie telt vanaf het moment dat de les de uiting stelde (scripts/f8-hulp.mjs), niet pas vanaf de start van de stem. */
+          if (!acties.some((t) => t > gesteldOp(l, starts[j]) && t <= starts[i].t)) {
             dubbel++;
             if (dubbel <= 3) fout(`${naam}: F8 dezelfde uiting 2 keer gestart zonder actie (${starts[i].t - starts[j].t} ms): ${starts[i].z.slice(0, 70)}`);
           }

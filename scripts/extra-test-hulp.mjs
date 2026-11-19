@@ -17,6 +17,7 @@ import { spawn, execFileSync } from "node:child_process";
 import { mkdtempSync, rmSync, existsSync, mkdirSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
+import { langsStartknop } from "./startknop-hulp.mjs";
 import { korteDubbel, opnameDubbel } from "./dubbel-controle.mjs";
 import { DUBBELE_TEKST_METER, dubbeleTekstFouten } from "./dubbele-tekst-controle.mjs";
 
@@ -92,6 +93,8 @@ export async function start(les, { venster = [1440, 900], fotoMap = process.env.
   await wacht(400);
   const p0 = await ev(`(() => { const r = document.body.getBoundingClientRect(); return { x: r.width * 0.3, y: r.height * 0.1 }; })()`);
   if (p0) await tik(p0);
+  /* 15.38 (19 nov 2026): de afspeelknop-laag (alleen tot de browser geluid toestaat): zoals een kind op de startknop tikken of wachten tot hij weg is. */
+  if ((await langsStartknop(ev, tik)).weg === false) console.log("  LET OP: de afspeelknop-laag lag er na 9 s nog");
 
   /** Een echte muisklik midden op het eerste zichtbare ding dat bij de kiezer past. */
   const tikKiezer = async (sel, tekst) => {
