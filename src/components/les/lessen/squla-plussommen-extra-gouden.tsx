@@ -231,6 +231,8 @@ async function aanvullen(l: Lesgids, vak: Werkvlak, id: string, gekozen: number,
       else leg(vak, 1, nodig);
       vak.goed(0);
       await l.wacht(DENK_MS);
+      /* 15.40 (F20): ook na samen doen het groene scherm en het geluid (goed-na-hulp). */
+      B.goedMoment(l);
       await B.zegDoor(l, zelf ? variant("samenZelf", ZIN.samenZelf(gekozen, nodig, doel)) : variant("samenGoed", ZIN.samenGoed(gekozen, nodig, doel)));
       return B.noteer(l, id, "samen");
     }

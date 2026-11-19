@@ -411,6 +411,8 @@ async function splitsOpdracht(l: Lesgids, o: Opdracht): Promise<{ uitkomst: Uitk
       s.lijst = [...s.lijst, { a: k, b: rest, t: o.T }];
       zet(l, { lijst: s.lijst });
       o.gehad.push([k, rest]);
+      /* 15.40 (F20): ook na samen doen het groene scherm en het geluid (goed-na-hulp). */
+      B.goedMoment(l);
       await B.zegDoor(l, zelf ? variant("samenZelf", ZIN.samenZelf(k, o.T)) : variant("samenKlaar", ZIN.samenKlaar(k, o.T)));
     };
     const hk2 = B.handKlok(l, { aan: () => zet(l, { hand: "plus1" }), uit: () => zet(l, { hand: null }), zin: `${aanmoedig()} ${variant("tikPlus", ZIN.tikPlus)}` });

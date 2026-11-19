@@ -104,3 +104,15 @@ Elke fout die Sara vindt komt hier, met de regel die erbij hoort (BOUWREGELS.md 
 - Oorzaak: het hoopje (2 rijen van 5) was breder dan het schuine dak op die hoogte.
 - Opgelost: het dak van het huisje hoger (opt-in `dakHoog`, alleen de gouden les) en het hoopje bij 6 tot 10 dingen iets kleiner. Er gaat niets weg.
 - Controle: schermfoto per vraag; kijk of er iets door een lijn steekt (15.34 punt 3).
+
+**F19. De opdracht verdween terwijl Bliepo hardop meetelde.** (besluit Sara 19 november 2026, ALLE-VRAGEN.md B7)
+- Wat mis was: bij samen tellen zei Bliepo "Tik op elke appel. Ik tel mee." Bij de eerste tik zei hij "1 appel." en die zin verving de opdracht in zijn tekstvak. Het kind zag alleen nog "3 appels." en niet meer wát het moest doen. Gezien bij Tellen, Minsommen, Meer-minder en Meten.
+- Regel: BOUWREGELS 15.47. De opdracht blijft bovenaan staan; het getal komt eronder en alleen het getal wordt gezegd (`zegTelwoord` in `squla-hulp.ts`, `l.zegBijOpdracht` in het lesscherm).
+- Gecontroleerd in alle 21 gouden lessen: dezelfde fout in 9 lessen (Tellen, Tellen extra op 2 plekken, Rekenmix 1, 3 en 4, Meer-minder, Minsommen, Meten, Plussommen). Opgelost. In de andere lessen telt Bliepo niet hardop terwijl het kind tikt.
+- Controle: `scripts/vraag-aanwezig-controle.mjs` (in `node scripts/speelcontrole.mjs`, melding "15.47").
+
+**F20. Na samen tellen geen groen scherm en geen goed-geluid.** (19 november 2026, gevonden bij Tellen)
+- Wat mis was: na samen tellen zei Bliepo "En 12! Zoveel appels zijn het.", maar de les riep `bliepoScherm("goed")` niet aan. Het scherm werd niet groen en het geluid `goed-na-hulp.wav` klonk niet (15.40).
+- Regel: BOUWREGELS 15.49. Na samen doen altijd `bliepoScherm("goed")` vlak vóór de slotzin, ook na het vangnet.
+- Gecontroleerd in alle 21 gouden lessen: dezelfde fout in 9 lessen (Tellen, Tellen extra, Rekenmix 1, 2, 3 en 4, Plussommen, Plussommen extra, Splitsen extra). Opgelost. De andere 12 deden het al goed.
+- Controle: `ALLEFOUT=1 node scripts/speelcontrole.mjs`: bij GOED-REACTIE staat hoe vaak `goed-na-hulp` klonk.

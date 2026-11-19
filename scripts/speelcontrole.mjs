@@ -35,7 +35,7 @@ import { korteDubbel, opnameDubbel } from "./dubbel-controle.mjs";
 import { DUBBELE_TEKST_METER, dubbeleTekstFouten } from "./dubbele-tekst-controle.mjs";
 import { onthoudGoed, zonderAlGoed } from "./controlegeheugen.mjs";
 import { ZWEEF_METER } from "./zweef-controle.mjs";
-import { VRAAG_METER, vraagFouten } from "./vraag-aanwezig-controle.mjs";
+import { VRAAG_METER, telFouten, vraagFouten } from "./vraag-aanwezig-controle.mjs";
 
 /* F7-meter (10 nov 2026): de tekst van Bliepo en de pijl elke 100 ms, en elke tik. */
 const F7_METER = `
@@ -580,6 +580,11 @@ async function speel(c, id) {
       const vf = vraagFouten(r16.f);
       for (const f of vf) fouten.add(f);
       console.log(`  F16 ${id}: ${vf.length} keer wachten zonder vraag of opdracht in beeld (${r16.n ?? 0} wachtmomenten van 3 s beoordeeld${process.env.RUSTIG ? ", rustig" : `, ${r16.g ?? 0} keer stond de vraag er al toen de speler antwoordde`})`);
+      /* 15.47 (19 nov 2026): telt Bliepo hardop mee, dan blijft de opdracht in beeld. */
+      const r47 = JSON.parse((await ev(`JSON.stringify({ f: window.__f47 ?? [], g: window.__f47Geteld ?? 0 })`)) ?? "{}");
+      const tf = telFouten(r47.f);
+      for (const f of tf) fouten.add(f);
+      console.log(`  15.47 ${id}: ${tf.length} keer alleen een telwoord zonder opdracht (${r47.g ?? 0} keer telwoord met opdracht erboven)`);
     }
     /* 15.39/15.40 (19 nov 2026): stilte bij goed en de reactiegeluiden in de gouden lessen (Lesscherm.tsx). */
     if (id.includes("gouden")) {

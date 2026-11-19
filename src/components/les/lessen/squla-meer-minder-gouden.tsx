@@ -45,7 +45,7 @@ import type { Lesdraaiboek, Lesgids } from "../soort";
 import { KaartMeerMinder, type MMGroep, type MMOpgave } from "../vlakken/squla-meer-minder-vlak";
 import { MM_KLEUR, MM_VOORWERPEN } from "../vlakken/squla-meer-minder-tekenen";
 import { GoudenMMVlak, kaartPlek, kraalPlek, type GoudenMMProps } from "../vlakken/squla-meer-minder-gouden-vlak";
-import { zetTestAntwoord } from "./squla-hulp";
+import { zegTelwoord, zetTestAntwoord } from "./squla-hulp";
 import { speelLesgeluid } from "@/lib/lesgeluiden";
 import { bliepoScherm } from "@/lib/bliepo-scherm";
 import { bewaarUitkomst } from "@/app/lesuitkomstacties";
@@ -454,7 +454,8 @@ async function samenKralen(l: Lesgids, v: Telvraag, o: MMOpgave) {
   const hand = handKlok(l, () => kraalPlek(o, geteld), "samenHand", ZIN.samenHand);
   let eersteTik: (() => void) | null = null;
   const gedaan = new Promise<void>((r) => (eersteTik = r));
-  void zegOpdracht(l, [variant("samenJij", ZIN.samenJij(n))], gedaan).catch(() => {});
+  const opdracht = [variant("samenJij", ZIN.samenJij(n))];
+  void zegOpdracht(l, opdracht, gedaan).catch(() => {});
   hand.opnieuw();
   try {
     while (geteld < n) {
@@ -475,7 +476,8 @@ async function samenKralen(l: Lesgids, v: Telvraag, o: MMOpgave) {
       zet(l, { tel: { vak: 0, geteld, stil: true }, tellers: [geteld], kraal: klaar ? null : { volgende: geteld } });
       if (!klaar) {
         zetTestAntwoord(`kraal-${geteld}`);
-        void zeg(l, ZIN.samenTel(geteld)).catch(() => {});
+        /* 15.47: de opdracht blijft in beeld, het getal komt eronder. */
+        void zegTelwoord(l, opdracht, ZIN.samenTel(geteld)).catch(() => {});
         hand.opnieuw();
       }
     }

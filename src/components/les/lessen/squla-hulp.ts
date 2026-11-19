@@ -78,6 +78,15 @@ export function zetTestAntwoord(waarde: string | number | null | undefined) {
 }
 
 /**
+ * BOUWREGELS 15.47 (Sara, 19 november 2026; FOUTEN-VOORBEELDEN F19): Bliepo telt hardop mee terwijl het kind tikt
+ * ("2 appels."). De opdracht die hij net gaf ("Tik op elke appel.") blijft dan in zijn tekstvak staan, met het getal
+ * eronder; alleen het getal wordt gesproken. Voor alle gouden lessen met samen tellen op dezelfde manier.
+ */
+export function zegTelwoord(l: Lesgids, opdracht: string | readonly string[] | null, zin: string): Promise<void> {
+  return opdracht && l.zegBijOpdracht ? l.zegBijOpdracht(opdracht, zin) : l.zeg(zin);
+}
+
+/**
  * Verhaal en vraag samen in beeld (BOUWREGELS 14.25): Bliepo zegt de zinnen als één blok, zodat het verhaal niet
  * wegvalt en er niet alleen "Hoeveel euro houd je over?" of "Typ het getal." naast het plaatje blijft staan.
  * Geldt voor alle Squla-lessen; een vraag van één zin blijft zoals hij was.

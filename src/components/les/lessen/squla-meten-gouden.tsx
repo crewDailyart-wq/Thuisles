@@ -44,7 +44,7 @@ import type { MetenProps, MDing } from "../vlakken/squla-meten-vlak";
 import { KaartOppervlakte } from "../vlakken/squla-meten-vlak";
 import { METEN_VOORWERPEN } from "../vlakken/squla-meten-tekeningen";
 import { GoudenMetenVlak, kaartenVan, losseVan, omPunten, puntenVan, schilderijVan, vakkenVan, velVan, grootVan, type GoudenMetenProps, type Merk, type Punt } from "../vlakken/squla-meten-gouden-vlak";
-import { zetTestAntwoord } from "./squla-hulp";
+import { zegTelwoord, zetTestAntwoord } from "./squla-hulp";
 import { speelLesgeluid } from "@/lib/lesgeluiden";
 import { bliepoScherm } from "@/lib/bliepo-scherm";
 import { stopPraten, zegEnWacht } from "@/lib/stem";
@@ -638,7 +638,8 @@ async function telSamen(l: Lesgids, v: Vraag, indexen: number[], kleur: string, 
   const hand = handKlok(l, () => (open().length ? { plek: plekNaast(pts[open()[0]]) } : null), handZin);
   let eersteTik: (() => void) | null = null;
   const tikt = new Promise<void>((r) => (eersteTik = r));
-  void zegOpdracht(l, [variant("samenStap", opdracht)], tikt).then(() => hand.opnieuw(), () => {});
+  const opdrachtZin = [variant("samenStap", opdracht)];
+  void zegOpdracht(l, opdrachtZin, tikt).then(() => hand.opnieuw(), () => {});
   let zelf = false;
   try {
     while (open().length) {
@@ -659,7 +660,8 @@ async function telSamen(l: Lesgids, v: Vraag, indexen: number[], kleur: string, 
         haak(l, { soort: "telSamen", goed: `punt-${open()[0]}`, vraag: v.id });
         /* Bliepo zegt het getal bij elke tik; het laatste getal zegt hij in de zin erna ("En 10! Zo groot is de tafel."), niet
            eerst los en dan nog een keer in die zin (een getal klinkt nooit 2 keer achter elkaar; 18 november 2026). */
-        void zeg(l, ZIN.telGetal(geteld.length, kleur)).catch(() => {});
+        /* 15.47: de opdracht blijft in beeld, het getal komt eronder. */
+        void zegTelwoord(l, opdrachtZin, ZIN.telGetal(geteld.length, kleur)).catch(() => {});
       }
       hand.opnieuw();
     }

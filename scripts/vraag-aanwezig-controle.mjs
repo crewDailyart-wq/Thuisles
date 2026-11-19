@@ -18,6 +18,10 @@
  *   - uitzondering: midden in een opdracht van meer tikken (samen tellen: het kind tikt en Bliepo zegt alleen "3.")
  *     telt het niet als fout, zolang er alleen zulke korte woorden staan (hooguit 2 woorden) en de opdracht korter dan
  *     30 seconden geleden in beeld stond.
+ *   - MAAR (BOUWREGELS 15.47, Sara 19 november 2026; FOUTEN-VOORBEELDEN F19): telt Bliepo hardop mee, dan moet de
+ *     opdracht zelf in beeld blijven ("Tik op elke appel." met "3 appels." eronder). Staat er terwijl de les op een tik
+ *     wacht alleen nog een kort telwoord (hooguit 3 woorden, met een getal) en geen vraag of opdracht, dan komt dat in
+ *     window.__f47 (meteen, zonder 3 s te wachten). speelcontrole.mjs meldt het als fout "15.47".
  *
  * De speler in speelcontrole.mjs werkt mee: staat er geen opdracht in beeld, dan wacht hij met tikken tot de meter het
  * moment beoordeeld heeft. Met RUSTIG=1 wacht hij bij ELKE antwoordstap 3 seconden (trager, maar dan ziet de meter ook
@@ -41,7 +45,7 @@
  *     (bijvoorbeeld als het hulphandje komt), want de speler tikt dan al eerder.
  */
 export const VRAAG_METER = `
-  window.__f16 = []; window.__f16Beoordeeld = 0; window.__f16Gesproken = [];
+  window.__f16 = []; window.__f16Beoordeeld = 0; window.__f16Gesproken = []; window.__f47 = []; window.__f47Geteld = 0;
   (() => {
     const nu = () => Math.round(performance.now());
     const WERKWOORD = "tik|kies|sleep|tel|zet|leg|maak|typ|vul|zoek|wijs|druk|klik|pak|schuif|draai|geef|kleur|verdeel|splits|bouw|meet|weeg|noem|schrijf|trek|hang|ruim|vink|verplaats|breng|plak|knip|reken|vergelijk|verbind|stapel|spring|loop|tril|schud|gooi|sorteer|begin";
@@ -108,7 +112,7 @@ export const VRAAG_METER = `
     };
     /* Voor de begincontrole (zie onderaan dit bestand): wat staat er nu, en staat er een vraag of opdracht bij? */
     window.__f16Stand = () => { const s = stand(); return { tekst: s.t, knoppen: s.k, pijl: s.pijl, einde: s.einde, praat: s.praat, opdracht: s.t.some(heeftOpdracht), start: s.start, getikt: !!(navigator.userActivation && navigator.userActivation.hasBeenActive) }; };
-    let sleutel = "", sinds = nu(), beoordeeld = false, laatste = null, opdrachtGezien = 0, geteld = null;
+    let sleutel = "", sinds = nu(), beoordeeld = false, laatste = null, opdrachtGezien = 0, geteld = null, f47Sleutel = null, f47Goed = null, f47Kand = null, f47Sinds = 0;
     const actie = () => { sinds = nu(); beoordeeld = false; };
     for (const soort of ["pointerdown", "click", "keydown", "input"]) document.addEventListener(soort, actie, true);
     /* Wat Bliepo zei (voor de melding): de browserstem en de zinnen die bij Ruth worden opgehaald. */
@@ -123,6 +127,14 @@ export const VRAAG_METER = `
       const k = JSON.stringify([s.pijl, s.einde, s.t, s.k]);
       if (k !== sleutel) { sleutel = k; actie(); }
       if (s.t.some(heeftOpdracht)) opdrachtGezien = nu();
+      /* 15.47 (19 nov 2026): hardop meetellen terwijl de les op een tik wacht; de opdracht moet in beeld blijven. */
+      if (s.wacht && s.t.length && opdrachtGezien && nu() - opdrachtGezien < 30000 && !s.t.some(heeftOpdracht) && s.t.some((t) => t.split(" ").length <= 3 && /[0-9]/.test(t))) {
+        /* pas na 0,8 s in dezelfde stand (geen kort tussenmoment tussen 2 stukken) */
+        if (f47Kand !== k) { f47Kand = k; f47Sinds = nu(); }
+        else if (f47Sleutel !== k && nu() - f47Sinds >= 800) { f47Sleutel = k; window.__f47.push({ t: nu(), tekst: s.t.join(" | ").slice(0, 120), knoppen: [...new Set(s.k)].join(", ").slice(0, 80) }); }
+      } else if (s.wacht && s.t.length > 1 && s.t.some(heeftOpdracht) && s.t.some((t) => t.split(" ").length <= 3 && /[0-9]/.test(t))) {
+        if (f47Goed !== k) { f47Goed = k; window.__f47Geteld++; }
+      }
       if (s.praat) { sinds = nu(); return; }
       /* Alleen een tekening (canvas) en geen knop of tikbaar ding in de DOM: dan kan het ook een animatie zijn; pas na 6 s stilte telt het als wachten. */
       if (beoordeeld || !s.wacht || nu() - sinds < (s.k.length ? 3000 : 6000)) return;
@@ -162,6 +174,19 @@ export function vraagFouten(lijst) {
     fouten.push(`F16: de les wacht op het kind zonder vraag of opdracht in beeld. In beeld: "${x.tekst.slice(0, 110) || "(geen tekst)"}"; te tikken: ${x.knoppen}${x.gezegd ? `; net gezegd: "${x.gezegd.slice(0, 110)}"` : ""}`);
   }
   return fouten.slice(0, 8);
+}
+
+/** lijst: window.__f47; geeft foutmeldingen voor 15.47 (de opdracht verdween terwijl Bliepo hardop meetelde; hooguit 4). */
+export function telFouten(lijst) {
+  const fouten = [];
+  const gezien = new Set();
+  for (const x of lijst ?? []) {
+    const k = x.tekst.replace(/[0-9]+/g, "#");
+    if (gezien.has(k)) continue;
+    gezien.add(k);
+    fouten.push(`15.47: Bliepo telt hardop mee, maar de opdracht staat niet meer in beeld. In beeld alleen: "${x.tekst}"; te tikken: ${x.knoppen}`);
+  }
+  return fouten.slice(0, 4);
 }
 
 /* ---------- los draaien: het begin van elke gouden les, zonder tik ---------- */

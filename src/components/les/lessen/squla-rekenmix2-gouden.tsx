@@ -341,10 +341,15 @@ async function samenKijken(l: Lesgids, v: Rmvraag) {
   zet(l, { vinkje: goedIdx, hand: null });
   const klaar = samenKlaarZin(variant, v, zelf, [samen.plaatjes[volgorde.findIndex((x) => x.k === goedIdx - e)], samen.tik]);
   if (zelf) {
+    /* 15.40 (F20): ook na samen doen het groene scherm en het geluid (goed-na-hulp). */
+    speelLesgeluid("goed");
+    bliepoScherm("goed");
     await zegDoor(l, klaar);
     return;
   }
   await l.wacht(DENK_MS);
+  speelLesgeluid("goed");
+  bliepoScherm("goed");
   await zegDoor(l, klaar);
 }
 

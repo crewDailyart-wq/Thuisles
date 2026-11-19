@@ -50,7 +50,7 @@ import type { Lesdraaiboek, Lesgids } from "../soort";
 import { KaartMinsommen, machineDuur } from "../vlakken/squla-minsommen-vlak";
 import { GoudenMinVlak, wegPlek, PLUS_PLEK, type GoudenMinProps } from "../vlakken/squla-minsommen-gouden-vlak";
 import { KLEURHEX } from "../vlakken/squla-getalring";
-import { zetTestAntwoord } from "./squla-hulp";
+import { zegTelwoord, zetTestAntwoord } from "./squla-hulp";
 import { speelLesgeluid } from "@/lib/lesgeluiden";
 import { bliepoScherm } from "@/lib/bliepo-scherm";
 import { bewaarUitkomst } from "@/app/lesuitkomstacties";
@@ -438,7 +438,8 @@ async function samenVoordoen(l: Lesgids, v: Minvraag) {
   };
   let eersteTik: (() => void) | null = null;
   const gedaan = new Promise<void>((r) => (eersteTik = r));
-  void zegOpdracht(l, [variant("samenWeg", ZIN.samenWeg(v))], gedaan).catch(() => {});
+  const opdracht = [variant("samenWeg", ZIN.samenWeg(v))];
+  void zegOpdracht(l, opdracht, gedaan).catch(() => {});
   wachtOpHand();
   try {
     while (n < v.b) {
@@ -455,7 +456,8 @@ async function samenVoordoen(l: Lesgids, v: Minvraag) {
       /* Bliepo telt hardop mee (draaiboek §3 F); bij de laatste zegt hij meteen de uitkomst. */
       if (!klaar) {
         zetTestAntwoord(`weg-${volgende()}`);
-        void zeg(l, ZIN.samenTel(v, n)).catch(() => {});
+        /* 15.47: de opdracht blijft in beeld, het getal komt eronder. */
+        void zegTelwoord(l, opdracht, ZIN.samenTel(v, n)).catch(() => {});
         wachtOpHand();
       }
     }

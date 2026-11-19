@@ -26,7 +26,7 @@
 
 import type { Lesdraaiboek, Lesgids } from "../soort";
 import { GoudenRekenmixVlak, KaartRekenmixGouden, type GoudenRekenmixProps, type RmgOpgave } from "../vlakken/squla-rekenmix-gouden-vlak";
-import { zetTestAntwoord } from "./squla-hulp";
+import { zegTelwoord, zetTestAntwoord } from "./squla-hulp";
 import { speelLesgeluid } from "@/lib/lesgeluiden";
 import { bliepoScherm } from "@/lib/bliepo-scherm";
 import { bewaarUitkomst } from "@/app/lesuitkomstacties";
@@ -317,7 +317,8 @@ async function samenTellen(l: Lesgids, v: Rmvraag) {
     }, AANWIJZING_MS);
   };
   log(l, "samen-tellen", { vraag: v.id });
-  void zegOpdracht(l, variant("samenTik", RM4.samenTik(v.ding))).then(() => log(l, "vraag-klaar"), () => {});
+  const opdracht = variant("samenTik", RM4.samenTik(v.ding));
+  void zegOpdracht(l, opdracht).then(() => log(l, "vraag-klaar"), () => {});
   wachtOpHand();
   let zelf = false;
   let sinds = Date.now();
@@ -341,7 +342,7 @@ async function samenTellen(l: Lesgids, v: Rmvraag) {
       if (geteld < v.n) {
         zetTestAntwoord(`tel-${volgende()}`);
         haak(l, { soort: "tel", goed: `tel-${volgende()}`, vraag: v.id });
-        void zeg(l, `${gk(geteld, v.ding)}.`).catch(() => {});
+        void zegTelwoord(l, opdracht, `${gk(geteld, v.ding)}.`).catch(() => {}); /* 15.47: de opdracht blijft in beeld */
         wachtOpHand();
       }
     }
@@ -359,10 +360,15 @@ async function samenTellen(l: Lesgids, v: Rmvraag) {
       speelLesgeluid("tik");
       await l.wacht(250);
     }
+    /* 15.40 (F20): ook na samen tellen het groene scherm en het geluid (goed-na-hulp). */
+    speelLesgeluid("goed");
+    bliepoScherm("goed");
     await zegDoor(l, variant("samenZelf", RM4.samenZelf(v.n, v.ding)));
     return;
   }
   await l.wacht(DENK_MS);
+  speelLesgeluid("goed");
+  bliepoScherm("goed");
   await zegDoor(l, variant("samenKlaar", RM4.samenKlaar(v.n, v.ding)));
 }
 

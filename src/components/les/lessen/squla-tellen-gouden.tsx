@@ -39,7 +39,7 @@
 import type { Lesdraaiboek, Lesgids } from "../soort";
 import { GoudenTelVlak, KaartTellenGouden, type GoudenTelProps } from "../vlakken/squla-tellen-gouden-vlak";
 import type { Telopgave } from "../vlakken/squla-tellen-holo";
-import { zetTestAntwoord } from "./squla-hulp";
+import { zegTelwoord, zetTestAntwoord } from "./squla-hulp";
 import { speelLesgeluid } from "@/lib/lesgeluiden";
 import { bliepoScherm } from "@/lib/bliepo-scherm";
 import { bewaarUitkomst } from "@/app/lesuitkomstacties";
@@ -345,7 +345,8 @@ async function samenTellen(l: Lesgids, v: Telvraag) {
   };
   log(l, "samen-tellen", { vraag: v.id });
   /* De opdracht: geen pijl (15.27). Een tik op het fruit telt al tijdens de zin. */
-  void zegOpdracht(l, variant("samenTik", TEL.samenTik(v.fruit))).then(() => log(l, "vraag-klaar"), () => {});
+  const opdracht = variant("samenTik", TEL.samenTik(v.fruit));
+  void zegOpdracht(l, opdracht).then(() => log(l, "vraag-klaar"), () => {});
   wachtOpHand();
   let zelf = false;
   let sinds = Date.now();
@@ -370,7 +371,8 @@ async function samenTellen(l: Lesgids, v: Telvraag) {
       if (geteld < v.n) {
         zetTestAntwoord(`tel-${volgende()}`);
         haak(l, { soort: "tel", goed: `tel-${volgende()}`, vraag: v.id });
-        void zeg(l, `${gk(geteld, v.fruit)}.`).catch(() => {});
+        /* 15.47: de opdracht blijft in beeld, het getal komt eronder. */
+        void zegTelwoord(l, opdracht, `${gk(geteld, v.fruit)}.`).catch(() => {});
         wachtOpHand();
       }
     }
@@ -388,10 +390,15 @@ async function samenTellen(l: Lesgids, v: Telvraag) {
       speelLesgeluid("tik");
       await l.wacht(250);
     }
+    /* 15.40 (F20): ook na samen tellen het groene scherm en het geluid (goed-na-hulp), zoals de andere gouden lessen. */
+    speelLesgeluid("goed");
+    bliepoScherm("goed");
     await zegDoor(l, variant("samenZelf", TEL.samenZelf(v.n, v.fruit)));
     return;
   }
   await l.wacht(DENK_MS);
+  speelLesgeluid("goed");
+  bliepoScherm("goed");
   await zegDoor(l, variant("samenKlaar", TEL.samenKlaar(v.n, v.fruit)));
 }
 

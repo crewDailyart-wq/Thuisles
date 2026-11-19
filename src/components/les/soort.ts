@@ -74,6 +74,13 @@ export interface Lesgids {
   zeg(...zinnen: string[]): Promise<void>;
   /** Alleen presentatie: bewaar de opdracht boven het speelvlak, los van tutorfeedback. */
   opdracht?(tekst: string | null): void;
+  /**
+   * BOUWREGELS 15.47 (Sara, 19 november 2026; F19): Bliepo telt hardop mee terwijl het kind tikt ("2 appels."). De
+   * opdracht (`opdracht`, wat Bliepo net zei, bijvoorbeeld "Tik op elke appel.") blijft dan bovenaan in zijn tekstvak
+   * staan; alleen `zinnen` worden gesproken en komen eronder. Alleen bij lessen met `pijlZoalsSynthesis` (de gouden
+   * lessen); zonder die optie is dit hetzelfde als `zeg(...zinnen)`.
+   */
+  zegBijOpdracht?(opdracht: string | readonly string[], ...zinnen: string[]): Promise<void>;
   /** Een invulvak links. Geeft het getal, of `null` bij "Weet ik niet". */
   getal(): Promise<number | null>;
   /**

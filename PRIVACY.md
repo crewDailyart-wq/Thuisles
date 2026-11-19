@@ -41,6 +41,7 @@ Niets op deze pagina weghalen (harde regel 3); een opgelost punt krijgt "OPGELOS
   - `src/app/lesuitkomstacties.ts` regel 20: hier wordt `voorbeeldMagBewaren` gebruikt.
   - Let op: de gewone kinderkant (buiten `/voorbeeld`) moet blijven werken zoals hij werkt (harde regel 1). Dus een manier vinden om een voorbeeldtik zeker te herkennen, ook zonder Referer.
   - Na de klus: testen als Testkind en nakijken dat er bij een ander profiel niets bijkomt in `les_uitkomsten`.
+- **CODE-KLUS GEDAAN (19 november 2026; nog geen juridische controle, dus dit punt is nog niet OPGELOST):** zonder (leesbare) Referer kijkt de server nu naar de routeboom die Next.js bij elke serveractie meestuurt (kop `next-router-state-tree`). Staat de les op /voorbeeld, of weet de server het niet: alleen bewaren voor Testkind. De gewone kinderkant (een andere pagina) werkt zoals hij werkte. Code: `voorbeeldMagBewaren` en `routeIsVoorbeeld` in `src/lib/data/lesuitkomsten-voorbeeld.ts`, `src/app/lesuitkomstacties.ts`. Test zonder database: `npx tsx scripts/test-voorbeeld-bewaren.ts`.
 
 ## Waar dit nog meer staat
 

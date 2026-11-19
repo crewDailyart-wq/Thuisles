@@ -28,7 +28,7 @@ import type { Lesdraaiboek, Lesgids, Vlakgebeurtenis } from "../soort";
 import { KaartTellenExtra, TelExtraVlak, type ExtraCel, type TelExtraProps } from "../vlakken/squla-tellen-extra-vlak";
 import type { Soort } from "../vlakken/squla-tellen-tekenen";
 import { speelLesgeluid } from "@/lib/lesgeluiden";
-import { zetTestAntwoord } from "./squla-hulp";
+import { zegTelwoord, zetTestAntwoord } from "./squla-hulp";
 import { EINDE, EINDE_VEEL_FOUTEN, maakBasis, schud, type Fout } from "./squla-extra-basis";
 import { deeltStuk, maakKiezer } from "./nooit-dubbel";
 import {
@@ -167,7 +167,8 @@ async function samenTellen(l: Lesgids, v: { id: string; rooster: Rooster }, idx:
       if (geteld < idx.length) {
         zetTestAntwoord(`cel-${volgende()}`);
         B.haak(l, { soort: "tel", goed: `cel-${volgende()}`, vraag: v.id });
-        void B.zeg(l, o.kleur(geteld, t.index)).catch(() => {});
+        /* 15.47: de opdracht blijft in beeld, het getal komt eronder. */
+        void zegTelwoord(l, o.tik, o.kleur(geteld, t.index)).catch(() => {});
       }
     }
   } finally {
@@ -184,10 +185,13 @@ async function samenTellen(l: Lesgids, v: { id: string; rooster: Rooster }, idx:
       speelLesgeluid("tik");
       await l.wacht(250);
     }
+    /* 15.40 (F20): ook na samen tellen het groene scherm en het geluid (goed-na-hulp). */
+    B.goedMoment(l);
     await B.zegDoor(l, o.zelf(idx.length));
     return;
   }
   await l.wacht(200);
+  B.goedMoment(l);
   await B.zegDoor(l, o.klaar(idx.length));
 }
 
@@ -312,7 +316,8 @@ async function samenMaken(l: Lesgids, id: string, rooster: Rooster, vooraf: Extr
       if (geplaatst < doel) {
         zetTestAntwoord(`cel-${leeg()[0]}`);
         B.haak(l, { soort: "tel", goed: `cel-${leeg()[0]}`, vraag: id });
-        void B.zeg(l, `${gk(geplaatst, f)}.`).catch(() => {});
+        /* 15.47: de opdracht blijft in beeld, het getal komt eronder. */
+        void zegTelwoord(l, o.help, `${gk(geplaatst, f)}.`).catch(() => {});
       }
     }
   } finally {
@@ -330,10 +335,13 @@ async function samenMaken(l: Lesgids, id: string, rooster: Rooster, vooraf: Extr
       speelLesgeluid("tik");
       await l.wacht(250);
     }
+    /* 15.40 (F20): ook na samen doen het groene scherm en het geluid (goed-na-hulp). */
+    B.goedMoment(l);
     await B.zegDoor(l, o.zelf(doel));
     return;
   }
   await l.wacht(200);
+  B.goedMoment(l);
   await B.zegDoor(l, o.klaar(doel));
 }
 

@@ -646,7 +646,9 @@ function Lesscherm({
 
     /* Stopt de stem halverwege (tik op de kaart), dan moet de les toch verder: anders blijft hij hangen en telt hij niet als af (28 okt 2026). */
     let spreekAf: (() => void) | null = null;
-    const spreekAutomatisch = (zinnen: string[], houdBediening = false) =>
+    /* `stil` (15.47, 19 nov 2026): de eerste `stil` zinnen staan in beeld maar worden niet (opnieuw) gesproken; zo blijft
+       de opdracht staan terwijl Bliepo hardop meetelt. Alleen met pijlZoalsSynthesis gebruikt (gids.zegBijOpdracht). */
+    const spreekAutomatisch = (zinnen: string[], houdBediening = false, stil = 0) =>
       new Promise<void>((res0) => {
         let gedaan = false;
         const res = () => {
@@ -666,17 +668,17 @@ function Lesscherm({
         */
         const wachtOpAntwoord = Boolean(wacht.current.kies || wacht.current.knoppen || wacht.current.getal || wacht.current.somvak || wacht.current.verder);
         /* Met pijlZoalsSynthesis (10 nov 2026, klokles): de eerste zin van het nieuwe stuk staat meteen (gedimd) op de plek van het oude, zonder tussenmoment met een leeg vak. */
-        zet((b) => ({ ...b, zinnen, zichtbaar: les.pijlZoalsSynthesis && zinnen.length ? 1 : 0, praat: zinnen.length > 0, bediening: houdBediening || wachtOpAntwoord ? b.bediening : null }));
+        zet((b) => ({ ...b, zinnen, zichtbaar: les.pijlZoalsSynthesis && zinnen.length ? stil + 1 : 0, praat: zinnen.length > 0, bediening: houdBediening || wachtOpAntwoord ? b.bediening : null }));
         if (zinnen.length === 0) return res();
         stopStem?.();
         /* Alleen met woordenMeeMetStem (F10, 11 nov 2026): de eerste zin is al onderweg naar de stem, dus gedimd laten (niet na 2,5 tel in 1 keer wit). Zonder de optie doet dit niets. */
-        meldStemOnderweg(metUitspraak(kaal(lesTekst(les.id, zinnen[0])), naam, vk()));
+        meldStemOnderweg(metUitspraak(kaal(lesTekst(les.id, zinnen[stil] ?? zinnen[0])), naam, vk()));
         /* Eerst Bliepo in beeld, dan pas zijn stem (26 oktober 2026, lib/bliepo-in-beeld.ts). */
         void wachtOpBliepo().then(() => {
           if (!levend || staat.zinnen !== zinnen) return res();
           stopStem = zegNaElkaar(
-            zinnen.map((z) => metUitspraak(kaal(lesTekst(les.id, z)), naam, vk())),
-            (i) => pas((b) => (b.zinnen === zinnen ? { ...b, zichtbaar: Math.max(b.zichtbaar, i + 1) } : b)),
+            zinnen.slice(stil).map((z) => metUitspraak(kaal(lesTekst(les.id, z)), naam, vk())),
+            (i) => pas((b) => (b.zinnen === zinnen ? { ...b, zichtbaar: Math.max(b.zichtbaar, i + 1 + stil) } : b)),
             () => {
               if (!levend) return;
               pas((b) => (b.zinnen === zinnen ? { ...b, zichtbaar: zinnen.length, praat: false } : b));
@@ -879,6 +881,15 @@ function Lesscherm({
         /* Eerst het geluid, dan pas Bliepo's zin. */
         if (geluidBezig) return geluidBezig.then(() => (levend ? gewoon() : Promise.reject(STOP)));
         return gewoon();
+      },
+      /* 15.47 (19 nov 2026): hardop meetellen terwijl de opdracht bovenaan in Bliepo's tekstvak blijft staan. */
+      zegBijOpdracht: (opdracht, ...zinnen) => {
+        const z = zinnen.filter((zin) => zin && !/vinkje/i.test(zin));
+        const op = (typeof opdracht === "string" ? [opdracht] : [...opdracht]).filter((zin) => zin && !/vinkje/i.test(zin));
+        if (!les.pijlZoalsSynthesis || handmatigeTekst || !op.length || !z.length || wachtGoed) return gids.zeg(...zinnen);
+        const doe = () => spreekAutomatisch([...op, ...z], false, op.length);
+        if (reactieAan && geluidBezig) return geluidBezig.then(() => (levend ? doe() : Promise.reject(STOP)));
+        return doe();
       },
       wijsAan: async (knop, ...zinnen) => {
         /*

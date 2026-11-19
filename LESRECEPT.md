@@ -352,6 +352,7 @@ Bij elke fout: Bliepo's scherm kleurt 1,5 seconde rood, geen fout-geluidje, nooi
 - **[VERVANGEN 9 nov, 15.11]** **2e fout:** Bliepo legt uit waarom en waar het kind op moet letten, **zonder het goede antwoord te laten zien**. Daarna een **3e poging** (5.1). *Nu: bij de 2e fout uitleg en meteen samen voordoen.*
 - **[VERVANGEN 9 nov, 15.11: nu bij de 2e fout]** **3e fout:** Bliepo doet het **samen met het kind voor**, laat nu pas het goede antwoord zien, het kind doet **1 kleine stap**, en de les gaat **gewoon verder** (5.1, 5.4). Nooit stoppen, nooit het hoofdmenu, geen pauze.
 - Elke fout-reactie is voor deze vraag en dit antwoord geschreven; geen vaste openingen (5.10, 5.11).
+- **Samen tellen (19 november 2026, BOUWREGELS 15.47 en 15.49):** telt Bliepo hardop mee terwijl het kind tikt, gebruik dan `zegTelwoord(l, opdracht, "3 appels.")` uit `squla-hulp.ts`, niet `zeg(l, "3 appels.")`: de opdracht blijft dan in beeld met het getal eronder. Is het samen doen klaar, roep dan `bliepoScherm("goed")` (of het `goedMoment` van de les) aan vlak vóór de slotzin, ook na het vangnet; dan klinkt het goed-geluid na hulp.
 
 ### 3.8 Hulp die vanzelf komt
 - **Ronde 15:** bij een opdracht komt de **aanmoediging samen met het hulphandje**; bij een keuzevraag zegt Bliepo niets als het kind nadenkt (zoals Synthesis).

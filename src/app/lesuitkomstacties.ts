@@ -17,7 +17,9 @@ export async function bewaarUitkomst(invoer: { lesId: string; vraagId: string; u
   try {
     const kind = await huidigKind();
     if (!kind) return { ok: false };
-    if (!voorbeeldMagBewaren((await headers()).get("referer"), kind.roepnaam)) return { ok: false };
+    /* PRIVACY.md punt C (besluit Sara 19 nov 2026, B5): de voorbeeldpagina bewaart alleen voor Testkind, ook zonder Referer. */
+    const kop = await headers();
+    if (!voorbeeldMagBewaren(kop.get("referer"), kind.roepnaam, kop.get("next-router-state-tree"))) return { ok: false };
     return { ok: bewaarLesUitkomst({ kindId: kind.id, ...invoer, denkfouten: Array.isArray(invoer.denkfouten) ? invoer.denkfouten.map(String) : [] }) };
   } catch {
     return { ok: false };

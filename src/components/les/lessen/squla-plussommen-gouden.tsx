@@ -44,7 +44,7 @@ import { KaartBakkerij, type Kaart, type Lijn, type PlusBeeld } from "../vlakken
 import { GoudenPlusVlak, lekkersPlekken, stipPlek, verbindPlek, type GoudenPlusProps, type Punt } from "../vlakken/squla-plussommen-gouden-vlak";
 import { KLEURHEX } from "../vlakken/squla-getalring";
 import { VOORWERPEN_TOONBANK } from "../vlakken/squla-plussommen-tekenen";
-import { zetTestAntwoord } from "./squla-hulp";
+import { zegTelwoord, zetTestAntwoord } from "./squla-hulp";
 import { speelLesgeluid } from "@/lib/lesgeluiden";
 import { bliepoScherm } from "@/lib/bliepo-scherm";
 import { bewaarUitkomst } from "@/app/lesuitkomstacties";
@@ -435,7 +435,8 @@ async function samenTellen(l: Lesgids, o: { opdracht: string[]; plekken: Punt[];
       if (!klaar) {
         zetTestAntwoord(`tel-${volgende()}`);
         haak(l, { soort: "tel", goed: `tel-${volgende()}` });
-        void zeg(l, `${g(o.vanaf + geteld, o.kleur)}.`).catch(() => {});
+        /* 15.47: de opdracht blijft in beeld, het getal komt eronder. */
+        void zegTelwoord(l, o.opdracht, `${g(o.vanaf + geteld, o.kleur)}.`).catch(() => {});
         wachtOpHand();
       }
     }
@@ -538,6 +539,8 @@ async function verhaalVraag(l: Lesgids, v: Verhaal, eersteVraag: boolean): Promi
       opdracht: [variant("samenVerder", ZIN.samenVerder(v.a, ka, v.namen[1]))], plekken: plekken[1], vanaf: v.a, kleur: kb, hex: KLEURHEX[kb] ?? "#ffffff", handZin: () => variant("samenHand", ZIN.samenHand(v.namen[1])), maat: Math.max(52, Math.min(80, cel * 0.9)) });
     zet(l, { licht: [] });
     somBoven(l, v.a, v.b, somK, S);
+    /* 15.40 (F20): ook na samen tellen het groene scherm en het geluid (goed-na-hulp). */
+    goedMoment(l);
     await zegDoor(l, zelf ? variant("samenZelf", ZIN.samenZelf(S, v.wat, v.a, v.b, ka, kb)) : variant("samenKlaar", ZIN.samenKlaar(S, v.wat, v.a, v.b, ka, kb)));
     return noteer(l, v.id, "samen");
   }
@@ -704,6 +707,8 @@ async function toonbankVraag(l: Lesgids, v: Toonbank): Promise<Uitkomst> {
     somBoven(l, v.a, v.b, [ORANJE, BLAUW]);
     const zelf = await samenStippen(l, v.a, v.b);
     somBoven(l, v.a, v.b, [ORANJE, BLAUW], S);
+    /* 15.40 (F20): ook na samen tellen het groene scherm en het geluid (goed-na-hulp). */
+    goedMoment(l);
     await zegDoor(l, zelf ? variant("samenZelf", ZIN.stippenZelf(v.a, v.b)) : variant("samenKlaar", ZIN.stippenKlaar(v.a, v.b)));
     zet(l, { rek: null, tel: null, uit: [], goedIds: [goed] });
     /* Eerst de rij met stippen weg, dan pas over het kaartje praten (Bliepo doet hier zelf iets: iets langer dan 0,7 s). */
@@ -850,6 +855,8 @@ async function verbindVraag(l: Lesgids, v: Verbind): Promise<Uitkomst> {
     await zegDoor(l, ...fz);
     await zegDoor(l, variant("samenHelp", ZIN.verbindSamen));
     const zelf = await samenStippen(l, x, y);
+    /* 15.40 (F20): ook na samen tellen het groene scherm en het geluid (goed-na-hulp). */
+    goedMoment(l);
     await zegDoor(l, zelf ? variant("samenZelf", ZIN.stippenZelf(x, y)) : variant("samenKlaar", ZIN.stippenKlaar(x, y)));
     const alles = new Map(links.map((k) => [k.id, juist(k.id)] as [string, string]));
     zet(l, { rek: null, tel: null });
