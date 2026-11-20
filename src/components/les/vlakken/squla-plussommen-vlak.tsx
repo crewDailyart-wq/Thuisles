@@ -169,11 +169,18 @@ function discoVakken(beeld: Extract<PlusBeeld, { soort: "disco" }>): Vak[] {
   return beeld.kaarten.map((k, i) => ({ id: k.id, kaart: k, soort: "kaartje", x: 490 + (i - (beeld.kaarten.length - 1) / 2) * 220, y: 420, b: 190, h: 112 }));
 }
 
-/** De bakkerstoonbank (gouden les, Sara 18 november 2026: geen disco): 3 kaartjes boven de toonbank met de kassa. */
-const TOONBANK = { x: 490, onder: 700, breed: 560 };
+/**
+ * De bakkerstoonbank (gouden les, Sara 18 november 2026: geen disco): 3 kaartjes OP de toonbank met de kassa.
+ * Herstel 20 november 2026 (besluit Sara, 15.33/15.34): de kaartjes zweefden boven de kassa (y 330, breedte 560). Nu is de
+ * toonbank breder (700) en staan de kaartjes met hun onderkant een stukje IN het blad van de toonbank. Het blad loopt in
+ * het plaatje (900 × 454) van y 272 tot 310; de onderkant van een kaartje staat op y 300 van het plaatje.
+ */
+const TOONBANK = { x: 490, onder: 700, breed: 700 };
+const TOONBANK_H = Math.round((TOONBANK.breed * 346) / 686);
+const KAARTJE_ONDER = TOONBANK.onder - TOONBANK_H + (300 / 454) * TOONBANK_H;
 
 function toonbankVakken(beeld: Extract<PlusBeeld, { soort: "toonbank" }>): Vak[] {
-  return beeld.kaarten.map((k, i) => ({ id: k.id, kaart: k, soort: "kaartje", x: 490 + (i - (beeld.kaarten.length - 1) / 2) * 220, y: 330, b: 190, h: 112 }));
+  return beeld.kaarten.map((k, i) => ({ id: k.id, kaart: k, soort: "kaartje", x: 490 + (i - (beeld.kaarten.length - 1) / 2) * 220, y: KAARTJE_ONDER - 56, b: 190, h: 112 }));
 }
 
 function verbindVakken(beeld: Extract<PlusBeeld, { soort: "verbind" }>): Vak[] {
@@ -448,7 +455,7 @@ function maakPlusScene(Phaser: PhaserModule, rustig: boolean) {
         KLEUREN_DISCO.slice(0, 4).forEach((k, i) => this.time.delayedCall(300 + i * 80, () => this.tex(`bundel-${i}`, 60, 300, (c) => tekenBundel(c, k))));
       } else if (beeld.soort === "toonbank") {
         /* De bakkerstoonbank met de kassa (Magnific-plaatje, 686 × 346): de onderkant staat onderaan het vlak. */
-        const hb = Math.round((TOONBANK.breed * 346) / 686);
+        const hb = TOONBANK_H;
         this.bal = this.plek(box, this.vw("toonbank", TOONBANK.breed, hb), TOONBANK.x, TOONBANK.onder - hb / 2);
       } else if (beeld.soort === "bus") {
         this.plek(box, this.vw("bezorgbus", BUSVAK_BASIS, BUSVAK_BASIS), BUSVAK.x + BUSVAK.s / 2, BUSVAK.y + BUSVAK.s / 2).setScale(BUSVAK.s / BUSVAK_BASIS / TX);

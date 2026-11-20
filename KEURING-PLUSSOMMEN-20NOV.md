@@ -61,3 +61,8 @@ Overal "… en … zijn samen …" (ook "Dat klopt, 3 en 4 zijn samen 7."); in P
 - **De antwoordknoppen staan nu rechts, onder Bliepo's zin** (15.32), niet meer groot in het midden onder het lekkers. Cijfers en sommen op witte knoppen; de kleuren van de getallen in de som bovenaan blijven. Bij 4 cijfers staan er 3 op de eerste rij en 1 eronder.
 - Zinnen: niets veranderd. Schermfoto's: niets overlapt.
 - `scripts/test-plussommen-gouden.mjs` (alle routes): "Alles in orde". Fouttabel-script in orde. Speelcontrole goed en allefout: tot het eind.
+
+## Herstel (20 november 2026, besluit Sara): kaartjes op de toonbank
+- De 3 kaartjes bij de toonbank zweefden boven de kassa. Nu is de toonbank breder (700 in plaats van 560) en staan de kaartjes met hun onderkant een stukje in het blad van de toonbank (15.33/15.34). Het middelste kaartje staat voor de kassa; de bovenkant van de kassa blijft zichtbaar. Alleen het beeld "toonbank" van de gouden les; de oude les gebruikt dat beeld niet. Code: `squla-plussommen-vlak.tsx` (`TOONBANK`, `toonbankVakken`).
+- Na het herstel: `test-plussommen-gouden.mjs` ONTWERP 1280x720 allefout met foto's: Alles in orde. Bij samen tellen ligt de rij met stippen boven de (dof gemaakte) toonbank, niet over de kaartjes. Fouttabel-script in orde.
+- Speelcontrole GOED en ALLEFOUT: allebei tot het eind, 0 fouten (F16 0, 15.47 0, F11 0).
