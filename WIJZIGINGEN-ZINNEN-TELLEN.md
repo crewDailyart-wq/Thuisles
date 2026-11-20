@@ -221,3 +221,11 @@ De bewaarde stemopname "Probeer deze eens." hoort bij andere lessen en blijft st
 
 ## 20 nov 2026: streepjes weg (besluit Sara)
 Oud → nieuw: "én"→"en" ("Tel de peren én de pruimen." → "Tel de peren en de pruimen.").
+
+## 20 nov 2026: het lijstje zegt "keer" (besluit Sara, Ronde 53)
+Het teken "×" in het lijstje blijft ("4 × [appel]"). Bliepo leest het voor als "keer", niet als "maal" of "kruisje".
+
+| Les | Waar | Oud | Nieuw |
+|---|---|---|---|
+| extra | begin van het lijstje (stap 9) | Dit is de laatste opdracht. Kijk, hier is een lijstje. | Dit is de laatste opdracht. Kijk, hier is een lijstje. Op het lijstje staat: 4 keer appel, 7 keer peer en 10 keer pruim. |
+| extra | hint na de 1e fout bij het lijstje (eerste deel) | Op het lijstje staan 4 appels, 7 peren en 10 pruimen. | Op het lijstje staat: 4 keer appel, 7 keer peer en 10 keer pruim. |

@@ -108,7 +108,8 @@ export const ZIN = {
   maakUitleg: (f: Fruit) => `Tik op een leeg vakje. Dan komt er een ${f.een}.`,
   maakHand: ["Tik op een leeg vakje.", "Zoek een leeg vakje en tik erop."],
   /** Stap 9. */
-  lijstOvergang: "Dit is de laatste opdracht. Kijk, hier is een lijstje.",
+  /* Sara 20 nov 2026 (Ronde 53): Bliepo leest het lijstje voor zoals het er staat, met "keer" voor het teken ×. */
+  lijstOvergang: () => `Dit is de laatste opdracht. Kijk, hier is een lijstje. ${lijstZin()}`,
   lijstOpdracht: "Maak al het fruit van het lijstje. Kies eerst een soort fruit en tik dan op de vakjes.",
   lijstHand: ["Tik op een leeg vakje.", "Zoek een leeg vakje en tik erop."],
   /** Het lijstje voorlezen (bij de hint na de 1e fout; draaiboek stap 9). */
@@ -140,10 +141,12 @@ export const ZIN = {
   weerGekozen: (f: Fruit) => `Je koos weer de ${f.naam}.`,
 };
 
-/** "Op het lijstje staan 4 appels, 7 peren en 10 pruimen." met elk getal in de kleur van zijn fruit. */
+/** "Op het lijstje staat: 4 keer appel, 7 keer peer en 10 keer pruim." met elk getal in de kleur van zijn fruit. Het
+ *  lijstje toont "4 × [appel]"; Bliepo zegt het teken als "keer" (Sara, 20 nov 2026, Ronde 53; was: "Op het lijstje
+ *  staan 4 appels, 7 peren en 10 pruimen."). */
 export function lijstZin(): string {
-  const d = LIJST.regels.map((r) => `${gk(r.n, r.f)} ${r.f.naam}`);
-  return `Op het lijstje staan ${d.slice(0, -1).join(", ")} en ${d.at(-1)}.`;
+  const d = LIJST.regels.map((r) => `${gk(r.n, r.f)} keer ${r.f.een}`);
+  return `Op het lijstje staat: ${d.slice(0, -1).join(", ")} en ${d.at(-1)}.`;
 }
 
 /** Reactie bij goed (draaiboek §3 A.1 (a): lof met het aantal en de soort). Elk rijtje heeft het aantal erin. */

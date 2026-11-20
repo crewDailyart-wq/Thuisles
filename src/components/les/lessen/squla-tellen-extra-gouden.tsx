@@ -538,7 +538,7 @@ const gouden: Lesdraaiboek = {
     void l.zeg().catch(() => {});
     toon(l, LIJST.rooster, { lijst: lijstRegels(), verf: LIJST.regels[0].f.soort, verfKiezen: true });
     speelLesgeluid("verschijn");
-    await B.zegDoor(l, ZIN.lijstOvergang);
+    await B.zegDoor(l, ZIN.lijstOvergang());
     await lijstRonde(l);
 
     /* Stap 10. Einde: slotzin, kaart, eindzin. */
