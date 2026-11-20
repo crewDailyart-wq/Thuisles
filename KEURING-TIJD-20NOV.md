@@ -35,3 +35,8 @@ Getest als Testkind op http://localhost:3000. Schermfoto's: `/private/tmp/claude
 ## Niet kunnen nagaan
 
 Echte stem, of de geluiden echt klinken (in beide speelcontrole-runs "stil: nog geen tik"), de duur van het rode scherm, tablet/telefoon, vloeiendheid (bewust later).
+
+
+## Herstel (20 november 2026)
+
+"Dan is er geen school." werd "In het weekend is er geen school." Niet veranderd: de dagkaarten onder de trein (vraag voor Sara, KEUZES-VOOR-SARA.md Ronde 53 punt 2). Fouttabel-script en speelcontrole GOED: in orde.

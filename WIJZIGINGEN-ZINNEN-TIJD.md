@@ -131,3 +131,9 @@ Opdracht van Sara: het woord "nagekeken" (en "nakijken") komt niet meer voor in 
 | squla-tijd-dagen-1-gouden | nagekeken weg | Nagekeken: na zondag komt echt maandag. | Zie je, de trein begint weer bij maandag. |
 | squla-tijd-dagen-1-gouden | nagekeken weg | Nagekeken: na ${naam(d)} komt echt ${naam(na(d))}. | Zie je, ${naam(na(d))} is de volgende dag. |
 | squla-tijd-dagen-1-gouden | nagekeken weg | Nagekeken: de week heeft echt ${g(7)} dagen. | Zie je, de week telt ${g(7)} dagen. |
+
+## 20 november 2026: herstel keuring (zin klonk los na de lof, 15.36)
+
+| Les | Waar | Oud | Nieuw |
+|---|---|---|---|
+| gouden | goed bij "welke dagen zijn het weekend?" (variant 4) | Dan is er geen school. | In het weekend is er geen school. |
