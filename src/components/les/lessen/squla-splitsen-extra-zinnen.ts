@@ -166,7 +166,7 @@ export function totaalFout(x: string): FoutV {
 export const foutenTotaal = (): Record<string, FoutV> => Object.fromEntries(["3", "2"].map((x) => [x, totaalFout(x)]));
 
 /** Stap 9: welke som? Draaiboek §3 C: de tutor rekent de delen voor; hier met de denkfout erbij. */
-export const SOMKEUZES = [som(A, B_DEEL, TOTAAL5).replace(/[{}]/g, ""), "4 + 2 = 6", "2 + 5 = 7"];
+export const SOMKEUZES = [som(A, B_DEEL, TOTAAL5).replace(/\{(\d+):tegel\}/g, "$1"), "4 + 2 = 6", "2 + 5 = 7"];
 export function somFout(x: string): FoutV {
   if (x === "4 + 2 = 6")
     return metV({ code: "andere-getallen-gekozen", soort: "andere-getallen-gekozen", denkfout: "koos een som met getallen die niet in de machine staan", scherm: SCHERM }, 0, {
