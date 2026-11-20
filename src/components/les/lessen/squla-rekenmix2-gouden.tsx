@@ -44,6 +44,8 @@ const ALLE_BEELDEN = [...new Set(VRAGEN.flatMap((v) => woordenVan(v).namen))].so
 const DENK_MS = 200;
 /** Bij een opdracht (samen tellen): na zoveel stilte vanzelf het hulphandje (15.19: ongeveer 6 s). */
 const AANWIJZING_MS = 6000;
+/** Bij samen kijken (2e fout): het handje bij het goede plaatje ± 1,5 s na de opdrachtzin (keuring 20 nov 2026). */
+const SAMEN_HAND_MS = 1500;
 /** Samen natellen: zoveel tijd per nummer (draaiboek Tellen §3 A.1 b: 1,1 tot 1,2 s). */
 const NATEL_MS = 1150;
 /** Zo lang na het einde van de stem komt het volgende stuk (zeg() wacht zelf al 0,3 s; samen ±0,7 s; 15.27). */
@@ -274,7 +276,8 @@ async function kiesPlaatje(l: Lesgids, v: Rmvraag, zinnen: string[]): Promise<nu
 
 /**
  * 2e fout: samen kijken. Bliepo wijst elk plaatje aan en zegt hoeveel erop zit (het handje wijst mee), dan tikt het kind
- * het goede plaatje (de kleine stap). Na ± 6 s stilte komt het hulphandje (15.19), na 20 s wijst Bliepo zelf aan.
+ * het goede plaatje (de kleine stap). Het handje wijst het goede plaatje ± 1,5 s na de opdrachtzin aan (keuring 20 nov:
+ * was ± 6 s; bij samen voordoen mag het antwoord in beeld, 15.11), na 20 s wijst Bliepo zelf aan.
  */
 async function samenKijken(l: Lesgids, v: Rmvraag) {
   const e = eerstePlek(v);
@@ -294,8 +297,10 @@ async function samenKijken(l: Lesgids, v: Rmvraag) {
   haak(l, { soort: "kaartSamen", goed: `tel-${goedIdx}`, vraag: v.id });
   let klok: ReturnType<typeof setTimeout> | undefined;
   let handGezegd = false;
-  const wachtOpHand = () => {
+  let afgelopen = false;
+  const wachtOpHand = (ms = AANWIJZING_MS) => {
     clearTimeout(klok);
+    if (afgelopen) return;
     klok = setTimeout(() => {
       log(l, "aanwijzing", { i: goedIdx });
       zet(l, { hand: goedIdx });
@@ -303,10 +308,16 @@ async function samenKijken(l: Lesgids, v: Rmvraag) {
         handGezegd = true;
         void zeg(l, handZin(variant, v)).catch(() => {});
       }
-    }, AANWIJZING_MS);
+    }, ms);
   };
   log(l, "samen-tellen", { vraag: v.id });
-  void zegOpdracht(l, samen.tik).then(() => log(l, "vraag-klaar"), () => {});
+  void zegOpdracht(l, samen.tik).then(
+    () => {
+      log(l, "vraag-klaar");
+      wachtOpHand(SAMEN_HAND_MS);
+    },
+    () => {},
+  );
   wachtOpHand();
   let zelf = false;
   let anders = 0;
@@ -335,6 +346,7 @@ async function samenKijken(l: Lesgids, v: Rmvraag) {
       wachtOpHand();
     }
   } finally {
+    afgelopen = true;
     clearTimeout(klok);
     zet(l, { tikbaar: false, hand: null });
     haak(l, null);

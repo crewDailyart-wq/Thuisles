@@ -37,3 +37,8 @@ Schermfoto's: `/private/tmp/claude-501/-Users-sararifi-Desktop-thuisles/898e19d0
 
 - Echte stem, woord-oplichten en de geluiden zelf (headless, zonder geluid).
 - Vloeiendheid (bewust niet), telefoon en tablet.
+
+
+## Herstel (20 november 2026)
+
+Bij samen kijken (na de 2e fout) wijst het handje het goede plaatje nu ± 1,5 s na Bliepo's opdrachtzin aan (was ± 6 s). Speelcontrole GOED en ALLEFOUT, fouttabel-script: in orde.
