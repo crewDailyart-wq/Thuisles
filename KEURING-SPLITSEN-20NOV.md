@@ -40,3 +40,8 @@ Getest als Testkind op http://localhost:3000. Schermfoto's: `/private/tmp/claude
 ## Niet kunnen nagaan
 
 Echte stem, of de geluiden echt klinken, de duur van het rode scherm, tablet/telefoon, vloeiendheid (bewust later), de oorzaak van fout 1.
+
+
+## Herstel (20 november 2026)
+
+Niets aan de les of de test veranderd. Opnieuw gedraaid op een rustigere server: speelcontrole GOED liep tot het eind (18 stappen, 0 fouten) en ALLEFOUT ook (72 stappen, 0 fouten). Het lege scherm van de keuring kwam niet terug; waarschijnlijk de drukke ontwikkelserver (de site werd toen opnieuw gebouwd), net als bij Rekentaal. Let op: 18 stappen is weinig; nog niet nagekeken of de speler deze keer de Nee-route nam.
