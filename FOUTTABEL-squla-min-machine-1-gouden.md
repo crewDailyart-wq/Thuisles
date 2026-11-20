@@ -34,8 +34,8 @@ In de les staan de getallen bij de machine in de kleur van de blokjes; bij een k
 Voor de 15 vragen komt een korte uitleg van de machine (draaiboek Minsommen, onderdeel `intro`, stap 1 t/m 4 en 7), in eigen woorden: Bliepo legt uit waar de stippenmachine voor dient, het kind tikt op de plusknop, de teller telt mee, het kind doet er nog 2 stippen bij, en dan komen 2 keuzevragen: wat doet het totaal, en hoe heet "erbij doen". De vraag "blijft het totaal stijgen?" (stap 5 en 6 van het draaiboek, alleen na een fout) is niet gebouwd; bij een fout volgt de gewone hint en de 2e fout = samen voordoen (15.11).
 
 **Wat Bliepo zegt en het kind ziet (stippen en teller paars: het getal hoort bij de stippen, 2.1):**
-1. Na de groet en de beginzin van de les: "Kijk, dit is mijn stippenmachine. Hij helpt ons straks bij het aftrekken." (of: "Eerst laat ik je mijn stippenmachine zien. Hij helpt ons straks bij het aftrekken.") De lege machine, teller 0, plusknop dof.
-2. Opdracht: "Tik op de plusknop onder de machine." (rondje om de plusknop; geen pijl; na ± 6 s het hulphandje bij de plusknop met "Je bent goed bezig. Tik op de plusknop." (aanmoediging en zin wisselen, nooit 2 keer achter elkaar dezelfde)). Na de tik: 1 stip, teller 1.
+1. Na de groet en de beginzin van de les: "Kijk, hier zijn stippen en een plusknop. Die helpen ons straks bij het aftrekken." (of: "Eerst laat ik je de stippen en de plusknop zien. Die helpen ons straks bij het aftrekken.") De lege machine, teller 0, plusknop dof.
+2. Opdracht: "Tik op de plusknop onder de stippen." (rondje om de plusknop; geen pijl; na ± 6 s het hulphandje bij de plusknop met "Je bent goed bezig. Tik op de plusknop." (aanmoediging en zin wisselen, nooit 2 keer achter elkaar dezelfde)). Na de tik: 1 stip, teller 1.
 3. "Je hebt er 1 stip bij gedaan. Bovenaan staat het totaal: zoveel stippen zijn er nu." (rondje om de teller; vanzelf door).
 4. Opdracht: "Tik nog 2 keer op de plusknop. Kijk goed naar het totaal." (geen pijl; hulphandje als bij 2; de knop wordt dof bij 3 stippen).
 5. Vraag 1 en vraag 2 hieronder, met de keuzes tegelijk (de tik is het antwoord, geen "Weet ik niet").
@@ -142,7 +142,7 @@ De les kiest uit elk rijtje steeds 1 zin met de gedeelde kiezer (`nooit-dubbel.t
 | hetzelfde getal 2 keer | Je koos weer 7. / Je tikte weer op 7. / Weer 7, zie ik. |
 | slot | Je weet nu hoeveel er overblijft bij een minsom. / Je hebt goed gewerkt vandaag! Nu weet je hoe een minsom gaat. / Knap, hoor! Je hebt een heleboel minsommen gemaakt. |
 | de kaart | Tik op de kaart. / Tik maar op de kaart. / Kijk, een kaart voor jou! Tik erop. |
-| uitleg: begin | Kijk, dit is mijn stippenmachine. Hij helpt ons straks bij het aftrekken. / Eerst laat ik je mijn stippenmachine zien. Hij helpt ons straks bij het aftrekken. |
+| uitleg: begin | Kijk, hier zijn stippen en een plusknop. Die helpen ons straks bij het aftrekken. / Eerst laat ik je de stippen en de plusknop zien. Die helpen ons straks bij het aftrekken. |
 | uitleg: hulphandje plusknop | Tik op de plusknop. / Tik maar op de plus. / Probeer de plusknop maar. |
 | uitleg: einde | Nu doen we het andersom. We gaan aftrekken: dan gaat er iets af. / Nu gaan we het andersom doen. Bij aftrekken gaat er iets af. |
 | reactie na lof (machine) | Ja, 10 min 3 is 7. / Ja, er gaan er 3 af. Er komen er 7 uit. / 10 − 3 = 7. / Er komen 7 blokjes uit. / Zie je, 3 eraf en dan heb je er nog 7. / Precies, 10 − 3 = 7. / Dat klopt, er komen 7 blokjes uit. |

@@ -54,3 +54,8 @@ Schermfoto's: `/private/tmp/claude-501/-Users-sararifi-Desktop-thuisles/898e19d0
 - De tijd tussen zinnen (doel ± 0,7 s): in de routes "fouten" en "wachten" waren er 3 en 5 pauzes buiten 550–950 ms (grootste 5,4 s en 5,9 s). Het testscript keurt dit niet af; vermoedelijk wachten op rood/groen of het hulphandje, niet verder uitgezocht.
 - Vloeiendheid: bewust niet gemeten (pas aan het eind).
 - Telefoon en tablet: niet bekeken.
+
+
+## Herstel (20 november 2026)
+
+Bliepo zei "dit is mijn stippenmachine" en "de plusknop onder de machine", maar er staat geen machine in beeld. De zinnen noemen nu wat er staat: "Kijk, hier zijn stippen en een plusknop. …" en "Tik op de plusknop onder de stippen." (15.36; oud naast nieuw in WIJZIGINGEN-ZINNEN-MINSOMMEN.md). Niet veranderd: de antwoordknoppen in het midden (15.32) is een vraag voor Sara (KEUZES-VOOR-SARA.md Ronde 53 punt 3). Fouttabel-script en speelcontrole GOED: in orde.

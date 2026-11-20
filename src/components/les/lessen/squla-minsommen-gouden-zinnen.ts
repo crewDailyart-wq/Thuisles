@@ -195,10 +195,10 @@ export type IntroVraag = {
 const HINT_PLUS = "Kijk wat de plusknop doet. Komen er stippen bij, of gaan ze eraf?";
 
 export const INTRO = {
-  /** Stap 1 van het draaiboek: waar de machine voor dient. Komt na de groet en de beginzin van de les. */
-  begin: ["Kijk, dit is mijn stippenmachine. Hij helpt ons straks bij het aftrekken.", "Eerst laat ik je mijn stippenmachine zien. Hij helpt ons straks bij het aftrekken."],
+  /** Stap 1 van het draaiboek: waar de stippen voor dienen (keuring 20 nov: er staat geen machine in beeld, 15.36). Komt na de groet en de beginzin van de les. */
+  begin: ["Kijk, hier zijn stippen en een plusknop. Die helpen ons straks bij het aftrekken.", "Eerst laat ik je de stippen en de plusknop zien. Die helpen ons straks bij het aftrekken."],
   /** Stap 1: de eerste opdracht (knop 1 keer uitleggen, 3.15). */
-  plusEerst: ["Tik op de plusknop onder de machine."],
+  plusEerst: ["Tik op de plusknop onder de stippen."],
   /** Het hulphandje bij de plusknop (na de aanmoediging). */
   plusHand: ["Tik op de plusknop.", "Tik maar op de plus.", "Probeer de plusknop maar."],
   /** Stap 2: de eerste stip en de teller. */

@@ -144,3 +144,13 @@ Sara besliste: in onze gouden lessen geen zinnen van Synthesis, ook niet vertaal
 | gouden | de 1e vraag van de uitleg | Wat gebeurt er met het totaal als er een stip bij komt? | Er komt 1 stip bij. Wat zie je aan het totaal? |
 | gouden | samen voordoen klaar (variant 2) | We begonnen met 10 en haalden er 4 weg. Er blijven er 6 over. | Van de 10 gingen er 4 weg. Er blijven er 6 over. (bij 1: ging) |
 | gouden | 2e keer mis (variant 5) | Deze is best lastig. We doen het samen. | Dat is een moeilijke. We doen het samen. |
+
+## 20 november 2026: herstel keuring (geen machine in beeld, BOUWREGELS 15.36)
+
+Bij de uitleg aan het begin staan alleen het getal 0, de stippen en de plusknop in beeld; er is geen machine getekend. De zin noemt nu wat het kind ziet.
+
+| Les | Waar | Oud | Nieuw |
+|---|---|---|---|
+| gouden | uitleg begin (variant 1) | Kijk, dit is mijn stippenmachine. Hij helpt ons straks bij het aftrekken. | Kijk, hier zijn stippen en een plusknop. Die helpen ons straks bij het aftrekken. |
+| gouden | uitleg begin (variant 2) | Eerst laat ik je mijn stippenmachine zien. Hij helpt ons straks bij het aftrekken. | Eerst laat ik je de stippen en de plusknop zien. Die helpen ons straks bij het aftrekken. |
+| gouden | eerste opdracht | Tik op de plusknop onder de machine. | Tik op de plusknop onder de stippen. |

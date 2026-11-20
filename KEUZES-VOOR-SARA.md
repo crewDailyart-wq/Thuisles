@@ -2180,3 +2180,12 @@ Gekozen variant: **kleur per getal en het foute getal apart.**
 - Waarom niet een ander teken of meer ruimte in de knop: de foute keuze moet er juist uitzien als 1 getal (dat is de denkfout); een streepje of extra ruimte in "37" zou de keuze veranderen. Oud naast nieuw: WIJZIGINGEN-ZINNEN-SPLITSEN.md en WIJZIGINGEN-ZINNEN-PLUSSOMMEN.md.
 
 **Gevonden, voor Sara (niet veranderd):** in Plussommen (gouden en extra) staan volgens WIJZIGINGEN-ZINNEN-PLUSSOMMEN.md en de uitleg in `squla-plussommen-extra-zinnen.ts` ook zinnen "van Synthesis" (bijvoorbeeld "7? Ik tel er meer.", "Wat gebeurt er als ik de tegels omdraai?", "Probeer het nog eens. Tel de vakjes en tik op het getal."). Volgens 15.41 horen die ook eigen zinnen te worden. Moeten die net als bij Tellen herschreven worden? Advies: ja, als aparte klus met oud naast nieuw. **[UITGEVOERD 19 nov 2026 (besluit Sara: ja): alle gemarkeerde zinnen in Plussommen en Plussommen extra zijn eigen zinnen; ook de herkenbaar vertaalde zinnen in 10 andere gouden lessen. Oud naast nieuw onderaan WIJZIGINGEN-ZINNEN-PLUSSOMMEN.md en de andere WIJZIGINGEN-ZINNEN-bestanden.]**
+
+## Ronde 53 — open vragen uit de keuring van 20 november 2026 (deel 2 en 3)
+
+Bij het herstel van de keuring is hier **niets** aan veranderd. Graag ja of nee per punt.
+
+1. **Het teken "×" in Tellen extra.** Het lijstje zegt "4 × appel", "7 × peer". Groep 3 kent "×" nog niet. Voorstel: "4 appels", "7 peren" (zonder teken). Advies: ja.
+2. **De dagkaarten in Tijd staan links onder de trein**, niet rechts onder Bliepo's zin (15.32). Je kunt de wagons zien als "voorwerpen in het beeld" (dan mogen ze daar). Voorstel: zo laten en bij 15.32 Tijd als uitzondering noemen. Advies: zo laten.
+3. **De antwoordknoppen in Minsommen en Plussommen staan in het midden** (onder de machine of het bord), niet rechts onder Bliepo's zin (15.32). Dat was op 7 november zo gekozen ("Antwoorden groot in het midden"). Voorstel: als uitzondering bij 15.32 zetten, of naar rechts verplaatsen. Advies: kies jij; zonder besluit blijft het zo.
+4. **De pruim in Tellen extra lijkt op een paarse appel** (zelfde vorm met blaadje). Alleen genoteerd; er is geen nieuw plaatje gemaakt. Wil je een nieuw plaatje van een pruim? Advies: ja, bij de volgende plaatjesronde.
