@@ -920,10 +920,7 @@
   },
   "pruim": {
     "bron": "eigen",
-    "v": 3,
-    "verbeterd": [
-      "randen"
-    ]
+    "v": 5
   },
   "raket-maat": {
     "bron": "eigen",

@@ -11,7 +11,7 @@ Gemaakt door `npm run voorwerpen`. 172 vervangen, 1 nog open.
 - ✅ 6. Mandarijn — `mandarijn.png` (versie 3)
 - ✅ 7. Olijf — `olijf.png` (versie 5)
 - ✅ 8. Peer — `peer.png` (versie 3)
-- ✅ 9. Pruim — `pruim.png` (versie 3)
+- ✅ 9. Pruim — `pruim.png` (versie 5, nieuw 20 nov 2026: ovaal en paars, niet meer als een appel; oude: `pruim-oud.png`)
 - ✅ 10. Tomaat — `tomaat.png` (versie 3)
 - ✅ 11. Watermeloen — `watermeloen.png` (versie 3)
 - ✅ 12. Beker met limonade — `beker-vol.png` (versie 3)

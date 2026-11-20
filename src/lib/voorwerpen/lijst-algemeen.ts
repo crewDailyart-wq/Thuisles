@@ -23,7 +23,7 @@ export const ALGEMEEN: Voorwerp[] = [
     naam: "pruim",
     titel: "Pruim",
     groep: "fruit",
-    onderwerp: "a purple plum with a short brown stem",
+    onderwerp: "one plum fruit: an elongated egg-shaped oval, taller than wide, rich deep purple skin (violet-purple, not blue), a clear vertical crease line running down one side, one small soft highlight, a tiny thin brown stem on top and NO leaf; clearly a plum and not an apple (no dimple, no round apple shape)",
     schets: `<ellipse class="r" cx="100" cy="112" rx="58" ry="66" fill="#8a4fd0"/><path class="r" d="M100 46 L104 24" fill="none"/>`,
   },
   {

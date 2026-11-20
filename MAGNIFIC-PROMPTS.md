@@ -82,12 +82,12 @@ Lessen: Meer, minder, evenveel (`squla-meer-minder-evenveel1-1`), Meer, minder, 
 a green pear with a short brown stem, simple flat illustration for a children's math app: solid flat colors, one soft highlight, thin dark outline, minimal details, no gradients, no shadow, no face, no eyes, no text. Single object centered on a plain pure white background.
 ```
 
-### 9. Pruim — `pruim.png` — ✅ gegenereerd
+### 9. Pruim — `pruim.png` — ✅ gegenereerd (opnieuw 20 nov 2026, Ronde 53: de oude leek op een paarse appel; nu ovaal, paars, met kerf, zonder blaadje; 2e poging (de 1e was te blauw, paste niet bij het paarse getal); vierkant 1:1, 1K, Nano Banana 2; oude bewaard als `pruim-oud.png`)
 
 Lessen: Proef: Fruit tellen (glow in the dark) (`proef-fruit-glow`), Proef: Fruit tellen (zonder glow) (`proef-fruit-plat`), Proef: Fruit tellen (gloed alleen als het iets betekent) (`proef-fruit-moment`), Fruit tellen (`squla-tellen-fruit-1`), Fruit tellen (nog moeilijker) (`squla-tellen-fruit-3`), Vormen en kleuren (`squla-vormen-kleuren-1`)
 
 ```
-a purple plum with a short brown stem, simple flat illustration for a children's math app: solid flat colors, one soft highlight, thin dark outline, minimal details, no gradients, no shadow, no face, no eyes, no text. Single object centered on a plain pure white background.
+one plum fruit: an elongated egg-shaped oval, taller than wide, rich deep purple skin (violet-purple, not blue), a clear vertical crease line running down one side, one small soft highlight, a tiny thin brown stem on top and NO leaf; clearly a plum and not an apple (no dimple, no round apple shape), simple flat illustration for a children's math app: solid flat colors, one soft highlight, thin dark outline, minimal details, no gradients, no shadow, no face, no eyes, no text. Single object centered on a plain pure white background.
 ```
 
 ### 10. Tomaat — `tomaat.png` — ✅ gegenereerd
