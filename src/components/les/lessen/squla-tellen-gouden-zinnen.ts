@@ -190,8 +190,8 @@ const VOLLE: ((X: string, f: Fruit) => string)[] = [(X: string) => `Je hebt alle
 
 const UITLEG_WEINIG_1 = [(f: Fruit) => `Er ligt nog ${gk(1, f)} ${f.een} meer.`, (f: Fruit) => `Je hebt ${gk(1, f)} ${f.een} overgeslagen.`, (f: Fruit) => `Je hebt ${gk(1, f)} ${f.een} niet geteld.`];
 const UITLEG_WEINIG_PAAR = [(f: Fruit) => `Er liggen nog een paar ${f.naam} meer.`, (f: Fruit) => `Je hebt een paar ${f.naam} overgeslagen.`, (f: Fruit) => `Je hebt een paar ${f.naam} niet geteld.`];
-const UITLEG_VEEL_1 = [(f: Fruit) => `Je hebt ${gk(1, f)} ${f.een} {2:wit} keer geteld.`, (f: Fruit) => `Er ligt ${gk(1, f)} ${f.een} minder.`, (f: Fruit) => `Je telde ${gk(1, f)} ${f.een} te veel.`];
-const UITLEG_VEEL_PAAR = [(f: Fruit) => `Je hebt een paar ${f.naam} {2:wit} keer geteld.`, (f: Fruit) => `Er liggen een paar ${f.naam} minder.`, (f: Fruit) => `Je telde een paar ${f.naam} te veel.`];
+const UITLEG_VEEL_1 = [(f: Fruit) => `Je hebt ${gk(1, f)} ${f.een} {2:wit} keer geteld.`, (f: Fruit) => `Er ligt ${gk(1, f)} ${f.een} minder dan jij telde.`, (f: Fruit) => `Je telde ${gk(1, f)} ${f.een} te veel.`];
+const UITLEG_VEEL_PAAR = [(f: Fruit) => `Je hebt een paar ${f.naam} {2:wit} keer geteld.`, (f: Fruit) => `Er liggen een paar ${f.naam} minder dan jij telde.`, (f: Fruit) => `Je telde een paar ${f.naam} te veel.`];
 const UITLEG_VOLLE = [() => "De rij die niet vol is, telt ook mee.", () => "De laatste rij is niet vol. Die hoort er ook bij.", (f: Fruit) => `Ook de ${f.naam} in de laatste rij tellen mee.`];
 
 /* --- 2 keer dezelfde denkfout (en Bliepo noemde de 1e keer de richting): "weer", en anders uitgelegd --- */

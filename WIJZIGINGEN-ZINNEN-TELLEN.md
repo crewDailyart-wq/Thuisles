@@ -209,3 +209,12 @@ Sara besliste: in onze gouden lessen geen zinnen van Synthesis, ook niet vertaal
 Waarom "Zoveel pruimen? 14 is te veel." en "… Er liggen er nog meer, kijk maar.": de fouttabel controleert dat een eerste zin met richting echt "te veel" of "nog meer" zegt (anders kan de "weer"-zin bij de 2e fout niet kloppen). Een zin als "Er zijn er minder dan dat." werd daarom afgekeurd.
 
 De bewaarde stemopname "Probeer deze eens." hoort bij andere lessen en blijft staan. Nieuwe opnames van deze zinnen komen pas bij de Ruth-ronde aan het eind.
+
+## 20 november 2026: herstel keuring (natuurlijker Nederlands, 15.48)
+
+| Les | Waar | Oud | Nieuw |
+|---|---|---|---|
+| gouden | uitleg bij 1 te veel geteld (variant 2) | Er ligt 1 pruim minder. | Er ligt 1 pruim minder dan jij telde. |
+| gouden | uitleg bij een paar te veel geteld (variant 2) | Er liggen een paar peren minder. | Er liggen een paar peren minder dan jij telde. |
+| extra | opdracht bij het lijstje | Maak al het fruit van het lijstje. Kies eerst een fruit en tik dan op de vakjes. | Maak al het fruit van het lijstje. Kies eerst een soort fruit en tik dan op de vakjes. |
+| extra | hint bij het lijstje (variant 2) | Kies een fruit en tik op de vakjes. | Kies een soort fruit en tik op de vakjes. |

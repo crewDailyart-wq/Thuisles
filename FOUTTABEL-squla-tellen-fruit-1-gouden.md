@@ -75,26 +75,26 @@ Na deze uitleg volgt altijd: "Kom, we tellen ze samen." (of een variant) en het 
 | 2. 11 peren | 13 (`te-veel`) | Bijna! 13 is iets te veel. Je telde een paar peren te veel. | — (1e keer zei Bliepo alleen "… is dichtbij": dan de uitleg links, geen "weer") |
 | 3. 13 pruimen | 12 (`te-weinig`) | 12? Ik zie er nog meer. Er ligt nog 1 pruim meer. | — (1e fout was een andere denkfout: dan de uitleg links) |
 | 3. 13 pruimen | 14 (`te-veel`) | Je zit er dichtbij, maar 14 is te veel. Je hebt 1 pruim 2 keer geteld. | — (1e fout was een andere denkfout: dan de uitleg links) |
-| 4. 14 appels | 15 (`te-veel`) | Je tikte op 15. Het scheelt maar een klein beetje. Er ligt 1 appel minder. | Het zijn er weer iets te veel. Elke appel krijgt 1 nummer. Dan tel je niets 2 keer. |
-| 4. 14 appels | 16 (`te-veel`) | Je tikte op 16. Zo veel liggen er niet. Er liggen een paar appels minder. | — (1e keer zei Bliepo alleen "… is dichtbij": dan de uitleg links, geen "weer") |
+| 4. 14 appels | 15 (`te-veel`) | Je tikte op 15. Het scheelt maar een klein beetje. Er ligt 1 appel minder dan jij telde. | Het zijn er weer iets te veel. Elke appel krijgt 1 nummer. Dan tel je niets 2 keer. |
+| 4. 14 appels | 16 (`te-veel`) | Je tikte op 16. Zo veel liggen er niet. Er liggen een paar appels minder dan jij telde. | — (1e keer zei Bliepo alleen "… is dichtbij": dan de uitleg links, geen "weer") |
 | 5. 12 peren | 11 (`te-weinig`) | 11 peren? Er liggen er nog meer, kijk maar. Je hebt 1 peer niet geteld. | — (1e fout was een andere denkfout: dan de uitleg links) |
 | 5. 12 peren | 13 (`te-veel`) | Zoveel peren? 13 is te veel. Je telde 1 peer te veel. | — (1e fout was een andere denkfout: dan de uitleg links) |
 | 6. 15 pruimen | 13 (`te-weinig`) | Je koos 13. Er liggen er nog meer. Er liggen nog een paar pruimen meer. | — (1e keer zei Bliepo alleen "… is dichtbij": dan de uitleg links, geen "weer") |
 | 6. 15 pruimen | 14 (`te-weinig`) | Je koos 14. Dat scheelt niet veel. Er ligt nog 1 pruim meer. | Je telde er weer te weinig. Elke pruim krijgt 1 nummer. Dan sla je er geen over. |
 | 7. 16 appels | 15 (`alleen-volle-rijen`) | Je koos 15. Zoveel liggen er in de volle rijen. De laatste rij is niet vol. Die hoort er ook bij. | — (1e fout was een andere denkfout: dan de uitleg links) |
-| 7. 16 appels | 17 (`te-veel`) | 17? Dat zijn er iets te veel. Er ligt 1 appel minder. | — (1e fout was een andere denkfout: dan de uitleg links) |
+| 7. 16 appels | 17 (`te-veel`) | 17? Dat zijn er iets te veel. Er ligt 1 appel minder dan jij telde. | — (1e fout was een andere denkfout: dan de uitleg links) |
 | 8. 13 peren | 14 (`te-veel`) | 14? Dat is heel dichtbij. Je telde 1 peer te veel. | Weer iets te veel, zie ik. Elke peer krijgt 1 nummer. Dan tel je niets 2 keer. |
 | 8. 13 peren | 15 (`te-veel`) | Bijna! 15 is iets te veel. Je telde een paar peren te veel. | — (1e keer zei Bliepo alleen "… is dichtbij": dan de uitleg links, geen "weer") |
 | 9. 17 pruimen | 15 (`alleen-volle-rijen`) | Je hebt alleen de volle rijen geteld. Dat zijn er 15. De rij die niet vol is, telt ook mee. | — (1e fout was een andere denkfout: dan de uitleg links) |
 | 9. 17 pruimen | 16 (`te-weinig`) | Je tikte op 16. Het scheelt maar een klein beetje. Er ligt nog 1 pruim meer. | — (1e fout was een andere denkfout: dan de uitleg links) |
 | 10. 14 peren | 13 (`te-weinig`) | Je zit er dichtbij met 13. Je hebt ze nog niet allemaal geteld. Je hebt 1 peer overgeslagen. | — (1e fout was een andere denkfout: dan de uitleg links) |
-| 10. 14 peren | 15 (`te-veel`) | Je tikte op 15. Zo veel liggen er niet. Er ligt 1 peer minder. | — (1e fout was een andere denkfout: dan de uitleg links) |
+| 10. 14 peren | 15 (`te-veel`) | Je tikte op 15. Zo veel liggen er niet. Er ligt 1 peer minder dan jij telde. | — (1e fout was een andere denkfout: dan de uitleg links) |
 | 11. 13 appels | 12 (`te-weinig`) | 12 appels? Er liggen er nog meer, kijk maar. Je hebt 1 appel niet geteld. | — (1e fout was een andere denkfout: dan de uitleg links) |
 | 11. 13 appels | 14 (`te-veel`) | Zoveel appels? 14 is te veel. Je telde 1 appel te veel. | — (1e fout was een andere denkfout: dan de uitleg links) |
 | 12. 16 pruimen | 17 (`te-veel`) | Bijna! 17 is het net niet. Je hebt 1 pruim 2 keer geteld. | Je telde er weer te veel. Elke pruim krijgt 1 nummer. Dan tel je niets 2 keer. |
 | 12. 16 pruimen | 18 (`te-veel`) | Je koos 18. Dat zijn er iets te veel. Je hebt een paar pruimen 2 keer geteld. | — (1e keer zei Bliepo alleen "… is dichtbij": dan de uitleg links, geen "weer") |
 | 13. 15 peren | 14 (`te-weinig`) | Je koos 14. Je hebt ze nog niet allemaal geteld. Je hebt 1 peer overgeslagen. | — (1e fout was een andere denkfout: dan de uitleg links) |
-| 13. 15 peren | 16 (`te-veel`) | 16? Dat zijn er iets te veel. Er ligt 1 peer minder. | — (1e fout was een andere denkfout: dan de uitleg links) |
+| 13. 15 peren | 16 (`te-veel`) | 16? Dat zijn er iets te veel. Er ligt 1 peer minder dan jij telde. | — (1e fout was een andere denkfout: dan de uitleg links) |
 | 14. 17 appels | 16 (`te-weinig`) | Bijna! 16 is nog iets te weinig. Je hebt 1 appel niet geteld. | — (1e fout was een andere denkfout: dan de uitleg links) |
 | 14. 17 appels | 18 (`te-veel`) | Bijna! 18 is iets te veel. Je telde 1 appel te veel. | — (1e fout was een andere denkfout: dan de uitleg links) |
 | 15. 11 pruimen | 9 (`te-weinig`) | 9? Ik zie er nog meer. Er liggen nog een paar pruimen meer. | — (1e fout was een andere denkfout: dan de uitleg links) |
@@ -127,8 +127,8 @@ De les kiest uit elk rijtje steeds een andere zin dan de vorige keer. Voorbeeld 
 | Hint, alleen de volle rijen | Kijk ook naar de laatste rij en tel opnieuw. / De laatste rij telt ook mee. Tel nog eens. / Tel ook de appels in de laatste rij. |
 | Uitleg 2e keer, 1 te weinig | Er ligt nog 1 appel meer. / Je hebt 1 appel overgeslagen. / Je hebt 1 appel niet geteld. |
 | Uitleg 2e keer, een paar te weinig | Er liggen nog een paar appels meer. / Je hebt een paar appels overgeslagen. / Je hebt een paar appels niet geteld. |
-| Uitleg 2e keer, 1 te veel | Je hebt 1 appel 2 keer geteld. / Er ligt 1 appel minder. / Je telde 1 appel te veel. |
-| Uitleg 2e keer, een paar te veel | Je hebt een paar appels 2 keer geteld. / Er liggen een paar appels minder. / Je telde een paar appels te veel. |
+| Uitleg 2e keer, 1 te veel | Je hebt 1 appel 2 keer geteld. / Er ligt 1 appel minder dan jij telde. / Je telde 1 appel te veel. |
+| Uitleg 2e keer, een paar te veel | Je hebt een paar appels 2 keer geteld. / Er liggen een paar appels minder dan jij telde. / Je telde een paar appels te veel. |
 | Uitleg 2e keer, alleen de volle rijen | De rij die niet vol is, telt ook mee. / De laatste rij is niet vol. Die hoort er ook bij. / Ook de appels in de laatste rij tellen mee. |
 | Weer te weinig | Je telde er weer te weinig. / Het zijn er weer iets te weinig. / Weer iets te weinig, zie ik. |
 | Weer te weinig, uitleg | Elke appel krijgt 1 nummer. Dan sla je er geen over. / We geven elke appel een nummer. Zo vergeten we er geen. |

@@ -33,3 +33,8 @@ Getest als Testkind op http://localhost:3000. Schermfoto's: `/private/tmp/claude
 ## Niet kunnen nagaan
 
 Echte stem (ook "1...1" bij Ruth, F8), of de geluiden echt klinken, de duur van het rode scherm, tablet/telefoon, vloeiendheid (bewust later).
+
+
+## Herstel (20 november 2026)
+
+"Er ligt 1 pruim minder." werd "Er ligt 1 pruim minder dan jij telde." en "Er liggen een paar peren minder." werd "… minder dan jij telde." Fouttabel-script en speelcontrole GOED: in orde.
