@@ -1253,3 +1253,8 @@ Per regel: datum · les · wat · reden · teruggezet?
   - "De bus komt bij de eerste halte." → "De bus rijdt weer een stukje."
   - "De bus komt bij de tweede halte." → "De bus rijdt nog een stukje verder."
   - "De bus is terug bij de bakkerij." → "Kijk, hier is de bakkerij weer."
+
+- 20 nov 2026 · Tellen extra (squla-tellen-extra.module.css, `.gekozen`): de witte rand en de lichte achtergrond om de gekozen regel in het lijstje (gekozen fruit) weggehaald; alleen het vinkje blijft. Reden: besluit Sara 20 nov 2026 (Keuring Ronde 53 punt 3, regel 7.8a: een gekozen keuze krijgt alleen een vinkje).
+- 20 nov 2026 · Tijd (squla-tijd-gouden-vlak.tsx): het vinkje rechtsboven op de hoek van een gekozen weekendkaart (2 dagen) staat nu BOVEN de kaart, in het midden (iets kleiner: 28 in plaats van 46); de 2 kaarten van de bovenste rij staan iets verder uit elkaar (38 in plaats van 18). Niets weg; kaarten met 1 dag houden het vinkje op de hoek. Reden: besluit Sara 20 nov 2026 (het vinkje bedekte het naambordje). De weekendkaarten zijn niet groter geworden: groter (0.8) raakte het vinkje van het lesscherm.
+- 20 nov 2026 · Plussommen (squla-plussommen-vlak.tsx, alleen het beeld "toonbank" van de gouden les): de kaartjes stonden boven de kassa (y 330) en de toonbank was 560 breed; nu is de toonbank 700 breed en staan de kaartjes OP het blad van de toonbank. Niets weg. Reden: besluit Sara 20 nov 2026 (15.33/15.34, Keuring Ronde 53 punt 4).
+- 20 nov 2026 · Klok (squla-klok-gouden-vlak.tsx): onder de bezorgbus ligt nu een stoep (zelfde stijl als Huisnummers); de bus staat er met zijn wielen op. Niets weg. Reden: besluit Sara 20 nov 2026 (15.33/15.34: de bus zweefde naast de klok).

@@ -168,9 +168,9 @@
   outline: 4px solid #ffffff;
   outline-offset: 2px;
 }
+/* Gekozen regel: alleen het vinkje (7.8a; besluit Sara 20 nov 2026). Geen witte rand, geen lichte achtergrond. */
 .gekozen {
-  border-color: #ffffff;
-  background: rgba(255, 255, 255, 0.12);
+  border-color: transparent;
 }
 .lijstGetal {
   font-size: 40px;

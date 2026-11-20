@@ -13,7 +13,7 @@
  *     (blijft in dit vlak zelf; de les merkt er niets van);
  *   - `tikbaar`: per plek een (onzichtbare) knop; een tik meldt `{ soort: "celTik", index }`;
  *   - `lijst`: het lijstje (bij maken en bij het lijstje): per soort het aantal in de kleur van het fruit; een tik op een
- *     regel kiest de "verf" (meldt `{ soort: "verfTik", fruit }`); de gekozen regel heeft een witte rand;
+ *     regel kiest de "verf" (meldt `{ soort: "verfTik", fruit }`); de gekozen regel krijgt alleen een vinkje (7.8a);
  *   - `hand`: het hulphandje (15.19): wijst naar een plek; het komt vanzelf, nooit als knop;
  *   - `goed` / `fout`: tellers; ophogen = lichtgolf of zacht schudden.
  * Alles in HTML met een CSS-beweging: geen werk elk beeld, dus licht (HARDE REGEL 7). Geen kaders om plaatjes.

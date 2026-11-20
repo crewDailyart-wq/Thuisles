@@ -45,3 +45,7 @@ Echte stem, of de geluiden echt klinken, de duur van het rode scherm, tablet/tel
 - Het teken "×" in het lijstje blijft (Sara: groep 3 begint al met keersommen). Bliepo zegt het als "keer": "Op het lijstje staat: 4 keer appel, 7 keer peer en 10 keer pruim." (was: "Op het lijstje staan 4 appels, 7 peren en 10 pruimen."). Hij leest het lijstje nu ook voor als het lijstje in beeld komt, terwijl de plaatjes ernaast staan; daarna ook bij de hint na de 1e fout. De stem maakte van "×" al "keer" (`src/lib/stemtekst.ts`).
 - Alle andere gouden lessen nagezocht op "×", "x", "maal" en "kruisje" in zichtbare of gesproken zinnen: niets gevonden (alleen "keer" in de zin van "1 keer tellen"). Dus alleen Tellen extra veranderd.
 - Na het herstel: fouttabel-script in orde; speelcontrole GOED en ALLEFOUT tot het eind, 0 fouten.
+
+## Herstel (20 november 2026, besluit Sara): gekozen fruit alleen een vinkje
+- Bij het gekozen fruit in het lijstje staat nu alleen het vinkje: de witte rand en de lichte achtergrond zijn weg (7.8a). Code: `squla-tellen-extra.module.css` (`.gekozen`). Logregel in WEGGEHAALD.md.
+- Na het herstel: schermfoto (route goed): bij de gekozen pruim staat alleen het vinkje, geen rand en geen lichte achtergrond. `test-tellen-extra-gouden.mjs` route goed tot de eindkaart, database niets bijgekomen. Speelcontrole GOED tot het eind; ALLEFOUT de 1e keer 1 melding ("iets anders ligt boven cel-0: startLaag", heeft niets met het lijstje te maken), de 2e keer tot het eind zonder fouten. Fouttabel-script in orde.
