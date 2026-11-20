@@ -301,8 +301,12 @@ async function speel(c, id) {
         if (!a) return true;
         let doel = a;
         if (process.env.ALLEFOUT && !a.startsWith("s")) {
-          const som = Object.keys(v.goed).find((k) => v.goed[k] === a);
-          if (som && v.fout[som]) doel = v.fout[som];
+          /* Elke som het goede antwoord van de volgende som: allemaal fout én allemaal verschillend (met plusTaak.fout kreeg
+             soms 2 sommen hetzelfde antwoord; dan haalt de les de oude lijn weg en bleef de speler rondgaan). */
+          const sommen = Object.keys(v.goed);
+          const i = sommen.findIndex((k) => v.goed[k] === a);
+          if (i >= 0 && sommen.length > 1) doel = v.goed[sommen[(i + 1) % sommen.length]];
+          else if (i >= 0 && v.fout[sommen[i]]) doel = v.fout[sommen[i]];
         }
         return (await tikOpElement(`[data-ding="${doel}"]`)) || true;
       }
