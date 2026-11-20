@@ -109,7 +109,7 @@ export const ZIN = {
   maakHand: ["Tik op een leeg vakje.", "Zoek een leeg vakje en tik erop."],
   /** Stap 9. */
   lijstOvergang: "Dit is de laatste opdracht. Kijk, hier is een lijstje.",
-  lijstOpdracht: "Maak al het fruit van het lijstje. Kies eerst een fruit en tik dan op de vakjes.",
+  lijstOpdracht: "Maak al het fruit van het lijstje. Kies eerst een soort fruit en tik dan op de vakjes.",
   lijstHand: ["Tik op een leeg vakje.", "Zoek een leeg vakje en tik erop."],
   /** Het lijstje voorlezen (bij de hint na de 1e fout; draaiboek stap 9). */
   lijstVoor: () => lijstZin(),
@@ -255,7 +255,7 @@ export function maakFout(c: number): FoutV {
 export const foutenMaak = (): Record<string, FoutV> => Object.fromEntries([0, 1, 2, 3, 5, 6, 7, 21].map((c) => [String(c), maakFout(c)]));
 
 /** Na het lijstje voorlezen (hint 1e fout) zegt Bliepo wat het kind doet (F16, 15.37; 18 nov 2026: de hint was alleen het lijstje). */
-const LIJST_HINT = ["Zet in elk vakje het goede fruit.", "Kies een fruit en tik op de vakjes."];
+const LIJST_HINT = ["Zet in elk vakje het goede fruit.", "Kies een soort fruit en tik op de vakjes."];
 
 /**
  * Stap 9: het lijstje. Draaiboek §3 D: de tutor noemt welke soort klopt en welke nog niet; de 2e keer andere woorden; de

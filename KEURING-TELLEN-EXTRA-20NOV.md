@@ -35,3 +35,8 @@ Getest als Testkind op http://localhost:3000. Schermfoto's: `/private/tmp/claude
 ## Niet kunnen nagaan
 
 Echte stem, of de geluiden echt klinken, de duur van het rode scherm, tablet/telefoon, vloeiendheid (bewust later). Inhoud t.o.v. Squla (15.8) is hier niet van toepassing op dezelfde manier: dit is de extra les met de Synthesis-opdrachten (besluit Sara 20.3).
+
+
+## Herstel (20 november 2026)
+
+"Kies eerst een fruit" werd "Kies eerst een soort fruit" (ook in de hint "Kies een soort fruit en tik op de vakjes."). Niet veranderd, wel genoteerd voor Sara (KEUZES-VOOR-SARA.md Ronde 53): het teken "×" in het lijstje en de pruim die op een paarse appel lijkt. Fouttabel-script en speelcontrole GOED: in orde.
