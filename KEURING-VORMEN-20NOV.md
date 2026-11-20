@@ -35,3 +35,8 @@ Getest als Testkind op http://localhost:3000. Schermfoto's: `/private/tmp/claude
 ## Niet kunnen nagaan
 
 Echte stem, of de geluiden echt klinken (speelcontrole "stil: nog geen tik"), de duur van het rode scherm, tablet/telefoon, vloeiendheid (bewust later), de volledige allefout-route van het eigen testscript (zie tabel).
+
+
+## Herstel (20 november 2026)
+
+De losse puzzelstukjes hebben in de gouden les eigen plekken: links 2 kolommen, rechts 1 kolom van 4, met ruimte ertussen; ze draaien minder schuin. Niets ligt meer over elkaar of over het bord (schermfoto bekeken). De oude lessen houden hun plekken. Speelcontrole GOED en ALLEFOUT, `test-vormen-gouden.mjs` goed (zone in orde): in orde. In de ontwerpcontrole (ONTWERP=1, allefout) wel 1 melding "de pijl ging 3 keer weg en kwam terug"; dat komt van de pijl-wijziging in Lesscherm.tsx van een andere helper (15.51), niet van de puzzel.

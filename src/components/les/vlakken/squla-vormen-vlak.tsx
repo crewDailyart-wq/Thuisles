@@ -213,14 +213,28 @@ const LOS: Record<number, [number, number][]> = {
   4: [[64, 172], [172, 182], [64, 288], [172, 298], [64, 404], [172, 414], [64, 520], [172, 530], [752, 172], [862, 182], [752, 288], [862, 298], [752, 404], [862, 414], [752, 520], [862, 530]],
 };
 
-function losPlekken(p: Puzzel): { x: number; y: number; hoek: number }[] {
+/**
+ * Alleen de gouden les (keuring 20 november 2026, 14.23): bij de oude plekken lagen 2 stukjes naast elkaar (78 en 200,
+ * 762 en 884) 8 punten over elkaar, en een stukje kwam bijna tegen de rand. Hier liggen 3 × 3 stukjes (130 breed) nooit
+ * over elkaar of over het bord (x 285 tot 675): links 2 kolommen (x 70 en 210, 10 punten ertussen), rechts 1 kolom van 4
+ * (x 810, ver van de rand en van het tekstvak). Ze draaien minder schuin (± 0,05 in plaats van ± 0,08), zodat ook de hoeken
+ * vrij blijven. De oude lessen houden LOS hierboven.
+ */
+const LOS_GOUDEN: Record<number, [number, number][]> = {
+  3: [[70, 200], [210, 200], [70, 360], [210, 360], [70, 520], [210, 520], [810, 150], [810, 300], [810, 450], [810, 600]],
+};
+/** De verste rechterrand van een los stukje in de gouden les (voor de zonecontrole van de les). */
+export const GOUDEN_LOS_RECHTS = 810 + 70;
+
+function losPlekken(p: Puzzel, gouden = false): { x: number; y: number; hoek: number }[] {
   const r = zaad(p.id);
-  const plekken = LOS[p.n].map(([x, y]) => ({ x, y }));
+  const plekken = ((gouden && LOS_GOUDEN[p.n]) || LOS[p.n]).map(([x, y]) => ({ x, y }));
   for (let i = plekken.length - 1; i > 0; i--) {
     const j = Math.floor(r() * (i + 1));
     [plekken[i], plekken[j]] = [plekken[j], plekken[i]];
   }
-  return plekken.slice(0, p.n * p.n).map((q) => ({ ...q, hoek: (r() - 0.5) * 0.16 }));
+  const schuin = gouden && LOS_GOUDEN[p.n] ? 0.1 : 0.16;
+  return plekken.slice(0, p.n * p.n).map((q) => ({ ...q, hoek: (r() - 0.5) * schuin }));
 }
 
 /* ---------- de scène ---------- */
@@ -582,7 +596,7 @@ function maakScene(Phaser: PhaserModule, rustig: boolean) {
       }
       g.setAlpha(0);
       this.bordGfx = g;
-      const los = losPlekken(p);
+      const los = losPlekken(p, this.gouden);
       for (let i = 0; i < n * n; i++) {
         const sl = `${bron}|${n}|${i}`;
         const sx = (i % n) * w;

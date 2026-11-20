@@ -37,7 +37,7 @@
 
 import { WAS_NAKIJKEN } from "./squla-klok-gouden-zinnen";
 import type { Lesdraaiboek, Lesgids } from "../soort";
-import { KaartPatronen, type Beeld, type Deel, type Ketting, type VormenProps } from "../vlakken/squla-vormen-vlak";
+import { GOUDEN_LOS_RECHTS, KaartPatronen, type Beeld, type Deel, type Ketting, type VormenProps } from "../vlakken/squla-vormen-vlak";
 import { GoudenVormenVlak, KLEINER, type GoudenVormenProps, type Keuzeplek, type Punt } from "../vlakken/squla-vormen-gouden-vlak";
 import type { Kleur } from "../vlakken/squla-vormen-tekenen";
 import { zetTestAntwoord } from "./squla-hulp";
@@ -190,8 +190,8 @@ function rechtsVan(delen: Deel[]): number {
     }),
   );
 }
-/** De losse puzzelstukjes liggen tot x = 884 (oude vlak, LOS) plus een half stukje (390 / 3 / 2). */
-const PUZZEL_RECHTS = 884 + 65;
+/** De losse puzzelstukjes liggen tot x = 810 plus een half (licht gedraaid) stukje (eigen plekken van de gouden les, keuring 20 nov). */
+const PUZZEL_RECHTS = GOUDEN_LOS_RECHTS;
 
 /* ---------- staat per les ---------- */
 
