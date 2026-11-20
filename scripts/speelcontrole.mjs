@@ -292,6 +292,20 @@ async function speel(c, id) {
     };
     const extraGedaan = new Set();
     const extraStap = async () => {
+      /* Verbinden in de gouden les Plussommen (window.__phaser.plusTaak, soort "verbind"): een echte klik op de som en dan
+         op het antwoord (het vlak luistert naar de muis, een b.click() doet daar niets). ALLEFOUT: bij elke som het eerste
+         foute antwoord (plusTaak.fout). Alles verbonden: wachten, de les kijkt na na een korte rust. */
+      const v = await ev(`(() => { const t = window.__phaser?.plusTaak; if (!t || t.soort !== "verbind") return null; return { goed: t.goed ?? {}, fout: t.fout ?? {}, klaar: t.klaar ?? 0, antwoord: window.__phaser?.antwoord ?? null }; })()`);
+      if (v) {
+        const a = v.antwoord != null ? String(v.antwoord) : null;
+        if (!a) return true;
+        let doel = a;
+        if (process.env.ALLEFOUT && !a.startsWith("s")) {
+          const som = Object.keys(v.goed).find((k) => v.goed[k] === a);
+          if (som && v.fout[som]) doel = v.fout[som];
+        }
+        return (await tikOpElement(`[data-ding="${doel}"]`)) || true;
+      }
       const t = await ev(`(() => { const t = window.__phaser?.telTaak; if (!t || !["tel", "maak", "pak", "auto"].includes(t.soort)) return null; const c = document.querySelector('[data-knop="controleer"]'); return { soort: t.soort, goed: t.goed ?? null, vraag: String(t.vraag ?? ""), poging: t.poging ?? 1, n: t.n, antwoord: window.__phaser?.antwoord ?? null, controleer: !!c && !c.disabled && c.getBoundingClientRect().width > 3 }; })()`);
       if (!t) return null;
       if (process.env.DEBUG) console.log("  extra:", JSON.stringify(t));
