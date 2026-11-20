@@ -252,6 +252,76 @@ async function speel(c, id) {
       }
       await c.stuur("Input.dispatchMouseEvent", { type: "mouseReleased", x: naar.x, y: naar.y, button: "left", clickCount: 1 }, s);
     };
+    /*
+      De extra gouden lessen (Plussommen extra, Splitsen extra, Tellen extra; 19 nov 2026, opdracht Sara): de les zegt in
+      window.__phaser.telTaak wat het kind moet doen (soort tel/maak/pak/auto) en in window.__phaser.antwoord de goede
+      volgende tik ("tegel-3", "plus-1", "cel-4"). De speler doet dat met een ECHTE muisklik op de plek in het beeld
+      (mousemove, indrukken, loslaten), zoals een kind, ook in het Phaser-beeld (tegels: window.__phaser.tegelPunt(n) en
+      roosterPunt()). Ligt er iets anders boven de plek, dan is dat een fout. Met ALLEFOUT: zoals scripts/extra-test-hulp.mjs
+      (bij een opdracht met vinkje meteen het vinkje zonder iets te maken; bij het aanvullen van een som een foute tegel);
+      de overige stappen goed, want daar is geen fout antwoord mogelijk. Geeft null als het geen extra-les-stap is.
+    */
+    const tikMuis = async (p) => {
+      await c.stuur("Input.dispatchMouseEvent", { type: "mouseMoved", x: p.x, y: p.y }, s);
+      await c.stuur("Input.dispatchMouseEvent", { type: "mousePressed", x: p.x, y: p.y, button: "left", clickCount: 1, buttons: 1 }, s);
+      await c.stuur("Input.dispatchMouseEvent", { type: "mouseReleased", x: p.x, y: p.y, button: "left", clickCount: 1, buttons: 0 }, s);
+    };
+    /* Een echte klik midden op het eerste zichtbare element dat bij de kiezer past; meldt als er iets anders boven ligt. */
+    const tikOpElement = async (kiezer) => {
+      const p = await ev(`(() => { const b = [...document.querySelectorAll(${JSON.stringify(kiezer)})].find((b) => !b.disabled && b.getBoundingClientRect().width > 3); if (!b) return null; const r = b.getBoundingClientRect(); const x = r.left + r.width / 2, y = r.top + r.height / 2; const e = document.elementFromPoint(x, y); return { x, y, raak: !!e && (e === b || b.contains(e)), wat: e ? (e.getAttribute("aria-label") || String(e.className || "") || e.tagName).slice(0, 60) : null }; })()`);
+      if (!p) return false;
+      if (!p.raak) fouten.add(`iets anders ligt boven ${kiezer}: ${p.wat}`);
+      await tikMuis(p);
+      return true;
+    };
+    /* Een tegel pakken en op het veld zetten. Een tegel heeft een vorm (een L heeft een leeg hoekje): eerst het midden, dan punten ernaast, tot de les de tegel meldt. */
+    const tikTegel = async (n) => {
+      const nr = () => ev(`window.__phaser?.telTaak?.n ?? -1`);
+      const voor = await nr();
+      for (const [dx, dy] of [[0, 0], [24, 24], [-24, 24], [24, -24], [-24, -24], [0, 24], [24, 0], [0, -24], [-24, 0]]) {
+        const a = await ev(`window.__phaser?.tegelPunt?.(${n}) ?? null`);
+        const r = await ev(`window.__phaser?.roosterPunt?.() ?? null`);
+        if (!a || !r) return false;
+        await tikMuis({ x: a.x + dx, y: a.y + dy });
+        await wacht(200);
+        await tikMuis(r);
+        await wacht(300);
+        if ((await nr()) !== voor) return true;
+      }
+      return false;
+    };
+    const extraGedaan = new Set();
+    const extraStap = async () => {
+      const t = await ev(`(() => { const t = window.__phaser?.telTaak; if (!t || !["tel", "maak", "pak", "auto"].includes(t.soort)) return null; const c = document.querySelector('[data-knop="controleer"]'); return { soort: t.soort, goed: t.goed ?? null, vraag: String(t.vraag ?? ""), poging: t.poging ?? 1, n: t.n, antwoord: window.__phaser?.antwoord ?? null, controleer: !!c && !c.disabled && c.getBoundingClientRect().width > 3 }; })()`);
+      if (!t) return null;
+      if (process.env.DEBUG) console.log("  extra:", JSON.stringify(t));
+      const alleFout = !!process.env.ALLEFOUT;
+      /* Opdracht met vinkje, fout: meteen het vinkje zonder iets te maken (1 keer per poging). */
+      if (alleFout && t.soort === "maak") {
+        const sleutel = `maak-${t.n}`;
+        if (!extraGedaan.has(sleutel) && t.controleer) {
+          extraGedaan.add(sleutel);
+          return tikOpElement('[data-knop="controleer"]');
+        }
+        if (extraGedaan.has(sleutel)) return true;
+      }
+      /* Een som aanvullen met tegels, fout: een andere tegel dan de goede. */
+      if (alleFout && t.soort === "pak" && t.goed && /^(samen7|samen10|manier10)-/.test(t.vraag)) {
+        const sleutel = `pak-${t.n}`;
+        if (!extraGedaan.has(sleutel)) {
+          extraGedaan.add(sleutel);
+          if (await tikTegel(Number(t.goed) === 1 ? 2 : 1)) return true;
+        }
+      }
+      const a = t.antwoord != null ? String(t.antwoord) : null;
+      if (a?.startsWith("tegel-")) return tikTegel(Number(a.slice(6)));
+      if (a && (await tikOpElement(`[data-ding="${a}"]`))) return true;
+      if (!a && t.soort === "pak") return tikTegel(1);
+      if (!a && t.controleer) return tikOpElement('[data-knop="controleer"]');
+      /* Niets te doen (de som is af en de les gaat zo vanzelf door, of het vinkje komt nog): wachten. Niet op een andere
+         knop in de tekening tikken: dat maakt de stap weer ongedaan (Splitsen extra: + en dan weer −). */
+      return true;
+    };
     /* Een plek op de klok tussen twee getallen (uur 8.5 = tussen de 8 en de 9). */
     const klokPunt = async (uur) => {
       const a = await ev(`window.__phaser?.klokGetal?.(${((Math.floor(uur) + 11) % 12) + 1}) ?? null`);
@@ -275,6 +345,11 @@ async function speel(c, id) {
       return null;
     };
     const canvasStap = async (z, soort) => {
+      /* De extra gouden lessen (19 nov 2026, opdracht Sara): tikken in de tekening met een echte muisklik, zoals een kind. */
+      {
+        const r = await extraStap();
+        if (r !== null) return r;
+      }
       /* Splitsen 1 (s1): dingen of tegels naar vakken slepen; het vlak zegt zelf wat de volgende sleep is. */
       {
         let gedaan = false;
