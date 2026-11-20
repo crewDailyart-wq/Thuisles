@@ -107,6 +107,7 @@ export function TelExtraVlak({ id, kolommen, cellen, nummers = [], dof = [], sti
                 <span className={s.lijstGetal} style={{ color: kleur }}>
                   {r.n}
                 </span>
+                <span className={s.lijstKruis}>×</span>
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img className={s.lijstFruit} src={voorwerpUrl(r.soort)} alt="" draggable={false} />
               </>

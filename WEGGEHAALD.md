@@ -1230,3 +1230,5 @@ Per regel: datum · les · wat · reden · teruggezet?
 - 20 nov 2026 · Streepjes op letters (Sara: kinderen leren die op school niet): in de zinnen van de gouden lessen Dagen, Getallenlijn, Klok, Tijd, Meten, Tellen extra, Plussommen en Vormen: "vóór"→"voor", "ervóór"→"ervoor", "ná"→"na", "én"→"en". Zelfde in de fouttabel-scripts. Reden: besluit Sara, 20 november 2026. Let op: bij Dagen had Ronde 38 "voor" bewust "vóór" gemaakt; dat is nu teruggedraaid.
 
 - 20 nov 2026 · Tellen extra (squla-tellen-extra-gouden.tsx, bijFout van stap 5 en 6): het dof maken van het andere fruit na een fout antwoord weggehaald; al het fruit blijft gewoon zichtbaar. Reden: Sara 20 november 2026 ("ook het andere fruit gewoon zichtbaar blijft").
+
+- 20 nov 2026 · Tellen extra: het teken "×" in het lijstje is TERUGGEZET (Sara, antwoord Ronde 53: groep 3 begint al met keersommen; Bliepo zegt "4 keer appel"). De weghaal-regel van eerder vandaag vervalt.
