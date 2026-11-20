@@ -45,3 +45,8 @@ Schermfoto's: `/private/tmp/claude-501/-Users-sararifi-Desktop-thuisles/898e19d0
 
 - Echte stem, woord-oplichten en de geluiden zelf (headless, zonder geluid).
 - Vloeiendheid (bewust niet), telefoon en tablet.
+
+
+## Herstel (20 november 2026)
+
+"Tel elk potlood mee, ook de laatste." werd "… ook het laatste." Het lidwoord volgt nu het woord (ook in "En het laatste is 8."). Ook nagekeken in alle gouden lessen: alleen Rekenmix 1 (potlood) en Rekenmix 4 (raketje, ruimteschip) hadden een het-woord; Tellen, Meer-minder en Rekenmix 3 gebruiken de-woorden. Fouttabel-script en speelcontrole GOED: in orde.

@@ -356,7 +356,7 @@ export const RM = {
   /** Draaiboek Tellen §3 A.1 (b): bij de eerste vraag telt Bliepo hardop na (zelfde zinnen als de gouden les Tellen). */
   natellen: ["Ik tel ze hardop voor je. Tel maar mee!", "Kom, ik tel ze hardop. Tel maar mee!", "Luister maar, ik tel ze hardop."],
   /** Na het hardop tellen. Het laatste getal zegt Bliepo hier (niet ook nog los ervoor): zo klinkt het maar 1 keer. */
-  natellenKlaar: (n: number, d: Ding) => [`En ${gk(n, d)}! Je had het precies goed.`, `En de laatste is ${gk(n, d)}. Jij had het goed geteld.`, `En ${gk(n, d)}! Zie je? Je zat precies goed.`],
+  natellenKlaar: (n: number, d: Ding) => [`En ${gk(n, d)}! Je had het precies goed.`, `En ${d.elk === "elk" ? "het" : "de"} laatste is ${gk(n, d)}. Jij had het goed geteld.`, `En ${gk(n, d)}! Zie je? Je zat precies goed.`],
   /** Als het kind op de pijl tikte (alle nummers staan er meteen): Bliepo noemde nog geen getal. */
   natellenKlaarSnel: (n: number, d: Ding) => [`Zie je? Het zijn er ${gk(n, d)}. Je had het precies goed.`, `Zie je wel? Het zijn er ${gk(n, d)}. Jij had het goed geteld.`, `Het zijn er echt ${gk(n, d)}. Dat koos jij ook.`],
   /** Na de 2e keer: samen tellen. */
@@ -364,7 +364,7 @@ export const RM = {
   samenTik: (d: Ding) => [`Tik op ${d.elk} ${d.een}. Ik tel mee.`, `Tik ${d.elk} ${d.een} aan. Ik zeg het getal.`, `Tik op alle ${d.naam}. Ik tel hardop mee.`],
   samenHand: (d: Ding) => [`Tik op een ${d.een} zonder nummer.`, `Zoek een ${d.een} zonder nummer en tik erop.`, `Welke ${d.een} heeft nog geen nummer? Tik erop.`],
   /** Het laatste getal is het aantal; het getal staat er 1 keer. */
-  samenKlaar: (n: number, d: Ding) => [`En ${gk(n, d)}! Zoveel ${d.naam} zijn het.`, `En ${gk(n, d)}! Nu hebben we ze samen allemaal geteld.`, `En de laatste is ${gk(n, d)}. Zoveel ${d.naam} zijn het.`],
+  samenKlaar: (n: number, d: Ding) => [`En ${gk(n, d)}! Zoveel ${d.naam} zijn het.`, `En ${gk(n, d)}! Nu hebben we ze samen allemaal geteld.`, `En ${d.elk === "elk" ? "het" : "de"} laatste is ${gk(n, d)}. Zoveel ${d.naam} zijn het.`],
   /** Vangnet: 20 s geen tik, dan telt Bliepo de rest zelf (geen "Ja", geen "samen"; begint met "Kijk,"). */
   samenZelf: (n: number, d: Ding) => [`Kijk, ik tel de rest. Het zijn er ${gk(n, d)}.`, `Kijk, ik tel even verder. Het zijn er ${gk(n, d)}.`],
   /** Stap 10: einde (12 is het grootste aantal in deze les; een getal zonder ding: wit). */
@@ -397,9 +397,9 @@ const E = (d: Ding) => Hoofd(d.elk);
    wat het kind ziet: "rij voor rij" en "bovenaan" bij rijen, "van links naar rechts" en "links" bij 2 aan 2, "van boven
    naar beneden" bij door elkaar. Niet meer "linksboven" (lastig voor groep 3; zoals bij Tellen). */
 const HINT_WEINIG_RM: Record<Vorm, Z[]> = {
-  rijen: [(d) => `Tel nog eens, rij voor rij. Sla geen ${d.een} over.`, (d) => `Tel ze nog eens rustig. Wijs ${d.elk} ${d.een} aan.`, (d) => `Begin bovenaan en tel opnieuw. Wijs ${d.elk} ${d.een} aan.`, (d) => `Probeer het nog eens. Tel ${d.elk} ${d.een} mee, ook de laatste.`],
-  los: [(d) => `Tel nog eens. Sla geen ${d.een} over.`, (d) => `Tel ze nog eens rustig. Wijs ${d.elk} ${d.een} aan.`, (d) => `Tel ze opnieuw, van boven naar beneden. Wijs ${d.elk} ${d.een} aan.`, (d) => `Probeer het nog eens. Tel ${d.elk} ${d.een} mee, ook de laatste.`],
-  paren: [(d) => `Tel nog eens, van links naar rechts. Sla geen ${d.een} over.`, (d) => `Tel ze nog eens rustig. Wijs ${d.elk} ${d.een} aan.`, (d) => `Begin links en tel opnieuw. Wijs ${d.elk} ${d.een} aan.`, (d) => `Probeer het nog eens. Tel ${d.elk} ${d.een} mee, ook de laatste.`],
+  rijen: [(d) => `Tel nog eens, rij voor rij. Sla geen ${d.een} over.`, (d) => `Tel ze nog eens rustig. Wijs ${d.elk} ${d.een} aan.`, (d) => `Begin bovenaan en tel opnieuw. Wijs ${d.elk} ${d.een} aan.`, (d) => `Probeer het nog eens. Tel ${d.elk} ${d.een} mee, ook ${d.elk === "elk" ? "het" : "de"} laatste.`],
+  los: [(d) => `Tel nog eens. Sla geen ${d.een} over.`, (d) => `Tel ze nog eens rustig. Wijs ${d.elk} ${d.een} aan.`, (d) => `Tel ze opnieuw, van boven naar beneden. Wijs ${d.elk} ${d.een} aan.`, (d) => `Probeer het nog eens. Tel ${d.elk} ${d.een} mee, ook ${d.elk === "elk" ? "het" : "de"} laatste.`],
+  paren: [(d) => `Tel nog eens, van links naar rechts. Sla geen ${d.een} over.`, (d) => `Tel ze nog eens rustig. Wijs ${d.elk} ${d.een} aan.`, (d) => `Begin links en tel opnieuw. Wijs ${d.elk} ${d.een} aan.`, (d) => `Probeer het nog eens. Tel ${d.elk} ${d.een} mee, ook ${d.elk === "elk" ? "het" : "de"} laatste.`],
 };
 const HINT_VEEL_RM: Record<Vorm, Z[]> = {
   rijen: [(d) => `Tel nog eens, rij voor rij. ${E(d)} ${d.een} tel je maar ${w(1)} keer.`, (d) => `Tel ze opnieuw. Wijs ${d.elk} ${d.een} maar ${w(1)} keer aan.`, (d) => `Begin bovenaan en tel rustig. ${E(d)} ${d.een} telt ${w(1)} keer mee.`, (d) => `Probeer het nog eens. Tel geen ${d.een} ${w(2)} keer.`],

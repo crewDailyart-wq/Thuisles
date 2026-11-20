@@ -110,3 +110,12 @@ Sara besliste: in onze gouden lessen geen zinnen van Synthesis, ook niet vertaal
 | gouden | 2e keer mis, samen tellen (variant 5) | Laten we ze samen tellen en kijken. | Ik doe mee. We tellen ze samen. |
 | gouden | eerste zin, te weinig (variant 6) | 9 ballen? Je hebt ze nog niet allemaal geteld. | 9 ballen? Er liggen er nog meer, kijk maar. |
 | gouden | eerste zin, te veel (variant 6) | 11 ballen? Ik denk dat je er te veel hebt geteld. | Zoveel ballen? 11 is te veel. |
+
+## 20 november 2026: herstel keuring ("de/het laatste")
+
+Bij een het-woord (potlood, raketje, ruimteschip) zei Bliepo "ook de laatste". Nu volgt het lidwoord het woord: "het laatste" bij een het-woord, "de laatste" bij een de-woord. Alleen het lidwoord is veranderd.
+
+| Les | Waar | Oud | Nieuw |
+|---|---|---|---|
+| gouden | hint bij te weinig geteld | Probeer het nog eens. Tel elk potlood mee, ook de laatste. | Probeer het nog eens. Tel elk potlood mee, ook het laatste. |
+| gouden | na samen/zelf natellen | En de laatste is 8. … | En het laatste is 8. … (bij een het-woord; bij een de-woord blijft "de laatste") |
