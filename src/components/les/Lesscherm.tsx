@@ -90,6 +90,8 @@ type Beeld = {
   bediening: Bediening;
   /** De knop die Bliepo nu aanwijst (`data-knop`), of null. */
   aanwijs: string | null;
+  /** 15.51 (20 nov 2026): de reactie op een antwoord wacht nog op het geluid; de pijl komt pas met Bliepo's nieuwe tekst. */
+  pijlWacht?: boolean;
   bak: { tegels: number[]; om: boolean; slot: number[] };
   bakActief: boolean;
   hand: boolean;
@@ -668,7 +670,7 @@ function Lesscherm({
         */
         const wachtOpAntwoord = Boolean(wacht.current.kies || wacht.current.knoppen || wacht.current.getal || wacht.current.somvak || wacht.current.verder);
         /* Met pijlZoalsSynthesis (10 nov 2026, klokles): de eerste zin van het nieuwe stuk staat meteen (gedimd) op de plek van het oude, zonder tussenmoment met een leeg vak. */
-        zet((b) => ({ ...b, zinnen, zichtbaar: les.pijlZoalsSynthesis && zinnen.length ? stil + 1 : 0, praat: zinnen.length > 0, bediening: houdBediening || wachtOpAntwoord ? b.bediening : null }));
+        zet((b) => ({ ...b, zinnen, zichtbaar: les.pijlZoalsSynthesis && zinnen.length ? stil + 1 : 0, praat: zinnen.length > 0, bediening: houdBediening || wachtOpAntwoord ? b.bediening : null, pijlWacht: false }));
         if (zinnen.length === 0) return res();
         stopStem?.();
         /* Alleen met woordenMeeMetStem (F10, 11 nov 2026): de eerste zin is al onderweg naar de stem, dus gedimd laten (niet na 2,5 tel in 1 keer wit). Zonder de optie doet dit niets. */
@@ -713,7 +715,7 @@ function Lesscherm({
           wacht.current.beheertekst = verder;
           setVoorkeuren(vk());
           const wachtOpAntwoord = Boolean(wacht.current.kies || wacht.current.knoppen || wacht.current.getal || wacht.current.somvak || wacht.current.verder);
-          zet((b) => ({ ...b, zinnen, zichtbaar: index + 1, praat: true, beheerVolgende: true, bediening: houdBediening || wachtOpAntwoord ? b.bediening : null }));
+          zet((b) => ({ ...b, zinnen, zichtbaar: index + 1, praat: true, beheerVolgende: true, bediening: houdBediening || wachtOpAntwoord ? b.bediening : null, pijlWacht: false }));
           void wachtOpBliepo().then(() => {
             if (!levend || wacht.current.beheertekst !== verder) return;
             stopStem = zegNaElkaar(
@@ -826,6 +828,8 @@ function Lesscherm({
           if (!levend) return;
           const m = huidigeBliepoScherm();
           if (!m) return;
+          /* Voor de meting van 15.51 (scripts/bliepo-gedrag-meter.js): wanneer het scherm groen of rood werd. Alleen een logboek. */
+          ((window as unknown as { __scherm?: unknown[] }).__scherm ??= []).push({ t: Math.round(performance.now()), soort: m.soort });
           if (wachtGoed) {
             const w = wachtGoed;
             wachtGoed = null;
@@ -875,11 +879,19 @@ function Lesscherm({
           if (stil) {
             /* Alleen het groene scherm: Bliepo's tekstvak leeg, en na het groen (1 s) gaat de les door. */
             const rest = Math.max(0, GROEN_MS - (performance.now() - w.t));
+            /* 15.51 (20 nov 2026): koos het kind al terwijl Bliepo de vraag nog voorlas, dan stopt die stem nu ook (zoals bij
+               een reactie met zin); anders las hij de vraag verder voor bij een leeg tekstvak. */
+            stopStem?.();
+            stopPraten();
             return spreek([]).then(() => pauzeer(rest));
           }
         }
-        /* Eerst het geluid, dan pas Bliepo's zin. */
-        if (geluidBezig) return geluidBezig.then(() => (levend ? gewoon() : Promise.reject(STOP)));
+        /* Eerst het geluid, dan pas Bliepo's zin. Zolang staat de pijl er nog niet (15.51): anders stond hij ±0,5 s onder de
+           oude vraag, vóór Bliepo's reactie in beeld kwam (de pijl komt tegelijk met de tekst, PIJL-KLOK.md punt 3). */
+        if (geluidBezig) {
+          pas((b) => ({ ...b, pijlWacht: true }));
+          return geluidBezig.then(() => (levend ? gewoon() : Promise.reject(STOP)));
+        }
         return gewoon();
       },
       /* 15.47 (19 nov 2026): hardop meetellen terwijl de opdracht bovenaan in Bliepo's tekstvak blijft staan. */
@@ -1368,7 +1380,10 @@ function Lesscherm({
             </div>
           )}
           {/* Met pijlZoalsSynthesis (10 nov 2026, PIJL-KLOK.md punt 3): de pijl komt tegelijk met de tekst, niet al ervoor terwijl Bliepo nog laadt. */}
-          {deel !== "zin" && b?.soort === "verder" && !(les.pijlZoalsSynthesis && beeld.praat && beeld.zichtbaar === 0) && (
+          {/* En nooit een pijl boven een leeg tekstvak (Sara, 20 nov 2026, BOUWREGELS 15.51): bij stil goed (15.39) staat er alleen
+              het groene scherm; de les gaat vanzelf door. Vroeger stond hier `beeld.praat && beeld.zichtbaar === 0`, waardoor de pijl
+              bij stil goed ±1,4 s boven een leeg vak stond. */}
+          {deel !== "zin" && b?.soort === "verder" && !(les.pijlZoalsSynthesis && (beeld.zichtbaar === 0 || beeld.pijlWacht)) && (
             <div className={s.bediening}>
               <button type="button" className={s.rond} aria-label="Verder" data-knop="verder" autoFocus onClick={() => wacht.current.verder?.()}>
                 <Pijl />

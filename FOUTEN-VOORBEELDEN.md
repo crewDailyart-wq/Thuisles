@@ -116,3 +116,12 @@ Elke fout die Sara vindt komt hier, met de regel die erbij hoort (BOUWREGELS.md 
 - Regel: BOUWREGELS 15.49. Na samen doen altijd `bliepoScherm("goed")` vlak vóór de slotzin, ook na het vangnet.
 - Gecontroleerd in alle 21 gouden lessen: dezelfde fout in 9 lessen (Tellen, Tellen extra, Rekenmix 1, 2, 3 en 4, Plussommen, Plussommen extra, Splitsen extra). Opgelost. De andere 12 deden het al goed.
 - Controle: `ALLEFOUT=1 node scripts/speelcontrole.mjs`: bij GOED-REACTIE staat hoe vaak `goed-na-hulp` klonk.
+
+**F21. Bij een goed antwoord in stilte stond de pijl boven een leeg tekstvak.** (keuring 20 november 2026; opdracht Sara: Bliepo moet werken zoals bij Synthesis)
+- Wat mis was: bij een goed antwoord zonder zin (15.39: alleen het groene scherm) maakte het lesscherm Bliepo's tekstvak leeg, maar de blauwe pijl bleef ±1,4 s staan, boven niets. Het kind ziet dan een knop zonder tekst en weet niet waarvoor.
+- Ook gevonden bij het meten: koos het kind al terwijl Bliepo de vraag nog voorlas, dan las hij bij stil goed de vraag verder voor (tot ±1,5 s) terwijl zijn tekstvak leeg was. Nu stopt de stem dan meteen, net als bij goed met een zin.
+- En: na elk antwoord stond de pijl al ±0,5 s onder de oude vraag, terwijl Bliepo's reactie nog op het geluid wachtte (15.40). De pijl hoort tegelijk met de nieuwe tekst te komen. Nu wacht de pijl ook.
+- Oorzaak: in `Lesscherm.tsx` verborg het lesscherm de pijl alleen als Bliepo "praat én nog niets in beeld had". Bij stil goed praat Bliepo niet, dus bleef de pijl staan (`zegDoor` vraagt de pijl aan vóór de zin). En bij stil goed maakte het lesscherm alleen het tekstvak leeg, zonder de lopende stem te stoppen.
+- Regel: BOUWREGELS 15.51. Nooit een pijl boven een leeg tekstvak; verder werkt de pijl in alle gouden lessen gelijk (in beeld tijdens het praten, een tik stopt de stem meteen, na goed vanzelf door).
+- Opgelost op 1 plek (het gedeelde lesscherm), dus in alle 21 gouden lessen tegelijk; de lessen zelf zijn niet veranderd. Gemeten in alle 21 (BLIEPO-GEDRAG-METING-20NOV.md).
+- Controle: `METER=1 … node scripts/speelcontrole.mjs` en `node scripts/bliepo-gedrag-meting.mjs <map>` (zie 15.51).

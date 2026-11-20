@@ -27,7 +27,7 @@
  */
 
 import { spawn } from "node:child_process";
-import { mkdtempSync, rmSync, existsSync, mkdirSync, writeFileSync, appendFileSync } from "node:fs";
+import { mkdtempSync, rmSync, existsSync, mkdirSync, writeFileSync, appendFileSync, readFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { kiesLessen } from "./lessenkeuze.mjs";
@@ -230,7 +230,20 @@ async function speel(c, id) {
     /* F14 (18 nov 2026, 15.34): in de gouden les Rekentaal zweeft niets: elk voorwerp staat OP zijn ondergrond (scripts/zweef-controle.mjs). */
     const zweefMeter = id === "squla-rekentaal-gouden" || !!process.env.ZWEEF;
     if (zweefMeter) await c.stuur("Page.addScriptToEvaluateOnNewDocument", { source: ZWEEF_METER }, s);
-    await c.stuur("Page.navigate", { url: `${BASIS}/voorbeeld/les/${id}?naam=Testkind` }, s);
+    /* METER=1 (20 nov 2026, BOUWREGELS 15.51): meet de pijl, het afbreken van de stem en het vanzelf doorgaan na goed (scripts/bliepo-gedrag-meter.js). */
+    if (process.env.METER) await c.stuur("Page.addScriptToEvaluateOnNewDocument", { source: readFileSync(new URL("./bliepo-gedrag-meter.js", import.meta.url), "utf8") }, s);
+    if (process.env.VIAOVERZICHT) {
+      /* VIAOVERZICHT=1: zoals een kind, via een echte klik in het lesoverzicht (public/alle-lessen.html; 15.38 punt 1). */
+      await c.stuur("Page.navigate", { url: `${BASIS}/alle-lessen.html` }, s);
+      let p = null;
+      for (let i = 0; i < 50 && !p; i++) {
+        await wacht(200);
+        p = await ev(`(() => { const a = document.querySelector('a[href^="/voorbeeld/les/${id}?"]'); if (!a) return null; a.scrollIntoView({ block: "center" }); const r = a.getBoundingClientRect(); return { x: Math.round(r.left + Math.min(20, r.width / 2)), y: Math.round(r.top + r.height / 2) }; })()`);
+      }
+      if (!p) throw new Error(`les ${id} staat niet in het lesoverzicht`);
+      await c.stuur("Input.dispatchMouseEvent", { type: "mousePressed", x: p.x, y: p.y, button: "left", clickCount: 1 }, s);
+      await c.stuur("Input.dispatchMouseEvent", { type: "mouseReleased", x: p.x, y: p.y, button: "left", clickCount: 1 }, s);
+    } else await c.stuur("Page.navigate", { url: `${BASIS}/voorbeeld/les/${id}?naam=Testkind` }, s);
     const begin = Date.now();
     let stilSinds = null;
     let vorigeTekst = "";
@@ -577,7 +590,8 @@ async function speel(c, id) {
         /* De speler wacht met antwoorden tot de meter dit moment beoordeeld heeft (alleen als er geen opdracht staat; met RUSTIG=1 altijd). */
         if (!z.knoppen.some((b) => b.k === "verder") && (await ev(`window.__f16Klaar ? window.__f16Klaar(${process.env.RUSTIG ? "true" : "false"}) : true`)) === false) continue;
       }
-      const knoppen = z.knoppen.filter((b) => !["opnieuw", "terug"].includes(b.k) && !b.wolk);
+      /* PIJLTIK=nooit (20 nov 2026, meting 15.51): de speler tikt nooit op de pijl; de les moet vanzelf doorgaan. */
+      const knoppen = z.knoppen.filter((b) => !["opnieuw", "terug"].includes(b.k) && !b.wolk && !(process.env.PIJLTIK === "nooit" && b.k === "verder"));
       if (FOTOMAP && (knoppen.length || z.kaart) && !z.praat) {
         const sleutel = z.tekst + "|" + knoppen.map((b) => b.t).join(",");
         if (!gefotografeerd.has(sleutel)) {
@@ -635,7 +649,7 @@ async function speel(c, id) {
       /* NEE=1: bij "Kun je dit al?" op Nee tikken, om de uitleg te zien (alleen dan; anders gaat het kind door met Ja). */
       if (process.env.NEE && (await klik(`(b) => (b.textContent || "").trim() === "Nee"`))) continue;
       /* Afwisselend: meestal goed, soms "weet ik niet", soms fout. */
-      if (await klik(`(b) => b.getAttribute("data-knop") === "verder"`)) continue;
+      if (process.env.PIJLTIK !== "nooit" && (await klik(`(b) => b.getAttribute("data-knop") === "verder"`))) continue;
       /* HULP=1: bij "weet ik niet" op het handje tikken (als dat er staat), om de hulpstappen te zien. */
       if (process.env.HULP && soort === "weetniet" && (await klik(`(b) => b.getAttribute("data-knop") === "hulp"`))) continue;
       if (await klik(`(b) => b.hasAttribute("data-controleer") || b.getAttribute("data-knop") === "controleer"`)) continue;
@@ -734,6 +748,11 @@ async function speel(c, id) {
       }
       console.log(`  F7 ${id}: ${n} keer dezelfde tekst terug zonder tik (${(r.m ?? []).length} metingen)`);
     }
+    /* METER=1 en METERUIT=map: de meting van 15.51 per les in een bestand (scripts/bliepo-gedrag-meting.mjs vat ze samen). */
+    if (process.env.METER && process.env.METERUIT) {
+      mkdirSync(process.env.METERUIT, { recursive: true });
+      writeFileSync(join(process.env.METERUIT, `${id}.json`), (await ev(`JSON.stringify({ bm: window.__bm ?? null, gouden: window.__gouden ?? [], stilte: window.__stilte ?? [], scherm: window.__scherm ?? [] })`)) ?? "{}");
+    }
     /* DUMP=1: wat de gouden klokles over de les heeft vastgelegd (denkfouten, uitkomsten, zinnen van Bliepo). */
     if (process.env.DUMP) {
       const d = await ev(`JSON.stringify({ d: window.__denkfouten ?? [], u: window.__uitkomsten ?? [], g: (window.__gouden ?? []).filter((x) => x.wat === "reactie" || x.wat === "aanwijzing" || x.wat === "aanmoedigen") })`);
@@ -786,7 +805,7 @@ await Promise.all(
     chrome.stop();
   }),
 );
-onthoudGoed("speel", afdruk, uitslagen.filter((u) => !u.fouten.length).map((u) => u.id));
+if (!process.env.METER) onthoudGoed("speel", afdruk, uitslagen.filter((u) => !u.fouten.length).map((u) => u.id));
 const fout = uitslagen.filter((u) => u.fouten.length).length;
 const hand = uitslagen.filter((u) => !u.fouten.length && u.handmatig.length).length;
 console.log(`\nSpeelcontrole: ${uitslagen.length} lessen, ${uitslagen.length - fout - hand} tot het eind, ${fout} met fouten, ${hand} met een stap die alleen in de tekening kan.`);
