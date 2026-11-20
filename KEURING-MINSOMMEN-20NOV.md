@@ -59,3 +59,9 @@ Schermfoto's: `/private/tmp/claude-501/-Users-sararifi-Desktop-thuisles/898e19d0
 ## Herstel (20 november 2026)
 
 Bliepo zei "dit is mijn stippenmachine" en "de plusknop onder de machine", maar er staat geen machine in beeld. De zinnen noemen nu wat er staat: "Kijk, hier zijn stippen en een plusknop. …" en "Tik op de plusknop onder de stippen." (15.36; oud naast nieuw in WIJZIGINGEN-ZINNEN-MINSOMMEN.md). Niet veranderd: de antwoordknoppen in het midden (15.32) is een vraag voor Sara (KEUZES-VOOR-SARA.md Ronde 53 punt 3). Fouttabel-script en speelcontrole GOED: in orde.
+
+## Herstel 2 (20 november 2026, besluit Sara Ronde 53 punt 3)
+
+- **De antwoordknoppen staan nu rechts, onder Bliepo's zin** (15.32), niet meer groot in het midden onder de machine of het bord (`midden` wordt niet meer meegegeven). Witte knoppen met zwarte cijfers, zoals in de andere gouden lessen; de kleuren van de getallen in de som blijven.
+- Zinnen: niets veranderd. Schermfoto's: niets overlapt.
+- `scripts/test-minsommen-gouden.mjs` (alle routes): "Alles in orde". Fouttabel-script in orde. Speelcontrole goed en allefout: tot het eind.

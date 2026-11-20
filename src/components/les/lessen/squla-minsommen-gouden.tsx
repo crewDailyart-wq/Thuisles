@@ -96,7 +96,7 @@ const DENK_MS = 250;
 const AANWIJZING_MS = 6000;
 /** Zo lang na het einde van de stem komt het volgende stuk (zeg() wacht zelf al 0,3 s; samen ±0,7 s; 15.27). */
 const DOOR_NA_MS = 400;
-/** De keuzes groot in het midden (zoals de oude les: onder de bak van de machine 620, anders 600). */
+/** De keuzes groot in het midden (zoals de oude les: onder de bak van de machine 620, anders 600). Sinds 20 nov 2026 niet meer gebruikt: de keuzes staan rechts onder Bliepo's zin (15.32). */
 const MIDDEN_MACHINE = 620;
 const MIDDEN_SOM = 600;
 
@@ -332,7 +332,10 @@ async function zegOpdracht(l: Lesgids, zinnen: string[], melding: Promise<unknow
 
 /** De keuzeknoppen tegelijk met de zinnen. Een tik tijdens de zin telt. Geen pijl (l.kies vervangt hem). */
 async function vraagMetKnoppen(l: Lesgids, opties: string[], zinnen: string[], midden: number): Promise<string> {
-  const p = l.kies(opties, { direct: true, weetniet: false, midden });
+  /* Rechts onder Bliepo's zin (besluit Sara, 20 nov 2026, KEUZES-VOOR-SARA Ronde 53 punt 3; BOUWREGELS 15.32): `midden`
+     (groot in het midden onder de machine of het bord, 7 november) wordt niet meer meegegeven. */
+  void midden;
+  const p = l.kies(opties, { direct: true, weetniet: false });
   log(l, "vraag", { zin: zinnen.join(" "), opties });
   const z = zeg(l, ...zinnen);
   z.catch(() => {});
