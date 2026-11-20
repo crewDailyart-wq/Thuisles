@@ -118,6 +118,8 @@ function maakScene(Phaser: PhaserModule, rustig: boolean) {
     losse: { doos: Box; n: number; thuis: Punt }[] = [];
     losBeeld = "";
     rondje!: Img;
+    /** De stoep onder de losse huizen (Sara 20 nov 2026, 15.34: de huizen om te slepen stonden in de lucht). */
+    losGrond!: Img;
     lichtI: number | null = null;
     gat: number = -1;
 
@@ -193,6 +195,20 @@ function maakScene(Phaser: PhaserModule, rustig: boolean) {
           c.strokeStyle = aan ? "#ffd36b" : "rgba(255,255,255,0.7)";
           c.stroke();
         });
+      /* De stoep voor de losse huizen (15.34: niets zweeft): dezelfde stoep als die van de straat, 1 keer gebakken. De
+         huizen staan er met hun onderkant op (LOSGROND), net als de huizen op de straat op GROND. Alleen in beeld als er
+         losse huizen zijn. */
+      this.canvasPlaatje("hn-losgrond", 832, 720 - LOSGROND, (c) => {
+        c.fillStyle = "#59607e";
+        c.beginPath();
+        c.roundRect(0, 0, 832, 24, 10);
+        c.fill();
+        c.fillStyle = "#353b57";
+        c.beginPath();
+        c.roundRect(0, 24, 832, 720 - LOSGROND - 24, [0, 0, 10, 10]);
+        c.fill();
+      });
+      this.losGrond = this.plaats("hn-losgrond", 14, LOSGROND).setOrigin(0, 0).setDepth(1).setAlpha(0).setVisible(false);
       this.rondje = this.add.image(0, 0, "hn-rondje").setVisible(false).setDepth(5);
     }
 
@@ -288,6 +304,10 @@ function maakScene(Phaser: PhaserModule, rustig: boolean) {
         else this.verdwijn(l.doos);
       }
       this.losBeeld = beeld;
+      const aan = losse.length > 0;
+      this.tweens.killTweensOf(this.losGrond);
+      if (aan) this.losGrond.setVisible(true);
+      this.tweens.add({ targets: this.losGrond, alpha: aan ? 1 : 0, duration: this.rustig ? 1 : 260, ease: "Sine.easeOut", onComplete: () => this.losGrond.setVisible(aan) });
       this.losse = losse.map((n, i) => {
         const thuis = { x: huisX(losse.length, i) + W / 2, y: LOSGROND };
         const doos = this.maakHuis(n).setPosition(thuis.x, thuis.y).setDepth(3);

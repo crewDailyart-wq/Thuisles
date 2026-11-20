@@ -36,3 +36,7 @@ Echte stem, geluiden horen, vloeiendheid (bewust niet), de laatste vraag en de e
 - Opmerking 1 (15.17): beoordeeld als verklappen. "Begin bij 39 en tel 1 verder." is voor een kind bijna het antwoord (40), net als het eerder geschrapte "Begin bij de 5 en tel 1 streepje verder." bij Getallenlijn. Nu: "Begin bij huis 39 en tel in je hoofd verder." (en "… tel in je hoofd terug."). Het rondje om het buurhuis blijft. Oud naast nieuw: WIJZIGINGEN-ZINNEN-HUISNUMMERS.md.
 - Fouttabel-script na het herstel: in orde (17 vragen, 919 varianten, geen verklappen).
 - Opmerking 2 (zwevende huizen om te slepen): NIET HERSTELD, buiten de opdracht; het zijn keuzes die je sleept. Voor Sara.
+
+## Herstel 2 (20 november 2026, besluit Sara, 15.33/15.34)
+- De huizen om te slepen stonden in de lucht onder de straat. Nu staat er onder die huizen een stoep, net als de stoep van de straat (1 keer getekend in Phaser, `hn-losgrond` in `squla-huisnummers-gouden-vlak.tsx`). De huizen staan er met hun onderkant op. De stoep is alleen in beeld als er huizen om te slepen zijn. Schermfoto gekeken (vraag 10, "Sleep het goede huis naar de lege plek"): de huizen 24, 42 en 26 staan op de stoep.
+- Na het herstel: `test-huisnummers-gouden.mjs` route goed en allefout "Alles in orde"; speelcontrole GOED en ALLEFOUT tot het eind, 0 fouten.
