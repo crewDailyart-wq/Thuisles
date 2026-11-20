@@ -63,3 +63,10 @@ Echte stem, geluiden horen, vloeiendheid (bewust niet), het testscript `test-klo
 - "De bezorgbus staat klaar bij de bakkerij." (klok 1 en klok 6) terwijl er alleen de bus in beeld is: nu "De bezorgbus staat klaar." (klok 1) en "De bezorgbus staat weer klaar." (klok 6). De zinnen bij klok 5 en 12 ("… bij de bakkerij") blijven: daar staat de bakkerij wel in beeld.
 - Niet gedaan (niet gevraagd): de bus staat los naast de klok zonder ondergrond.
 - Na het herstel: fouttabel-script in orde; speelcontrole GOED en ALLEFOUT tot het eind, 0 fouten.
+
+## Herstel 3 (20 november 2026, besluit Sara): grond onder de bezorgbus
+- Onder de bezorgbus ligt nu een stoep, in dezelfde stijl als bij Huisnummers (een lichte rand en een donkere strook met streepjes), van de linkerrand tot vlak voor de klok. De wielen staan een stukje in de stoep (15.33/15.34). De stoep komt mee met de bus, blijft liggen als de volgende klok ook de bus heeft, en verdwijnt bij de zon of de bakkerij. Als de bus wegrijdt, rijdt hij over de stoep. Code: `squla-klok-gouden-vlak.tsx` (`STOEP`, `maakStoep`, `verhaalGrond`).
+- Niet veranderd: de bakkerij en de zon (die zweven niet: zon en bakkerij zijn zachte sfeer bovenin, alleen de bus staat "naast").
+- `test-klok-gouden-pijl.mjs` kan nu bij elke vraag een schermfoto maken (`ELKEVRAAG=1` met `FOTO`).
+- Na het herstel: `test-klok-gouden-pijl.mjs` ONTWERP 1280x720 route nee-goed met foto's: Alles in orde. Schermfoto ingezoomd: de wielen staan op de stoep, niets zweeft. Fouttabel-script in orde.
+- Speelcontrole GOED en ALLEFOUT: allebei tot het eind, 0 fouten (F16 0, 15.47 0, F11 0).

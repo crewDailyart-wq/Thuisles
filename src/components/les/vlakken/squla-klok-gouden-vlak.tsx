@@ -87,6 +87,8 @@ const MIN_DIK = 0.046 * R;
 const UUR_DIK = 0.076 * R;
 const GRIJP = 0.6 * R;
 const KX = 610;
+/** De stoep onder de bezorgbus (15.33/15.34): bovenkant op `top`, van x = 0 tot vlak voor de klok (die begint bij 395). */
+const STOEP = { top: 478, breed: 360, hoog: 60 };
 const KY = 330;
 const LIJN_Y = 0;
 
@@ -160,6 +162,8 @@ function maakScene(lettertype: () => string, begintijd: number) {
       sleep: { x: number; y: number; bewogen: boolean; id: number } | null = null;
       tik: { n: number; x: number; y: number; id: number } | null = null;
       verhaalBeeld: Img | null = null;
+      /** De stoep onder de bezorgbus (Sara 20 nov 2026, 15.33/15.34: de bus zweefde los naast de klok). */
+      verhaalGrond: Img | null = null;
       verhaalSleutel = "";
       verhaalSpeel = 0;
       lichtTween: import("phaser").Tweens.Tween | null = null;
@@ -647,13 +651,28 @@ function maakScene(lettertype: () => string, begintijd: number) {
             this.tweens.killTweensOf(oud);
             this.verdwijn(oud);
           }
+          /* De stoep onder de bus (15.33/15.34: niets zweeft). Blijft liggen als de volgende klok ook de bus heeft. */
+          const grond = v?.plek === "naast";
+          if (!grond && this.verhaalGrond) {
+            const g = this.verhaalGrond;
+            this.verhaalGrond = null;
+            this.tweens.killTweensOf(g);
+            this.verdwijn(g);
+          }
+          if (grond && !this.verhaalGrond) {
+            this.maakStoep();
+            const g = this.plaats("gk-stoep", 0, STOEP.top).setOrigin(0, 0).setAlpha(0);
+            this.tweens.add({ targets: g, alpha: 1, duration: 260, ease: "Sine.easeOut" });
+            this.verhaalGrond = g;
+          }
           if (!v) return;
           const tex = voorwerpTextuur(this, v.naam);
           const img = this.add.image(0, 0, tex);
           const breed = v.plek === "naast" ? 250 : 150;
           const k = breed / Math.max(img.width, img.height);
           img.setScale(k);
-          if (v.plek === "naast") img.setPosition(170, 430);
+          /* De wielen (onderkant van het plaatje zonder lege rand: 246 van 267) staan een stukje IN de stoep (15.33). */
+          if (v.plek === "naast") img.setPosition(170, STOEP.top + 6 - (246 - 267 / 2) * k);
           else if (v.plek === "hoog") img.setPosition(150, 110);
           else if (v.plek === "laag") img.setPosition(150, 300).setTint(0xffd9a8);
           else img.setPosition(150, 140);
@@ -666,6 +685,29 @@ function maakScene(lettertype: () => string, begintijd: number) {
           this.verhaalSpeel = v.speel;
           if (v.naspeel && this.verhaalBeeld) this.speelNa(this.verhaalBeeld, v.naspeel);
         }
+      }
+
+      /**
+       * De stoep onder de bus: dezelfde stoep als in de gouden les Huisnummers (een lichte rand, een donkere strook met
+       * streepjes), 1 keer getekend, van de linkerrand tot vlak voor de klok.
+       */
+      maakStoep() {
+        this.canvasPlaatje("gk-stoep", STOEP.breed, STOEP.hoog, (c) => {
+          c.fillStyle = "#59607e";
+          c.beginPath();
+          c.roundRect(0, 0, STOEP.breed, 24, [0, 10, 10, 0]);
+          c.fill();
+          c.fillStyle = "#353b57";
+          c.beginPath();
+          c.roundRect(0, 24, STOEP.breed, STOEP.hoog - 24, [0, 0, 10, 0]);
+          c.fill();
+          c.fillStyle = "rgba(201,207,227,0.6)";
+          for (let i = 0; i < 3; i++) {
+            c.beginPath();
+            c.roundRect(24 + i * 120, 40, 70, 5, 2);
+            c.fill();
+          }
+        });
       }
 
       /** Het verhaal naspelen (pas na het antwoord): de bus veert bij het laden, rijdt een stukje, of rijdt weg. */

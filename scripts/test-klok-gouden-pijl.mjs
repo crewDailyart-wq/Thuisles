@@ -248,6 +248,16 @@ async function speel(P, o = {}) {
       await P.foto?.(`${o.naam}-langste-stuk`);
     }
     if (z.taak?.soort === "kies" && fotoNr < 2 && Math.random() < 0.05) await P.foto?.(`${o.naam}-moment-${++fotoNr}`);
+    /* ELKEVRAAG=1 (met FOTO): 1 schermfoto bij elke nieuwe vraag (o.a. de bus op de stoep, 20 nov 2026). */
+    if (process.env.ELKEVRAAG && z.taak?.soort === "kies") {
+      const id = JSON.stringify(z.taak.vraag ?? z.tekst.join(" "));
+      globalThis.__gezien ??= new Set();
+      if (!globalThis.__gezien.has(id)) {
+        globalThis.__gezien.add(id);
+        await wacht(600);
+        await P.foto?.(`${o.naam}-vraag-${globalThis.__gezien.size}`);
+      }
+    }
     if (z.kaart) {
       /* De eindkaart meten terwijl Bliepo zijn laatste zin zegt (sinds stemHeelUitpraten links van het tekstvak). */
       let ergst = null;
