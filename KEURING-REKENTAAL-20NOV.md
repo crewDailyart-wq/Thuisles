@@ -53,3 +53,8 @@ Schermfoto's: `/private/tmp/claude-501/-Users-sararifi-Desktop-thuisles/898e19d0
 - Echte stem, woord-oplichten en de geluiden zelf (headless, zonder geluid).
 - De routes "fouten" en "allefout" van het testscript helemaal tot het eind (te traag voor 10 minuten met schermfoto's); de speelcontrole ALLEFOUT kwam wel tot het eind.
 - Vloeiendheid (bewust niet), telefoon en tablet.
+
+
+## Herstel (20 november 2026)
+
+Onderzocht: de hang bij vraag 9 was geen fout in de les. Op de schermfoto van de keuring staat linksonder "Compiling…": de ontwikkelserver bouwde de site opnieuw terwijl de test liep (andere helpers pasten bestanden aan). Dan stopt de les in die testbrowser halverwege; dat kan bij een kind op de echte site niet gebeuren. In de code wacht het samen voordoen met een gewone klok van 20 s (`tikSamen`); die gaat altijd af. Opnieuw gedraaid op 20 nov (`ROUTE=fouten test-rekentaal-gouden.mjs`): "Alles in orde", tot de eindkaart. Niets veranderd.
