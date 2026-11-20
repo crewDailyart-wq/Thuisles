@@ -100,7 +100,13 @@ const KOLOM_X = 1076;
 const KOLOM_ONDER = 418;
 /** De hoogte van een wagon zonder gloed (en het randje eronder), in punten bij schaal 1. */
 const WAGON_H = BEELD_H + 2;
-export type KaartPlek = { x: number; y: number; s: number; b: number; h: number };
+/**
+ * Bij kaarten met 2 dagen (weekend) staat het vinkje BOVEN de kaart, zodat het naambordje helemaal leesbaar blijft
+ * (besluit Sara, 20 november 2026). De rijen staan op dezelfde plek als eerst; alleen staan de 2 kaarten van de bovenste
+ * rij iets verder uit elkaar (TUSSEN_DUBBEL), zodat het vinkje van de kaart eronder tussen die 2 kaarten past.
+ */
+const TUSSEN_DUBBEL = 38;
+export type KaartPlek = { x: number; y: number; s: number; b: number; h: number; vinkBoven: boolean };
 /** Waar kaart i rechts onder Bliepo's zin staat: x = midden, y = onderkant (de wielen), s = schaal van 1 wagon, b × h = zichtbaar. */
 export function kaartPlekken(kaarten: string[]): KaartPlek[] {
   const dubbel = kaarten.some((k) => dagenVan(k).length > 1);
@@ -110,13 +116,14 @@ export function kaartPlekken(kaarten: string[]): KaartPlek[] {
   const h = WAGON_H * s;
   const perRij = dubbel ? 2 : 3;
   const rijen = Math.ceil(kaarten.length / perRij);
-  const tussen = 18;
+  const tussen = dubbel ? TUSSEN_DUBBEL : 18;
+  const vinkBoven = dubbel;
   const rijStap = h + 16;
   return kaarten.map((_, i) => {
     const r = Math.floor(i / perRij);
     const inRij = Math.min(perRij, kaarten.length - r * perRij);
     const j = i - r * perRij;
-    return { x: KOLOM_X + (j - (inRij - 1) / 2) * (b + tussen), y: KOLOM_ONDER - (rijen - 1 - r) * rijStap, s, b, h };
+    return { x: KOLOM_X + (j - (inRij - 1) / 2) * (b + tussen), y: KOLOM_ONDER - (rijen - 1 - r) * rijStap, s, b, h, vinkBoven };
   });
 }
 
@@ -503,7 +510,7 @@ export function TijdGoudenVlak({ beeld, wagons, kaarten = [], licht = [], weeken
                 if (mag) meld({ soort: "dagKies", id: sleutel });
               }}
             >
-              {vinkje && <Vinkje />}
+              {vinkje && <Vinkje boven={plekken[i].vinkBoven} />}
             </button>
           );
         })}
@@ -546,9 +553,9 @@ function HtmlWagon({ dag, x, koppeling }: { dag: number; x: number; koppeling: b
   );
 }
 
-function Vinkje() {
+function Vinkje({ boven = false }: { boven?: boolean }) {
   return (
-    <span className={s.vinkje} aria-hidden data-vinkje="">
+    <span className={`${s.vinkje} ${boven ? s.vinkjeBoven : ""}`} aria-hidden data-vinkje="">
       <svg viewBox="0 0 24 24">
         <path d="M5 12.5l4.5 4.5L19 7.5" />
       </svg>

@@ -429,6 +429,10 @@ async function speel(P, o = {}) {
         /* De dagkaarten staan rechts onder Bliepo's zin (15.32, 20 nov 2026): het vinkje van het lesscherm mag geen kaart raken. */
         const raakVink = await P.ev(`(() => { const v = document.querySelector('[data-knop="controleer"]'); if (!v) return 0; const a = v.getBoundingClientRect(); return [...document.querySelectorAll("[data-tijd-gouden] [data-keuze-rechts]")].map((b) => b.getBoundingClientRect()).filter((c) => c.width > 2 && c.left < a.right - 1 && a.left < c.right - 1 && c.top < a.bottom - 1 && a.top < c.bottom - 1).length; })()`);
         if (raakVink) fout(`het vinkje raakt een dagkaart (${taak.vraag})`);
+        /* Het vinkje op de gekozen kaart (bij het weekend boven de kaart, Sara 20 nov 2026) raakt Bliepo's zin, het
+           vinkje van het lesscherm en het naambordje niet. */
+        const vinkRaak = await P.ev(`(() => { const v = document.querySelector("[data-tijd-gouden] [data-vinkje]"); if (!v) return null; const a = v.getBoundingClientRect(); const raak = (c) => c.width > 2 && c.left < a.right - 1 && a.left < c.right - 1 && c.top < a.bottom - 1 && a.top < c.bottom - 1; const zin = [...document.querySelectorAll(".bliepo-vloer .bliepo-tekst")].map((e) => e.getBoundingClientRect()).filter(raak).length; const k = document.querySelector('[data-knop="controleer"]'); const knop = k && raak(k.getBoundingClientRect()) ? 1 : 0; return { zin, knop }; })()`);
+        if (vinkRaak && (vinkRaak.zin || vinkRaak.knop)) fout(`het vinkje op de kaart raakt de zin of het vinkje van het lesscherm (${JSON.stringify(vinkRaak)}, ${taak.vraag})`);
         await fotoSoort(`${taak.vraag.replace(/-terug$/, "")}-gekozen`);
         await controleerKnop();
         await wacht(200);

@@ -56,6 +56,20 @@
   box-shadow: 0 4px 10px rgba(0, 0, 20, 0.45);
   animation: plop 0.25s ease-out both;
 }
+/* Op een kaart met 2 dagen (weekend): het vinkje BOVEN de kaart, in het midden, zodat het naambordje helemaal
+   leesbaar blijft (besluit Sara, 20 november 2026). Het steekt boven de knop uit (de knop begint 8 boven de wagon). */
+.vinkjeBoven {
+  right: auto;
+  left: 50%;
+  top: -24px;
+  width: 28px;
+  height: 28px;
+  margin-left: -14px;
+}
+.vinkjeBoven svg {
+  width: 20px;
+  height: 20px;
+}
 .vinkje svg {
   width: 30px;
   height: 30px;

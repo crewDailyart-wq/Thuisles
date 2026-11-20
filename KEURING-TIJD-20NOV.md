@@ -47,3 +47,10 @@ Echte stem, of de geluiden echt klinken (in beide speelcontrole-runs "stil: nog 
 - Zinnen: niets veranderd.
 - Gecontroleerd met schermfoto's en `scripts/test-tijd-gouden.mjs` (nieuwe controle: een kaart raakt nooit de zin, Bliepo of het vinkje, en blijft in het tekstvak): routes goed en fouten "Alles in orde". Fouttabel-script in orde. Speelcontrole goed en allefout: tot het eind.
 - Klein punt: bij een gekozen weekendkaart staat het groene vinkje op de hoek van de kaart en bedekt het een stukje van het rechter bordje.
+
+## Herstel 3 (20 november 2026, besluit Sara): vinkje boven de weekendkaart
+- Het groene vinkje op een gekozen weekendkaart (kaart met 2 dagen) staat nu BOVEN de kaart, in het midden. Het naambordje is helemaal leesbaar. Om plek te maken staan de 2 kaarten van de bovenste rij iets verder uit elkaar (38 in plaats van 18), zodat het vinkje van de kaart eronder tussen die 2 kaarten past. Kaarten met 1 dag houden het vinkje op de hoek (daar was het geen probleem). Code: `squla-tijd-gouden-vlak.tsx` (`TUSSEN_DUBBEL`, `vinkBoven`), `squla-tijd-gouden.module.css` (`.vinkjeBoven`).
+- Niet gelukt: de weekendkaarten groter maken. Geprobeerd met 0.8 (was 0.75): dan raakt de bovenste rij het vinkje van het lesscherm en de zin van 4 regels. Ze blijven 0.75.
+- `test-tijd-gouden.mjs` kijkt nu ook of het vinkje op de kaart de zin of het vinkje van het lesscherm raakt.
+- Na het herstel: `test-tijd-gouden.mjs` ONTWERP 1280x720, routes goed en allefout met foto's: Alles in orde (kaart over zin 0, over Bliepo 0, buiten het vak 0). Fouttabel-script in orde.
+- Speelcontrole GOED en ALLEFOUT: allebei tot het eind, 0 fouten.
