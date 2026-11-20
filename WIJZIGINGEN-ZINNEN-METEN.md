@@ -169,3 +169,6 @@ Sara besliste: in onze gouden lessen geen zinnen van Synthesis, ook niet vertaal
 | Les | Waar | Oud (vertaald uit Synthesis) | Nieuw (eigen zin) |
 |---|---|---|---|
 | gouden | typen: eerste zin, een rij te weinig (variant 2) | Je typte 8. Dan mis je nog een hele rij. | Je typte 8. Er hoort nog een hele rij bij. |
+
+## 20 nov 2026: streepjes weg (besluit Sara)
+Oud → nieuw: "vóór"→"voor", "ervóór"→"ervoor", "ná"→"na", "én"→"en" (overal in de zinnen van deze les).

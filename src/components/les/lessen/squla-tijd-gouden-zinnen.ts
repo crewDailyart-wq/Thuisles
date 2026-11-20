@@ -291,7 +291,7 @@ export const DENKFOUT_UITLEG: Record<Denkfoutnaam, string> = {
   "eerste-laatste-verwisseld": "koos de laatste dag (zondag) bij de vraag naar de eerste dag",
   "dag-ernaast": "koos de dag vlak voor de laatste dag (zaterdag) bij de vraag naar de laatste dag",
   "andere-dag": "koos een dag die niet vooraan, niet achteraan of niet meteen erna komt; geen reden verzonnen",
-  "voor-na-verwisseld": "koos bij \"meteen na\" de dag ervóór",
+  "voor-na-verwisseld": "koos bij \"meteen na\" de dag ervoor",
   schooldagen: "koos de schooldagen (5 dagen, of donderdag en vrijdag) in plaats van het weekend",
   "schooldag-erbij": "koos 1 dag van het weekend met een schooldag erbij (zondag en maandag)",
   "een-te-weinig": "koos een getal dat te klein is (1 dag weekend, 6 dagen in een week)",
@@ -373,7 +373,7 @@ const HINT = {
 };
 const UITLEG = {
   eersteLaatste: ["De eerste dag staat vooraan in de week, niet achteraan.", "De week begint niet met het weekend.", "De eerste dag hangt vooraan, vlak achter de locomotief."],
-  eerste: ["De eerste dag hangt vooraan in de weektrein, vlak achter de locomotief.", "Met de eerste dag begint de schoolweek.", "Vóór de eerste dag hangt alleen de locomotief."],
+  eerste: ["De eerste dag hangt vooraan in de weektrein, vlak achter de locomotief.", "Met de eerste dag begint de schoolweek.", "Voor de eerste dag hangt alleen de locomotief."],
   laatste: ["De laatste dag hangt helemaal achteraan in de weektrein.", "De laatste dag is de allerlaatste wagon van de trein.", "Na de laatste dag komt er in deze week niets meer."],
   schooldagen: ["Het weekend zijn de vrije dagen aan het eind van de week.", "Na de schooldagen komt het weekend.", "Het weekend is korter dan de schoolweek."],
   weinigWeekend: ["Na vrijdag is er geen school meer, tot het maandag is.", "Zaterdag is vrij, en de dag erna ook.", "Het weekend begint na vrijdag en duurt tot maandag."],
@@ -404,7 +404,7 @@ export function tijdFout(v: Vraag, x: string): Fout {
   /* Wat is de eerste dag van de week? */
   if (v.soort === "eerste") {
     if (code === "eerste-laatste-verwisseld") return maak({ eerste: ["Je koos zondag. Dat is de laatste dag van de week.", "Zondag? Die dag komt helemaal aan het eind.", "Je tikte op zondag. Die hangt achteraan, niet vooraan."], hint: HINT.eerste, uitleg: UITLEG.eersteLaatste }, alleen);
-    return maak({ eerste: [`Je koos ${n}. Dat is niet de eerste dag.`, `${N}? Daarvóór komen nog andere dagen.`, `Je tikte op ${n}. Die dag komt later in de week.`], hint: HINT.eerste, uitleg: UITLEG.eerste }, alleen);
+    return maak({ eerste: [`Je koos ${n}. Dat is niet de eerste dag.`, `${N}? Daarvoor komen nog andere dagen.`, `Je tikte op ${n}. Die dag komt later in de week.`], hint: HINT.eerste, uitleg: UITLEG.eerste }, alleen);
   }
 
   /* Wat is de laatste dag van de week? Niet "Na zaterdag komt nog een dag": dan blijft er maar 1 keuze over (15.17). */
@@ -431,7 +431,7 @@ export function tijdFout(v: Vraag, x: string): Fout {
     const d = v.dag;
     const D = naam(d);
     const hint = d === 6 ? HINT.naZondag : HINT.na(d);
-    if (code === "voor-na-verwisseld") return maak({ eerste: [`Je koos ${n}. Die komt vóór ${D}.`, `${N}? Die dag hangt vóór ${D}.`, `Je tikte op ${n}. Die dag komt ervóór, niet erna.`], hint, uitleg: UITLEG.voorNa(d) }, alleen);
+    if (code === "voor-na-verwisseld") return maak({ eerste: [`Je koos ${n}. Die komt voor ${D}.`, `${N}? Die dag hangt voor ${D}.`, `Je tikte op ${n}. Die dag komt ervoor, niet erna.`], hint, uitleg: UITLEG.voorNa(d) }, alleen);
     return maak({ eerste: [`Je koos ${n}. Die komt niet meteen na ${D}.`, `${N}? Die hangt niet direct achter ${D}.`, `Je tikte op ${n}. Die dag ligt verder weg.`], hint, uitleg: UITLEG.ander(d) }, alleen);
   }
 

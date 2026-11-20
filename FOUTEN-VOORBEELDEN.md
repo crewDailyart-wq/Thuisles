@@ -125,3 +125,6 @@ Elke fout die Sara vindt komt hier, met de regel die erbij hoort (BOUWREGELS.md 
 - Regel: BOUWREGELS 15.51. Nooit een pijl boven een leeg tekstvak; verder werkt de pijl in alle gouden lessen gelijk (in beeld tijdens het praten, een tik stopt de stem meteen, na goed vanzelf door).
 - Opgelost op 1 plek (het gedeelde lesscherm), dus in alle 21 gouden lessen tegelijk; de lessen zelf zijn niet veranderd. Gemeten in alle 21 (BLIEPO-GEDRAG-METING-20NOV.md).
 - Controle: `METER=1 … node scripts/speelcontrole.mjs` en `node scripts/bliepo-gedrag-meting.mjs <map>` (zie 15.51).
+
+## F22 · Streepjes op letters (Sara, 20 november 2026)
+Fout: "Tel de peren én de pruimen." en "vóór", "ná": kinderen in groep 3 leren geen streepjes op letters. Regel (BOUWREGELS): in zichtbare lesteksten nooit "é", "ó", "á" voor nadruk; schrijf "en", "voor", "na". Gecontroleerd in alle gouden lessen; "hè" blijft (gewoon woord).

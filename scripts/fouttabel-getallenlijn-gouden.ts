@@ -123,7 +123,7 @@ const lijnvraag = (c: C) => c.v.soort === "bij" || c.v.soort === "natien" || c.v
 const kantKlopt = (c: C, kant: string) => (kant === "verder") === ((c.v.n ?? 0) > anker(c.v));
 const plekKlopt = (c: C, kant: string, n: number) => {
   const p = plekVan(c.v, c.x)!;
-  return n === c.v.n && (kant === "vóór" ? p < n : p > n);
+  return n === c.v.n && (kant === "voor" ? p < n : p > n);
 };
 const REGELS: Regel[] = [
   /* Neutraal: wat het kind koos. */
@@ -160,16 +160,16 @@ const REGELS: Regel[] = [
   /* De hints op de lijn: een getal dat je echt ziet (en dat geen keuze is die nog over is: dat rekent `houdt` na). */
   [/^(?:Kijk naar|Zoek|Zoek eerst|Begin bij) de (\d+)(?: op de lijn)?$/, (m, c) => ({ ok: !!c.v.labels && c.v.labels.includes(+m[1]) && +m[1] !== c.raket && String(+m[1]) !== c.v.goed, houdt: (k) => k !== m[1] })],
   [/^Tel vanaf daar de streepjes tot het raketje$|^Tel de streepjes tot je bij het raketje bent$|^Tel de streepjes vanaf een getal dat je ziet$|^Kijk recht onder het raketje$|^Zoek een getal dat je ziet$|^Tel de streepjes tot het raketje$/, (_, c) => lijnvraag(c)],
-  /* De uitleg bij de 2e keer (dan mag "vlak vóór" en "het volgende streepje": het antwoord komt daarna in beeld). Zou zo'n
+  /* De uitleg bij de 2e keer (dan mag "vlak voor" en "het volgende streepje": het antwoord komt daarna in beeld). Zou zo'n
      zin bij de 1e keer staan, dan blijft er maar 1 keuze over (`houdt`) en stopt het script. */
   [/^Het raketje staat bij het streepje na de (\d+)$|^Vlak na de (\d+) staat het raketje$/, (m, c) => ({ ok: +(m[1] ?? m[2]) === c.X && c.raket === c.X + 1, houdt: (k) => +k === c.X + 1 })],
   [/^Het raketje staat bij het volgende streepje$/, (_, c) => ({ ok: c.raket === c.X + 1, houdt: (k) => +k === c.X + 1 })],
-  [/^(?:(\d+)|Dat getal) staat vlak vóór het raketje$/, (m, c) => ({ ok: (m[1] === undefined || +m[1] === c.X) && c.raket === c.X + 1, houdt: (k) => +k === c.X + 1 })],
-  [/^Het raketje staat bij het streepje vóór de (\d+)$|^Vlak vóór de (\d+) staat het raketje$/, (m, c) => ({ ok: +(m[1] ?? m[2]) === c.X && c.raket === c.X - 1, houdt: (k) => +k === c.X - 1 })],
+  [/^(?:(\d+)|Dat getal) staat vlak voor het raketje$/, (m, c) => ({ ok: (m[1] === undefined || +m[1] === c.X) && c.raket === c.X + 1, houdt: (k) => +k === c.X + 1 })],
+  [/^Het raketje staat bij het streepje voor de (\d+)$|^Vlak voor de (\d+) staat het raketje$/, (m, c) => ({ ok: +(m[1] ?? m[2]) === c.X && c.raket === c.X - 1, houdt: (k) => +k === c.X - 1 })],
   [/^Het raketje staat bij het streepje ervoor$/, (_, c) => ({ ok: c.raket === c.X - 1, houdt: (k) => +k === c.X - 1 })],
   [/^(?:(\d+)|Dat getal) staat vlak na het raketje$/, (m, c) => ({ ok: (m[1] === undefined || +m[1] === c.X) && c.raket === c.X - 1, houdt: (k) => +k === c.X - 1 })],
   [/^Recht onder het raketje hoort het getal dat we zoeken$|^We zoeken het getal recht onder het raketje$/, (_, c) => c.v.soort === "bij" && c.g === c.raket],
-  [/^Je koos weer een getal vóór het raketje$|^Dat is weer vóór het raketje$|^Weer een getal vóór het raketje, zie ik$/, (_, c) => c.X < c.raket],
+  [/^Je koos weer een getal voor het raketje$|^Dat is weer voor het raketje$|^Weer een getal voor het raketje, zie ik$/, (_, c) => c.X < c.raket],
   [/^Je koos weer een getal dat te ver ligt$|^Dat is weer te ver$|^Weer te ver, zie ik$/, (_, c) => c.X > c.raket],
   /* Na 10. */
   [/^Zo ver als (\d+) is het raketje nog niet$/, (m, c) => ({ ok: +m[1] === c.X && c.X > c.raket, houdt: (k) => +k < c.X, richting: true })],
@@ -207,18 +207,18 @@ const REGELS: Regel[] = [
   [/^Je legde het grootste getal vlak na (\d+)$/, (m, c) => +m[1] === c.xs[0] && c.xs[1] === Math.max(...c.xs)],
   [/^Je legde ze van groot naar klein$|^Je legde ze weer van groot naar klein$|^Ze liggen weer van groot naar klein$|^Weer van groot naar klein, zie ik$/, (_, c) => c.f.code === "volgorde-omgedraaid"],
   /* Wat staat er bij. */
-  [new RegExp(`^${DING} staat (vóór|na) de (\\d+)$`), (m, c) => dingVan(m[1]) === c.x && plekKlopt(c, m[2], +m[3])],
+  [new RegExp(`^${DING} staat (voor|na) de (\\d+)$`), (m, c) => dingVan(m[1]) === c.x && plekKlopt(c, m[2], +m[3])],
   [new RegExp(`^Je tikte op ${DING}$`), (m, c) => dingVan(m[1]) === c.x],
   [new RegExp(`^${DING}$`), (m, c) => dingVan(m[1]) === c.x],
-  [/^(Die|Dat) staat (?:nog )?(vóór|na) de (\d+)$/, (m, c) => (m[1] === "Dat") === (c.x === "raketje" || c.x === "satelliet") && plekKlopt(c, m[2], +m[3])],
+  [/^(Die|Dat) staat (?:nog )?(voor|na) de (\d+)$/, (m, c) => (m[1] === "Dat") === (c.x === "raketje" || c.x === "satelliet") && plekKlopt(c, m[2], +m[3])],
   [/^(Die|Dat) staat al voorbij de (\d+)$/, (m, c) => (m[1] === "Dat") === (c.x === "raketje" || c.x === "satelliet") && plekKlopt(c, "na", +m[2])],
   [/^Tel dan de streepjes (verder|terug)$|^Tel streepje voor streepje (verder|terug)$|^Tel vanaf daar de streepjes (verder|terug)$/, (m, c) => c.v.soort === "wie" && kantKlopt(c, m[1] ?? m[2] ?? m[3])],
   [new RegExp(`^(?:${DING}|Die|Dat) staat bij de (\\d+)$`), (m, c) => (!m[1] || dingVan(m[1]) === c.x) && plekVan(c.v, c.x) === +m[2]],
-  [/^Dat is (\d+) streepjes? (vóór|na) de (\d+)$|^(?:Die|Dat) staat (\d+) streepjes? (vóór|na) de (\d+)$/, (m, c) => {
+  [/^Dat is (\d+) streepjes? (voor|na) de (\d+)$|^(?:Die|Dat) staat (\d+) streepjes? (voor|na) de (\d+)$/, (m, c) => {
     const [d, kant, n] = m[1] !== undefined ? [+m[1], m[2], +m[3]] : [+m[4], m[5], +m[6]];
     return Math.abs(n - plekVan(c.v, c.x)!) === d && plekKlopt(c, kant, n);
   }],
-  [/^Je tikte weer op iets (vóór|na) de (\d+)$|^Dat staat weer (vóór|na) de (\d+)$|^Weer iets (vóór|na) de (\d+), zie ik$/, (m, c) => plekKlopt(c, m[1] ?? m[3] ?? m[5], +(m[2] ?? m[4] ?? m[6]))],
+  [/^Je tikte weer op iets (voor|na) de (\d+)$|^Dat staat weer (voor|na) de (\d+)$|^Weer iets (voor|na) de (\d+), zie ik$/, (m, c) => plekKlopt(c, m[1] ?? m[3] ?? m[5], +(m[2] ?? m[4] ?? m[6]))],
   [/^De (\d+) helpt je tellen$|^Vanaf de (\d+) kun je de streepjes tellen$/, (m, c) => c.v.labels!.includes(+(m[1] ?? m[2])) && +(m[1] ?? m[2]) === anker(c.v)],
   /* Het dichtst bij. */
   [/^Van (\d+) naar de (\d+) zijn het (\d+) sprongen$|^(\d+) ligt (\d+) sprongen van de (\d+) af$/, (m, c) => {
@@ -240,7 +240,7 @@ const REGELS: Regel[] = [
   [/^Van (\d+) tel je (\d+) (verder|terug) tot de (\d+)$/, (m, c) => +m[1] === c.X && +m[4] === c.v.n && Math.abs(c.X - c.v.n!) === +m[2] && m[3] === (c.X < c.v.n! ? "verder" : "terug")],
   [/^Tel in je hoofd vanaf elk bordje$|^Hoe minder je hoeft te tellen, hoe dichterbij$|^Hoe minder tellen, hoe dichterbij$|^Probeer het bij elk bordje in je hoofd$|^Tel bij elk bordje in je hoofd hoe ver het is$|^Kies het getal dat het minst ver is$|^We zetten de getallen op een lijn en tellen de sprongen$/, (_, c) => c.v.soort === "dichtst"],
   /* Ongeveer. */
-  [/^(?:(\d+)|Dat getal|Dat) ligt vlak (na|vóór) de (\d+)$/, (m, c) => (m[1] === undefined || +m[1] === c.X) && c.X === +m[3] + (m[2] === "na" ? 1 : -1) && c.v.labels!.includes(+m[3])],
+  [/^(?:(\d+)|Dat getal|Dat) ligt vlak (na|voor) de (\d+)$/, (m, c) => (m[1] === undefined || +m[1] === c.X) && c.X === +m[3] + (m[2] === "na" ? 1 : -1) && c.v.labels!.includes(+m[3])],
   [/^(?:(\d+)|Dat getal|Dat) ligt tussen de (\d+) en de (\d+)$/, (m, c) => (m[1] === undefined || +m[1] === c.X) && c.X > +m[2] + 1 && c.X < +m[3] - 1 && c.v.labels!.includes(+m[2]) && c.v.labels!.includes(+m[3])],
   [/^Kijk welk getal op de lijn het dichtst bij het raketje staat$|^Zoek het getal op de lijn dat vlak bij het raketje staat$|^Het raketje staat vlak bij een getal op de lijn$|^Zoek dat getal$/, (_, c) => c.v.soort === "ongeveer"],
   [/^Het raketje staat vlak bij de (\d+)$/, (m, c) => Math.abs(c.raket - +m[1]) <= 1 && c.v.labels!.includes(+m[1])],
@@ -339,14 +339,14 @@ function keurFout(waar: string, c: C, keuzes: string[], goed: string, regels: Re
       if (getalvraag && getallenIn(h).includes(Number(goed)) && !regels.includes(REGELS_UITLEG[0])) fouten.push(`${waar}: de hint noemt het antwoord: "${kaal(h)}"`);
       if (!getalvraag && c.v.soort === "wie" && kaal(h).toLowerCase().includes(goed)) fouten.push(`${waar}: de hint noemt het goede ding: "${kaal(h)}"`);
       if (c.v.soort === "orden" && (/komt \d+/.test(kaal(h)) || kaal(`${e} ${h}`).includes(goed.split(",").join(", ")))) fouten.push(`${waar}: de hint noemt een kaart of de goede volgorde: "${kaal(h)}"`);
-      if (f.noot && /kant niet genoemd/.test(f.noot) && (H.richting || /\b(verder|terug|vóór|na|voorbij)\b/.test(kaal(h)) || getallenIn(h).length)) fouten.push(`${waar}: na een zin zonder richting geeft de hint toch een richting of een getal: "${kaal(h)}"`);
+      if (f.noot && /kant niet genoemd/.test(f.noot) && (H.richting || /\b(verder|terug|voor|na|voorbij)\b/.test(kaal(h)) || getallenIn(h).length)) fouten.push(`${waar}: na een zin zonder richting geeft de hint toch een richting of een getal: "${kaal(h)}"`);
       /* Welke keuzes zijn er na deze eerste zin + deze hint nog over? */
       const over = andere.filter((k) => [...E.houdt, ...H.houdt].every((mag) => mag(k)));
       if (c.v.soort === "orden") continue;
       if (!over.includes(goed)) fouten.push(`${waar}: het goede antwoord valt weg na "${kaal(`${e} ${h}`)}" (de zin klopt niet)`);
       const tweeKeuzes = !!f.noot && /2 keuzes|nog 1 getal over/.test(f.noot);
       /* Ook als er door de vraag zelf al maar 1 keuze over is: de zin zegt niet hoeveel het scheelt ("1 streepje", "vlak na"). */
-      if (tweeKeuzes && /streepje over|1 streepje|vlak (na|vóór)|1 groter|1 verder/.test(kaal(`${e} ${h}`))) fouten.push(`${waar}: "${kaal(`${e} ${h}`)}" zegt hoeveel het scheelt (dan is het antwoord verklapt)`);
+      if (tweeKeuzes && /streepje over|1 streepje|vlak (na|voor)|1 groter|1 verder/.test(kaal(`${e} ${h}`))) fouten.push(`${waar}: "${kaal(`${e} ${h}`)}" zegt hoeveel het scheelt (dan is het antwoord verklapt)`);
       if (over.length <= 1 && !tweeKeuzes) fouten.push(`${waar}: na "${kaal(`${e} ${h}`)}" blijft alleen ${over.join("")} over`);
       /* Bijna en dichtbij: alleen als er dan nog 2 keuzes dichtbij (hooguit 2 ernaast) over zijn. */
       if ((E.nabij || H.nabij) && over.filter((k) => Math.abs(Number(k) - c.X) <= 2).length < 2) fouten.push(`${waar}: "${kaal(`${e} ${h}`)}" zegt bijna of dichtbij, maar dan is er nog maar 1 keuze dichtbij`);
@@ -601,7 +601,7 @@ De getallen op de lijn zijn wit; in de les zijn de getallen in Bliepo's zinnen d
 
 **Zo werkt het bij een fout — 2 POGINGEN (BOUWREGELS 15.9 en 15.11):**
 - **1e fout:** Bliepo's scherm 1,5 seconde rood (geen fout-geluidje). De knoppen gaan weg (bij "wat staat er bij" gaat het vinkje weg; bij op volgorde blijven de kaarten even liggen en glijden daarna terug). Bliepo zegt de eerste zin en de hint; een rood rondje staat om het getal (of vak, of bordje) dat hij noemt, nooit om het antwoord, en alleen als hij dat getal ook echt noemt. Daarna gaat de les vanzelf door (15.27): de vraag in andere woorden en het kind mag opnieuw. Zo staat er altijd een vraag of opdracht in beeld (15.37, F16).
-- **Verklappen (15.17), strenger sinds 18 november 2026:** de eerste zin zegt alleen wat zeker is over wat het kind koos (het raketje staat verder, of minder ver); er blijven altijd 2 keuzes over (bij "wat is meer" zijn er maar 2 keuzes en bij "na 10" valt de 1 al af door de vraag: dan noemt Bliepo alleen de regel of de kant). Bij de 1e keer zegt hij nooit "vlak vóór", "vlak na" of "1 streepje" (dan weet je het antwoord), en "bijna" of "dichtbij" alleen als er dan nog 2 keuzes dichtbij zijn. De hint telt vanaf een getal dat geen keuze is die nog over is, en zegt nooit hoeveel streepjes het is. Het script rekent dat voor ELKE variant na.
+- **Verklappen (15.17), strenger sinds 18 november 2026:** de eerste zin zegt alleen wat zeker is over wat het kind koos (het raketje staat verder, of minder ver); er blijven altijd 2 keuzes over (bij "wat is meer" zijn er maar 2 keuzes en bij "na 10" valt de 1 al af door de vraag: dan noemt Bliepo alleen de regel of de kant). Bij de 1e keer zegt hij nooit "vlak voor", "vlak na" of "1 streepje" (dan weet je het antwoord), en "bijna" of "dichtbij" alleen als er dan nog 2 keuzes dichtbij zijn. De hint telt vanaf een getal dat geen keuze is die nog over is, en zegt nooit hoeveel streepjes het is. Het script rekent dat voor ELKE variant na.
 - **2e fout:** een korte uitleg bij de denkfout (1 reactie; nu mag "1 streepje", want het antwoord komt daarna toch in beeld), dan samen: Bliepo zet de getallen klaar en springt over de lijn, 1 per keer, elke sprong krijgt een boog die blijft staan (draaiboek §0, §3 E.3). Bij het doel komt het getal op de lijn (nu pas het antwoord in beeld). Dan de kleine stap: het kind tikt het getal (of het ding) aan, of sleept de laatste kaart in het vak (het hulphandje komt vanzelf na ± 6 s). Daarna gaat de les door.
 - **Twee keer dezelfde denkfout:** Bliepo zegt "weer" en legt het anders uit (alleen als hij de 1e keer al zei wat er mis was).
 - **Hetzelfde foute antwoord 2 keer:** de eerste zin wordt "Je koos weer …" ("Je tikte weer op …", "Je legde ze weer zo neer."), met een uitleg zonder dat getal.
@@ -644,7 +644,7 @@ Bij het springen in de uitleg (draaiboek §3 B): alleen de getallen 1, 2 en 3 zi
 
 | Naam | Wat het kind doet | Waar |
 |---|---|---|
-| \`streepje-ervoor\` | koos het getal van het streepje vóór het raketje | bij welk getal |
+| \`streepje-ervoor\` | koos het getal van het streepje voor het raketje | bij welk getal |
 | \`streepje-erna\` | koos het getal van het streepje na het raketje | bij welk getal |
 | \`te-ver\` | keek verder dan het raketje (2 of meer) | bij welk getal |
 | \`niet-ver-genoeg\` | keek niet ver genoeg (2 of meer) | bij welk getal |
@@ -654,7 +654,7 @@ Bij het springen in de uitleg (draaiboek §3 B): alleen de getallen 1, 2 en 3 zi
 | \`volgorde-omgedraaid\` | legde de kaarten van groot naar klein | op volgorde |
 | \`getal-overgeslagen\` | sloeg een getal over in de rij | op volgorde |
 | \`kleiner-erna\` | legde een kleiner getal na een groter | op volgorde |
-| \`ding-ervoor\` / \`ding-erna\` | tikte op een ding dat vóór of na het getal staat | wat staat er bij |
+| \`ding-ervoor\` / \`ding-erna\` | tikte op een ding dat voor of na het getal staat | wat staat er bij |
 | \`verder-weg\` | koos een getal dat verder weg ligt | het dichtst bij |
 | \`ander-stuk\` | koos een getal in een ander stuk van de lijn | ongeveer |
 | \`getallen-tellen-ipv-sprongen\` | telde de getallen in plaats van de sprongen (Synthesis, §7) | uitlegvraag |
@@ -672,8 +672,8 @@ const alleVarianten = [
   lijst("de vraag opnieuw: wat staat er bij", ZIN.opnieuw(V(10))),
   lijst("de vraag opnieuw: het dichtst bij", ZIN.opnieuw(V(12))),
   lijst("de vraag opnieuw: ongeveer", ZIN.opnieuw(V(14))),
-  lijst("1e keer, eerste zin: vóór het raketje, met bijna (vraag 1, koos 5)", F(1, "5").eerste),
-  lijst("1e keer, eerste zin: vóór het raketje, zonder bijna (vraag 2, koos 1)", F(2, "1").eerste),
+  lijst("1e keer, eerste zin: voor het raketje, met bijna (vraag 1, koos 5)", F(1, "5").eerste),
+  lijst("1e keer, eerste zin: voor het raketje, zonder bijna (vraag 2, koos 1)", F(2, "1").eerste),
   lijst("1e keer, eerste zin: na het raketje, met bijna (vraag 1, koos 7)", F(1, "7").eerste),
   lijst("1e keer, eerste zin: te ver (vraag 2, koos 4)", F(2, "4").eerste),
   lijst("1e keer, eerste zin: zonder richting (vraag 9, koos 17)", F(9, "17").eerste),
@@ -696,7 +696,7 @@ const alleVarianten = [
   lijst("hint: wat staat er bij 17", F(10, "ufo").hint),
   lijst("hint: het dichtst bij", F(12, "8").hint),
   lijst("hint: ongeveer", F(14, "16").hint),
-  lijst("2e keer, uitleg: 1 streepje vóór het raketje (vraag 1, koos 5)", F(1, "5").uitleg),
+  lijst("2e keer, uitleg: 1 streepje voor het raketje (vraag 1, koos 5)", F(1, "5").uitleg),
   lijst("2e keer, uitleg: 1 streepje na het raketje (vraag 1, koos 7)", F(1, "7").uitleg),
   lijst("2e keer, uitleg: te ver (vraag 2, koos 4)", F(2, "4").uitleg),
   lijst("2e keer, uitleg: niet op de lijn (vraag 8, koos 4)", F(8, "4").uitleg),
@@ -709,7 +709,7 @@ const alleVarianten = [
   lijst("2e keer, hetzelfde antwoord: \"Je koos weer …\"", [...ZIN.weerGekozen("7", V(1)), ...ZIN.weerGekozen("ufo", V(10)), ...ZIN.weerGekozen("x", V(6))]),
   lijst("2e keer, hetzelfde antwoord: de uitleg erachter (bij welk getal: ervoor / erna / te ver / niet op de lijn)", [...F(1, "5").uitlegLos, ...F(1, "7").uitlegLos, ...F(2, "4").uitlegLos, ...F(8, "4").uitlegLos]),
   lijst("2e keer, hetzelfde antwoord: de uitleg erachter (na 10 / meer / dichtst bij / ongeveer)", [...F(4, "12").uitlegLos, ...F(5, "13").uitlegLos, ...F(12, "8").uitlegLos, ...F(14, "16").uitlegLos]),
-  lijst("2 keer dezelfde denkfout: vóór het raketje (vraag 1, koos 5)", [...F(1, "5").weerEerste, ...F(1, "5").weerUitleg]),
+  lijst("2 keer dezelfde denkfout: voor het raketje (vraag 1, koos 5)", [...F(1, "5").weerEerste, ...F(1, "5").weerUitleg]),
   lijst("2 keer dezelfde denkfout: na het raketje (vraag 1, koos 7)", [...F(1, "7").weerEerste, ...F(1, "7").weerUitleg]),
   lijst("2 keer dezelfde denkfout: niet op de lijn", [...F(8, "4").weerEerste, ...F(8, "4").weerUitleg]),
   lijst("2 keer dezelfde denkfout: na 10, vooraan", [...F(4, "1").weerEerste, ...F(4, "1").weerUitleg]),

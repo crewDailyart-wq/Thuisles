@@ -504,7 +504,7 @@ const vast: [string, readonly string[]][] = [
   ["Zwevende munten: wat er gebeurt", ZIN.bellenIntro(B8)],
   ["Zwevende munten: de opdracht", ZIN.bellenOpdracht(B8)],
   ["Zwevende munten: het hulphandje", ZIN.bellenHand(B8)],
-  ["Hulphandje: aanmoediging (komt vóór de opdracht)", AANMOEDIG_TIKKEN],
+  ["Hulphandje: aanmoediging (komt voor de opdracht)", AANMOEDIG_TIKKEN],
   ["2e keer mis: samen (Waar zie je …? en zwevende munten)", ZIN.samen(W1)],
   ["2e keer mis: samen (Wat is dit?)", ZIN.samen(T6)],
   ["Samen, Waar zie je …?: Bliepo wijst de munt aan", ZIN.samenWaar("m1")],

@@ -50,7 +50,7 @@ const laatsteWasKeuze = new WeakMap<object, boolean>();
 const gevolgd = new WeakSet<object>();
 /**
  * Onthoudt per les (per gids) of het laatste antwoord van een keuzeknop kwam. Wikkelt de wacht-functies van de gids 1 keer
- * in; verder verandert er niets aan hoe ze werken. Vóór de eerste meting geldt "geen keuze" (de zin wordt dan overgeslagen).
+ * in; verder verandert er niets aan hoe ze werken. Voor de eerste meting geldt "geen keuze" (de zin wordt dan overgeslagen).
  */
 export function volgKeuzes(l: object): void {
   if (gevolgd.has(l)) return;
@@ -98,7 +98,7 @@ export const KLOKREACTIE = (uur: number) => rij([`Ja, de kleine wijzer staat op 
 
 /**
  * §5 Einde. Zin 6 alleen na veel fouten (4 of meer vragen met een fout).
- * Ronde 51 punt 10 (besluit Sara 19 november 2026, weg b; BOUWREGELS 15.50): de eindzin komt vóór "Tik op de kaart.", en
+ * Ronde 51 punt 10 (besluit Sara 19 november 2026, weg b; BOUWREGELS 15.50): de eindzin komt voor "Tik op de kaart.", en
  * terwijl de les op de tik wacht is die opdracht het laatste wat in beeld staat (15.37). Daarom staat er in EINDE geen
  * afscheid ("Tot snel!", "Tot de volgende keer!"): dat zegt Bliepo pas NA de tik op de kaart (`afscheidNa`). Elke zin
  * staat op zijn oude plek (robotplekken 7 en 8 gelijk); EINDE_AFSCHEID[i] hoort bij EINDE.zinnen[i] (null = geen afscheid).
@@ -515,7 +515,7 @@ export const UITLEGVRAGEN: Vraag[] = [
     id: "stap9-na-6", waar: "uitleg, stap 9 (wat komt na de 6?)", vraag: ["Zoek de 6 op de klok.", "Welk getal is het volgende?"], opties: ["5", "7", "8"], goed: "7",
     opnieuw: ["Welk getal komt na de 6?", "Wat denk je nu? Welk getal komt na de 6?"], naGoed: ["Van de 6 ga je deze kant op, naar de 7."], samen: ["Van de 6 ga je 1 getal verder, naar de 7 in het oranje rondje."],
     fouten: {
-      "5": F("verkeerde-richting", "voor-na", "nam het getal ervoor in plaats van erna", ["De 5 komt vóór de 6.", "De 5 staat ervoor, niet erna."], ["Erna betekent: deze kant op. Ga verder, de kant op van de blauwe pijl.", "Erna is de andere kant op. Kijk maar naar de blauwe pijl."], "pijl-6-7"),
+      "5": F("verkeerde-richting", "voor-na", "nam het getal ervoor in plaats van erna", ["De 5 komt voor de 6.", "De 5 staat ervoor, niet erna."], ["Erna betekent: deze kant op. Ga verder, de kant op van de blauwe pijl.", "Erna is de andere kant op. Kijk maar naar de blauwe pijl."], "pijl-6-7"),
       "8": F("een-te-veel", "te-ver", "telde 1 te veel (2 getallen verder)", ["Je ging 2 getallen verder.", "Je sprong over een getal heen."], ["Erna is het getal dat er meteen achter staat.", "We zoeken het getal dat er meteen achter komt."], "geen"),
     },
   },
@@ -524,7 +524,7 @@ export const UITLEGVRAGEN: Vraag[] = [
     opnieuw: ["Welk getal komt na de 12?", "Wat denk je nu? Welk getal komt na de 12?"], naGoed: ["Na de 12 begint de klok weer bij de 1."], samen: ["Na de 12 begint de klok weer opnieuw, bij de 1 in het oranje rondje."],
     fouten: {
       "13": F("doortellen-na-12", "door-na-12", "telde door zoals op een getallenlijn (13 na 12)", ["Op een getallenlijn komt de 13 na de 12, dat snap ik.", "Bij tellen komt daarna de 13, dat klopt.", "Je telde door, zoals op de getallenlijn."], ["Maar zo'n groot getal staat niet op de klok. Ga verder, de kant op van de blauwe pijl.", "Maar de klok heeft geen hogere getallen. Kijk maar naar de blauwe pijl."], "pijl-12-1"),
-      "11": F("verkeerde-richting", "voor-na", "nam het getal ervoor in plaats van erna", ["De 11 komt vóór de 12.", "De 11 staat ervoor, niet erna."], ["We zoeken het getal erna. Ga verder, de kant op van de blauwe pijl.", "Erna is de andere kant op. Kijk maar naar de blauwe pijl."], "pijl-12-1"),
+      "11": F("verkeerde-richting", "voor-na", "nam het getal ervoor in plaats van erna", ["De 11 komt voor de 12.", "De 11 staat ervoor, niet erna."], ["We zoeken het getal erna. Ga verder, de kant op van de blauwe pijl.", "Erna is de andere kant op. Kijk maar naar de blauwe pijl."], "pijl-12-1"),
     },
   },
   {

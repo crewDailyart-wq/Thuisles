@@ -7,8 +7,8 @@
  *     van BLIEPO-KARAKTER.md §4 "Dagen en tijd", zin 51, 52 en 55), met zinnen zonder "Ja" voor na een lofzin met "Ja".
  *   - De inhoud (17 vragen, de weektrein, de dagkaarten en de goede antwoorden) is die van squla-dagen-van-de-week
  *     "Dagen van de week" (squla-dagen.tsx, BOUWREGELS 15.22): 3 keer "Tik op de wagon van …", 2 keer "Welke dag komt
- *     na …?", 2 keer "Welke dag komt vóór …?", 3 keer "Er mist een dag in de trein" (slepen), gisteren en morgen, het
- *     weekend (2 vragen), na zondag, vóór maandag en "Vandaag is het maandag. Welke dag was het gisteren?".
+ *     na …?", 2 keer "Welke dag komt voor …?", 3 keer "Er mist een dag in de trein" (slepen), gisteren en morgen, het
+ *     weekend (2 vragen), na zondag, voor maandag en "Vandaag is het maandag. Welke dag was het gisteren?".
  *   - GEEN SYNTHESIS-LES: Synthesis heeft geen les over dagen, de week of de kalender (KOPPELING.md §9). Het skelet is
  *     exact dat van de andere gouden lessen (laag 1: LESRECEPT.md en BLIEPO-KARAKTER.md). Alles wat per onderwerp anders
  *     is (de denkfouten, de eerste zinnen, de hints, de uitleg en het samen voordoen) is "EIGEN INVULLING, NIET VAN
@@ -65,7 +65,7 @@ export const afstand = (a: number, b: number) => Math.min((a - b + 7) % 7, (b - 
 
 /**
  * tik      Bliepo noemt een dag; het kind tikt op die wagon in de hele trein.
- * na/voor  een stukje trein met een lege plek; 3 dagkaarten; "Welke dag komt na/vóór …?".
+ * na/voor  een stukje trein met een lege plek; 3 dagkaarten; "Welke dag komt na/voor …?".
  * mist     de hele trein met 1 lege plek; 3 dagkaarten; slepen naar de lege plek.
  * gm       de hele trein, vandaag heeft een pijl en een bordje; "Welke dag was het gisteren?" / "… is het morgen?".
  * weekend1 tik op een dag van het weekend (zaterdag én zondag zijn goed, 14.30).
@@ -157,7 +157,7 @@ export const pastNa =
   (z: string) =>
     eerder.every((a) => !deeltGetal(a, z) && !deeltDag(a, z) && !deeltStuk(a, z, 4));
 /** Woorden die per vraag wisselen: "Je koos weer maandag." en "Je koos weer gisteren." tellen als dezelfde zin. */
-export const WISSEL = [...NAMEN, "gisteren", "morgen", "vandaag", "wagon", "kaart", "na", "vóór"];
+export const WISSEL = [...NAMEN, "gisteren", "morgen", "vandaag", "wagon", "kaart", "na", "voor"];
 /**
  * Zo lang mag 1 stuk tekst van Bliepo hooguit zijn (tekens, zonder kleurcodes), anders past het niet in het vaste
  * tekstvak (BOUWREGELS 15.30; ± 110 tekens is bij de gouden lessen het langste dat zeker past). Een harde eis: wat te
@@ -185,12 +185,12 @@ export const ZIN = {
     "Vandaag oefenen we de dagen van de week. Ze rijden in de weektrein.",
     "Kijk, de weektrein! Elke wagon is een dag van de week.",
   ],
-  /** De vraag (de vraagzinnen van de oude les; "voor" is "vóór" geworden, KEUZES Ronde 38). De eerste kaartvraag zegt
+  /** De vraag (de vraagzinnen van de oude les; "voor" is "voor" geworden, KEUZES Ronde 38). De eerste kaartvraag zegt
       wat het kind doet (3.15). Dezelfde soort vraag houdt dezelfde woorden (3.11): hier geen varianten. */
   vraag: (v: Vraag, eersteKaart: boolean): string[] => {
     if (v.soort === "tik") return [`Tik op de wagon van ${naam(v.dag)}.`];
     if (v.soort === "na") return [`Welke dag komt na ${naam(v.dag)}?`, ...(eersteKaart ? ["Tik op de goede wagon."] : [])];
-    if (v.soort === "voor") return [`Welke dag komt vóór ${naam(v.dag)}?`, ...(eersteKaart ? ["Tik op de goede wagon."] : [])];
+    if (v.soort === "voor") return [`Welke dag komt voor ${naam(v.dag)}?`, ...(eersteKaart ? ["Tik op de goede wagon."] : [])];
     if (v.soort === "gm") return [`Vandaag is het ${naam(v.dag)}.`, v.wat === "gisteren" ? "Welke dag was het gisteren?" : "Welke dag is het morgen?"];
     if (v.soort === "gmMaandag") return ["Vandaag is het maandag.", "Welke dag was het gisteren?"];
     /* Oude les: "2 dagen samen heten het weekend." Een zin die met een cijfer begint leest lastig (KEUZES Ronde 38). */
@@ -204,7 +204,7 @@ export const ZIN = {
     const d = naam(v.dag);
     if (v.soort === "tik") return [`Tik op de wagon van ${d}.`, `Waar is de wagon van ${d}? Tik erop.`, `Zoek de wagon van ${d}. Tik erop.`];
     if (v.soort === "na") return [`Welke dag komt na ${d}?`, `Welke dag komt na ${d}, denk je?`, `Kies nog een keer. Welke dag komt na ${d}?`];
-    if (v.soort === "voor") return [`Welke dag komt vóór ${d}?`, `Welke dag komt vóór ${d}, denk je?`, `Kies nog een keer. Welke dag komt vóór ${d}?`];
+    if (v.soort === "voor") return [`Welke dag komt voor ${d}?`, `Welke dag komt voor ${d}, denk je?`, `Kies nog een keer. Welke dag komt voor ${d}?`];
     if (v.wat === "gisteren") return ["Welke dag was het gisteren?", "Welke dag was het gisteren, denk je?", "Kies nog een keer. Welke dag was het gisteren?"];
     if (v.wat === "morgen") return ["Welke dag is het morgen?", "Welke dag is het morgen, denk je?", "Kies nog een keer. Welke dag is het morgen?"];
     if (v.soort === "weekend1") return ["Tik op een dag van het weekend.", "Tik op een dag zonder school.", "Zoek een dag van het weekend. Tik erop."];
@@ -226,7 +226,7 @@ export const ZIN = {
   samenTikKlaar: (d: number) => [`Ja, dat is de wagon van ${naam(d)}.`, `Goed zo! Dat is de wagon van ${naam(d)}.`, `Precies, daar rijdt ${naam(d)}.`],
   /* Na het vangnet (Bliepo deed de stap zelf): "Kijk, …", nooit "Ja" alsof het kind het deed (keuring Meer-minder). */
   samenTikZelf: (d: number) => [`Kijk, dit is de wagon van ${naam(d)}.`, `Kijk, ik tik hem aan. Dit is ${naam(d)}.`],
-  /** na en vóór: de hele trein, rondje om de dag van de vraag en dan om de goede dag. */
+  /** na en voor: de hele trein, rondje om de dag van de vraag en dan om de goede dag. */
   samenHier: (d: number) => [`Hier is ${naam(d)} in de weektrein.`, `Kijk, hier rijdt ${naam(d)}.`, `Dit is de wagon van ${naam(d)}.`],
   samenNa: (d: number) =>
     d === 6
@@ -234,12 +234,12 @@ export const ZIN = {
       : [`Erachter hangt ${naam(na(d))}.`, `Direct erachter rijdt ${naam(na(d))}.`, `De wagon erachter is ${naam(na(d))}.`],
   samenVoor: (d: number) =>
     d === 0
-      ? ["Dit is de eerste wagon. De dag ervoor was zondag, de laatste van de vorige week.", "Ervoor was de vorige week. Die eindigde met zondag.", "Vóór de eerste dag komt de laatste dag: zondag."]
+      ? ["Dit is de eerste wagon. De dag ervoor was zondag, de laatste van de vorige week.", "Ervoor was de vorige week. Die eindigde met zondag.", "Voor de eerste dag komt de laatste dag: zondag."]
       : [`Ervoor hangt ${naam(voor(d))}.`, `Direct ervoor rijdt ${naam(voor(d))}.`, `De wagon ervoor is ${naam(voor(d))}.`],
   samenNaKlaar: (d: number) => [`Ja, na ${naam(d)} komt ${naam(na(d))}.`, `Goed zo! Na ${naam(d)} komt ${naam(na(d))}.`, `Precies, ${naam(na(d))} komt direct na ${naam(d)}.`],
   samenNaZelf: (d: number) => [`Kijk, na ${naam(d)} komt ${naam(na(d))}.`, `Kijk, ik tik hem aan. Na ${naam(d)} komt ${naam(na(d))}.`],
-  samenVoorKlaar: (d: number) => [`Ja, vóór ${naam(d)} komt ${naam(voor(d))}.`, `Goed zo! Vóór ${naam(d)} komt ${naam(voor(d))}.`, `Precies, ${naam(voor(d))} komt direct vóór ${naam(d)}.`],
-  samenVoorZelf: (d: number) => [`Kijk, vóór ${naam(d)} komt ${naam(voor(d))}.`, `Kijk, ik tik hem aan. Vóór ${naam(d)} komt ${naam(voor(d))}.`],
+  samenVoorKlaar: (d: number) => [`Ja, voor ${naam(d)} komt ${naam(voor(d))}.`, `Goed zo! Voor ${naam(d)} komt ${naam(voor(d))}.`, `Precies, ${naam(voor(d))} komt direct voor ${naam(d)}.`],
+  samenVoorZelf: (d: number) => [`Kijk, voor ${naam(d)} komt ${naam(voor(d))}.`, `Kijk, ik tik hem aan. Voor ${naam(d)} komt ${naam(voor(d))}.`],
   /** Er mist een dag: rondje om de buren van de lege plek (1 rondje tegelijk, 7.8), dan om de goede kaart; het kind
       sleept hem. Per stap: [wat het rondje krijgt, wat Bliepo kan zeggen]. */
   samenMistBuren: (d: number): [string, string[]][] =>
@@ -248,10 +248,10 @@ export const ZIN = {
       : d === 6
         ? [["w5", ["De lege plek is de laatste wagon. Ervoor hangt zaterdag.", "De lege plek staat achteraan. Daarvoor rijdt zaterdag."]]]
         : [
-            [`w${voor(d)}`, [`Vóór de lege plek hangt ${naam(voor(d))}.`, `Kijk, vóór de lege plek rijdt ${naam(voor(d))}.`]],
+            [`w${voor(d)}`, [`Voor de lege plek hangt ${naam(voor(d))}.`, `Kijk, voor de lege plek rijdt ${naam(voor(d))}.`]],
             [`w${na(d)}`, [`Erachter hangt ${naam(na(d))}.`, `En erachter rijdt ${naam(na(d))}.`]],
           ],
-  samenMistDag: (d: number) => (d === 0 ? ["De dag vóór dinsdag is maandag.", "Dus vooraan hoort maandag."] : [`Daartussen hoort ${naam(d)}.`, `Op de lege plek hoort dus ${naam(d)}.`, `Daar tussenin hoort ${naam(d)}.`]),
+  samenMistDag: (d: number) => (d === 0 ? ["De dag voor dinsdag is maandag.", "Dus vooraan hoort maandag."] : [`Daartussen hoort ${naam(d)}.`, `Op de lege plek hoort dus ${naam(d)}.`, `Daar tussenin hoort ${naam(d)}.`]),
   samenMistJij: ["Sleep jij de wagon in het rondje naar de lege plek?", "Nu jij! Sleep de wagon in het rondje naar de lege plek."],
   samenMistKlaar: ["Ja, nu is de trein weer heel.", "Goed zo! De trein is weer heel.", "Precies, nu rijden alle dagen weer mee."],
   samenMistZelf: (d: number) => [`Kijk, ${naam(d)} hoort op de lege plek.`, `Kijk, ik sleep hem erin. Nu rijdt ${naam(d)} weer mee.`],
@@ -303,14 +303,14 @@ export function dagenReactie(v: Vraag, dag: number): Rijtje {
       : rij([`Ja, na ${naam(d)} komt ${naam(na(d))}.`, `Ja, ${naam(na(d))} hangt achter ${naam(d)}.`, `${Naam(na(d))} komt direct na ${naam(d)}.`, `Na ${naam(d)} is het ${naam(na(d))}.`, `Zie je, ${naam(na(d))} is de volgende dag.`, `Precies, daarna komt ${naam(na(d))}.`, `Dat klopt, ${naam(na(d))} hangt erachter.`], [4]);
   if (v.soort === "voor")
     return d === 0
-      ? rij(["Ja, vóór maandag komt zondag.", "Ja, de week ervoor eindigde met zondag.", "Zondag komt direct vóór maandag.", "Vóór maandag was het zondag.", "Zie je, zondag is de dag ervoor.", "Precies, de vorige week eindigde met zondag.", "Dat klopt, zondag was de laatste dag."], [4])
-      : rij([`Ja, vóór ${naam(d)} komt ${naam(voor(d))}.`, `Ja, ${naam(voor(d))} hangt vóór ${naam(d)}.`, `${Naam(voor(d))} komt direct vóór ${naam(d)}.`, `Vóór ${naam(d)} is het ${naam(voor(d))}.`, `Zie je, ${naam(voor(d))} is de dag ervoor.`, `Precies, daarvoor komt ${naam(voor(d))}.`, `Dat klopt, ${naam(voor(d))} hangt ervoor.`], [4]);
+      ? rij(["Ja, voor maandag komt zondag.", "Ja, de week ervoor eindigde met zondag.", "Zondag komt direct voor maandag.", "Voor maandag was het zondag.", "Zie je, zondag is de dag ervoor.", "Precies, de vorige week eindigde met zondag.", "Dat klopt, zondag was de laatste dag."], [4])
+      : rij([`Ja, voor ${naam(d)} komt ${naam(voor(d))}.`, `Ja, ${naam(voor(d))} hangt voor ${naam(d)}.`, `${Naam(voor(d))} komt direct voor ${naam(d)}.`, `Voor ${naam(d)} is het ${naam(voor(d))}.`, `Zie je, ${naam(voor(d))} is de dag ervoor.`, `Precies, daarvoor komt ${naam(voor(d))}.`, `Dat klopt, ${naam(voor(d))} hangt ervoor.`], [4]);
   if (v.soort === "mist")
     return rij([`Ja, ${naam(d)} hoort op die plek.`, `Ja, nu zijn alle ${g(7)} dagen er weer.`, d === 0 ? "Maandag is de eerste dag van de week." : `${Naam(d)} komt na ${naam(voor(d))}.`, "De trein is weer heel.", `Zie je, er hangen weer ${g(7)} wagons aan de trein.`, `Precies, nu rijdt ${naam(d)} weer mee.`, "Dat klopt, nu mist er niets meer."], [4]);
   if (v.soort === "gm" || v.soort === "gmMaandag") {
     const a = v.goed[0];
     return v.wat === "gisteren"
-      ? rij([`Ja, gisteren was het ${naam(a)}.`, `Ja, ${naam(a)} is ${g(1)} dag terug.`, `Gisteren was het ${naam(a)}.`, `${Naam(a)} komt direct vóór ${naam(d)}.`, `Zie je, ${naam(a)} was ${g(1)} dag geleden.`, `Precies, ${naam(a)} was gisteren.`, `Dat klopt, ${naam(a)} is al voorbij.`], [4])
+      ? rij([`Ja, gisteren was het ${naam(a)}.`, `Ja, ${naam(a)} is ${g(1)} dag terug.`, `Gisteren was het ${naam(a)}.`, `${Naam(a)} komt direct voor ${naam(d)}.`, `Zie je, ${naam(a)} was ${g(1)} dag geleden.`, `Precies, ${naam(a)} was gisteren.`, `Dat klopt, ${naam(a)} is al voorbij.`], [4])
       : rij([`Ja, morgen is het ${naam(a)}.`, `Ja, ${naam(a)} is ${g(1)} dag verder.`, `Morgen is het ${naam(a)}.`, `${Naam(a)} komt direct na ${naam(d)}.`, `Zie je, ${naam(a)} komt over ${g(1)} dag.`, `Precies, ${naam(a)} is morgen.`, `Dat klopt, ${naam(a)} moet nog komen.`], [4]);
   }
   if (v.soort === "weekend1") return rij([`Ja, ${naam(dag)} hoort bij het weekend.`, "Ja, dat is een dag van het weekend.", `${Naam(dag)} is een dag zonder school.`, "In het weekend is er geen school.", `Zie je, op ${naam(dag)} ben je vrij.`, `Precies, ${naam(dag)} is weekend.`, "Dat klopt, dan is er geen school."], [4]);
@@ -326,7 +326,7 @@ export type Denkfoutnaam = (typeof DENKFOUTEN)[number];
 
 export const DENKFOUT_UITLEG: Record<Denkfoutnaam, string> = {
   "dag-ernaast": "koos de dag die er vlak naast staat (1 dag te ver of te kort in de week)",
-  "voor-na-verwisseld": "koos bij \"na\" de dag ervóór, of bij \"vóór\" de dag erna",
+  "voor-na-verwisseld": "koos bij \"na\" de dag ervoor, of bij \"voor\" de dag erna",
   "gisteren-morgen-verwisseld": "koos morgen in plaats van gisteren, of gisteren in plaats van morgen",
   "vandaag-gekozen": "koos de dag van vandaag (de dag met de pijl) in plaats van gisteren of morgen",
   "andere-dag": "koos een dag die verder weg ligt in de week (niet vlak ervoor of erna); geen reden verzonnen",
@@ -410,12 +410,12 @@ const HINT = {
   /* Welke dag komt na …? Geen dagnaam: de vraag erachter noemt de dag al. */
   na: ["Na is de dag die erachter komt.", "Zeg de dagen op, vanaf het begin van de week.", "De dag erna hoort op de lege plek.", "De lege plek is de wagon erachter."],
   naZondag: ["Na de laatste dag begint de week opnieuw.", "Na het weekend begint een nieuwe week.", "Zeg de dagen op tot het eind. Dan begint de week weer."],
-  voor: ["Vóór is de dag die ervoor komt.", "Zeg de dagen op, vanaf het begin van de week.", "De dag ervoor hoort op de lege plek.", "De lege plek is de wagon ervoor."],
+  voor: ["Voor is de dag die ervoor komt.", "Zeg de dagen op, vanaf het begin van de week.", "De dag ervoor hoort op de lege plek.", "De lege plek is de wagon ervoor."],
   voorMaandag: ["Ervoor was de vorige week.", "Zeg de dagen van de week op, tot het eind.", "Denk aan het eind van de vorige week."],
   /* Er mist een dag: de hint is de nieuwe opdracht (sleep). */
   mist: ["Kijk naar de wagons naast de lege plek. Sleep de dag die daartussen hoort.", "Zeg de dagen op vanaf maandag. Sleep de dag die mist.", "Welke dag hangt er niet in de trein? Sleep die naar de lege plek.", "Lees de bordjes naast de lege plek. Sleep de dag die daar hoort."],
   mistVooraan: ["Kijk naar de wagon achter de lege plek. Sleep de dag die daarvoor komt.", "Zeg de dagen op vanaf het begin van de week. Sleep de dag die mist.", "Welke dag hangt er niet in de trein? Sleep die naar de lege plek."],
-  gisteren: ["Gisteren is de dag vóór vandaag.", "Gisteren is al voorbij.", "Gisteren is de wagon vóór vandaag.", "Bij de pijl is het vandaag."],
+  gisteren: ["Gisteren is de dag voor vandaag.", "Gisteren is al voorbij.", "Gisteren is de wagon voor vandaag.", "Bij de pijl is het vandaag."],
   morgen: ["Morgen is de dag na vandaag.", "Morgen moet nog komen.", "Morgen is de wagon achter vandaag.", "Bij de pijl is het vandaag."],
   maandag: ["Gisteren was nog de vorige week.", "Maandag is de eerste dag. Gisteren was de dag daarvoor.", "Denk aan het eind van de vorige week."],
   weekend1: ["In het weekend is er geen school.", "Op een schooldag ga je naar school.", "Het weekend zijn de dagen zonder school."],
@@ -425,12 +425,12 @@ const UITLEG = {
   tik: ["Maandag staat vooraan. Daarna komen de andere dagen, op volgorde.", "Elke dag heeft een eigen wagon, met de naam op het bordje.", "De trein rijdt met de dagen op volgorde, net als de week."],
   na: (d: number) => [`Na ${naam(d)} komt de dag die er direct achter hangt.`, "Na is altijd de dag erachter in de week.", "De dag erna hangt direct achter de andere."],
   naZondag: ["Na zondag begint de week weer vooraan in de trein.", `Een week heeft ${g(7)} dagen. Daarna begint de week opnieuw.`, "Na de laatste dag begint een nieuwe week."],
-  voor: (d: number) => [`Vóór ${naam(d)} komt de dag die er direct voor hangt.`, "Vóór is altijd de dag ervoor in de week.", "De dag ervoor hangt direct voor de andere."],
-  voorMaandag: ["Een week eindigt met zondag. Daarna begint een nieuwe week met maandag.", "Vóór de eerste dag komt het eind van de vorige week.", "De vorige week eindigde met de laatste dag."],
+  voor: (d: number) => [`Voor ${naam(d)} komt de dag die er direct voor hangt.`, "Voor is altijd de dag ervoor in de week.", "De dag ervoor hangt direct voor de andere."],
+  voorMaandag: ["Een week eindigt met zondag. Daarna begint een nieuwe week met maandag.", "Voor de eerste dag komt het eind van de vorige week.", "De vorige week eindigde met de laatste dag."],
   mist: [`Elke dag hangt ${g(1)} keer in de trein, op volgorde.`, "Op de lege plek hoort de dag die nog mist.", `Een week heeft ${g(7)} dagen. Er rijden er nu ${g(6)} mee.`],
-  gisteren: ["Gisteren is de dag vóór vandaag, de wagon ervoor.", "Gisteren is de dag die net voorbij is.", "Eerst was het gisteren, nu is het vandaag."],
+  gisteren: ["Gisteren is de dag voor vandaag, de wagon ervoor.", "Gisteren is de dag die net voorbij is.", "Eerst was het gisteren, nu is het vandaag."],
   morgen: ["Morgen is de dag na vandaag, de wagon erachter.", "Morgen is de dag die nu nog komt.", "Eerst is het vandaag, daarna morgen."],
-  maandag: ["Vóór maandag komt de laatste dag van de vorige week.", "Gisteren hoort bij de vorige week.", "De vorige week eindigde gisteren."],
+  maandag: ["Voor maandag komt de laatste dag van de vorige week.", "Gisteren hoort bij de vorige week.", "De vorige week eindigde gisteren."],
   weekend1: ["Het weekend is zaterdag en zondag.", "Van maandag tot en met vrijdag is er school.", "In het weekend ga je niet naar school."],
   weekend2: ["Zaterdag en zondag horen samen bij het weekend.", `Het weekend heeft ${g(2)} dagen, achteraan in de week.`, "Op een schooldag ga je naar school. In het weekend niet."],
 };
@@ -439,8 +439,8 @@ const ANDERS = {
   naast: [`Elke wagon is ${g(1)} dag. Ze staan op volgorde.`, "De dagen staan in de trein op volgorde van de week."],
   na: ["Na is de dag erachter, niet de dag ervoor.", "Na kijk je vooruit in de week, niet terug."],
   naVer: ["Na is de dag die er direct achter komt.", "De dag erna hangt meteen erachter, niet verder."],
-  voor: ["Vóór is de dag ervoor, niet de dag erachter.", "Vóór kijk je terug in de week, niet vooruit."],
-  voorVer: ["Vóór is de dag die er direct voor komt.", "De dag ervoor hangt meteen ervoor, niet verder."],
+  voor: ["Voor is de dag ervoor, niet de dag erachter.", "Voor kijk je terug in de week, niet vooruit."],
+  voorVer: ["Voor is de dag die er direct voor komt.", "De dag ervoor hangt meteen ervoor, niet verder."],
   mist: [`Elke dag hangt maar ${g(1)} keer in de trein.`, "Wat al in de trein hangt, hoort niet op de lege plek.", "Elke wagon heeft een andere dag."],
   vandaag: ["Vandaag is de dag van de pijl.", "De pijl wijst naar vandaag. We zoeken een andere dag."],
   gm: ["Gisteren is voorbij, morgen moet nog komen.", "Gisteren was de dag ervoor. Morgen is de dag erna."],
@@ -488,17 +488,17 @@ export function dagFout(v: Vraag, c: number): Fout {
     const hint = d === 6 ? HINT.naZondag : HINT.na;
     const uitleg = d === 6 ? UITLEG.naZondag : UITLEG.na(d);
     if (code === "voor-na-verwisseld")
-      return maak({ v: { eerste: [`Je koos ${n}. Die dag komt vóór ${D}.`, `${N}? Die dag hangt vóór ${D}.`, `Je tikte op ${n}. Die dag komt ervóór, niet erna.`], hint, uitleg, weerEerste: [`Je koos weer de dag vóór ${D}.`, "Weer de dag ervóór, zie ik."], weerUitleg: ANDERS.na }, scherm: SCHERM.kaart, bewering: { soort: "alleen-c" } });
+      return maak({ v: { eerste: [`Je koos ${n}. Die dag komt voor ${D}.`, `${N}? Die dag hangt voor ${D}.`, `Je tikte op ${n}. Die dag komt ervoor, niet erna.`], hint, uitleg, weerEerste: [`Je koos weer de dag voor ${D}.`, "Weer de dag ervoor, zie ik."], weerUitleg: ANDERS.na }, scherm: SCHERM.kaart, bewering: { soort: "alleen-c" } });
     return maak({ v: { eerste: [`Je koos ${n}. Die dag komt niet direct na ${D}.`, `${N}? Die hangt niet direct achter ${D}.`, `Je tikte op ${n}. Die dag ligt verder weg.`], hint, uitleg, weerEerste: [`Je koos weer een dag die niet direct na ${D} komt.`, "Weer een dag verder weg, zie ik."], weerUitleg: ANDERS.naVer }, scherm: SCHERM.kaart, bewering: { soort: "alleen-c" } });
   }
 
-  /* Welke dag komt vóór …? */
+  /* Welke dag komt voor …? */
   if (v.soort === "voor") {
     const hint = d === 0 ? HINT.voorMaandag : HINT.voor;
     const uitleg = d === 0 ? UITLEG.voorMaandag : UITLEG.voor(d);
     if (code === "voor-na-verwisseld")
-      return maak({ v: { eerste: [`Je koos ${n}. Die dag komt na ${D}.`, `${N}? Die dag hangt achter ${D}.`, `Je tikte op ${n}. Die dag komt erna, niet ervóór.`], hint, uitleg, weerEerste: [`Je koos weer de dag na ${D}.`, "Weer de dag erna, zie ik."], weerUitleg: ANDERS.voor }, scherm: SCHERM.kaart, bewering: { soort: "alleen-c" } });
-    return maak({ v: { eerste: [`Je koos ${n}. Die dag komt niet direct vóór ${D}.`, `${N}? Die hangt niet direct vóór ${D}.`, `Je tikte op ${n}. Die dag ligt verder weg.`], hint, uitleg, weerEerste: [`Je koos weer een dag die niet direct vóór ${D} komt.`, "Weer een dag verder weg, zie ik."], weerUitleg: ANDERS.voorVer }, scherm: SCHERM.kaart, bewering: { soort: "alleen-c" } });
+      return maak({ v: { eerste: [`Je koos ${n}. Die dag komt na ${D}.`, `${N}? Die dag hangt achter ${D}.`, `Je tikte op ${n}. Die dag komt erna, niet ervoor.`], hint, uitleg, weerEerste: [`Je koos weer de dag na ${D}.`, "Weer de dag erna, zie ik."], weerUitleg: ANDERS.voor }, scherm: SCHERM.kaart, bewering: { soort: "alleen-c" } });
+    return maak({ v: { eerste: [`Je koos ${n}. Die dag komt niet direct voor ${D}.`, `${N}? Die hangt niet direct voor ${D}.`, `Je tikte op ${n}. Die dag ligt verder weg.`], hint, uitleg, weerEerste: [`Je koos weer een dag die niet direct voor ${D} komt.`, "Weer een dag verder weg, zie ik."], weerUitleg: ANDERS.voorVer }, scherm: SCHERM.kaart, bewering: { soort: "alleen-c" } });
   }
 
   /* Er mist een dag (slepen). Alle andere dagen hangen al in de trein. */
@@ -527,7 +527,7 @@ export function dagFout(v: Vraag, c: number): Fout {
       });
     /* Een dag verder weg: geen richting (15.17), wel iets waars ("verder weg" = meer dan 1 dag van vandaag). */
     if (v.soort === "gmMaandag")
-      return maak({ v: { eerste: [`Je koos ${n}. Die dag komt niet direct vóór maandag.`, `${N}? Die hangt niet direct vóór maandag.`, `Je tikte op ${n}. Die dag ligt verder weg.`], hint, uitleg, weerEerste: [], weerUitleg: [] }, scherm, bewering: { soort: "alleen-c" } });
+      return maak({ v: { eerste: [`Je koos ${n}. Die dag komt niet direct voor maandag.`, `${N}? Die hangt niet direct voor maandag.`, `Je tikte op ${n}. Die dag ligt verder weg.`], hint, uitleg, weerEerste: [], weerUitleg: [] }, scherm, bewering: { soort: "alleen-c" } });
     return maak({
       v: { eerste: [`Je koos ${n}. Die dag ligt verder van vandaag af.`, `${N}? Die dag ligt verder weg van vandaag.`, `Je tikte op ${n}. Die is verder weg.`], hint, uitleg, weerEerste: ["Je koos weer een dag die verder van vandaag af ligt.", "Weer een dag verder weg, zie ik."], weerUitleg: gist ? ANDERS.gisterenVer : ANDERS.morgenVer },
       scherm,

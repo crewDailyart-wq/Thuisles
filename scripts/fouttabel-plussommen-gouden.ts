@@ -17,7 +17,7 @@ const kaal = (z: string) => z.replace(/\{(\d+):[a-z]+\}/g, "$1");
 /** Woorden die een richting geven; verboden in een hint of eerste zin als Bliepo de richting niet noemt. */
 const RICHTING = /sla (er )?geen|\bmeer\b|minder|maar 1 keer|1 keer aan|2 keer|te veel|te weinig|niet meer|precies \{?\d|alle \{?\d|alle \w+ (\w+ )?daar erbij|ook de laatste|alleen|staat al in|zit zelf al in|nog iets bij|afhaalt|afgehaald|\bweg\b|groter|kleiner|zo veel/i;
 /** Wat een zin zegt: het goede antwoord is MEER dan wat het kind koos, of MINDER. (Alle varianten, 18 nov 2026.) */
-const ZEGT_MEER = /te weinig|samen is meer dan|dat is minder dan|het zijn er meer|het is meer|sla (er )?geen|ook de laatste|alleen (het|de|hier|daar)|staat al in|zit zelf al in|nog iets bij|tel ook|hier én daar|hier en daar|de andere erbij|afhaalt|afgehaald|\bweg\b|die som is meer|alle \w+ (\w+ )?daar erbij/i;
+const ZEGT_MEER = /te weinig|samen is meer dan|dat is minder dan|het zijn er meer|het is meer|sla (er )?geen|ook de laatste|alleen (het|de|hier|daar)|staat al in|zit zelf al in|nog iets bij|tel ook|hier en daar|hier en daar|de andere erbij|afhaalt|afgehaald|\bweg\b|die som is meer|alle \w+ (\w+ )?daar erbij/i;
 const ZEGT_MINDER = /te veel|samen is minder dan|dat is meer dan|zo veel (zijn het er|is het) niet|niet meer\b|precies \d|maar 1 keer|1 keer aan|2 keer|die som is minder/i;
 const BIJNA = /dichtbij|bijna|scheelt|net niet|net iets/i;
 
@@ -417,7 +417,7 @@ In de les staan de getallen in de kleur van het lekkers (of van de stippen); hie
 | \`getal-herhalen\` | koos een som met 2 keer hetzelfde getal (keek naar 1 groepje) | draaiboek §7 \`getal-herhalen\` (bij Synthesis bij aanvullen) |
 | \`onduidelijk\` | niet duidelijk: geen reden verzonnen | BLIEPO-KARAKTER.md §10 |
 
-Let op vraag 11 (3 + 6, keuze 3): 3 is het getal van het 1e groepje én 6 − 3. Bliepo noemt het feit dat zeker is ("Dat zijn alleen de broodjes hier."), denkfout \`deel-als-antwoord\`.
+Let op vraag 11 (3 + 6, keuze 3): 3 is het getal van het 1e groepje en 6 − 3. Bliepo noemt het feit dat zeker is ("Dat zijn alleen de broodjes hier."), denkfout \`deel-als-antwoord\`.
 
 ## 2. De fouttabel: per vraag elk fout antwoord (${telling} rijen)
 

@@ -392,12 +392,12 @@ export function totaalFout(v: Verhaal | Toonbank, x: number): Fout {
       ? [`Je koos ${X}. ${alleen}`, `${X}? ${alleen}`, x === 1 ? `Je tikte op ${X}. ${alleen}` : `Je tikte op ${X}. Zoveel liggen er alleen ${plek}.`]
       : [`${X} staat al in de som. Er komt nog iets bij.`, `Je koos ${X}. Dat getal staat al in de som.`, `Je tikte op ${X}. Maar er komt nog iets bij.`];
     const hint = isVerhaal
-      ? [`Tel ze allemaal samen, hier en daar.`, `Tel de ${wat} hier én daar.`, `Begin bij ${A} en tel de andere erbij.`, `Probeer het nog eens. Tel ook ${anderN === 1 ? nm![1 - kant].het : `de ${nm![1 - kant].meer}`} ${ander}.`]
+      ? [`Tel ze allemaal samen, hier en daar.`, `Tel de ${wat} hier en daar.`, `Begin bij ${A} en tel de andere erbij.`, `Probeer het nog eens. Tel ook ${anderN === 1 ? nm![1 - kant].het : `de ${nm![1 - kant].meer}`} ${ander}.`]
       : neutraal;
     return maak("deel-als-antwoord", "deel", "koos het getal van 1 groepje (of 1 getal uit de som) als antwoord", { meerDan: x }, {
       eerste,
       hint,
-      uitleg: isVerhaal ? [`Samen betekent: de ${wat} hier én daar.`, `De ${wat} hier en daar tellen allebei mee.`, "Samen is alles bij elkaar: hier en daar."] : ["Bij plus komt er iets bij. Dan wordt het meer.", "Bij plus tel je de getallen bij elkaar op.", "Het antwoord is meer dan elk getal in de som."],
+      uitleg: isVerhaal ? [`Samen betekent: de ${wat} hier en daar.`, `De ${wat} hier en daar tellen allebei mee.`, "Samen is alles bij elkaar: hier en daar."] : ["Bij plus komt er iets bij. Dan wordt het meer.", "Bij plus tel je de getallen bij elkaar op.", "Het antwoord is meer dan elk getal in de som."],
       weerEerste: isVerhaal ? ["Je koos weer maar 1 kant.", "Dat is weer maar 1 kant.", "Weer alleen de ene kant, zie ik."] : ["Je koos weer een getal uit de som.", "Dat is weer een getal uit de som.", "Weer een getal uit de som, zie ik."],
       weerUitleg: isVerhaal ? [`De andere ${wat} horen er ook bij.`, `De ${wat} aan de andere kant tellen ook mee.`] : ["Het antwoord is meer dan elk getal in de som.", "Bij plus wordt het meer dan de getallen in de som."],
     });
@@ -493,12 +493,12 @@ export function somFout(v: Somkeuze, optie: string): Fout {
     return maak("getal-herhalen", "herhalen", "nam 2 keer hetzelfde getal (keek naar 1 groepje)", { getallen: [a, b] }, {
       /* Was "In 3 + 3 staat 2 keer de 3.": het getal stond er 3 keer. */
       eerste: ["In deze som staat 2 keer hetzelfde getal.", `Je koos een som met 2 keer de ${g(p)}.`, `Deze som heeft 2 keer de ${g(p)}.`],
-      hint: [`Kijk naar de ${v.wat} hier én daar. Welke som hoort erbij?`, `Hoeveel ${v.wat} zijn er hier? En hoeveel daar?`, `Tel eerst de ${v.wat} hier. Tel dan de ${v.wat} daar.`],
+      hint: [`Kijk naar de ${v.wat} hier en daar. Welke som hoort erbij?`, `Hoeveel ${v.wat} zijn er hier? En hoeveel daar?`, `Tel eerst de ${v.wat} hier. Tel dan de ${v.wat} daar.`],
       uitleg: [`In de som horen allebei de getallen: ${A} en ${B}.`, `De som begint met ${A}. Dan komen er ${B} bij.`],
       weerEerste: ["Je koos weer 2 keer hetzelfde getal.", "Dat is weer 2 keer hetzelfde getal.", "Weer 2 keer hetzelfde getal, zie ik."],
       weerUitleg: [`Hier liggen er ${A}, daar ${B}.`, `Eerst zijn er ${A}. Daarna komen er ${B} bij.`],
     });
-  return { code: "onduidelijk", soort: "onduidelijk", denkfout: "niet duidelijk (geen reden verzonnen)", eerste: "", hint: `Kijk naar de ${v.wat} hier én daar. Welke som hoort erbij?`, uitleg: `In de som horen ${A} en ${B}.`, weer: [], scherm: SCHERM_SOM, beperking: {} };
+  return { code: "onduidelijk", soort: "onduidelijk", denkfout: "niet duidelijk (geen reden verzonnen)", eerste: "", hint: `Kijk naar de ${v.wat} hier en daar. Welke som hoort erbij?`, uitleg: `In de som horen ${A} en ${B}.`, weer: [], scherm: SCHERM_SOM, beperking: {} };
 }
 
 /** Welke sommen er na de beperking over zijn (voor de verklapcontrole). */

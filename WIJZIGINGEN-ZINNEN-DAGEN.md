@@ -143,3 +143,6 @@ De keuzes onder de trein zijn getekend als wagons (dezelfde wagontekening als de
 | `handSleep` | Sleep de kaart in het rondje naar de lege plek. / Sleep maar de kaart in het rondje naar de lege plek. | Sleep de wagon in het rondje naar de lege plek. / Sleep maar de wagon in het rondje naar de lege plek. |
 
 Ook (15.34): onder de 3 losse wagons ligt nu een kort stuk rails (zijspoor), zodat ze niet meer in de lucht staan (`squla-dagen-gouden-vlak.tsx`, `dg-zijspoor`).
+
+## 20 nov 2026: streepjes weg (besluit Sara)
+Oud → nieuw: "vóór"→"voor", "ervóór"→"ervoor", "ná"→"na", "én"→"en" (overal in de zinnen van deze les).

@@ -218,3 +218,6 @@ De bewaarde stemopname "Probeer deze eens." hoort bij andere lessen en blijft st
 | gouden | uitleg bij een paar te veel geteld (variant 2) | Er liggen een paar peren minder. | Er liggen een paar peren minder dan jij telde. |
 | extra | opdracht bij het lijstje | Maak al het fruit van het lijstje. Kies eerst een fruit en tik dan op de vakjes. | Maak al het fruit van het lijstje. Kies eerst een soort fruit en tik dan op de vakjes. |
 | extra | hint bij het lijstje (variant 2) | Kies een fruit en tik op de vakjes. | Kies een soort fruit en tik op de vakjes. |
+
+## 20 nov 2026: streepjes weg (besluit Sara)
+Oud → nieuw: "én"→"en" ("Tel de peren én de pruimen." → "Tel de peren en de pruimen.").

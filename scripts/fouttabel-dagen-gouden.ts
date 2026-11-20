@@ -7,7 +7,7 @@
  *
  * Inhoudscontrole: dezelfde 17 vragen als squla-dagen-van-de-week (dagen, kaarten, goede antwoorden), het goede antwoord
  * staat tussen de kaarten, en er is bij elke vraag precies 1 goed antwoord, behalve bij "Tik op een dag van het weekend"
- * (zaterdag én zondag goed, 14.30).
+ * (zaterdag en zondag goed, 14.30).
  * Verklapcontrole: per vraag en per fout antwoord: geen eerste zin, hint of vraag-opnieuw noemt het goede antwoord
  * (behalve bij "Tik op de wagon van …", waar de vraag de dag zelf noemt), er blijven na de eerste zin minstens 2 keuzes
  * over (het goede er ook bij), geen "tussen … en …", het rondje staat nooit om het antwoord, de zin bij de 2e fout is geen
@@ -104,18 +104,18 @@ const bekend = (v: Vraag, c: number, z: string): string | null => {
   if ((m = z.match(/^Weer (\w+), zie ik\.$/)) && D(m[1]) >= 0) return ok(D(m[1]) === c, "noemt niet wat het kind koos");
   /* Tik op de wagon van …: vlak naast. */
   if (/^(Je zit er vlak naast|Die wagon staat er vlak naast|Je bent er heel dichtbij|Je zat er weer vlak naast|Weer vlak ernaast, zie ik)\.$/.test(z)) return ok(s === "tik" && Math.abs(c - d) === 1, "staat niet vlak naast");
-  /* Na en vóór. */
-  if ((m = z.match(/^Die dag (?:komt|hangt) vóór (\w+)\.$/))) return ok(D(m[1]) === d && c === voor(d) && s === "na", "komt niet direct vóór");
+  /* Na en voor. */
+  if ((m = z.match(/^Die dag (?:komt|hangt) voor (\w+)\.$/))) return ok(D(m[1]) === d && c === voor(d) && s === "na", "komt niet direct voor");
   if ((m = z.match(/^Die dag (?:komt na|hangt achter) (\w+)\.$/))) return ok(D(m[1]) === d && c === na(d) && s === "voor", "komt niet direct na");
-  if (/^Die dag komt ervóór, niet erna\.$/.test(z)) return ok(s === "na" && c === voor(d), "komt niet ervóór");
-  if (/^Die dag komt erna, niet ervóór\.$/.test(z)) return ok(s === "voor" && c === na(d), "komt niet erna");
+  if (/^Die dag komt ervoor, niet erna\.$/.test(z)) return ok(s === "na" && c === voor(d), "komt niet ervoor");
+  if (/^Die dag komt erna, niet ervoor\.$/.test(z)) return ok(s === "voor" && c === na(d), "komt niet erna");
   if ((m = z.match(/^(?:Die dag komt niet direct na|Die hangt niet direct achter) (\w+)\.$/))) return ok(D(m[1]) === d && c !== na(d), "komt wel direct na");
-  if ((m = z.match(/^(?:Die dag komt niet direct vóór|Die hangt niet direct vóór) (\w+)\.$/))) return ok(D(m[1]) === d && c !== voor(d), "komt wel direct vóór");
+  if ((m = z.match(/^(?:Die dag komt niet direct voor|Die hangt niet direct voor) (\w+)\.$/))) return ok(D(m[1]) === d && c !== voor(d), "komt wel direct voor");
   if (/^(Die dag ligt verder weg|Die is verder weg|Weer een dag verder weg, zie ik)\.$/.test(z)) return ok(["na", "voor", "gm", "gmMaandag"].includes(s) && afstand(c, d) >= 2, "ligt niet verder weg");
-  if ((m = z.match(/^Je koos weer de dag (vóór|na) (\w+)\.$/))) return ok(D(m[2]) === d && c === (m[1] === "na" ? na(d) : voor(d)) && s === (m[1] === "na" ? "voor" : "na"), "klopt niet met wat het kind koos");
-  if (/^Weer de dag ervóór, zie ik\.$/.test(z)) return ok(s === "na" && c === voor(d), "klopt niet");
+  if ((m = z.match(/^Je koos weer de dag (voor|na) (\w+)\.$/))) return ok(D(m[2]) === d && c === (m[1] === "na" ? na(d) : voor(d)) && s === (m[1] === "na" ? "voor" : "na"), "klopt niet met wat het kind koos");
+  if (/^Weer de dag ervoor, zie ik\.$/.test(z)) return ok(s === "na" && c === voor(d), "klopt niet");
   if (/^Weer de dag erna, zie ik\.$/.test(z)) return ok(s === "voor" && c === na(d), "klopt niet");
-  if ((m = z.match(/^Je koos weer een dag die niet direct (na|vóór) (\w+) komt\.$/))) return ok(D(m[2]) === d && c !== (m[1] === "na" ? na(d) : voor(d)), "klopt niet");
+  if ((m = z.match(/^Je koos weer een dag die niet direct (na|voor) (\w+) komt\.$/))) return ok(D(m[2]) === d && c !== (m[1] === "na" ? na(d) : voor(d)), "klopt niet");
   /* Er mist een dag. */
   if (/^(Die dag hangt al vlak naast de lege plek|Die hangt al naast de lege plek|Die dag rijdt al mee, vlak ernaast|Je sleepte weer een dag die er al naast hangt|Weer een dag die er al naast hangt, zie ik)\.$/.test(z)) return ok(s === "mist" && b.wagons.includes(c) && Math.abs(b.wagons.indexOf(c) - b.wagons.indexOf(null)) === 1, "hangt niet vlak naast de lege plek");
   if (/^(Die dag hangt al ergens anders in de trein|Die rijdt al mee in de trein|Die dag heeft al een wagon|Je sleepte weer een dag die al in de trein hangt|Weer een dag die al meerijdt, zie ik)\.$/.test(z)) return ok(s === "mist" && b.wagons.includes(c), "hangt niet in de trein");
@@ -131,7 +131,7 @@ const bekend = (v: Vraag, c: number, z: string): string | null => {
   if ((m = z.match(/^Zeg de dagen op tot (\w+)\.$/))) return ok(s === "tik" && D(m[1]) === d, "andere dag dan de vraag");
   if (/^Tik dan op die wagon\.$/.test(z)) return ok(s === "tik", "past niet");
   if (/^(Na is de dag die erachter komt|De dag erna hoort op de lege plek|De lege plek is de wagon erachter)\.$/.test(z)) return ok(s === "na" && b.wagons[1] === null, "past niet");
-  if (/^(Vóór is de dag die ervoor komt|De dag ervoor hoort op de lege plek|De lege plek is de wagon ervoor)\.$/.test(z)) return ok(s === "voor" && b.wagons[0] === null, "past niet");
+  if (/^(Voor is de dag die ervoor komt|De dag ervoor hoort op de lege plek|De lege plek is de wagon ervoor)\.$/.test(z)) return ok(s === "voor" && b.wagons[0] === null, "past niet");
   if (/^Zeg de dagen op, vanaf het begin van de week\.$/.test(z)) return ok(s === "na" || s === "voor", "past niet");
   if (/^(Na de laatste dag begint de week opnieuw|Na het weekend begint een nieuwe week|Zeg de dagen op tot het eind|Dan begint de week weer)\.$/.test(z)) return ok(s === "na" && d === 6, "past niet");
   if (/^(Ervoor was de vorige week|Zeg de dagen van de week op, tot het eind)\.$/.test(z)) return ok(s === "voor" && d === 0, "past niet");
@@ -140,7 +140,7 @@ const bekend = (v: Vraag, c: number, z: string): string | null => {
   if (/^(Kijk naar de wagon achter de lege plek|Sleep de dag die daarvoor komt)\.$/.test(z)) return ok(s === "mist" && d === 0, "past niet");
   if (/^Zeg de dagen op vanaf maandag\.$/.test(z)) return ok(s === "mist" && d !== 0, "past niet");
   if (/^(Zeg de dagen op vanaf het begin van de week|Sleep de dag die mist|Sleep die naar de lege plek)\.$/.test(z) || /^Welke dag hangt er niet in de trein\?$/.test(z)) return ok(s === "mist", "past niet");
-  if (/^(Gisteren is de dag vóór vandaag|Gisteren is al voorbij|Gisteren is de wagon vóór vandaag)\.$/.test(z)) return ok(s === "gm" && gist, "past niet");
+  if (/^(Gisteren is de dag voor vandaag|Gisteren is al voorbij|Gisteren is de wagon voor vandaag)\.$/.test(z)) return ok(s === "gm" && gist, "past niet");
   if (/^(Morgen is de dag na vandaag|Morgen moet nog komen|Morgen is de wagon achter vandaag)\.$/.test(z)) return ok(s === "gm" && !gist, "past niet");
   if (/^Bij de pijl is het vandaag\.$/.test(z)) return ok(s === "gm" && vandaag !== null, "geen pijl");
   if (/^(Gisteren was nog de vorige week|Maandag is de eerste dag|Gisteren was de dag daarvoor)\.$/.test(z)) return ok(s === "gmMaandag", "past niet");
@@ -152,17 +152,17 @@ const bekend = (v: Vraag, c: number, z: string): string | null => {
   if ((m = z.match(/^Na (\w+) komt de dag die er direct achter hangt\.$/))) return ok(s === "na" && D(m[1]) === d && d !== 6, "past niet");
   if (/^(Na is altijd de dag erachter in de week|De dag erna hangt direct achter de andere|Na is de dag erachter, niet de dag ervoor|Na kijk je vooruit in de week, niet terug|Na is de dag die er direct achter komt|De dag erna hangt meteen erachter, niet verder)\.$/.test(z)) return ok(s === "na", "past niet");
   if (/^(Na zondag begint de week weer vooraan in de trein|Daarna begint de week opnieuw|Na de laatste dag begint een nieuwe week)\.$/.test(z)) return ok(s === "na" && d === 6, "past niet");
-  if ((m = z.match(/^Vóór (\w+) komt de dag die er direct voor hangt\.$/))) return ok(s === "voor" && D(m[1]) === d && d !== 0, "past niet");
-  if (/^(Vóór is altijd de dag ervoor in de week|De dag ervoor hangt direct voor de andere|Vóór is de dag ervoor, niet de dag erachter|Vóór kijk je terug in de week, niet vooruit|Vóór is de dag die er direct voor komt|De dag ervoor hangt meteen ervoor, niet verder)\.$/.test(z)) return ok(s === "voor", "past niet");
-  if (/^(Een week eindigt met zondag|Daarna begint een nieuwe week met maandag|Vóór de eerste dag komt het eind van de vorige week|De vorige week eindigde met de laatste dag)\.$/.test(z)) return ok(s === "voor" && d === 0, "past niet");
+  if ((m = z.match(/^Voor (\w+) komt de dag die er direct voor hangt\.$/))) return ok(s === "voor" && D(m[1]) === d && d !== 0, "past niet");
+  if (/^(Voor is altijd de dag ervoor in de week|De dag ervoor hangt direct voor de andere|Voor is de dag ervoor, niet de dag erachter|Voor kijk je terug in de week, niet vooruit|Voor is de dag die er direct voor komt|De dag ervoor hangt meteen ervoor, niet verder)\.$/.test(z)) return ok(s === "voor", "past niet");
+  if (/^(Een week eindigt met zondag|Daarna begint een nieuwe week met maandag|Voor de eerste dag komt het eind van de vorige week|De vorige week eindigde met de laatste dag)\.$/.test(z)) return ok(s === "voor" && d === 0, "past niet");
   if (/^Een week heeft 7 dagen\.$/.test(z)) return null;
   if (/^(Elke dag hangt 1 keer in de trein, op volgorde|Op de lege plek hoort de dag die nog mist|Elke dag hangt maar 1 keer in de trein|Wat al in de trein hangt, hoort niet op de lege plek|Elke wagon heeft een andere dag)\.$/.test(z)) return ok(s === "mist", "past niet");
   if (/^Er rijden er nu 6 mee\.$/.test(z)) return ok(s === "mist" && b.wagons.filter((x) => x !== null).length === 6, "er rijden er geen 6 mee");
-  if (/^(Gisteren is de dag vóór vandaag, de wagon ervoor|Gisteren is de dag die net voorbij is|Eerst was het gisteren, nu is het vandaag|Gisteren is maar 1 dag geleden|Gisteren ligt vlak naast vandaag)\.$/.test(z)) return ok(s === "gm" && gist, "past niet");
+  if (/^(Gisteren is de dag voor vandaag, de wagon ervoor|Gisteren is de dag die net voorbij is|Eerst was het gisteren, nu is het vandaag|Gisteren is maar 1 dag geleden|Gisteren ligt vlak naast vandaag)\.$/.test(z)) return ok(s === "gm" && gist, "past niet");
   if (/^(Morgen is de dag na vandaag, de wagon erachter|Morgen is de dag die nu nog komt|Eerst is het vandaag, daarna morgen|Morgen is over 1 dag|Morgen ligt vlak naast vandaag)\.$/.test(z)) return ok(s === "gm" && !gist, "past niet");
   if (/^(Gisteren is voorbij, morgen moet nog komen|Gisteren was de dag ervoor|Morgen is de dag erna)\.$/.test(z)) return ok(gm, "past niet");
   if (/^(Vandaag is de dag van de pijl|De pijl wijst naar vandaag|We zoeken een andere dag)\.$/.test(z)) return ok(gm && vandaag !== null, "past niet");
-  if (/^(Vóór maandag komt de laatste dag van de vorige week|Gisteren hoort bij de vorige week|De vorige week eindigde gisteren)\.$/.test(z)) return ok(s === "gmMaandag", "past niet");
+  if (/^(Voor maandag komt de laatste dag van de vorige week|Gisteren hoort bij de vorige week|De vorige week eindigde gisteren)\.$/.test(z)) return ok(s === "gmMaandag", "past niet");
   if (/^(Het weekend is zaterdag en zondag|Van maandag tot en met vrijdag is er school|In het weekend ga je niet naar school|Zaterdag en zondag horen samen bij het weekend|Het weekend heeft 2 dagen, achteraan in de week|In het weekend niet|Op zaterdag en zondag is er geen school)\.$/.test(z)) return ok(s === "weekend1" || s === "weekend2", "past niet");
   return `onbekende zin (niet na te lopen): "${z}"`;
 };
@@ -530,7 +530,7 @@ const vraagNaam = (v: Vraag) => {
   const k = v.kaarten.length ? ` (kaarten ${v.kaarten.map(naam).join(" / ")})` : "";
   if (v.soort === "tik") return `${v.nr}. Tik op de wagon van ${naam(v.dag)}`;
   if (v.soort === "na") return `${v.nr}. Welke dag komt na ${naam(v.dag)}?${k}`;
-  if (v.soort === "voor") return `${v.nr}. Welke dag komt vóór ${naam(v.dag)}?${k}`;
+  if (v.soort === "voor") return `${v.nr}. Welke dag komt voor ${naam(v.dag)}?${k}`;
   if (v.soort === "mist") return `${v.nr}. Er mist een dag (${naam(v.dag)}); slepen${k}`;
   if (v.soort === "gm") return `${v.nr}. Vandaag is het ${naam(v.dag)}. ${v.wat === "gisteren" ? "Gisteren?" : "Morgen?"}`;
   if (v.soort === "gmMaandag") return `${v.nr}. Vandaag is het maandag. Gisteren?${k}`;
@@ -566,7 +566,7 @@ const vast: [string, readonly string[]][] = [
   ["Begin van de les (na de groet)", ZIN.start],
   ["Tik op de wagon: de vraag opnieuw na de hint (voorbeeld donderdag)", ZIN.opnieuw(V(1))],
   ["Welke dag komt na …?: de vraag opnieuw (voorbeeld dinsdag)", ZIN.opnieuw(V(4))],
-  ["Welke dag komt vóór …?: de vraag opnieuw (voorbeeld vrijdag)", ZIN.opnieuw(V(6))],
+  ["Welke dag komt voor …?: de vraag opnieuw (voorbeeld vrijdag)", ZIN.opnieuw(V(6))],
   ["Gisteren: de vraag opnieuw", ZIN.opnieuw(V(11))],
   ["Morgen: de vraag opnieuw", ZIN.opnieuw(V(12))],
   ["Weekend: de vraag opnieuw", ZIN.opnieuw(V(13))],
@@ -574,7 +574,7 @@ const vast: [string, readonly string[]][] = [
   ["Er mist een dag: wat er is", ZIN.mistIntro],
   ["Er mist een dag: het hulphandje", ZIN.mistHand],
   ["Er mist een dag: lang niets nagekeken", ZIN.mistVangnet],
-  ["Hulphandje: aanmoediging (komt vóór de opdracht)", AANMOEDIG_DOEN],
+  ["Hulphandje: aanmoediging (komt voor de opdracht)", AANMOEDIG_DOEN],
   ["2e keer mis: samen", ZIN.samen],
   ["Samen, tik op de wagon: begin", ZIN.samenTelBegin],
   ["Samen: nu het kind (wagon)", ZIN.samenWagonJij],
@@ -582,13 +582,13 @@ const vast: [string, readonly string[]][] = [
   ["Samen: hulphandje (wagon, kaart, slepen)", [...ZIN.handWagon, ...ZIN.handKaart, ...ZIN.handSleep]],
   ["Samen, tik op de wagon: klaar (donderdag)", ZIN.samenTikKlaar(3)],
   ["Samen, tik op de wagon: Bliepo deed het zelf", ZIN.samenTikZelf(3)],
-  ["Samen, na/vóór: de dag van de vraag (dinsdag)", ZIN.samenHier(1)],
+  ["Samen, na/voor: de dag van de vraag (dinsdag)", ZIN.samenHier(1)],
   ["Samen, na: de dag erachter (dinsdag)", ZIN.samenNa(1)],
   ["Samen, na zondag", ZIN.samenNa(6)],
-  ["Samen, vóór: de dag ervoor (vrijdag)", ZIN.samenVoor(4)],
-  ["Samen, vóór maandag", ZIN.samenVoor(0)],
+  ["Samen, voor: de dag ervoor (vrijdag)", ZIN.samenVoor(4)],
+  ["Samen, voor maandag", ZIN.samenVoor(0)],
   ["Samen, na: klaar (dinsdag)", ZIN.samenNaKlaar(1)],
-  ["Samen, vóór: klaar (vrijdag)", ZIN.samenVoorKlaar(4)],
+  ["Samen, voor: klaar (vrijdag)", ZIN.samenVoorKlaar(4)],
   ["Samen, er mist een dag: de buren (woensdag)", ZIN.samenMistBuren(2).flatMap(([, z]) => z)],
   ["Samen, er mist een dag: de buren (maandag)", ZIN.samenMistBuren(0).flatMap(([, z]) => z)],
   ["Samen, er mist een dag: welke dag (woensdag)", ZIN.samenMistDag(2)],
@@ -616,7 +616,7 @@ const tekst = `# FOUTTABEL — gouden les Dagen (squla-dagen-van-de-week-gouden,
 
 Gemaakt op 11 november 2026, bijgewerkt op 18 november 2026 (warme zinnen in varianten, §4 en §5) **uit de code** met \`npx tsx scripts/fouttabel-dagen-gouden.ts\`; pas zinnen aan in \`src/components/les/lessen/squla-dagen-gouden-zinnen.ts\` en draai het script opnieuw. De inhoud (17 vragen, de dagen, de dagkaarten en de goede antwoorden) is die van squla-dagen-van-de-week en blijft gelijk (BOUWREGELS 15.22). De 2e weekendvraag staat er 2 keer in: na zaterdag en na zondag (wat het kind bij de 1e koos).
 
-**EIGEN INVULLING, NIET VAN SYNTHESIS (BOUWREGELS 15.22 punt 5, 15.25).** Synthesis heeft geen les over dagen, de week of de kalender (KOPPELING.md §9). Het skelet is dat van de andere gouden lessen (laag 1). Alles in deze tabel (de denkfouten, de eerste zinnen, de hints, de uitleg en het samen voordoen) is eigen invulling. De denkfouten zijn alleen wat zeker te zien is aan het antwoord: de dag ernaast, vóór en na verwisseld, gisteren en morgen verwisseld, vandaag gekozen, een schooldag bij het weekend, of een dag die verder weg ligt. Bliepo zegt alleen wat waar is over de dag die het kind koos; hij verzint geen reden.
+**EIGEN INVULLING, NIET VAN SYNTHESIS (BOUWREGELS 15.22 punt 5, 15.25).** Synthesis heeft geen les over dagen, de week of de kalender (KOPPELING.md §9). Het skelet is dat van de andere gouden lessen (laag 1). Alles in deze tabel (de denkfouten, de eerste zinnen, de hints, de uitleg en het samen voordoen) is eigen invulling. De denkfouten zijn alleen wat zeker te zien is aan het antwoord: de dag ernaast, voor en na verwisseld, gisteren en morgen verwisseld, vandaag gekozen, een schooldag bij het weekend, of een dag die verder weg ligt. Bliepo zegt alleen wat waar is over de dag die het kind koos; hij verzint geen reden.
 
 Er staan bijna geen getallen in deze les; "2 dagen", "1 dag", "6" en "7 dagen" zijn wit (ze verwijzen naar wagons van verschillende kleuren of naar niets in beeld).
 

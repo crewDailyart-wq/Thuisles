@@ -20,7 +20,7 @@
  *
  * 18 november 2026 (Sara: Bliepo als warme juf, zoals de proefles Tellen): elke zin die terugkomt heeft varianten; de les
  * kiest met de gedeelde kiezer (nooit-dubbel.ts) nooit 2 keer achter elkaar dezelfde. Bij de 1e keer noemt Bliepo alleen
- * de kant ("verder", "te ver"), nooit "vlak vóór" of "1 streepje" (15.17). Oud naast nieuw:
+ * de kant ("verder", "te ver"), nooit "vlak voor" of "1 streepje" (15.17). Oud naast nieuw:
  * WIJZIGINGEN-ZINNEN-GETALLENLIJN.md. Geen andere les gebruikt dit bestand.
  *
  * Leesbare versie: FOUTTABEL-squla-getallenlijn-kat-1-gouden.md (maak hem opnieuw met
@@ -589,7 +589,7 @@ const SCHERM_ORDEN = "Bliepo's scherm 1,5 s rood (geen fout-geluidje); de kaarte
 const vast = <T,>(lijst: T[], v: { nr: number }) => lijst[v.nr % lijst.length];
 
 /**
- * Het getal waar de hint vanaf telt bij "bij welk getal": het grootste getal op de lijn vóór het raketje dat geen keuze
+ * Het getal waar de hint vanaf telt bij "bij welk getal": het grootste getal op de lijn voor het raketje dat geen keuze
  * is die nog over is (en niet het getal dat het kind koos). Zou de hint een keuze noemen ("Kijk naar de 5." terwijl 5 en 6 nog over zijn), dan valt die keuze
  * af en blijft er maar 1 over (15.17). Het getal dat het kind zelf koos mag wel: dat is al afgevallen.
  */
@@ -664,8 +664,8 @@ function maak(v: Vraag, d: Ruw): Fout {
 
 /**
  * De fouttabel van 1 fout antwoord. Bliepo zegt alleen wat zeker is (BOUWREGELS 15.9): het raketje staat verder of minder
- * ver dan het gekozen getal, het getal staat niet op deze lijn, het ding staat vóór of na het getal, hoeveel sprongen het
- * van het doel af ligt. Bij de 1e keer noemt hij nooit het antwoord, nooit "vlak vóór" of "1 streepje" (dan weet je het
+ * ver dan het gekozen getal, het getal staat niet op deze lijn, het ding staat voor of na het getal, hoeveel sprongen het
+ * van het doel af ligt. Bij de 1e keer noemt hij nooit het antwoord, nooit "vlak voor" of "1 streepje" (dan weet je het
  * antwoord), en "bijna" of "dichtbij" alleen als er dan nog 2 keuzes dichtbij zijn (15.17). Sinds 18 november 2026 heeft
  * elke zin varianten (`v`); de vaste velden (`eerste`, `hint`, …) zijn er 1 van.
  */
@@ -696,7 +696,7 @@ export function lijnFout(x: string, v: Vraag): Fout {
         weerUitleg: ["Het getal bij het raketje heeft 2 cijfers.", "De getallen naast het raketje hebben 2 cijfers."],
       });
     }
-    /* Vóór het raketje (X < g) of erna (X > g). De richting mag alleen als er dan nog 2 keuzes over zijn. */
+    /* Voor het raketje (X < g) of erna (X > g). De richting mag alleen als er dan nog 2 keuzes over zijn. */
     const voor = X < g;
     const naast = Math.abs(X - g) === 1;
     const overRichting = andere.filter((k) => (voor ? Number(k) > X : Number(k) < X));
@@ -714,24 +714,24 @@ export function lijnFout(x: string, v: Vraag): Fout {
       x,
       code: naast ? (voor ? "streepje-ervoor" : "streepje-erna") : voor ? "niet-ver-genoeg" : "te-ver",
       soort: naast ? (voor ? "ervoor" : "erna") : voor ? "niet-ver" : "te-ver",
-      denkfout: naast ? `koos het getal van het streepje ${voor ? "vóór" : "na"} het raketje (${X} voor ${g})` : voor ? `keek niet ver genoeg (${X} voor ${g})` : `keek te ver naar rechts (${X} voor ${g})`,
+      denkfout: naast ? `koos het getal van het streepje ${voor ? "voor" : "na"} het raketje (${X} voor ${g})` : voor ? `keek niet ver genoeg (${X} voor ${g})` : `keek te ver naar rechts (${X} voor ${g})`,
       scherm: SCHERM_KIES,
       over,
       bron: naast ? (voor ? "eigen invulling; lijkt op draaiboek §3 C.4 (\"we willen weten hoe ver\")" : "eigen invulling; lijkt op draaiboek §3 B.3 (\"geen sprong van 1\")") : "eigen invulling",
       ...(verklapt ? { noot: "welke kant niet genoemd: dan bleef er maar 1 keuze over" } : {}),
       eerste: verklapt ? eersteKaal : eersteRichting,
       hint: verklapt ? HINT_BIJ_KAAL : hintsVan(v, over, x),
-      /* Bij de 2e keer mag "vlak vóór" en "het volgende streepje": het antwoord komt daarna toch in beeld (15.11). Niet
+      /* Bij de 2e keer mag "vlak voor" en "het volgende streepje": het antwoord komt daarna toch in beeld (15.11). Niet
          "1 streepje verder dan de 1": dan klinkt het getal 2 keer achter elkaar. */
       uitleg: naast
         ? voor
-          ? [`Het raketje staat bij het streepje na de ${Xw}.`, `${Xw} staat vlak vóór het raketje. Het raketje staat bij het volgende streepje.`, `Vlak na de ${Xw} staat het raketje.`]
-          : [`Het raketje staat bij het streepje vóór de ${Xw}.`, `${Xw} staat vlak na het raketje. Het raketje staat bij het streepje ervoor.`, `Vlak vóór de ${Xw} staat het raketje.`]
+          ? [`Het raketje staat bij het streepje na de ${Xw}.`, `${Xw} staat vlak voor het raketje. Het raketje staat bij het volgende streepje.`, `Vlak na de ${Xw} staat het raketje.`]
+          : [`Het raketje staat bij het streepje voor de ${Xw}.`, `${Xw} staat vlak na het raketje. Het raketje staat bij het streepje ervoor.`, `Vlak voor de ${Xw} staat het raketje.`]
         : voor
           ? [`Het raketje staat verder dan de ${Xw}. ${recht}`, `Bij de ${Xw} staat het raketje niet. We zoeken het getal recht onder het raketje.`]
           : [`${Xw} ligt verder dan het raketje. ${recht}`, `Zo ver als de ${Xw} is het raketje niet. We zoeken het getal recht onder het raketje.`],
-      uitlegLos: naast ? (voor ? ["Het raketje staat bij het volgende streepje.", "Dat getal staat vlak vóór het raketje."] : ["Het raketje staat bij het streepje ervoor.", "Dat getal staat vlak na het raketje."]) : [recht, voor ? "Het raketje staat verder dan dat getal." : "Dat getal ligt verder dan het raketje."],
-      weerEerste: voor ? ["Je koos weer een getal vóór het raketje.", "Dat is weer vóór het raketje.", "Weer een getal vóór het raketje, zie ik."] : ["Je koos weer een getal dat te ver ligt.", "Dat is weer te ver.", "Weer te ver, zie ik."],
+      uitlegLos: naast ? (voor ? ["Het raketje staat bij het volgende streepje.", "Dat getal staat vlak voor het raketje."] : ["Het raketje staat bij het streepje ervoor.", "Dat getal staat vlak na het raketje."]) : [recht, voor ? "Het raketje staat verder dan dat getal." : "Dat getal ligt verder dan het raketje."],
+      weerEerste: voor ? ["Je koos weer een getal voor het raketje.", "Dat is weer voor het raketje.", "Weer een getal voor het raketje, zie ik."] : ["Je koos weer een getal dat te ver ligt.", "Dat is weer te ver.", "Weer te ver, zie ik."],
       weerUitleg: naast ? [voor ? "Het raketje staat bij het volgende streepje." : "Het raketje staat bij het streepje ervoor.", recht] : [recht, voor ? "Het raketje staat verder." : "Het raketje staat minder ver."],
     });
   }
@@ -868,7 +868,7 @@ export function lijnFout(x: string, v: Vraag): Fout {
     const p = plekVan(v, x)!;
     const n = v.n!;
     const voor = p < n;
-    const kant = voor ? "vóór" : "na";
+    const kant = voor ? "voor" : "na";
     const d = Math.abs(n - p);
     const ver = `${d} ${d === 1 ? "streepje" : "streepjes"}`;
     return maak(v, {
@@ -879,7 +879,7 @@ export function lijnFout(x: string, v: Vraag): Fout {
       scherm: SCHERM_WIE,
       over: andere.filter((k) => (voor ? plekVan(v, k)! > p : plekVan(v, k)! < p)),
       bron: "eigen invulling (draaiboek §8: \"wat staat er bij\" zit niet in Count the Jumps)",
-      eerste: [`${Naam(z)} staat ${kant} de ${w(n)}.`, `Je tikte op ${NAAM[z]}. ${die(z)} staat ${kant} de ${w(n)}.`, voor ? `${Naam(z)}? ${die(z)} staat nog vóór de ${w(n)}.` : `${Naam(z)}? ${die(z)} staat al voorbij de ${w(n)}.`],
+      eerste: [`${Naam(z)} staat ${kant} de ${w(n)}.`, `Je tikte op ${NAAM[z]}. ${die(z)} staat ${kant} de ${w(n)}.`, voor ? `${Naam(z)}? ${die(z)} staat nog voor de ${w(n)}.` : `${Naam(z)}? ${die(z)} staat al voorbij de ${w(n)}.`],
       hint: hintsVan(v),
       uitleg: [`${Naam(z)} staat bij de ${w(p)}. Dat is ${ver} ${kant} de ${w(n)}.`, `Je tikte op ${NAAM[z]}. ${die(z)} staat ${ver} ${kant} de ${w(n)}.`],
       uitlegLos: [`${die(z)} staat bij de ${w(p)}. Dat is ${ver} ${kant} de ${w(n)}.`, `${die(z)} staat ${ver} ${kant} de ${w(n)}.`],
@@ -918,7 +918,7 @@ export function lijnFout(x: string, v: Vraag): Fout {
     const Xw = w(X);
     let plek: string;
     if (X - 15 === 1 || X - 10 === 1) plek = `ligt vlak na de ${w(X - 1)}`;
-    else if (20 - X === 1 || 15 - X === 1) plek = `ligt vlak vóór de ${w(X + 1)}`;
+    else if (20 - X === 1 || 15 - X === 1) plek = `ligt vlak voor de ${w(X + 1)}`;
     else if (X > 10 && X < 15) plek = `ligt tussen de ${w(10)} en de ${w(15)}`;
     else plek = `ligt tussen de ${w(15)} en de ${w(20)}`;
     const A = w(anker(v));

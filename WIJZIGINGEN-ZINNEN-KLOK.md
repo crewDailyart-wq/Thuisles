@@ -207,3 +207,6 @@ Zelfde plek, zelfde functie; de vraag van het skelet blijft (bij stap 18 blijft 
 |---|---|---|
 | keuzevraag, na de kleine stap (samen voordoen) | groen scherm + geluid, 700 ms wachten, geen zin | groen scherm + geluid, dan direct een zin uit het rijtje BEVESTIG (bijvoorbeeld "Ja, nu is het goed."), dan door |
 | "Zet de kleine wijzer op de …", na de kleine stap | groen scherm + geluid, 1100 ms wachten, geen zin | groen scherm + geluid, dan direct een zin uit BEVESTIG (zonder "Gevonden!": geen keuzeknop), dan door |
+
+## 20 nov 2026: streepjes weg (besluit Sara)
+Oud → nieuw: "vóór"→"voor", "ervóór"→"ervoor", "ná"→"na", "én"→"en" (overal in de zinnen van deze les).

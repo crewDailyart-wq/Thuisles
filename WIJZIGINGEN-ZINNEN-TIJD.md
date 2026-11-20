@@ -137,3 +137,6 @@ Opdracht van Sara: het woord "nagekeken" (en "nakijken") komt niet meer voor in 
 | Les | Waar | Oud | Nieuw |
 |---|---|---|---|
 | gouden | goed bij "welke dagen zijn het weekend?" (variant 4) | Dan is er geen school. | In het weekend is er geen school. |
+
+## 20 nov 2026: streepjes weg (besluit Sara)
+Oud → nieuw: "vóór"→"voor", "ervóór"→"ervoor", "ná"→"na", "én"→"en" (overal in de zinnen van deze les).

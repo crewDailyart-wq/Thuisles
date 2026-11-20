@@ -214,13 +214,13 @@ for (const v of VRAGEN) {
         if (na) {
           const a = v.losse!.find((k) => k.naam === na[1]);
           const pa = a ? xx.indexOf(a.id) : -1;
-          if (pa < 0 || pa === xx.length - 1) mis(`"${na[1]}" ligt niet vóór een ander plaatje`);
+          if (pa < 0 || pa === xx.length - 1) mis(`"${na[1]}" ligt niet voor een ander plaatje`);
           else {
             const b = xx[pa + 1];
             if (/kleinere tafel|smaller muurtje/.test(na[2])) {
               if (MAAT[b] >= MAAT[xx[pa]]) mis("het plaatje erna is niet kleiner");
             } else if (naamVan(v, b) !== na[2]) mis(`na "${na[1]}" ligt niet "${na[2]}"`);
-            if (xx.slice(0, pa + 1).some((id, i) => id !== v.juist![i])) mis("vóór die plek lag al iets op de verkeerde plek (de zin wijst dan niet de eerste fout aan)");
+            if (xx.slice(0, pa + 1).some((id, i) => id !== v.juist![i])) mis("voor die plek lag al iets op de verkeerde plek (de zin wijst dan niet de eerste fout aan)");
           }
         }
         if (/2 tafels/.test(tekst) && (v.thema !== "tafels" || x !== "a,b,d,c")) mis("niet de 2 tafels met 6 borden omgedraaid");
@@ -232,7 +232,7 @@ for (const v of VRAGEN) {
         const labels = ids.map((id) => v.kaarten!.find((k) => k.id === id)!.label);
         if (eersten.includes(tekst) && /'het kleinst'|'kleinst'/.test(tekst) && !labels.every((l) => l === "kleinst")) mis("niet 2 keer 'het kleinst'");
         if (/^(Bijna! )?1 (van|kaartje)/.test(tekst) && ids.filter((id) => v.goed.split(",").includes(id)).length !== 1) mis("niet precies 1 van de 2 klopt");
-        if (/'even groot' én (op )?'niet even groot'/.test(tekst) && !(ids.includes("even") && ids.includes("niet"))) mis("niet allebei gekozen");
+        if (/'even groot' en (op )?'niet even groot'/.test(tekst) && !(ids.includes("even") && ids.includes("niet"))) mis("niet allebei gekozen");
         if (/weer 'niet even groot'/i.test(tekst) && !ids.includes("niet")) mis("niet 'niet even groot' gekozen");
       }
       if (v.thema === "matten") {
@@ -433,7 +433,7 @@ Gemaakt op 10 november 2026, bijgewerkt op 18 november 2026 (Bliepo als warme ju
 | \`rij-en-rijen-opgeteld\` | deed de blaadjes van 1 rij en het aantal rijen bij elkaar | de oude les (Squla); niet gezien bij Synthesis |
 | \`twee-keer-kleinst\` | koos 2 keer "het kleinst" | eigen invulling |
 | \`verkeerde-kleinste\` | koos het verkeerde schilderij als kleinste | eigen invulling |
-| \`even-en-niet-samen\` | koos "even groot" én "niet even groot" | eigen invulling |
+| \`even-en-niet-samen\` | koos "even groot" en "niet even groot" | eigen invulling |
 | \`vorm-verandert-grootte\` | denkt dat een andere vorm een andere grootte heeft | draaiboek §7 (gezien bij het trapkleed) |
 | \`draaien-verandert-grootte\` | denkt dat een gedraaid kaartje een andere grootte heeft | draaiboek §7 \`vorm-verandert-grootte\` |
 | \`hoog-lijkt-groter\` | vindt de hogere mat groter | draaiboek §7 \`groot-vierkant-lijkt-groter\` (gezien) |

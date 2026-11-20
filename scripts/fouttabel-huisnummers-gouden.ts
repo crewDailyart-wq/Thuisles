@@ -292,8 +292,8 @@ const VT = VRAGEN[6];
 const vast: [string, readonly string[]][] = [
   ["Begin van de les (na de groet)", ZIN.begin],
   ["Nieuw blok met grotere nummers", ZIN.blok.filter(Boolean)],
-  ["Vóór de vraag: ertussen / slepen (1 keer per les)", [...ZIN.aanloop(VRAGEN[2]), ...ZIN.aanloop(VS)]],
-  ["Vóór de vraag: terugtellen (elke keer)", ZIN.aanloop(VT)],
+  ["Voor de vraag: ertussen / slepen (1 keer per les)", [...ZIN.aanloop(VRAGEN[2]), ...ZIN.aanloop(VS)]],
+  ["Voor de vraag: terugtellen (elke keer)", ZIN.aanloop(VT)],
   ["Begin van een nieuwe poging", OPNIEUW_BEGIN],
   ["Nieuwe poging: erna (kiezen)", ZIN.opnieuw(V1)],
   ["Nieuwe poging: ervoor en terugtellen (kiezen)", ZIN.opnieuw(VRAGEN[1])],
@@ -350,7 +350,7 @@ Huisnummers staan wit op een donker bordje; in de les zijn de getallen in Bliepo
 | \`staat-al\` | koos een nummer dat al in de straat staat | eigen invulling (wat zeker is) |
 | \`een-te-veel\` | telde 2 verder of 2 terug (sloeg een huis over) | draaiboek §7 \`een-te-veel\` ("je ging een beetje te ver") |
 | \`verkeerde-richting\` | telde verder in plaats van terug | eigen invulling (terugtellen zit niet in Counting On) |
-| \`buiten-de-rij\` | koos een nummer van vóór of na de straat | eigen invulling (ertussen en slepen zitten niet in Counting On) |
+| \`buiten-de-rij\` | koos een nummer van voor of na de straat | eigen invulling (ertussen en slepen zitten niet in Counting On) |
 | \`cijfers-omgedraaid\` | de cijfers andersom (42 voor 24) | draaiboek §7 (gezien bij zoeken; Synthesis zei er niets over) |
 | \`tien-ernaast\` | zit er 10 naast (38 voor 28) | draaiboek §7 ("je zit er 10 onder") |
 | \`verkeerde-rij\` | na 39 terug naar 30, of het verkeerde tiental (39 voor 29) | draaiboek §7 \`verkeerde-rij\` en tiental-hulp |

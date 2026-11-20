@@ -104,7 +104,7 @@ const REGELS: [RegExp, (z: string, k: { s: string; d: number; c: number; dagen: 
   [/^Die dag komt helemaal aan het eind\.$/, (z, { s, d, c, dagen }) => s === "eerste" && c === 6],
   [/^Die hangt achteraan, niet vooraan\.$/, (z, { s, d, c, dagen }) => s === "eerste" && c === 6],
   [/^Dat is niet de eerste dag\.$/, (z, { s, d, c, dagen }) => s === "eerste" && c !== 0],
-  [/^Daarvóór komen nog andere dagen\.$/, (z, { s, d, c, dagen }) => s === "eerste" && c > 0],
+  [/^Daarvoor komen nog andere dagen\.$/, (z, { s, d, c, dagen }) => s === "eerste" && c > 0],
   [/^Die dag komt later in de week\.$/, (z, { s, d, c, dagen }) => s === "eerste" && c > 0],
     /* Wat is de laatste dag? */
   [/^Die hoort bij het weekend, maar is niet de laatste dag\.$/, (z, { s, d, c, dagen }) => s === "laatste" && c === 5],
@@ -128,9 +128,9 @@ const REGELS: [RegExp, (z: string, k: { s: string; d: number; c: number; dagen: 
   [/^Op een van die dagen is er school\.$/, (z, { s, d, c, dagen }) => s === "weekendWelke" && dagen.filter((q) => q < 5).length === 1],
   [/^Niet allebei die dagen zijn vrij\.$/, (z, { s, d, c, dagen }) => s === "weekendWelke" && dagen.some((q) => q < 5) && dagen.some((q) => q >= 5)],
     /* Welke dag komt meteen na …? (de dagnaam is die van de vraag) */
-  [/^Die komt vóór (\w+)\.$/, (z, { s, d, c, dagen }) => s === "na" && D(z.match(/vóór (\w+)/)![1]) === d && c === voor(d)],
-  [/^Die dag hangt vóór (\w+)\.$/, (z, { s, d, c, dagen }) => s === "na" && D(z.match(/vóór (\w+)/)![1]) === d && c === voor(d)],
-  [/^Die dag komt ervóór, niet erna\.$/, (z, { s, d, c, dagen }) => s === "na" && c === voor(d)],
+  [/^Die komt voor (\w+)\.$/, (z, { s, d, c, dagen }) => s === "na" && D(z.match(/voor (\w+)/)![1]) === d && c === voor(d)],
+  [/^Die dag hangt voor (\w+)\.$/, (z, { s, d, c, dagen }) => s === "na" && D(z.match(/voor (\w+)/)![1]) === d && c === voor(d)],
+  [/^Die dag komt ervoor, niet erna\.$/, (z, { s, d, c, dagen }) => s === "na" && c === voor(d)],
   [/^Die komt niet meteen na (\w+)\.$/, (z, { s, d, c, dagen }) => s === "na" && D(z.match(/na (\w+)\./)![1]) === d && c !== na(d)],
   [/^Die hangt niet direct achter (\w+)\.$/, (z, { s, d, c, dagen }) => s === "na" && D(z.match(/achter (\w+)\./)![1]) === d && c !== na(d)],
   [/^Die dag ligt verder weg\.$/, (z, { s, d, c, dagen }) => s === "na" && c !== na(d) && c !== voor(d)],
@@ -170,7 +170,7 @@ const REGELS: [RegExp, (z: string, k: { s: string; d: number; c: number; dagen: 
   [/^De eerste dag hangt vooraan, vlak achter de locomotief\.$/, (z, { s, d, c, dagen }) => s === "eerste"],
   [/^De eerste dag hangt vooraan in de weektrein, vlak achter de locomotief\.$/, (z, { s, d, c, dagen }) => s === "eerste"],
   [/^Met de eerste dag begint de schoolweek\.$/, (z, { s, d, c, dagen }) => s === "eerste"],
-  [/^Vóór de eerste dag hangt alleen de locomotief\.$/, (z, { s, d, c, dagen }) => s === "eerste"],
+  [/^Voor de eerste dag hangt alleen de locomotief\.$/, (z, { s, d, c, dagen }) => s === "eerste"],
   [/^De laatste dag hangt helemaal achteraan in de weektrein\.$/, (z, { s, d, c, dagen }) => s === "laatste"],
   [/^De laatste dag is de allerlaatste wagon van de trein\.$/, (z, { s, d, c, dagen }) => s === "laatste"],
   [/^Na de laatste dag komt er in deze week niets meer\.$/, (z, { s, d, c, dagen }) => s === "laatste"],
@@ -297,7 +297,7 @@ const verklap = (v: Vraag, x: string, f: Fout): string[] => {
   }
   /* Een hint met een eigen vraag aan het eind krijgt niets erachter (nooit 2 vragen achter elkaar, 3.23); die eigen vraag
      is nooit precies de vraag van de 1e keer. */
-  for (const z of f.v.hint) if (/\?\s*$/.test(z) && opnieuwZin(() => "x", v, z) !== "") uit.push(`de hint eindigt met een vraag én de vraag komt erachter ("${kaal(z)}")`);
+  for (const z of f.v.hint) if (/\?\s*$/.test(z) && opnieuwZin(() => "x", v, z) !== "") uit.push(`de hint eindigt met een vraag en de vraag komt erachter ("${kaal(z)}")`);
   for (const z of f.v.hint) for (const q of zinnenVan(z)) if (ZIN.vraag(v, false).map(kaal).includes(q)) uit.push(`de hint bevat precies de vraag van de 1e keer ("${q}")`);
   /* Het rondje staat nooit om het antwoord. */
   if (f.rondje && x === v.goed) uit.push("rondje om het antwoord");
@@ -308,7 +308,7 @@ const verklap = (v: Vraag, x: string, f: Fout): string[] => {
   for (const z of f.v.uitleg) for (const d1 of zinnenVan(z)) if (OPDRACHT.test(d1) || /\?$/.test(d1)) uit.push(`opdracht of vraag in de uitleg bij de 2e keer: "${d1}"`);
   /* Bij 1 vraag geen zin 2 keer (15.29): hint en uitleg delen geen zin. */
   const hintZinnen = new Set(f.v.hint.flatMap(zinnenVan).map(vorm));
-  for (const z of f.v.uitleg.flatMap(zinnenVan)) if (hintZinnen.has(vorm(z))) uit.push(`dezelfde zin als hint én als uitleg ("${z}")`);
+  for (const z of f.v.uitleg.flatMap(zinnenVan)) if (hintZinnen.has(vorm(z))) uit.push(`dezelfde zin als hint en als uitleg ("${z}")`);
   /* Genoeg varianten. */
   genoeg("eerste zin", f.v.eerste, 3);
   genoeg("hint", f.v.hint, 3);
@@ -461,7 +461,7 @@ for (const z of [...ZIN.samenEerste, ...ZIN.samenEersteKlaar, ...ZIN.samenEerste
 for (const z of [...ZIN.samenLaatste, ...ZIN.samenLaatsteKlaar, ...ZIN.samenLaatsteZelf]) if (dagenIn(z).join() !== "6") fouten.push(`laatste samen: noemt niet alleen zondag ("${z}")`);
 /* De uitleg van de 2e keer en het samen voordoen delen geen zin (15.29). */
 const samenAlle = new Set(samenLijsten.flatMap(([, l]) => l.flatMap(zinnenVan)).map(vorm));
-for (const v of ALLE_VRAGEN) for (const f of Object.values(foutenVan(v))) for (const z of [...f.v.uitleg, ...f.v.hint].flatMap(zinnenVan)) if (samenAlle.has(vorm(z))) fouten.push(`${v.id}: "${z}" komt als hint of uitleg én bij het samen voordoen`);
+for (const v of ALLE_VRAGEN) for (const f of Object.values(foutenVan(v))) for (const z of [...f.v.uitleg, ...f.v.hint].flatMap(zinnenVan)) if (samenAlle.has(vorm(z))) fouten.push(`${v.id}: "${z}" komt als hint of uitleg en bij het samen voordoen`);
 /* Het begin (met de groet in 1 stuk) is nooit langer dan de oude beginzin: die paste in het tekstvak (15.30). */
 for (const z of ZIN.start) if (z.length > ZIN.start[0].length) fouten.push(`begin: langer dan de oude beginzin ("${z}")`);
 void NAAM_GROET;

@@ -558,9 +558,9 @@ function tweeFout(x: string, v: Vraag): Fout {
     return {
       code: "even-en-niet-samen",
       soort: "even-en-niet",
-      denkfout: "koos 'even groot' én 'niet even groot' (die kunnen niet allebei kloppen)",
+      denkfout: "koos 'even groot' en 'niet even groot' (die kunnen niet allebei kloppen)",
       ...metV({
-        eerste: ["Je koos 'even groot' én 'niet even groot'.", "Op je kaartjes staat 'even groot' én 'niet even groot'.", "Je tikte op 'even groot' én op 'niet even groot'."],
+        eerste: ["Je koos 'even groot' en 'niet even groot'.", "Op je kaartjes staat 'even groot' en 'niet even groot'.", "Je tikte op 'even groot' en op 'niet even groot'."],
         hint: [`Die ${g(2, "wit")} kunnen niet allebei kloppen. Tel de blauwe en de gele hokjes.`, "Dat kan niet allebei waar zijn. Tel de hokjes van blauw en van geel.", "Ze zijn even groot, of niet. Allebei kan niet. Tel de hokjes."],
         uitleg: ["Even groot en niet even groot kan niet allebei waar zijn.", "Iets is even groot, of niet even groot. Allebei kan niet.", `Maar ${g(1, "wit")} van die ${g(2, "wit")} kaartjes kan kloppen.`],
         weerEerste: ["Je koos weer allebei.", "Weer allebei, zie ik."],

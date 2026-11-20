@@ -566,7 +566,7 @@ export function keuzeFout(v: Keuzevraag, x: string): Fout {
         hint: [...voorHints, ...naHints, ...zoek],
         uitleg: UITLEG.buur,
         weerEerste: ["Je koos weer hetzelfde als ernaast.", "Weer hetzelfde als ernaast, zie ik."],
-        weerUitleg: [`Vóór ${n.noem(rechts)} komt in dit patroon steeds ${anders}.`, `Ernaast komt in dit patroon steeds ${anders}.`],
+        weerUitleg: [`Voor ${n.noem(rechts)} komt in dit patroon steeds ${anders}.`, `Ernaast komt in dit patroon steeds ${anders}.`],
       }, { soort: "naast", kant: "rechts", x });
     }
     return maak("verkeerde-volgorde", "verkeerde-volgorde", {

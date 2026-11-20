@@ -224,3 +224,6 @@ Bij "Welk getal ligt het dichtst bij 20/10?" staan alleen 3 bordjes in beeld; de
 | 2e fout, uitleg (ook los) | We tellen de sprongen op de getallenlijn. | We zetten de getallen op een lijn en tellen de sprongen. |
 
 (Bij een getal boven het doel, zoals 17 bij "dichtst bij 10": "terug" in plaats van "verder".)
+
+## 20 nov 2026: streepjes weg (besluit Sara)
+Oud → nieuw: "vóór"→"voor", "ervóór"→"ervoor", "ná"→"na", "én"→"en" (overal in de zinnen van deze les).

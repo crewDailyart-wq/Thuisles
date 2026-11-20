@@ -207,7 +207,7 @@ export function tweeFout(x: string): FoutV {
   if (c === aantalVan(TWEE.rooster.cellen, TWEE.b) || c === aantalVan(TWEE.rooster.cellen, TWEE.a))
     return metV({ code: "een-soort-vergeten", soort: "een-soort-vergeten", denkfout: "telde maar 1 van de 2 soorten", scherm: schermTwee }, 0, {
       eerste: [`Je koos ${gw(c)}. Dat is nog niet genoeg.`, `${gw(c)}? Dat zijn er nog niet genoeg.`, `Je tikte op ${gw(c)}. Dat is nog te weinig.`],
-      hint: ["Tel de peren én de pruimen. Allebei horen erbij.", "Tel eerst de peren en dan de pruimen. Ze horen er allebei bij."],
+      hint: ["Tel de peren en de pruimen. Allebei horen erbij.", "Tel eerst de peren en dan de pruimen. Ze horen er allebei bij."],
       uitleg: ["Peren en pruimen horen allebei bij de vraag. Die tel je samen.", "De peren en de pruimen tellen allebei mee."],
       weerEerste: ["Je telde weer maar 1 van de 2.", "Dat is weer maar 1 van de 2."],
       weerUitleg: ["De peren en de pruimen tel je samen.", "De peren en de pruimen horen bij elkaar."],
@@ -220,7 +220,7 @@ export function tweeFout(x: string): FoutV {
       weerEerste: ["Je zit er weer dichtbij.", "Weer heel dichtbij."],
       weerUitleg: ["We tellen ze rustig, stuk voor stuk."],
     });
-  return OND_FOUT("Tel de peren én de pruimen. Zet stipjes op wat je geteld hebt.", "De peren en pruimen tel je samen, stuk voor stuk.");
+  return OND_FOUT("Tel de peren en de pruimen. Zet stipjes op wat je geteld hebt.", "De peren en pruimen tel je samen, stuk voor stuk.");
 }
 export const foutenTwee = (): Record<string, FoutV> => Object.fromEntries(TWEE.keuzes.filter((k) => k !== TWEE.n).map((k) => [String(k), tweeFout(String(k))]));
 

@@ -178,7 +178,7 @@ function waarZin(c: C, z: string): string | null {
     const a = lees(v, m[1]);
     return a && !naVan(v.eenheid, a).has(a) ? null : "klopt niet";
   }
-  if ((m = z.match(/^Vóór (.+) komt in dit patroon steeds (iets anders|een andere kleur)\.$/))) {
+  if ((m = z.match(/^Voor (.+) komt in dit patroon steeds (iets anders|een andere kleur)\.$/))) {
     const a = lees(v, m[1]);
     return a && !voorVan(v.eenheid, a).has(a) ? null : "klopt niet";
   }
