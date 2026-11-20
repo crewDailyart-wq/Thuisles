@@ -58,3 +58,8 @@ Echte stem, geluiden horen, vloeiendheid (bewust niet), het testscript `test-klo
 - Let op: een eerdere ALLEFOUT-run (2 speelcontroles tegelijk op een drukke laptop) gaf 1 keer F16 bij "Hij draait weer." en 1 keer 15.47 bij "Nog 1 keer."; bij de herhaling kwamen die niet terug. Ook de GOED-run bleef 2 keer hangen bij "Tik op een getal op de lijn." als er 2 tegelijk liepen; alleen gedraaid ging hij tot het eind. Dit lijkt drukte, geen lesfout.
 - NIET GEDRAAID: `test-klok-gouden-pijl.mjs` route ja-fout stopte na 10 minuten zonder uitslag (zelfde als bij de keuring; laptop druk). Opnieuw draaien als de laptop rustig is.
 - NIET HERSTELD (buiten de opdracht, voor Sara): "De bezorgbus staat klaar bij de bakkerij." zonder bakkerij in beeld; de getallenlijn in een wit vak; de pijl zonder tekst bij "stil bij goed".
+
+## Herstel 2 (20 november 2026, besluit Sara)
+- "De bezorgbus staat klaar bij de bakkerij." (klok 1 en klok 6) terwijl er alleen de bus in beeld is: nu "De bezorgbus staat klaar." (klok 1) en "De bezorgbus staat weer klaar." (klok 6). De zinnen bij klok 5 en 12 ("… bij de bakkerij") blijven: daar staat de bakkerij wel in beeld.
+- Niet gedaan (niet gevraagd): de bus staat los naast de klok zonder ondergrond.
+- Na het herstel: fouttabel-script in orde; speelcontrole GOED en ALLEFOUT tot het eind, 0 fouten.

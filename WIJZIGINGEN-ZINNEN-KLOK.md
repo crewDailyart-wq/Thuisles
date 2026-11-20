@@ -210,3 +210,11 @@ Zelfde plek, zelfde functie; de vraag van het skelet blijft (bij stap 18 blijft 
 
 ## 20 nov 2026: streepjes weg (besluit Sara)
 Oud → nieuw: "vóór"→"voor", "ervóór"→"ervoor", "ná"→"na", "én"→"en" (overal in de zinnen van deze les).
+
+## 20 nov 2026: de zin past bij het beeld (besluit Sara, 15.36)
+Bij deze klokken staat alleen de bezorgbus in beeld, geen bakkerij.
+
+| Waar | Oud | Nieuw |
+|---|---|---|
+| oefenblok, klok 1 (1 uur) | De bezorgbus staat klaar bij de bakkerij. | De bezorgbus staat klaar. |
+| oefenblok, klok 6 (7 uur) | De bezorgbus staat klaar bij de bakkerij. | De bezorgbus staat weer klaar. |

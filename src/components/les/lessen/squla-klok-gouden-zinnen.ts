@@ -575,12 +575,14 @@ export const UITLEGVRAGEN: Vraag[] = [
 
 /** De 13 klokken van het oefenblok (inhoud van squla-klok-hoelaat-1). */
 export const KLOKKEN = [
-  { uur: 1, opties: [1, 9, 8], zin: "De bezorgbus staat klaar bij de bakkerij.", ding: "bezorgbus", plek: "naast", naspeel: "laden" },
+  /* Sara 20 nov 2026 (15.36): bij deze klokken staat alleen de bus in beeld, geen bakkerij. Was: "De bezorgbus staat
+     klaar bij de bakkerij." (klok 1 en klok 6). */
+  { uur: 1, opties: [1, 9, 8], zin: "De bezorgbus staat klaar.", ding: "bezorgbus", plek: "naast", naspeel: "laden" },
   { uur: 12, opties: [12, 10, 11], zin: "De zon staat hoog. De bus rijdt weg.", ding: "zon", plek: "hoog" },
   { uur: 1, opties: [2, 12, 1], zin: "De bus rijdt weer terug.", ding: "bezorgbus", plek: "naast", naspeel: "rijden" },
   { uur: 4, opties: [6, 4, 5], zin: "De zon staat al lager.", ding: "zon", plek: "laag" },
   { uur: 11, opties: [11, 7, 8], zin: "De bus haalt nieuwe broodjes bij de bakkerij.", ding: "bakkerij", plek: "sfeer" },
-  { uur: 7, opties: [7, 11, 6], zin: "De bezorgbus staat klaar bij de bakkerij.", ding: "bezorgbus", plek: "naast", naspeel: "laden", weetje: "Vroeg in de ochtend begint de dag." },
+  { uur: 7, opties: [7, 11, 6], zin: "De bezorgbus staat weer klaar.", ding: "bezorgbus", plek: "naast", naspeel: "laden", weetje: "Vroeg in de ochtend begint de dag." },
   { uur: 8, opties: [8, 9, 1], zin: "De bezorgbus vertrekt.", ding: "bezorgbus", plek: "naast", naspeel: "wegrijden" },
   { uur: 9, opties: [9, 3, 10], zin: "De zon schijnt. De bus rijdt naar de eerste halte.", ding: "zon", plek: "sfeer", weetje: "De zon schijnt overdag." },
   { uur: 10, opties: [10, 2, 11], zin: "De bus komt bij de eerste halte.", ding: "bezorgbus", plek: "naast", naspeel: "rijden" },
