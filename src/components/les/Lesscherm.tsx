@@ -632,6 +632,8 @@ function Lesscherm({
     let id = 0;
     /* Eén bron van waarheid binnen deze afspeelronde; het scherm volgt. */
     let staat = BEGIN;
+    /* 15.51 (20 nov 2026): true zolang de pijl net is gezet en zijn eigen zin nog niet in beeld staat. */
+    let pijlVers = false;
     /* "Jouw instellingen" bewaart onderweg, dus steeds opnieuw gelezen. */
     const vk = () => leesVoorkeuren();
     const pas = (f: (b: Beeld) => Beeld) => {
@@ -671,6 +673,8 @@ function Lesscherm({
         const wachtOpAntwoord = Boolean(wacht.current.kies || wacht.current.knoppen || wacht.current.getal || wacht.current.somvak || wacht.current.verder);
         /* Met pijlZoalsSynthesis (10 nov 2026, klokles): de eerste zin van het nieuwe stuk staat meteen (gedimd) op de plek van het oude, zonder tussenmoment met een leeg vak. */
         zet((b) => ({ ...b, zinnen, zichtbaar: les.pijlZoalsSynthesis && zinnen.length ? stil + 1 : 0, praat: zinnen.length > 0, bediening: houdBediening || wachtOpAntwoord ? b.bediening : null, pijlWacht: false }));
+        /* De pijl staat nu bij zijn eigen zin; komt er hierna een geluid, dan blijft hij gewoon staan (15.51, zie `zeg`). */
+        pijlVers = false;
         if (zinnen.length === 0) return res();
         stopStem?.();
         /* Alleen met woordenMeeMetStem (F10, 11 nov 2026): de eerste zin is al onderweg naar de stem, dus gedimd laten (niet na 2,5 tel in 1 keer wit). Zonder de optie doet dit niets. */
@@ -716,6 +720,7 @@ function Lesscherm({
           setVoorkeuren(vk());
           const wachtOpAntwoord = Boolean(wacht.current.kies || wacht.current.knoppen || wacht.current.getal || wacht.current.somvak || wacht.current.verder);
           zet((b) => ({ ...b, zinnen, zichtbaar: index + 1, praat: true, beheerVolgende: true, bediening: houdBediening || wachtOpAntwoord ? b.bediening : null, pijlWacht: false }));
+          pijlVers = false;
           void wachtOpBliepo().then(() => {
             if (!levend || wacht.current.beheertekst !== verder) return;
             stopStem = zegNaElkaar(
@@ -888,8 +893,10 @@ function Lesscherm({
         }
         /* Eerst het geluid, dan pas Bliepo's zin. Zolang staat de pijl er nog niet (15.51): anders stond hij ±0,5 s onder de
            oude vraag, vóór Bliepo's reactie in beeld kwam (de pijl komt tegelijk met de tekst, PIJL-KLOK.md punt 3). */
+        /* Stond de pijl er al (onder een gewoon stuk tekst), dan blijft hij staan tot de nieuwe zin er is (Sara, 20 nov 2026,
+           eindkeuring Vormen: de pijl verdween ±0,5 s onder "Kom, ik leg de andere stukjes erbij." en kwam dan terug). */
         if (geluidBezig) {
-          pas((b) => ({ ...b, pijlWacht: true }));
+          pas((b) => (!pijlVers && b.bediening?.soort === "verder" && b.zichtbaar > 0 && !b.pijlWacht ? b : { ...b, pijlWacht: true }));
           return geluidBezig.then(() => (levend ? gewoon() : Promise.reject(STOP)));
         }
         return gewoon();
@@ -989,6 +996,8 @@ function Lesscherm({
         }),
       verder: () =>
         new Promise((res) => {
+          /* 15.51: is dit een NIEUWE pijl (er stond er geen), dan hoort hij bij de zin die nog komt (zie `zeg`: hij wacht op het geluid). */
+          if (staat.bediening?.soort !== "verder") pijlVers = true;
           zet((b) => ({ ...b, bediening: { soort: "verder" } }));
           /* De pijl wordt niet meer benoemd (30 oktober 2026, opdracht eigenaar). */
           wacht.current.verder = () => {

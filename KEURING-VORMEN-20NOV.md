@@ -40,3 +40,9 @@ Echte stem, of de geluiden echt klinken (speelcontrole "stil: nog geen tik"), de
 ## Herstel (20 november 2026)
 
 De losse puzzelstukjes hebben in de gouden les eigen plekken: links 2 kolommen, rechts 1 kolom van 4, met ruimte ertussen; ze draaien minder schuin. Niets ligt meer over elkaar of over het bord (schermfoto bekeken). De oude lessen houden hun plekken. Speelcontrole GOED en ALLEFOUT, `test-vormen-gouden.mjs` goed (zone in orde): in orde. In de ontwerpcontrole (ONTWERP=1, allefout) wel 1 melding "de pijl ging 3 keer weg en kwam terug"; dat komt van de pijl-wijziging in Lesscherm.tsx van een andere helper (15.51), niet van de puzzel.
+
+## Herstel pijl (20 november 2026, besluit Sara)
+
+- **De pijl knippert niet meer.** Een pijl die al onder een gewoon stuk tekst stond (bijvoorbeeld "Kom, ik leg de andere stukjes erbij."), blijft staan terwijl het geluidje speelt. Alleen een nieuwe pijl (na een vraag of opdracht) wacht op het geluid en komt tegelijk met de nieuwe zin (15.51). Geregeld in het gedeelde lesscherm (`Lesscherm.tsx`), dus voor alle lessen tegelijk.
+- De knippertest in de `scripts/test-*-gouden.mjs` telt nu alleen een pijl die weggaat terwijl dezelfde zin blijft staan; het gewone lege tekstvak tussen 2 vragen telt niet meer.
+- Gecontroleerd: `scripts/test-vormen-gouden.mjs` routes goed en allefout: pijl weg en terug 0, "Alles in orde". Meting 15.51 (zichtbare Chrome, meter) op Vormen, Dagen, Klok, Meten en Splitsen: punt 1 t/m 4 kloppen nog overal (pijl tijdens praten 100%, tik stopt de stem binnen 1 ms, goed met zin gaat vanzelf door, stil goed zonder pijl). Speelcontrole goed en allefout op Tijd, Minsommen, Plussommen, Vormen, Dagen en Meten: tot het eind.

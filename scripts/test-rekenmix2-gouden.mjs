@@ -506,10 +506,16 @@ async function controleer(P, naam) {
   let knipper = 0;
   for (let i = 1; i < m.length; i++) {
     if (!m[i].pijl || m[i - 1].pijl) continue;
-    /* De pijl kwam (terug). Was hij er kort daarvoor ook, zonder vraag/opdracht ertussen? Dan knippert hij. */
+    /* De pijl kwam (terug). Knipperen = de pijl ging weg terwijl DEZELFDE zin bleef staan (Sara, 20 nov 2026). Een leeg
+       tekstvak ertussen (de gewone 0,15 s tussen 2 vragen; 15.51: geen pijl boven een leeg vak) telt niet mee. */
     let j = i - 1;
     while (j >= 0 && !m[j].pijl && !m[j].taak && !m[j].kaart) j--;
-    if (j >= 0 && m[j].pijl) knipper++;
+    if (j < 0 || !m[j].pijl) continue;
+    const zin = JSON.stringify(m[j].tekst ?? []);
+    if (!(m[j].tekst ?? []).some((t) => t)) continue;
+    let zelfde = true;
+    for (let k = j + 1; k < i; k++) if (JSON.stringify(m[k].tekst ?? []) !== zin) zelfde = false;
+    if (zelfde && i - j > 1) knipper++;
   }
   const over = Math.max(0, ...m.map((r) => r.plek?.over ?? 0));
   if (over > 2) for (const r of m.filter((r) => (r.plek?.over ?? 0) > 2).slice(0, 4)) zie(`   te lang (${r.plek.over} px): ${JSON.stringify(r.tekst).slice(0, 200)}`);
