@@ -295,3 +295,7 @@ Sara besliste: in onze gouden lessen geen zinnen van Synthesis, ook niet vertaal
 | extra | tussenvraag, 4 | Je koos 4. Dat is dichtbij. 3 en dan nog 2 erbij is 5. | Je koos 4. Dat scheelt maar weinig. 3 en dan nog 2 erbij is 5. |
 | extra | hoeveel in het totaal? (variant 3) | O, 3 is een deel. Ik zoek het totaal. | Met 3 heb je maar 1 deel. Het totaal is alles samen. |
 | extra | nieuw totaal van 7 (variant 2) | 8? Dat is net iets te veel. | 8 stippen is net iets te veel. |
+
+## 20 november 2026: herstel keuring Splitsen extra (kleur van de getallen)
+
+Geen woorden veranderd. In Bliepo's tekst waren de getallen wit, terwijl ze bij gekleurde stippen horen (2.1, KEUZES Ronde 52). Nu staat er `{3:tegel}` in plaats van `{3}`: het getal krijgt de kleur van zijn stippen (3 geel, 2 oranje, 5 groen, ...). Getallen die nergens bij horen (een foute keuze, "32", "1 keer") blijven wit.

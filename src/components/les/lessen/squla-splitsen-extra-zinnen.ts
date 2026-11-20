@@ -23,7 +23,7 @@
  * WIJZIGINGEN-ZINNEN-SPLITSEN.md. Een lijst (string[]) in ZIN = varianten: de les kiest er 1.
  *
  * Leesbare versie: FOUTTABEL-squla-splits-splitsen1-1-gouden-extra.md (maak hem opnieuw met
- * `npx tsx scripts/fouttabel-splitsen-extra-gouden.ts`). {5} = een getal in zijn eigen kleur (de kleur van de stippen).
+ * `npx tsx scripts/fouttabel-splitsen-extra-gouden.ts`). {5:tegel} = een getal in de kleur van zijn stippen (de tegelkleur; keuring 20 nov: een kaal {5} werd wit in de indeling "synthesis"). Een getal dat nergens naar verwijst (een foute keuze) blijft {5} = wit (14.27).
  */
 
 import { OND_FOUT, type Fout, type Rijtje } from "./squla-extra-zuiver";
@@ -43,10 +43,10 @@ export const KEUZE_GELIJK = 8;
 export const KEUZE_GROTER = 10;
 
 /** "{3} + {2} = {5}" met elk getal in zijn eigen kleur. */
-export const som = (a: number, b: number, t: number) => `{${a}} + {${b}} = {${t}}`;
-export const paar = (a: number, b: number) => `{${a}} en {${b}}`;
+export const som = (a: number, b: number, t: number) => `{${a}:tegel} + {${b}:tegel} = {${t}:tegel}`;
+export const paar = (a: number, b: number) => `{${a}:tegel} en {${b}:tegel}`;
 /** "{1} stip" of "{3} stippen" (enkelvoud bij 1). */
-const stip = (n: number) => `{${n}} ${n === 1 ? "stip" : "stippen"}`;
+const stip = (n: number) => `{${n}:tegel} ${n === 1 ? "stip" : "stippen"}`;
 
 /* ---------- vaste zinnen van het verloop (eigen woorden) ---------- */
 
@@ -56,58 +56,58 @@ export const ZIN = {
   /* 19 nov 2026 (keuring 15.36): "totaal" uitgelegd als "alles samen" (was: "Boven staat het totaal. Onder staan de 2 delen."). */
   beginKijk: "Bovenaan komt het totaal: alle stippen samen. Onderaan staan de 2 delen.",
   /* 19 nov 2026: "linkerdeel" is moeilijk voor groep 3 (was: "Tik op de plus bij het linkerdeel, tot er {4} stippen staan."). */
-  a1: `Tik op de plus bij het deel links, tot er {4} stippen in staan.`,
-  a1Klaar: "Mooi, er staan {4} stippen.",
+  a1: `Tik op de plus bij het deel links, tot er {4:tegel} stippen in staan.`,
+  a1Klaar: "Mooi, er staan {4:tegel} stippen.",
   a2: "Tik nu {1:wit} keer op de min bij dat deel.",
   a2Hand: "Tik op de min.",
   /* Het getal 3 staat er 1 keer (was: "… een 3. Kijk, bovenaan staat ook 3."). */
-  a2Klaar: [`Je hebt van {4} een {3} gemaakt.`, "Kijk, bovenaan staat hetzelfde getal. Daar staat het totaal."],
+  a2Klaar: [`Je hebt van {4:tegel} een {3:tegel} gemaakt.`, "Kijk, bovenaan staat hetzelfde getal. Daar staat het totaal."],
   /* 19 nov 2026: was "Het rechterdeel is nog leeg. Zet er {2} stippen in met de plus." */
-  a3: `Het andere deel, rechts, is nog leeg. Zet er met de plus {2} stippen in.`,
+  a3: `Het andere deel, rechts, is nog leeg. Zet er met de plus {2:tegel} stippen in.`,
   /** Het hulphandje bij een plus (stap 7 en het samen voordoen), in 3 varianten. */
   tikPlus: ["Tik op de plus.", "Tik maar op de plus.", "Zoek de plus en tik erop."],
   /** Het hulphandje bij een splitsopdracht, in 3 varianten. */
   plusMin: ["Tik op de plus of de min.", "Tik maar op de plus of de min.", "Probeer de plus of de min."],
   vraagTotaal: "Hoeveel stippen staan er nu in het totaal?",
-  totaalGoed: `Het totaal is {5}. Het staat altijd in de cirkel bovenaan.`,
+  totaalGoed: `Het totaal is {5:tegel}. Het staat altijd in de cirkel bovenaan.`,
   totaalUitleg: "Het totaal is alles samen. Dat zijn de stippen in de cirkel bovenaan.",
-  totaalTel: (n: number) => `Het zijn er ${`{${n}}`}. Dat is het totaal.`,
+  totaalTel: (n: number) => `Het zijn er ${`{${n}:tegel}`}. Dat is het totaal.`,
   /** Stap 9: de som. */
   /* 19 nov 2026: was "Je hebt 2 delen en 1 totaal." (te moeilijk voor groep 3). */
   vraagSom: ["De 2 delen samen maken het totaal.", "Welke som heb je gemaakt?"],
   somGoed: `Je hebt de som ${som(A, B_DEEL, TOTAAL5)} gemaakt.`,
-  somUitleg: `De delen zijn {3} en {2}. Die schrijf je als {3} + {2}.`,
+  somUitleg: `De delen zijn {3:tegel} en {2:tegel}. Die schrijf je als {3:tegel} + {2:tegel}.`,
   somSamen: ["Kom, we rekenen het samen uit."],
-  tussen: "Wat is {3} + {2}?",
+  tussen: "Wat is {3:tegel} + {2:tegel}?",
   /* De som staat er 1 keer (was: "Ja, 3 + 2 = 5. Dus de som is 3 + 2 = 5."). */
   tussenGoed: `Ja, ${som(A, B_DEEL, TOTAAL5)}. Dat is de som die je hebt gemaakt.`,
   /* 19 nov 2026 (Sara: losse cijfers nooit als 1 groter getal lezen; KEUZES Ronde 52): 32 staat apart en wit (het verwijst
      nergens naar, 2.1); de 3 en de 2 houden de kleur van hun deel. Was: "Je zette de cijfers naast elkaar: {32}. …". */
-  tussenFout: (x: string) => (x === "32" ? `Je plakte de cijfers aan elkaar. Dan lees je {32:wit}. Maar we tellen ze op: {3} + {2} = {5}.` : `Je koos ${`{${x}}`}. Dat scheelt maar weinig. {3} en dan nog {2} erbij is {5}.`),
+  tussenFout: (x: string) => (x === "32" ? `Je plakte de cijfers aan elkaar. Dan lees je {32:wit}. Maar we tellen ze op: {3:tegel} + {2:tegel} = {5:tegel}.` : `Je koos ${`{${x}}`}. Dat scheelt maar weinig. {3:tegel} en dan nog {2:tegel} erbij is {5:tegel}.`),
   /** Stap 10: een andere manier voor 5. */
   /* 19 nov 2026 (keuring 15.36): "Verander de stippen onder." was geen goede zin; nu zegt Bliepo wat het kind doet en waar. */
-  anders: [`{5} kun je splitsen in ${paar(A, B_DEEL)}.`, "Kun jij het ook op een andere manier? Tik op de plus en de min bij de 2 delen onderaan. Het totaal blijft hetzelfde."],
+  anders: [`{5:tegel} kun je splitsen in ${paar(A, B_DEEL)}.`, "Kun jij het ook op een andere manier? Tik op de plus en de min bij de 2 delen onderaan. Het totaal blijft hetzelfde."],
   omgedraaid5: "Je hebt de delen omgedraaid. Dat mag ook!",
   /** Stap 11: een nieuw totaal. */
   nieuwTotaal: ["Ik zet een nieuw totaal klaar.", "Welk getal is het?"],
-  nieuwGoed: "Het totaal is {7}.",
+  nieuwGoed: "Het totaal is {7:tegel}.",
   /* "een voor een" werd "stuk voor stuk" (cijferafspraak 3.20; "1 voor 1" zou het getal 2 keer zeggen). */
   nieuwHint: "Tel de stippen in de cirkel bovenaan, stuk voor stuk.",
   nieuwUitleg: "De stippen in de cirkel bovenaan tel je stuk voor stuk.",
-  nieuwTel: "Het zijn er {7}. Dat is het totaal.",
+  nieuwTel: "Het zijn er {7:tegel}. Dat is het totaal.",
   /** Stap 12 en 14: zoek 2 delen. */
   zoekKop: { voor: "Zoek 2 delen die samen", n: 7, na: "maken." },
   /* Zonder "Tik dan op het vinkje.": een zin met "vinkje" laat het lesscherm helemaal weg (15.37; het vinkje legt het lesscherm zelf uit). */
-  zoekOpdracht: "Maak met de plus en de min 2 delen die samen {7} zijn.",
+  zoekOpdracht: "Maak met de plus en de min 2 delen die samen {7:tegel} zijn.",
   nogKop: { voor: "Zoek nog een manier om", n: 7, na: "te splitsen." },
-  nogOpdracht: "Zoek nog een manier om {7} te splitsen.",
-  goedSplits: (a: number, b: number, t: number) => [`Je hebt {${t}} gesplitst in {${a}} en {${b}}.`, `{${a}} en {${b}} zijn samen {${t}}.`, `Dat klopt: {${t}} is {${a}} en {${b}}.`],
-  alGevonden: (a: number, b: number, t: number) => [`Zo heb je {${t}} al gesplitst, in ${paar(a, b)}. Zoek een andere manier.`, `${paar(a, b)} hadden we al. Zoek een andere manier om {${t}} te splitsen.`],
+  nogOpdracht: "Zoek nog een manier om {7:tegel} te splitsen.",
+  goedSplits: (a: number, b: number, t: number) => [`Je hebt {${t}:tegel} gesplitst in {${a}:tegel} en {${b}:tegel}.`, `{${a}:tegel} en {${b}:tegel} zijn samen {${t}:tegel}.`, `Dat klopt: {${t}:tegel} is {${a}:tegel} en {${b}:tegel}.`],
+  alGevonden: (a: number, b: number, t: number) => [`Zo heb je {${t}:tegel} al gesplitst, in ${paar(a, b)}. Zoek een andere manier.`, `${paar(a, b)} hadden we al. Zoek een andere manier om {${t}:tegel} te splitsen.`],
   omgedraaid: ["Je hebt de delen omgedraaid. Het zijn dezelfde getallen. Zoek een andere manier.", "Dit zijn dezelfde getallen, alleen omgedraaid. Zoek een andere manier."],
   /* 19 nov 2026: zonder "linkerdeel" (was: "Ik zet het linkerdeel op 3. Zoek jij het andere deel." / "Het linkerdeel zet ik op 3. Jij zoekt het andere deel." / "Kijk, links staat 3. Zoek jij het andere deel?"). */
   samenZet: (k: number) => [`Ik zet ${stip(k)} in het deel links. Zoek jij het andere deel?`, `In het deel links zet ik ${stip(k)}. Maak jij het andere deel?`, `Kijk, links staan nu ${stip(k)}. Zoek jij het andere deel?`].map((z) => (k === 1 ? z.replace("links staan nu", "links staat nu") : z)),
-  samenKlaar: (k: number, t: number) => [`Dat is het: {${t}} is {${k}} en {${t - k}}.`, `Gevonden: {${t}} is {${k}} en {${t - k}}.`, `Samen is het gelukt: {${t}} is {${k}} en {${t - k}}.`],
-  samenZelf: (k: number, t: number) => [`Kijk, ik zoek het andere deel. {${t}} is {${k}} en {${t - k}}.`, `Kijk, ik maak het andere deel. {${t}} is {${k}} en {${t - k}}.`],
+  samenKlaar: (k: number, t: number) => [`Dat is het: {${t}:tegel} is {${k}:tegel} en {${t - k}:tegel}.`, `Gevonden: {${t}:tegel} is {${k}:tegel} en {${t - k}:tegel}.`, `Samen is het gelukt: {${t}:tegel} is {${k}:tegel} en {${t - k}:tegel}.`],
+  samenZelf: (k: number, t: number) => [`Kijk, ik zoek het andere deel. {${t}:tegel} is {${k}:tegel} en {${t - k}:tegel}.`, `Kijk, ik maak het andere deel. {${t}:tegel} is {${k}:tegel} en {${t - k}:tegel}.`],
   /** Stap 15: kiezen. */
   keuzeVraag: ["Nog 1 getal, dan zijn we klaar.", "Wil je nog een getal zoals dit splitsen, of een groter getal?"],
   keuzeGelijk: `Splits ${KEUZE_GELIJK}`,
@@ -115,9 +115,9 @@ export const ZIN = {
   /* Alleen de reactie: de opdracht "Splits 8 in 2 delen." zegt Bliepo meteen daarna (was 2 keer achter elkaar te horen). */
   keuzeReactie: "Goede keuze!",
   keuzeKop: (t: number) => ({ voor: "Splits", n: t, na: "in 2 delen." }),
-  keuzeOpdracht: (t: number) => `Splits {${t}} in 2 delen.`,
+  keuzeOpdracht: (t: number) => `Splits {${t}:tegel} in 2 delen.`,
   keuzeNog: (a: number, b: number, t: number) => `Ja, ${som(a, b, t)}.`,
-  keuzeNogOpdracht: (t: number) => `Splits {${t}} nog op een andere manier.`,
+  keuzeNogOpdracht: (t: number) => `Splits {${t}:tegel} nog op een andere manier.`,
   /** Stap 16: einde. */
   slot: ["Je hebt getallen op veel manieren gesplitst!", "Wat heb jij veel manieren gevonden om te splitsen!", "Knap, hoor! Je kunt getallen op veel manieren splitsen."],
   kaartTik: ["Tik op de kaart.", "Tik maar op de kaart.", "Kijk, een kaart voor jou! Tik erop."],
@@ -128,7 +128,7 @@ export const ZIN = {
 export const AANMOEDIG_TIKKEN = ["Je bent goed bezig.", "Jij kunt dit.", "Het gaat goed zo.", "Probeer het maar.", "Toe maar, je doet het goed."];
 
 /** Reactie bij goed (draaiboek §3 F.1: lof met de 2 delen erin). */
-export const SPLITSREACTIE = (a: number, b: number, t: number) => rij([`Dat klopt: ${som(a, b, t)}.`, `Ja, ${paar(a, b)} maken samen {${t}}.`, `Je hebt {${t}} gesplitst in ${paar(a, b)}.`, `Precies: {${t}} is ${paar(a, b)}.`, `Inderdaad, zo kun je {${t}} splitsen.`], [4]);
+export const SPLITSREACTIE = (a: number, b: number, t: number) => rij([`Dat klopt: ${som(a, b, t)}.`, `Ja, ${paar(a, b)} maken samen {${t}:tegel}.`, `Je hebt {${t}:tegel} gesplitst in ${paar(a, b)}.`, `Precies: {${t}:tegel} is ${paar(a, b)}.`, `Inderdaad, zo kun je {${t}:tegel} splitsen.`], [4]);
 export const SPLITSREACTIE_ROBOT = 4;
 
 /* ---------- denkfouten (draaiboek Splitsen §7; namen voor de voortgang) ---------- */
@@ -147,14 +147,14 @@ const metV = (basis: Omit<Fout, "eerste" | "hint" | "uitleg" | "weer">, nr: numb
 const SCHERM = "vraag en knoppen even weg; Bliepo's scherm 1,5 s rood; met de hint komen de knoppen meteen terug (geen pijl)";
 
 const UITLEG_TOTAAL = [ZIN.totaalUitleg, "In de cirkel bovenaan staan alle stippen samen. Dat is het totaal."];
-const UITLEG_SOM = [ZIN.somUitleg, "Onderaan staan {3} en {2}. Die tel je op in de som."];
+const UITLEG_SOM = [ZIN.somUitleg, "Onderaan staan {3:tegel} en {2:tegel}. Die tel je op in de som."];
 const UITLEG_NIEUW = [ZIN.nieuwUitleg, "Elke stip in de cirkel bovenaan telt {1:wit} keer mee."];
 
 /** Stap 7: wat staat er in het totaal? Keuzes 3, 2 en 5. Draaiboek §3 B.2: een deel genoemd in plaats van het totaal. */
 export function totaalFout(x: string): FoutV {
   if (x === "3" || x === "2")
     return metV({ code: "deel-ipv-totaal", soort: "deel-ipv-totaal", denkfout: "koos een deel in plaats van het totaal", scherm: SCHERM }, Number(x), {
-      eerste: [`Je koos {${x}}. Dat is {1:wit} van de delen.`, `{${x}}? Dat is een deel, niet het totaal.`, `Met {${x}} heb je maar {1:wit} deel. Het totaal is alles samen.`, `Je tikte op {${x}}. Zoveel stippen heeft {1:wit} deel.`],
+      eerste: [`Je koos {${x}:tegel}. Dat is {1:wit} van de delen.`, `{${x}:tegel}? Dat is een deel, niet het totaal.`, `Met {${x}:tegel} heb je maar {1:wit} deel. Het totaal is alles samen.`, `Je tikte op {${x}:tegel}. Zoveel stippen heeft {1:wit} deel.`],
       /* Na de hint staat alleen de hint in beeld: daarom eindigt hij met de vraag, anders verwoord (15.37; draaiboek §3 B.2). */
       hint: ["Het totaal is alles samen. Hoeveel stippen staan er in de cirkel bovenaan?", "Het totaal staat bovenaan. Hoeveel stippen tel je in de cirkel daar?"],
       uitleg: UITLEG_TOTAAL,
@@ -219,10 +219,10 @@ export const foutenNieuw = (): Record<string, FoutV> => Object.fromEntries(NIEUW
 export function splitsFout(a: number, b: number, t: number, nr = 0): FoutV {
   const scherm = "kop en stippen blijven staan; vinkje even uit; Bliepo's scherm 1,5 s rood";
   if (a === 0 || b === 0) {
-    const uitleg = [`Allebei de delen krijgen stippen. Samen zijn ze {${t}}.`, `Elk deel heeft minstens {1:wit} stip. Samen maken ze {${t}}.`, `De 2 delen hebben allebei stippen. Samen zijn het er {${t}}.`];
+    const uitleg = [`Allebei de delen krijgen stippen. Samen zijn ze {${t}:tegel}.`, `Elk deel heeft minstens {1:wit} stip. Samen maken ze {${t}:tegel}.`, `De 2 delen hebben allebei stippen. Samen zijn het er {${t}:tegel}.`];
     return metV({ code: "een-deel-leeg", soort: "een-deel-leeg", denkfout: "liet een deel leeg (of 0)", scherm }, nr, {
       eerste: ["{1:wit} van je delen is nog leeg.", "Je liet een deel leeg.", "Een cirkel onderaan heeft nog geen stippen."],
-      hint: [`Zet in allebei de delen stippen. Samen moeten het er {${t}} zijn.`, `Allebei de delen hebben stippen nodig. Samen is het {${t}}.`, `Geef elk deel stippen. Samen moeten het {${t}} stippen zijn.`],
+      hint: [`Zet in allebei de delen stippen. Samen moeten het er {${t}:tegel} zijn.`, `Allebei de delen hebben stippen nodig. Samen is het {${t}:tegel}.`, `Geef elk deel stippen. Samen moeten het {${t}:tegel} stippen zijn.`],
       uitleg,
       weerEerste: ["Een deel is weer leeg.", "Je liet weer een deel leeg.", "Er is weer een cirkel zonder stippen."],
       weerUitleg: uitleg,
@@ -232,10 +232,10 @@ export function splitsFout(a: number, b: number, t: number, nr = 0): FoutV {
   const weinig = s < t;
   const richting = weinig ? "te weinig" : "te veel";
   const soort = weinig ? "delen-samen-te-weinig" : "delen-samen-te-veel";
-  const uitleg = [`Samen moeten de 2 delen {${t}} zijn.`, `De 2 delen moeten samen {${t}} maken.`, `Samen is het {${t}}: zoveel stippen horen er in de 2 delen.`];
+  const uitleg = [`Samen moeten de 2 delen {${t}:tegel} zijn.`, `De 2 delen moeten samen {${t}:tegel} maken.`, `Samen is het {${t}:tegel}: zoveel stippen horen er in de 2 delen.`];
   return metV({ code: soort, soort, denkfout: weinig ? "de 2 delen samen zijn te weinig" : "de 2 delen samen zijn te veel", scherm }, nr, {
-    eerste: [`Je hebt {${a}} en {${b}}. Samen is dat {${s}}. Dat is ${richting}.`, `{${a}} en {${b}} is samen {${s}}. Dat is ${richting}.`, `Je maakte {${a}} en {${b}}. Samen is dat {${s}}. Dat is ${richting}.`],
-    hint: [`Verander een deel. Samen moet het {${t}} zijn.`, "Maak een deel groter of kleiner.", "Geef een deel meer of minder stippen.", weinig ? "Er moeten nog stippen bij. Tik op een plus." : "Er moeten stippen af. Tik op een min.", `We zoeken {${t}}. Tik op een plus of een min.`],
+    eerste: [`Je hebt {${a}:tegel} en {${b}:tegel}. Samen is dat {${s}:tegel}. Dat is ${richting}.`, `{${a}:tegel} en {${b}:tegel} is samen {${s}:tegel}. Dat is ${richting}.`, `Je maakte {${a}:tegel} en {${b}:tegel}. Samen is dat {${s}:tegel}. Dat is ${richting}.`],
+    hint: [`Verander een deel. Samen moet het {${t}:tegel} zijn.`, "Maak een deel groter of kleiner.", "Geef een deel meer of minder stippen.", weinig ? "Er moeten nog stippen bij. Tik op een plus." : "Er moeten stippen af. Tik op een min.", `We zoeken {${t}:tegel}. Tik op een plus of een min.`],
     uitleg,
     weerEerste: [`Samen is het weer ${richting}.`, `Het zijn er weer ${richting}.`, `Weer ${richting}, zie ik.`],
     weerUitleg: uitleg,

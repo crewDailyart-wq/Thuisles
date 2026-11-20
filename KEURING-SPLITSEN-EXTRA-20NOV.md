@@ -42,3 +42,8 @@ Getest als Testkind op http://localhost:3000. Schermfoto's: `/private/tmp/claude
 ## Niet kunnen nagaan
 
 Echte stem, of de geluiden echt klinken, de duur van het rode scherm (testscripts praten versneld), tablet/telefoon, vloeiendheid (bewust later). De uitleg na de keuze "32" heb ik alleen in de code gelezen; de speler koos bij de tussenvraag een andere foute keuze.
+
+
+## Herstel (20 november 2026)
+
+De getallen in Bliepo's tekst hebben nu de kleur van hun stippen (`{3:tegel}` geeft de tegelkleur: 3 geel, 2 oranje, 5 groen), zoals Ronde 52 wilde. "32", "1 keer" en een foute keuze (4, 6, 8) blijven wit (14.27). Geen woorden veranderd. Fouttabel-script, speelcontrole GOED en ALLEFOUT: in orde.

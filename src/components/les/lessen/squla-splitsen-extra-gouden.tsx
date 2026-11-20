@@ -309,7 +309,7 @@ function nieuwPaar(T: number, gehad: Paar[]): Paar {
 }
 
 /** De kop in het vlak als gewone zin (voor de vergelijking met Bliepo's opdracht). */
-const kopZin = (k: Kop) => `${k.voor}${k.n !== undefined ? ` {${k.n}}` : ""}${k.na ? ` ${k.na}` : ""}`;
+const kopZin = (k: Kop) => `${k.voor}${k.n !== undefined ? ` {${k.n}:tegel}` : ""}${k.na ? ` ${k.na}` : ""}`;
 
 async function splitsOpdracht(l: Lesgids, o: Opdracht): Promise<{ uitkomst: Uitkomst; paar: Paar }> {
   const s = S(l);
