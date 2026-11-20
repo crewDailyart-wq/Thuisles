@@ -49,7 +49,7 @@ const robotGehad = new WeakSet<Lesgids>();
 const KIEZER = maakKiezer();
 const variant = (sleutel: string, zinnen: readonly string[], mag?: (z: string) => boolean) => KIEZER.kies(sleutel, zinnen, mag);
 /** Een kiezer voor de zinnen bij een fout, 1 per vraag (hij onthoudt de 1e keer). `x` = het antwoord zoals het op de knop staat. */
-const foutKiezer = (weer: (x: string) => string[] = (x) => ZIN.weerGekozen(/^\d+$/.test(x) ? g(Number(x)) : x)) => maakFoutKiezer(KIEZER, weer);
+const foutKiezer = (weer: (x: string) => string[] = (x) => ZIN.weerGekozen(/^\d+$/.test(x) ? `{${x}}` : x)) => maakFoutKiezer(KIEZER, weer);
 /** De zin bij het hulphandje: pas gekozen als Bliepo hem echt gaat zeggen (anders telt een zin die niemand hoorde mee). */
 const handZin = () => {
   let z: string | null = null;
@@ -354,7 +354,10 @@ const gouden: Lesdraaiboek = {
 
     /* Stap 8. Moeilijker: maak samen 10, de som kiezen en omwisselen. */
     pas(l, { bak: ALLES, om: false });
-    await B.zegDoor(l, ...ZIN.moeilijker);
+    /* De lof alleen als hij klopt: niets samen voorgedaan en minder dan de helft na een fout (keuring 20 nov). */
+    const totNu = [...B.st(l).eerste.values()];
+    const snapt = !totNu.includes("samen") && !B.veelFouten(l);
+    await B.zegDoor(l, ...(snapt ? [ZIN.moeilijkerLof, ...ZIN.moeilijker] : ZIN.moeilijker));
     const p = (await pakTegel(l, { test: 3, id: "kies-samen10" })) as number;
     leg(vak, 0, p);
     const uit10 = await aanvullen(l, vak, `samen10-${p}`, p, 10, ZIN.maakSamen10(p), ALLES);

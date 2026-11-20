@@ -46,3 +46,8 @@ Schermfoto's: `/private/tmp/claude-501/-Users-sararifi-Desktop-thuisles/898e19d0
 - Echte stem, woord-oplichten en de geluiden zelf (headless, zonder geluid).
 - Vloeiendheid (bewust niet), telefoon en tablet.
 - Waarom de allefout-route 9 uitkomsten heeft en de goede route 10 ("nog een manier om 10 te maken" komt in de allefout-route niet voor); niet uitgezocht, mogelijk bewust.
+
+
+## Herstel (20 november 2026)
+
+1. "{naam}, je snapt het al goed." zegt Bliepo alleen nog als het klopt: niets samen voorgedaan en minder dan de helft na een fout. Anders alleen "Nu maken we het een beetje moeilijker." 2. De getallen in Bliepo's tekst hebben nu de kleur van hun tegel (`{n:tegel}`); een gekozen getal dat bij geen tegel hoort blijft wit (14.27). 3. "is samen" werd "zijn samen". Fouttabel-script, speelcontrole GOED en ALLEFOUT: in orde.
