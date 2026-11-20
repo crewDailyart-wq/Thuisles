@@ -137,3 +137,12 @@ Sara besliste: in onze gouden lessen geen zinnen van Synthesis, ook niet vertaal
 | Rekenmix 4 | 2e keer mis, samen tellen (variant 5) | Laten we ze samen tellen en kijken. | Ik doe mee. We tellen ze samen. |
 | Rekenmix 4 | eerste zin, te weinig (variant 6) | 7 knopen? Je hebt ze nog niet allemaal geteld. | 7 knopen? Er liggen er nog meer, kijk maar. |
 | Rekenmix 4 | eerste zin, te veel (variant 6) | 7 knopen? Ik denk dat je er te veel hebt geteld. | Zoveel knopen? 7 is te veel. |
+
+## 20 november 2026: herstel keuring ("de/het laatste")
+
+Bij een het-woord (potlood, raketje, ruimteschip) zei Bliepo "ook de laatste". Nu volgt het lidwoord het woord: "het laatste" bij een het-woord, "de laatste" bij een de-woord. Alleen het lidwoord is veranderd.
+
+| Les | Waar | Oud | Nieuw |
+|---|---|---|---|
+| gouden | hint bij te weinig geteld | Probeer het nog eens. Tel elk potlood mee, ook de laatste. | Probeer het nog eens. Tel elk potlood mee, ook het laatste. |
+| gouden | na samen/zelf natellen | En de laatste is 8. … | En het laatste is 8. … (bij een het-woord; bij een de-woord blijft "de laatste") |

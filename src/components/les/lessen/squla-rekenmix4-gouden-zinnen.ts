@@ -145,7 +145,13 @@ export function plekken(v: Vraag4): Plek4[] {
     ];
     const los: Plek4[] = lijst.map((d, k) => {
       const c = cellen[k];
-      return { ...d, x: ((c % kol) - (kol - 1) / 2 + (r() - 0.5) * 0.16) * cx, y: (Math.floor(c / kol) - (rijen - 1) / 2 + (r() - 0.5) * 0.12) * cy, m: 92, boven: 92 / 2 + 18 };
+      /* Het ruimteschip is een breed, laag plaatje (512 × 282): in een vak van 92 werd het maar ± 92 × 50 (keuring 20 nov,
+         14.23 "groot"). Het krijgt een vak van 124 en staat precies in het midden van zijn cel (geen speling opzij), zodat het
+         nooit over een buurman valt (cel 132 breed). Het getal erboven blijft even ver als bij de andere dingen. */
+      const breed = d.beeld === "satelliet";
+      const m = breed ? 124 : 92;
+      const sx = (r() - 0.5) * 0.16;
+      return { ...d, x: ((c % kol) - (kol - 1) / 2 + (breed ? 0 : sx)) * cx, y: (Math.floor(c / kol) - (rijen - 1) / 2 + (r() - 0.5) * 0.12) * cy, m, boven: 92 / 2 + 18 };
     });
     los.sort((a, z) => (Math.abs(a.y - z.y) > cy * 0.5 ? a.y - z.y : a.x - z.x));
     return los;
@@ -436,7 +442,7 @@ export const RM4 = {
   /** Draaiboek Tellen §3 A.1 (b): bij de eerste vraag telt Bliepo hardop na (vraag 1: een druk plaatje, dus "de raketjes"). */
   natellen: (d: Ding) => [`Ik tel de ${d.naam} hardop. Tel maar mee!`, `Kom, we tellen de ${d.naam} samen na.`, `Laten we de ${d.naam} samen natellen.`],
   /** Na het hardop tellen. Het laatste getal zegt Bliepo hier (niet ook nog los ervoor): zo klinkt het maar 1 keer. */
-  natellenKlaar: (n: number, d: Ding) => [`En ${gk(n, d)}! Je had het precies goed.`, `En de laatste is ${gk(n, d)}. Jij had het goed geteld.`, `En ${gk(n, d)}! Zie je? Je zat precies goed.`],
+  natellenKlaar: (n: number, d: Ding) => [`En ${gk(n, d)}! Je had het precies goed.`, `En ${d.elk === "elk" ? "het" : "de"} laatste is ${gk(n, d)}. Jij had het goed geteld.`, `En ${gk(n, d)}! Zie je? Je zat precies goed.`],
   /** Als het kind op de pijl tikte (alle nummers staan er meteen): Bliepo noemde nog geen getal. */
   natellenKlaarSnel: (n: number, d: Ding) => [`Zie je? Het zijn er ${gk(n, d)}. Je had het precies goed.`, `Zie je wel? Het zijn er ${gk(n, d)}. Jij had het goed geteld.`, `Het zijn er echt ${gk(n, d)}. Dat koos jij ook.`],
   /** Na de 2e keer: samen tellen. */
@@ -444,7 +450,7 @@ export const RM4 = {
   samenTik: (d: Ding) => [`Tik op ${d.elk} ${d.een}. Ik tel mee.`, `Tik ${d.elk} ${d.een} aan. Ik zeg het getal.`, `Tik op alle ${d.naam}. Ik tel hardop mee.`],
   samenHand: (d: Ding) => [`Tik op een ${d.een} zonder nummer.`, `Zoek een ${d.een} zonder nummer en tik erop.`, `${d.elk === "elk" ? "Welk" : "Welke"} ${d.een} heeft nog geen nummer? Tik erop.`],
   /** Het laatste getal is het aantal; het getal staat er 1 keer (was: "8. Samen telden we 8 raketjes."). */
-  samenKlaar: (n: number, d: Ding) => [`En ${gk(n, d)}! Zoveel ${d.naam} zijn het.`, `En ${gk(n, d)}! Nu hebben we ze samen allemaal geteld.`, `En de laatste is ${gk(n, d)}. Zoveel ${d.naam} zijn het.`],
+  samenKlaar: (n: number, d: Ding) => [`En ${gk(n, d)}! Zoveel ${d.naam} zijn het.`, `En ${gk(n, d)}! Nu hebben we ze samen allemaal geteld.`, `En ${d.elk === "elk" ? "het" : "de"} laatste is ${gk(n, d)}. Zoveel ${d.naam} zijn het.`],
   /** Vangnet: 20 s geen tik, dan telt Bliepo de rest zelf (geen "Ja", geen "samen"; begint met "Kijk,"). */
   samenZelf: (n: number, d: Ding) => [`Kijk, ik tel de rest. Het zijn er ${gk(n, d)}.`, `Kijk, ik tel even verder. Het zijn er ${gk(n, d)}.`],
   /** Stap 10: einde (12 is het grootste aantal; een getal zonder ding: wit). De eerste versie is de oude zin. */
@@ -483,8 +489,8 @@ const DEEL_4 = (X: string, rij: string) => [`${X} is maar een deel.`, `${X}? Dat
    De oude 3 per soort zijn er nog (HINT hierboven); er is er telkens 1 bij. */
 const HINT_ERBIJ: Record<"weinig" | "veel" | "neutraal", Record<Vorm4, Z>> = {
   weinig: {
-    rijen: (d) => `Probeer het nog eens. Tel ${d.elk} ${d.een} mee, ook de laatste.`,
-    los: (d) => `Probeer het nog eens. Tel ${d.elk} ${d.een} mee, ook de laatste.`,
+    rijen: (d) => `Probeer het nog eens. Tel ${d.elk} ${d.een} mee, ook ${d.elk === "elk" ? "het" : "de"} laatste.`,
+    los: (d) => `Probeer het nog eens. Tel ${d.elk} ${d.een} mee, ook ${d.elk === "elk" ? "het" : "de"} laatste.`,
     druk: (d) => `Kijk overal goed. Tel ${d.elk} ${d.een} mee.`,
     samen: (d) => `Tel eerst de bovenste rij. Tel dan verder in de onderste. Sla geen ${d.een} over.`,
   },

@@ -33,3 +33,8 @@ Getest als Testkind op http://localhost:3000. Schermfoto's: `/private/tmp/claude
 ## Niet kunnen nagaan
 
 Echte stem, of de geluiden echt klinken (in de GOED-run "stil: nog geen tik", omdat de speler met JavaScript tikt), de precieze duur van het rode scherm (testscripts praten versneld), tablet/telefoon, vloeiendheid (bewust later).
+
+
+## Herstel (20 november 2026)
+
+1. "ook de laatste" werd "ook het laatste" bij raketje en ruimteschip (zie Rekenmix 1). 2. Het ruimteschip is groter: een vak van 124 in plaats van 92 (± 35% groter), precies in het midden van zijn cel, zodat het nergens over een buurman valt. Test allefout met ONTWERP=1 (1280 × 720): overlap 0, schermfoto bekeken. Fouttabel-script en speelcontrole GOED: in orde.
