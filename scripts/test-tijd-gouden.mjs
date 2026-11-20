@@ -377,8 +377,10 @@ async function speel(P, o = {}) {
     };
     /* Vaste zone (15.30, keuring Meer-minder): alles wat het vlak tekent (de trein en de kaarten) blijft links van het tekstvak. */
     const zone = async () => {
-      const r = await P.ev(`(() => { const v = document.querySelector(".bliepo-vloer-ballon"); const w = document.querySelector("[data-tijd-gouden]"); if (!v || !w) return null; const k = w.getBoundingClientRect(); const s = k.width / 980; const dingen = [...document.querySelectorAll("[data-tijd-gouden] [data-ding]")].map((b) => b.getBoundingClientRect()).filter((b) => b.width > 2).map((b) => b.right); return { vlak: Math.round(k.right - v.getBoundingClientRect().left), ding: dingen.length ? Math.round(Math.max(...dingen) - v.getBoundingClientRect().left) : null, trein: Math.round(k.left + 860 * s - v.getBoundingClientRect().left) }; })()`);
+      const r = await P.ev(`(() => { const v = document.querySelector(".bliepo-vloer-ballon"); const w = document.querySelector("[data-tijd-gouden]"); if (!v || !w) return null; const k = w.getBoundingClientRect(); const s = k.width / 980; const dingen = [...document.querySelectorAll("[data-tijd-gouden] [data-ding]:not([data-keuze-rechts])")].map((b) => b.getBoundingClientRect()).filter((b) => b.width > 2).map((b) => b.right); const zin = [...document.querySelectorAll(".bliepo-vloer .bliepo-tekst")].map((e) => e.getBoundingClientRect()).filter((b) => b.width > 2); const kaarten = [...document.querySelectorAll("[data-tijd-gouden] [data-keuze-rechts]")].map((b) => b.getBoundingClientRect()).filter((b) => b.width > 2); const raak = kaarten.filter((c) => zin.some((t) => c.left < t.right - 1 && t.left < c.right - 1 && c.top < t.bottom - 1 && t.top < c.bottom - 1)).length; const robot = document.querySelector(".bliepo-vloer-robot")?.getBoundingClientRect(); const onder = robot ? kaarten.filter((c) => c.bottom > robot.top + 1 && c.right > robot.left && c.left < robot.right).length : 0; const vb = v.getBoundingClientRect(); const buiten = kaarten.filter((c) => c.left < vb.left - 1 || c.right > vb.right + 1).length; return { vlak: Math.round(k.right - v.getBoundingClientRect().left), ding: dingen.length ? Math.round(Math.max(...dingen) - v.getBoundingClientRect().left) : null, trein: Math.round(k.left + 860 * s - v.getBoundingClientRect().left), kaartOverZin: raak, kaartOverBliepo: onder, kaartBuitenVak: buiten }; })()`);
+      /* De dagkaarten staan rechts onder Bliepo's zin (Sara 20 nov 2026, 15.32): ze horen in het tekstvak, maar mogen de zin en Bliepo niet raken. */
       if (r && ((r.ding ?? -1) > 0 || r.trein > 0)) fout(`het speelvlak loopt onder het tekstvak (${JSON.stringify(r)}, ${taak.vraag})`);
+      if (r && (r.kaartOverZin || r.kaartOverBliepo || r.kaartBuitenVak)) fout(`een dagkaart raakt Bliepo's zin, Bliepo of valt buiten het tekstvak (${JSON.stringify(r)}, ${taak.vraag})`);
       globalThis.__zone = r;
     };
     const fotoSoort = async (wat) => {
@@ -424,6 +426,9 @@ async function speel(P, o = {}) {
         }
         if (!(await P.tikDing(knop(x)))) fout(`kaart ${kaartNaam(x)} niet te tikken (${taak.vraag})`);
         await wacht(250);
+        /* De dagkaarten staan rechts onder Bliepo's zin (15.32, 20 nov 2026): het vinkje van het lesscherm mag geen kaart raken. */
+        const raakVink = await P.ev(`(() => { const v = document.querySelector('[data-knop="controleer"]'); if (!v) return 0; const a = v.getBoundingClientRect(); return [...document.querySelectorAll("[data-tijd-gouden] [data-keuze-rechts]")].map((b) => b.getBoundingClientRect()).filter((c) => c.width > 2 && c.left < a.right - 1 && a.left < c.right - 1 && c.top < a.bottom - 1 && a.top < c.bottom - 1).length; })()`);
+        if (raakVink) fout(`het vinkje raakt een dagkaart (${taak.vraag})`);
         await fotoSoort(`${taak.vraag.replace(/-terug$/, "")}-gekozen`);
         await controleerKnop();
         await wacht(200);
@@ -540,10 +545,16 @@ async function controleer(P, naam) {
   let knipper = 0;
   for (let i = 1; i < m.length; i++) {
     if (!m[i].pijl || m[i - 1].pijl) continue;
-    /* De pijl kwam (terug). Was hij er kort daarvoor ook, zonder vraag/opdracht ertussen? Dan knippert hij. */
+    /* De pijl kwam (terug). Knipperen = de pijl ging weg terwijl DEZELFDE zin bleef staan (Sara, 20 nov 2026). Een leeg
+       tekstvak ertussen (de gewone 0,15 s tussen 2 vragen; 15.51: geen pijl boven een leeg vak) telt niet mee. */
     let j = i - 1;
     while (j >= 0 && !m[j].pijl && !m[j].taak && !m[j].kaart) j--;
-    if (j >= 0 && m[j].pijl) knipper++;
+    if (j < 0 || !m[j].pijl) continue;
+    const zin = JSON.stringify(m[j].tekst ?? []);
+    if (!(m[j].tekst ?? []).some((t) => t)) continue;
+    let zelfde = true;
+    for (let k = j + 1; k < i; k++) if (JSON.stringify(m[k].tekst ?? []) !== zin) zelfde = false;
+    if (zelfde && i - j > 1) knipper++;
   }
   const over = Math.max(0, ...m.map((r) => r.plek?.over ?? 0));
   if (over > 2) for (const r of m.filter((r) => (r.plek?.over ?? 0) > 2).slice(0, 4)) zie(`   te lang (${r.plek.over} px): ${JSON.stringify(r.tekst).slice(0, 200)}`);

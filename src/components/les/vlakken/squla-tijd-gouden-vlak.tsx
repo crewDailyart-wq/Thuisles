@@ -88,6 +88,38 @@ export const kaartRect = (kaarten: string[], i: number) => {
   return { x: kaartX(kaarten, i) - b / 2 - 6, y: KBODEM - 84, b: b + 12, h: 92 };
 };
 
+/*
+ * DE DAGKAARTEN RECHTS, ONDER BLIEPO'S ZIN (besluit Sara, 20 november 2026, KEUZES-VOOR-SARA Ronde 53 punt 2; BOUWREGELS
+ * 15.32). Vroeger stonden ze links onder de trein (kaartX/KBODEM hierboven; die maten blijven bestaan). Nu staan ze op een
+ * vaste plek onderin het tekstvak (lesvlak 1280 × 720: tekstvak x 880–1272, y 112–468; zoals de kaartjes van Meten en de
+ * keuzes van Vormen). Dat valt buiten het Phaser-canvas (980 breed), dus worden ze hier in HTML getekend, met dezelfde
+ * gloeiende wagonplaatjes en bordjes als de trein. Kaarten met 1 dag: 3 naast elkaar; met 2 dagen: 2 + 1 onder elkaar.
+ */
+const KOLOM_X = 1076;
+/** Onderkant: net boven het knopje "Nog eens horen" (zoals Meten en Vormen, gemeten 19 nov 2026). */
+const KOLOM_ONDER = 418;
+/** De hoogte van een wagon zonder gloed (en het randje eronder), in punten bij schaal 1. */
+const WAGON_H = BEELD_H + 2;
+export type KaartPlek = { x: number; y: number; s: number; b: number; h: number };
+/** Waar kaart i rechts onder Bliepo's zin staat: x = midden, y = onderkant (de wielen), s = schaal van 1 wagon, b × h = zichtbaar. */
+export function kaartPlekken(kaarten: string[]): KaartPlek[] {
+  const dubbel = kaarten.some((k) => dagenVan(k).length > 1);
+  /* 2 dagen: iets kleiner, zodat 2 rijen onder een zin van 4 regels plus het vinkje passen (gemeten 20 nov 2026). */
+  const s = dubbel ? 0.75 : 1.08;
+  const b = dubbel ? 2 * W * s + TUS * s : W * s;
+  const h = WAGON_H * s;
+  const perRij = dubbel ? 2 : 3;
+  const rijen = Math.ceil(kaarten.length / perRij);
+  const tussen = 18;
+  const rijStap = h + 16;
+  return kaarten.map((_, i) => {
+    const r = Math.floor(i / perRij);
+    const inRij = Math.min(perRij, kaarten.length - r * perRij);
+    const j = i - r * perRij;
+    return { x: KOLOM_X + (j - (inRij - 1) / 2) * (b + tussen), y: KOLOM_ONDER - (rijen - 1 - r) * rijStap, s, b, h };
+  });
+}
+
 /* ---------- Phaser ---------- */
 
 interface Scene {
@@ -402,9 +434,11 @@ export function TijdGoudenVlak({ beeld, wagons, kaarten = [], licht = [], weeken
     if (wortel.current) scene.zetFont(getComputedStyle(wortel.current).fontFamily);
     scene.zetTrein(rij, beeld);
   }, [scene, rij, beeld]);
+  /* De dagkaarten staan nu rechts onder Bliepo's zin, in HTML (zie kaartPlekken); Phaser tekent ze niet meer onder de trein. */
   useEffect(() => {
-    scene?.zetKaarten(kaartSleutel ? kaartSleutel.split(",") : [], beeld);
+    scene?.zetKaarten([], beeld);
   }, [scene, kaartSleutel, beeld]);
+  const plekken = kaartPlekken(kaarten);
   useEffect(() => {
     scene?.zetWeekend(weekend);
   }, [scene, weekend, rij]);
@@ -421,9 +455,33 @@ export function TijdGoudenVlak({ beeld, wagons, kaarten = [], licht = [], weeken
   return (
     <div ref={wortel} className={s.vlak} data-tijd-gouden="">
       <div ref={plek} style={HOLO_CANVAS} aria-hidden />
+      {kaarten.map((sleutel, i) => {
+        const p = plekken[i];
+        const dagen = dagenVan(sleutel);
+        const stap = W + TUS;
+        return (
+          <div key={`${beeld}-tek-${sleutel}`} className={s.kaartRechts} style={{ left: p.x, top: p.y, animationDelay: `${120 + i * 60}ms` }} data-kaart-rechts="" aria-hidden>
+            <div style={{ transform: `scale(${p.s})`, transformOrigin: "0 0" }}>
+              {dagen.map((dag, k) => (
+                <HtmlWagon key={dag} dag={dag} x={(k - (dagen.length - 1) / 2) * stap} koppeling={k > 0} />
+              ))}
+            </div>
+          </div>
+        );
+      })}
+      {licht
+        .filter((id) => id[0] === "k")
+        .map((id) => {
+          const i = kaarten.indexOf(id.slice(1));
+          const p = plekken[i];
+          if (!p) return null;
+          const b = p.b * 1.12 + 36;
+          const h = p.h * 1.4 + 50;
+          return <img key={`r-${id}`} src="/rondje/rondje-rood-2.png" alt="" aria-hidden className={s.rondjeRechts} style={{ left: p.x - b / 2, top: p.y - p.h / 2 - h / 2, width: b, height: h }} data-rondje-kaart={id} />;
+        })}
       {kies &&
         kaarten.map((sleutel, i) => {
-          const r = kaartRect(kaarten, i);
+          const r = kaartKnop(plekken[i]);
           const vinkje = kies.gekozen === sleutel || kies.vinkjes.includes(sleutel);
           const mag = kies.tikbaar.includes(sleutel);
           const naam = kaartNaam(sleutel);
@@ -434,6 +492,7 @@ export function TijdGoudenVlak({ beeld, wagons, kaarten = [], licht = [], weeken
               className={s.knop}
               style={{ left: r.x, top: r.y, width: r.b, height: r.h }}
               data-ding={naam}
+              data-keuze-rechts=""
               /* Een gekozen kaart heeft geen data-plek: dan tikt de speelcontrole iets anders aan (geleerd bij Getallenlijn). */
               data-plek={mag && !vinkje ? "kaart" : undefined}
               data-gekozen={vinkje ? "" : undefined}
@@ -463,6 +522,27 @@ export function TijdGoudenVlak({ beeld, wagons, kaarten = [], licht = [], weeken
         } />
       )}
     </div>
+  );
+}
+
+/** De knop over een kaart rechts onder Bliepo's zin (met wat ruimte voor het bordje en een vinger). */
+export const kaartKnop = (p: KaartPlek) => ({ x: p.x - p.b / 2 - 6, y: p.y - p.h - 8, b: p.b + 12, h: p.h + 16 });
+
+/** Eén wagon in HTML, net als in Phaser (maakWagon): het gloeiende plaatje met het bordje; (0, 0) = onderaan in het midden. */
+function HtmlWagon({ dag, x, koppeling }: { dag: number; x: number; koppeling: boolean }) {
+  const d = DAGEN[dag];
+  const bw = W * (1 + 2 * GLOED);
+  const bh = BEELD_H + 2 * W * GLOED;
+  const groot = dag === 3 ? 15.5 : 16.5;
+  return (
+    <>
+      {koppeling && <span className={s.koppeling} style={{ left: x - W / 2 - TUS / 2 - (TUS + 12) / 2, top: -18 * KK - (8 * KK) / 2, width: TUS + 12, height: 8 * KK }} />}
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img src={`/squla/trein-glow/${d.naam}.png`} alt="" draggable={false} className={s.wagonBeeld} style={{ left: x - bw / 2, top: -2 - BEELD_H / 2 - bh / 2, width: bw, height: bh }} />
+      <span className={s.bordje} style={{ left: x, top: -2 - BEELD_H * 0.62, fontSize: groot, borderColor: d.hex, boxShadow: `0 0 10px ${d.hex}` }}>
+        {d.naam}
+      </span>
+    </>
   );
 }
 

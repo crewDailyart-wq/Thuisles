@@ -41,7 +41,7 @@
 import { WAS_NAKIJKEN } from "./squla-klok-gouden-zinnen";
 import type { Lesdraaiboek, Lesgids } from "../soort";
 import { KaartWeektrein } from "../vlakken/squla-dagen-trein";
-import { KBODEM, TijdGoudenVlak, kaartX, type Punt, type TijdGoudenProps } from "../vlakken/squla-tijd-gouden-vlak";
+import { TijdGoudenVlak, kaartPlekken, type Punt, type TijdGoudenProps } from "../vlakken/squla-tijd-gouden-vlak";
 import { zetTestAntwoord } from "./squla-hulp";
 import { speelLesgeluid } from "@/lib/lesgeluiden";
 import { bliepoScherm } from "@/lib/bliepo-scherm";
@@ -379,7 +379,9 @@ const onduidelijk = (): Fout => ({ code: "onduidelijk", soort: "onduidelijk", de
 function handBij(l: Lesgids, sl: string): Punt | null {
   const k = st(l).m.kaarten ?? [];
   const i = k.indexOf(sl);
-  return i < 0 ? null : { x: kaartX(k, i) + 46, y: KBODEM + 6 };
+  /* De kaarten staan rechts onder Bliepo's zin (Sara 20 nov 2026, 15.32): het handje schuin rechtsonder bij de kaart. */
+  const p = kaartPlekken(k)[i];
+  return i < 0 || !p ? null : { x: p.x + p.b * 0.38, y: p.y + 6 };
 }
 
 /* ---------- kiezen: tik op een kaart (vinkje) en dan op het vinkje van het lesscherm ---------- */

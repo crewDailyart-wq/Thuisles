@@ -40,3 +40,10 @@ Echte stem, of de geluiden echt klinken (in beide speelcontrole-runs "stil: nog 
 ## Herstel (20 november 2026)
 
 "Dan is er geen school." werd "In het weekend is er geen school." Niet veranderd: de dagkaarten onder de trein (vraag voor Sara, KEUZES-VOOR-SARA.md Ronde 53 punt 2). Fouttabel-script en speelcontrole GOED: in orde.
+
+## Herstel 2 (20 november 2026, besluit Sara Ronde 53 punt 2)
+
+- **De dagkaarten staan nu rechts, onder Bliepo's zin** (15.32), niet meer links onder de trein. Zelfde wagons, kleuren en bordjes. Ze zijn in HTML getekend (rechts valt buiten het Phaser-canvas), net als de kaartjes van Meten. Kaarten met 1 dag: 3 naast elkaar. Kaarten met 2 dagen (weekend): 2 + 1, iets kleiner, zodat ook een zin van 4 regels en het vinkje erboven passen. Het rode rondje en het hulphandje komen bij de kaart op de nieuwe plek.
+- Zinnen: niets veranderd.
+- Gecontroleerd met schermfoto's en `scripts/test-tijd-gouden.mjs` (nieuwe controle: een kaart raakt nooit de zin, Bliepo of het vinkje, en blijft in het tekstvak): routes goed en fouten "Alles in orde". Fouttabel-script in orde. Speelcontrole goed en allefout: tot het eind.
+- Klein punt: bij een gekozen weekendkaart staat het groene vinkje op de hoek van de kaart en bedekt het een stukje van het rechter bordje.

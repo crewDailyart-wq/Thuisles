@@ -145,3 +145,58 @@
     animation: none;
   }
 }
+
+/*
+  De dagkaarten rechts, onder Bliepo's zin (besluit Sara, 20 november 2026; BOUWREGELS 15.32). Ze vallen buiten het
+  Phaser-canvas, dus in HTML: dezelfde gloeiende wagons en bordjes als de trein. Geen kader of vak eromheen.
+*/
+.kaartRechts {
+  position: absolute;
+  width: 0;
+  height: 0;
+  z-index: 2;
+  pointer-events: none;
+  animation: kaartTover 0.32s ease-out both;
+}
+@keyframes kaartTover {
+  from {
+    opacity: 0;
+    transform: translateY(10px) scale(0.92);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .kaartRechts {
+    animation: none;
+  }
+}
+.wagonBeeld {
+  position: absolute;
+  max-width: none;
+  user-select: none;
+}
+.koppeling {
+  position: absolute;
+  border-radius: 3px;
+  background: #1d2b5e;
+}
+.bordje {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  padding: 2px 7px;
+  border: 2px solid;
+  border-radius: 7px;
+  background: #fff7ea;
+  color: #1d2b5e;
+  font-weight: 800;
+  line-height: 1.25;
+  white-space: nowrap;
+}
+.rondjeRechts {
+  position: absolute;
+  z-index: 6;
+  pointer-events: none;
+}
