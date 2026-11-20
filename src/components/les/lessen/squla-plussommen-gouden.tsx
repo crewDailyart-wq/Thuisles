@@ -99,7 +99,7 @@ const DENK_MS = 250;
 const AANWIJZING_MS = 6000;
 /** Verbinden: zoveel rust na de laatste lijn voor het nakijken (geleerd bij Splitsen: nakijken pas na rust). */
 const RUST_MS = 700;
-/** De keuzes groot in het midden onder het lekkers (zoals de oude les, herstel 7 november). */
+/** De keuzes groot in het midden onder het lekkers (zoals de oude les, herstel 7 november). Sinds 20 nov 2026 niet meer gebruikt: de keuzes staan rechts onder Bliepo's zin (15.32). */
 const MIDDEN_KEUZES = 578;
 /** Zo lang na het einde van de stem komt het volgende stuk (zeg() wacht zelf al 0,3 s; samen ±0,7 s; 15.27). */
 const DOOR_NA_MS = 400;
@@ -315,7 +315,9 @@ async function zegOpdracht(l: Lesgids, zinnen: string[], gedaan: Promise<unknown
 
 /** De keuzeknoppen tegelijk met de zinnen (de vraag, of bij de 2e poging de hint). Een tik tijdens de zin telt. */
 async function vraagMetKnoppen(l: Lesgids, opties: string[], zinnen: string[]): Promise<string> {
-  const p = l.kies(opties, { direct: true, weetniet: false, midden: MIDDEN_KEUZES });
+  /* Rechts onder Bliepo's zin (besluit Sara, 20 nov 2026, KEUZES-VOOR-SARA Ronde 53 punt 3; BOUWREGELS 15.32): niet meer
+     `midden: MIDDEN_KEUZES` (groot in het midden onder het lekkers, herstel 7 november). */
+  const p = l.kies(opties, { direct: true, weetniet: false });
   log(l, "vraag", { zin: zinnen.join(" "), opties });
   /* De vraag is 1 uiting (LESRECEPT, geleerd bij Meer-minder): tikt het kind al tijdens de 1e zin, dan begint Bliepo niet alsnog aan de 2e. */
   const z = zeg(l, zinnen.join(" "));

@@ -55,3 +55,9 @@ Schermfoto's: `/private/tmp/claude-501/-Users-sararifi-Desktop-thuisles/898e19d0
 ## Herstel (20 november 2026)
 
 Overal "… en … zijn samen …" (ook "Dat klopt, 3 en 4 zijn samen 7."); in Plussommen extra hetzelfde. Niet veranderd: de antwoordknoppen in het midden (vraag voor Sara, KEUZES-VOOR-SARA.md Ronde 53 punt 3). Fouttabel-script en speelcontrole GOED: in orde.
+
+## Herstel 2 (20 november 2026, besluit Sara Ronde 53 punt 3)
+
+- **De antwoordknoppen staan nu rechts, onder Bliepo's zin** (15.32), niet meer groot in het midden onder het lekkers. Cijfers en sommen op witte knoppen; de kleuren van de getallen in de som bovenaan blijven. Bij 4 cijfers staan er 3 op de eerste rij en 1 eronder.
+- Zinnen: niets veranderd. Schermfoto's: niets overlapt.
+- `scripts/test-plussommen-gouden.mjs` (alle routes): "Alles in orde". Fouttabel-script in orde. Speelcontrole goed en allefout: tot het eind.
