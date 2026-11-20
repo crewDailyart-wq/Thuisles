@@ -14,6 +14,12 @@
 
 ---
 
+## ⭐ WERKWIJZE: TEST OF HELPER ZONDER VOORTGANG (besluit Sara, 20 november 2026)
+
+**Een test of helper die 30 minuten geen voortgang maakt, wordt gestopt en opnieuw gestart.** Stop dan ook de vastgelopen processen (testscripts, losse Chrome-vensters zonder scherm, stilstaande shells) en haal een achtergebleven browserslot weg. Start de test opnieuw met een tijdslimiet per les (bijvoorbeeld 10 minuten). Meld kort wat er aan de hand was. Laat nooit een test uren op 0% draaien.
+
+---
+
 
 > ## ⭐ BELANGRIJKSTE REGEL VAN BLIEPO
 > **Bliepo probeert altijd de denkfout van het kind te begrijpen en reageert daarop.**
