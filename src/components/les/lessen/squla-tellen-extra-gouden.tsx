@@ -224,7 +224,8 @@ async function soortVraag(l: Lesgids, v: SoortVraag, eerste: boolean) {
     },
     bijFout: (x) => {
       /* Draaiboek §3 B.2: de gekozen soort blijft helder en krijgt zijn nummers; de rest wordt dof. */
-      zet(l, { ...metNummers(cellen, indicesVan(cellen, [vanNaam(x).soort])), fout: B.st(l).fout });
+      /* Sara 20 nov 2026: na een fout blijft ALLE fruit gewoon zichtbaar (niets dof); alleen de gekozen soort krijgt zijn nummers. */
+      zet(l, { ...metNummers(cellen, indicesVan(cellen, [vanNaam(x).soort])), dof: [], fout: B.st(l).fout });
     },
     samen: async () => {
       await B.zegDoor(l, variant("samenHelp", ZIN.samenHelp));
@@ -263,7 +264,7 @@ async function tweeVraag(l: Lesgids) {
       else await B.zegDoor(l, lofZin);
     },
     bijFout: () => {
-      zet(l, { dof: cellen.map((_, i) => !idx.includes(i)), fout: B.st(l).fout });
+      zet(l, { dof: [], fout: B.st(l).fout });
     },
     samen: async () => {
       await B.zegDoor(l, variant("samenHelp", ZIN.samenHelp));
