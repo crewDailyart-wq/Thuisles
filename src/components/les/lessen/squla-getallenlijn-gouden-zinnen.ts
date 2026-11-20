@@ -445,9 +445,10 @@ export function lijnReactie(v: Vraag): Rijtje {
   }
   if (v.soort === "dichtst") {
     const d = Math.abs(g - v.n!);
-    /* "maar 2 sprongen van de 20 af" (was: "maar 2 van de 20 af"; de les telt overal in sprongen). */
-    const ver = `${d} ${d === 1 ? "sprong" : "sprongen"}`;
-    return rij([`Ja, ${G} ligt maar ${ver} van de ${w(v.n!)} af.`, `Ja, ${G} ligt het dichtst bij de ${w(v.n!)}.`, `${G} ligt maar ${ver} van de ${w(v.n!)} af.`, `${G} ligt het dichtst bij de ${w(v.n!)}.`, `Zie je, geen getal ligt dichter bij de ${w(v.n!)}.`, `Precies, ${G} ligt het dichtst bij de ${w(v.n!)}.`, `Dat klopt: ${G} ligt maar ${ver} van de ${w(v.n!)} af.`], [4]);
+    /* Sara 20 november 2026: bij een goed antwoord staan alleen de 3 bordjes in beeld, geen lijn en geen bogen. Dus
+       "tellen", net als de hints (was: "18 ligt maar 2 sprongen van de 20 af."). */
+    const tel = `tel je maar ${d} ${g < v.n! ? "verder" : "terug"} tot de ${w(v.n!)}`;
+    return rij([`Ja, van ${G} ${tel}.`, `Ja, ${G} ligt het dichtst bij de ${w(v.n!)}.`, `Van ${G} ${tel}.`, `${G} ligt het dichtst bij de ${w(v.n!)}.`, `Zie je, geen getal ligt dichter bij de ${w(v.n!)}.`, `Precies, ${G} ligt het dichtst bij de ${w(v.n!)}.`, `Dat klopt: van ${G} ${tel}.`], [4]);
   }
   const a = anker(v);
   const kant = g > a ? "na" : "voor";

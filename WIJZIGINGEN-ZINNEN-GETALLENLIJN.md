@@ -227,3 +227,12 @@ Bij "Welk getal ligt het dichtst bij 20/10?" staan alleen 3 bordjes in beeld; de
 
 ## 20 nov 2026: streepjes weg (besluit Sara)
 Oud → nieuw: "vóór"→"voor", "ervóór"→"ervoor", "ná"→"na", "én"→"en" (overal in de zinnen van deze les).
+
+## 20 nov 2026: geen "sprongen" zonder lijn bij goed (besluit Sara)
+Bij "Welk getal ligt het dichtst bij …?" staan alleen 3 bordjes in beeld. De reactie bij een goed antwoord zegt nu "tellen", net als de hints. (Bij een getal boven het doel: "terug".)
+
+| Waar | Oud | Nieuw |
+|---|---|---|
+| reactie bij goed (variant 1) | Ja, 18 ligt maar 2 sprongen van de 20 af. | Ja, van 18 tel je maar 2 verder tot de 20. |
+| reactie bij goed (variant 3) | 18 ligt maar 2 sprongen van de 20 af. | Van 18 tel je maar 2 verder tot de 20. |
+| reactie bij goed (variant 7) | Dat klopt: 18 ligt maar 2 sprongen van de 20 af. | Dat klopt: van 18 tel je maar 2 verder tot de 20. |
