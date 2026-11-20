@@ -258,3 +258,20 @@ Sara besliste: in onze gouden lessen geen zinnen van Synthesis, ook niet vertaal
 | extra | omdraaien, eerste zin (plek 1) | 9? Dat is net te weinig. (bij 11: te veel) | 9 vakjes is te weinig. (bij 11: te veel) |
 | extra | omdraaien, hint (plek 1) | Tel de vakjes nog eens, stuk voor stuk. | Wijs elk vakje aan en tel ze. |
 | extra | zin met de som na lof (plek 6) | Precies, 3 + 4 = 7. | Goed gerekend: 3 + 4 = 7. |
+
+## 20 november 2026: herstel keuring
+
+1. Overal dezelfde vorm "… en … zijn samen …" (was soms "is samen"; 14.3, 15.48). Alleen het werkwoord is veranderd.
+2. Plussommen extra: de lof "{naam}, je snapt het al goed." zegt Bliepo alleen nog als hij klopt (niets samen voorgedaan en minder dan de helft na een fout). De zin zelf is niet veranderd.
+
+| Les | Waar | Oud | Nieuw |
+|---|---|---|---|
+| gouden | goed (variant 3) | Dat klopt, 3 en 4 is samen 7. | Dat klopt, 3 en 4 zijn samen 7. |
+| extra | totaal tellen | 2 en 3 is samen 5. / Kijk: 2 en 3 is samen 5. | 2 en 3 zijn samen 5. / Kijk: 2 en 3 zijn samen 5. |
+| extra | 1e fout bij samen maken | 6 en 3 is samen 9. Dat is … | 6 en 3 zijn samen 9. Dat is … |
+| extra | 2e keer dezelfde fout | Dat is weer …: 6 en 3 is samen 9. / Weer …, zie ik. 6 en 3 is samen 9. | Dat is weer …: 6 en 3 zijn samen 9. / Weer …, zie ik. 6 en 3 zijn samen 9. |
+| extra | overgang naar samen 10 | Testkind, je snapt het al goed. Nu maken we het een beetje moeilijker. Pak een nieuwe tegel. | (zelfde zinnen; de eerste zin alleen als hij klopt) |
+
+## 20 november 2026: herstel keuring Plussommen extra (kleur van de getallen)
+
+Geen woorden veranderd. De getallen van een tegel (en de som van tegels) staan nu in de kleur van hun tegel (`{n:tegel}`); eerst werden ze wit. Een gekozen getal dat bij geen tegel hoort, blijft wit (14.27).
