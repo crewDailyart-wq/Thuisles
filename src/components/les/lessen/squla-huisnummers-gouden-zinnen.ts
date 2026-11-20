@@ -291,14 +291,16 @@ export function hintsVan(v: Vraag): string[] {
   if (vooruit(v))
     return [
       `Kijk naar het huis links van ${plek}. Tel vanaf dat huis verder.`,
-      `Begin bij ${r} en tel 1 verder.`,
+      /* Was: "Begin bij 39 en tel 1 verder." Dat is bijna het antwoord (15.17, keuring 20 november 2026; net als bij
+         Getallenlijn "Begin bij de 5 en tel 1 streepje verder."). Nu zonder de stap van 1. */
+      `Begin bij huis ${r} en tel in je hoofd verder.`,
       "Zeg de nummers hardop, van links naar rechts. Tel dan gewoon verder.",
       `Kijk naar huis ${r}. We zoeken het nummer dat erna komt.`,
       `Er komt steeds 1 bij. Kijk naar huis ${r} en tel verder.`,
     ];
   return [
     `Kijk naar het huis rechts van ${plek}. Tel vanaf dat huis terug.`,
-    `Begin bij ${r} en tel 1 terug.`,
+    `Begin bij huis ${r} en tel in je hoofd terug.`,
     "Zeg de nummers hardop, van rechts naar links. Zo tel je terug.",
     `Kijk naar huis ${r}. We zoeken het nummer dat ervoor komt.`,
     `Er gaat steeds 1 af. Kijk naar huis ${r} en tel terug.`,

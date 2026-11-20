@@ -30,3 +30,9 @@ Afspeelknop, vraag altijd in beeld, typen in een echt invulvak op het bordje (HA
 ## Niet kunnen nagaan
 
 Echte stem, geluiden horen, vloeiendheid (bewust niet), de laatste vraag en de eindkaart in het testscript (tijdslimiet; de speelcontrole kwam wel tot de eindkaart).
+
+## HERSTELD 20 november 2026: opmerking 1 (hint)
+
+- Opmerking 1 (15.17): beoordeeld als verklappen. "Begin bij 39 en tel 1 verder." is voor een kind bijna het antwoord (40), net als het eerder geschrapte "Begin bij de 5 en tel 1 streepje verder." bij Getallenlijn. Nu: "Begin bij huis 39 en tel in je hoofd verder." (en "… tel in je hoofd terug."). Het rondje om het buurhuis blijft. Oud naast nieuw: WIJZIGINGEN-ZINNEN-HUISNUMMERS.md.
+- Fouttabel-script na het herstel: in orde (17 vragen, 919 varianten, geen verklappen).
+- Opmerking 2 (zwevende huizen om te slepen): NIET HERSTELD, buiten de opdracht; het zijn keuzes die je sleept. Voor Sara.

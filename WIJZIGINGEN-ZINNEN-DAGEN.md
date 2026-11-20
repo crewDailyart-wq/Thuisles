@@ -127,3 +127,19 @@ Sara besliste: in onze gouden lessen geen zinnen van Synthesis, ook niet vertaal
 | Les | Waar | Oud (vertaald uit Synthesis) | Nieuw (eigen zin) |
 |---|---|---|---|
 | gouden | vangnet (variant 1) | Ik help je met deze. | Deze doen we samen. |
+
+
+## 20 november 2026: "kaart" wordt "wagon" (keuring KEURING-DAGEN-20NOV.md, BOUWREGELS 15.36, 15.48)
+
+De keuzes onder de trein zijn getekend als wagons (dezelfde wagontekening als de trein). Bliepo zei "kaart"; een kind ziet geen kaart. Zelfde plek in de rij, zelfde functie. "Tik op de kaart." aan het eind blijft: dat is de echte eindkaart.
+
+| Plek (`squla-dagen-gouden-zinnen.ts`) | Oud | Nieuw |
+|---|---|---|
+| `vraag` (na / vóór, eerste keer) | Tik op de goede kaart. | Tik op de goede wagon. |
+| `mistHand` | Sleep een kaart naar de lege plek. / Sleep maar een kaart naar de lege plek. | Sleep een wagon naar de lege plek. / Sleep maar een wagon naar de lege plek. |
+| `samenKaartJij` | Tik jij op de kaart in het rondje? / Nu jij! Tik op de kaart in het rondje. | Tik jij op de wagon in het rondje? / Nu jij! Tik op de losse wagon in het rondje. |
+| `samenMistJij` | Sleep jij de kaart in het rondje naar de lege plek? / Nu jij! Sleep de kaart in het rondje naar de lege plek. | Sleep jij de wagon in het rondje naar de lege plek? / Nu jij! Sleep de wagon in het rondje naar de lege plek. |
+| `handKaart` | Tik op de kaart in het rondje. / Tik maar op de kaart in het rondje. | Tik op de losse wagon in het rondje. / Tik maar op de losse wagon in het rondje. |
+| `handSleep` | Sleep de kaart in het rondje naar de lege plek. / Sleep maar de kaart in het rondje naar de lege plek. | Sleep de wagon in het rondje naar de lege plek. / Sleep maar de wagon in het rondje naar de lege plek. |
+
+Ook (15.34): onder de 3 losse wagons ligt nu een kort stuk rails (zijspoor), zodat ze niet meer in de lucht staan (`squla-dagen-gouden-vlak.tsx`, `dg-zijspoor`).

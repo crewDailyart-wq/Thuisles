@@ -41,3 +41,10 @@ Afspeelknop (15.38), vraag altijd in beeld (15.37), geen dubbele tekst (15.31), 
 - Geluiden zelf gehoord: nee (zonder geluid getest; de controle meldt alleen welke plek klonk).
 - Vloeiendheid: bewust niet gemeten (pas aan het eind).
 - Route "fouten", "weer", "vangnet", "wachten" van het testscript: niet apart gedraaid (tijdslimiet).
+
+## HERSTELD 20 november 2026: "wagon" in plaats van "kaart", en rails onder de losse wagons
+
+- Fout 1 (15.36, 15.48): Bliepo zegt nu "wagon" waar het kind een wagon ziet. Bijvoorbeeld "Tik op de goede kaart." werd "Tik op de goede wagon.", "Tik jij op de kaart in het rondje?" werd "Tik jij op de wagon in het rondje?", "Sleep een kaart naar de lege plek." werd "Sleep een wagon naar de lege plek." 12 zinnen op 7 plekken, zelfde plek en functie (`squla-dagen-gouden-zinnen.ts`). "Tik op de kaart." aan het eind blijft (de echte eindkaart). Oud naast nieuw: WIJZIGINGEN-ZINNEN-DAGEN.md; reden: WEGGEHAALD.md.
+- Opmerking zweven (15.34): beoordeeld als echte fout (een wagon hoort op rails). Kleine fix in het vlak: onder de 3 losse wagons ligt nu een kort spoor (`dg-zijspoor` in `squla-dagen-gouden-vlak.tsx`, dezelfde rails, 1 keer gebakken, alleen in beeld als er losse wagons zijn). Op de schermfoto's staan de wielen op de rails.
+- Na het herstel: fouttabel-script in orde (1768 varianten); speelcontrole GOED en ALLEFOUT tot het eind (F16 0, 15.47 0; ALLEFOUT 15 met zin na hulp, 0 zonder zin); `test-dagen-gouden.mjs` route allefout: "Alles in orde" (rondje 34 keer bij fout, 0 keer om het antwoord; Bliepo verspringt 0 keer; geen overlap).
+- NIET HERSTELD (buiten de opdracht, voor Sara): de pijl zonder tekst bij "stil bij goed" (gedeeld lesscherm) en de kleine taalpunten ("Na is de dag die erachter komt.", "Kijk, ik tik hem aan. Nu heb je allebei de dagen.").

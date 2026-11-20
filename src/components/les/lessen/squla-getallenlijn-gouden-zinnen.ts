@@ -624,7 +624,9 @@ export function hintsVan(v: Vraag, over: string[] = [], x?: string): string[] {
     /* Zonder het getal van de vraag: dat staat al in de eerste zin en komt daarna terug in de vraag (niet 2 keer achter elkaar). */
     return [`Zoek eerst de ${A}. Tel dan de streepjes ${kant}.`, `Begin bij de ${A}. Tel streepje voor streepje ${kant}.`, `Kijk naar de ${A}. Tel vanaf daar de streepjes ${kant}.`];
   }
-  if (v.soort === "dichtst") return ["Tel bij elk getal de sprongen. Hoe minder sprongen, hoe dichterbij.", "Hoe minder sprongen, hoe dichterbij. Tel ze bij elk getal.", "Welk getal heeft de minste sprongen nodig? Tel ze maar."];
+  /* Keuring 20 november 2026 (15.36, 15.37): bij "het dichtst bij" staan alleen de 3 bordjes in beeld, geen lijn en geen
+     sprongen. De hint zegt dus niets over sprongen, maar over tellen in je hoofd vanaf de bordjes die het kind ziet. */
+  if (v.soort === "dichtst") return ["Tel in je hoofd vanaf elk bordje. Hoe minder je hoeft te tellen, hoe dichterbij.", "Hoe minder tellen, hoe dichterbij. Probeer het bij elk bordje in je hoofd.", "Tel bij elk bordje in je hoofd hoe ver het is. Kies het getal dat het minst ver is."];
   return ["Kijk welk getal op de lijn het dichtst bij het raketje staat.", "Zoek het getal op de lijn dat vlak bij het raketje staat.", "Het raketje staat vlak bij een getal op de lijn. Zoek dat getal."];
 }
 /** De vaste hint van een vraag (voor de fouttabel). */
@@ -890,6 +892,7 @@ export function lijnFout(x: string, v: Vraag): Fout {
     const X = Number(x);
     const Xw = w(X);
     const d = Math.abs(X - v.n!);
+    const kant = X < v.n! ? "verder" : "terug";
     return maak(v, {
       x,
       code: "verder-weg",
@@ -899,10 +902,12 @@ export function lijnFout(x: string, v: Vraag): Fout {
       scherm: "Bliepo's scherm 1,5 s rood (geen fout-geluidje); de knoppen weg; een rood rondje om het bordje met het getal dat Bliepo noemt; dan de vraag in andere woorden en dezelfde keuzes terug",
       over: andere,
       bron: "eigen invulling; het tellen van de stapjes lijkt op draaiboek §3 E.3 (het verschil samen uitrekenen)",
-      eerste: [`Van ${Xw} naar de ${w(v.n!)} zijn het ${d} sprongen.`, `${Xw} ligt ${d} sprongen van de ${w(v.n!)} af.`, `Je koos ${Xw}. Dat ligt ${d} sprongen van de ${w(v.n!)} af.`],
+      /* Keuring 20 november 2026 (15.36): er staat nog geen lijn in beeld (die komt pas bij het samen springen), dus
+         "tellen" in plaats van "sprongen". */
+      eerste: [`Van ${Xw} naar de ${w(v.n!)} tel je ${d} ${kant}.`, `Van ${Xw} tot de ${w(v.n!)} moet je ${d} ${kant} tellen.`, `Je koos ${Xw}. Dan tel je ${d} ${kant} tot de ${w(v.n!)}.`],
       hint: hintsVan(v),
-      uitleg: [`Van ${Xw} naar de ${w(v.n!)} is het ver: ${d} sprongen.`, `${Xw} ligt ${d} sprongen van de ${w(v.n!)} af. Dat is niet het dichtst bij.`, "We tellen de sprongen op de getallenlijn."],
-      uitlegLos: ["We tellen de sprongen op de getallenlijn.", "Dat getal ligt verder weg."],
+      uitleg: [`Van ${Xw} naar de ${w(v.n!)} is het ver: je telt ${d} ${kant}.`, `Van ${Xw} tel je ${d} ${kant} tot de ${w(v.n!)}. Dat is niet het dichtst bij.`, "We zetten de getallen op een lijn en tellen de sprongen."],
+      uitlegLos: ["We zetten de getallen op een lijn en tellen de sprongen.", "Dat getal ligt verder weg."],
       weerEerste: [],
       weerUitleg: [],
     });

@@ -477,7 +477,10 @@ async function keuze(l: Lesgids, o: Keuzevraag): Promise<Uitkomst> {
   zet(l, { goed: ++st(l).goed });
   o.bijGoed?.();
   o.opruimen?.();
-  await l.wacht(700);
+  /* Keuring 20 november 2026 (15.39 punt 2, 15.49): na samen voordoen zegt Bliepo altijd een zin, direct na het groen
+     (was: alleen groen + geluid en 700 ms wachten). Een zin uit het rijtje BEVESTIG; het antwoord klonk net al. */
+  await zegDoor(l, bevestig(l));
+  await l.wacht(Math.max(0, 700 - DOOR_NA_MS));
   log(l, "voorgedaan-klaar");
   return noteer(l, v.id, "voorgedaan");
 }
@@ -527,10 +530,9 @@ async function zetUur(l: Lesgids, doel: number): Promise<Uitkomst> {
       zet(l, { goed: ++st(l).goed, ring: null, getalKleur: { n: doel, wijzer: "uur" }, rondje: ++st(l).rondje, doel: null, alleenGetal: null });
       log(l, "reactie", { soort: poging === 1 ? "goed" : kleineStap ? "voorgedaan" : "goed-na-fout" });
       /* Lof gaat vanzelf door (pijl alleen tijdens het praten); samen even lang als vroeger (zeg + 1,1 s). */
-      if (!kleineStap) {
-        await zegDoor(l, poging > 1 ? bevestig(l) : lofZinnen(l, {})[0]);
-        await l.wacht(1100 - DOOR_NA_MS);
-      } else await l.wacht(1100);
+      /* Ook na de kleine stap (samen doen) een zin (keuring 20 november 2026, 15.39 punt 2, 15.49; was: alleen 1,1 s wachten). */
+      await zegDoor(l, poging > 1 ? bevestig(l) : lofZinnen(l, {})[0]);
+      await l.wacht(1100 - DOOR_NA_MS);
       return noteer(l, vraagId, poging === 1 ? "goed" : kleineStap ? "voorgedaan" : "naFout");
     }
     bliepoScherm("fout");

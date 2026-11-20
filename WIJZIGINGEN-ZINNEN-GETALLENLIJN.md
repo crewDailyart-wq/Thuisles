@@ -205,3 +205,22 @@ Sara besliste: in onze gouden lessen geen zinnen van Synthesis, ook niet vertaal
 | gouden | na 2 keer mis in de proef (variant 2) | Dit kan lastig zijn. Dat geeft niks. / We doen samen een stapje terug. | Dat is ook nog nieuw voor je. Geeft niks. / We bekijken het eerst samen. |
 | gouden | uitleg springen: het hele stuk (variant 1) | Je wilde het hele stuk in 1 keer doen. | Je tikte meteen op het eind. |
 | gouden | uitleg springen: het hele stuk (variant 2) | Jij wilt al naar het eind! Dat is te ver. | Daar wil het raketje straks heen. Nu nog niet. |
+
+
+## 20 november 2026: "het dichtst bij" zonder sprongen (keuring KEURING-GETALLENLIJN-20NOV.md, BOUWREGELS 15.36, 15.37, 15.17)
+
+Bij "Welk getal ligt het dichtst bij 20/10?" staan alleen 3 bordjes in beeld; de lijn komt pas bij het samen springen. Zelfde plek, zelfde functie; de hint verklapt niets.
+
+| Plek (`squla-getallenlijn-gouden-zinnen.ts`) | Oud | Nieuw |
+|---|---|---|
+| hint 1 | Tel bij elk getal de sprongen. Hoe minder sprongen, hoe dichterbij. | Tel in je hoofd vanaf elk bordje. Hoe minder je hoeft te tellen, hoe dichterbij. |
+| hint 2 | Hoe minder sprongen, hoe dichterbij. Tel ze bij elk getal. | Hoe minder tellen, hoe dichterbij. Probeer het bij elk bordje in je hoofd. |
+| hint 3 | Welk getal heeft de minste sprongen nodig? Tel ze maar. | Tel bij elk bordje in je hoofd hoe ver het is. Kies het getal dat het minst ver is. |
+| 1e fout, eerste zin | Van 8 naar de 20 zijn het 12 sprongen. | Van 8 naar de 20 tel je 12 verder. |
+| 1e fout, eerste zin | 8 ligt 12 sprongen van de 20 af. | Van 8 tot de 20 moet je 12 verder tellen. |
+| 1e fout, eerste zin | Je koos 8. Dat ligt 12 sprongen van de 20 af. | Je koos 8. Dan tel je 12 verder tot de 20. |
+| 2e fout, uitleg | Van 8 naar de 20 is het ver: 12 sprongen. | Van 8 naar de 20 is het ver: je telt 12 verder. |
+| 2e fout, uitleg | 8 ligt 12 sprongen van de 20 af. Dat is niet het dichtst bij. | Van 8 tel je 12 verder tot de 20. Dat is niet het dichtst bij. |
+| 2e fout, uitleg (ook los) | We tellen de sprongen op de getallenlijn. | We zetten de getallen op een lijn en tellen de sprongen. |
+
+(Bij een getal boven het doel, zoals 17 bij "dichtst bij 10": "terug" in plaats van "verder".)

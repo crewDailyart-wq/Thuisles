@@ -116,6 +116,8 @@ function maakScene(Phaser: PhaserModule, rustig: boolean) {
     vandaag: number | null = null;
     pijl: Box | null = null;
     haak: Img | null = null;
+    /** Het korte spoor onder de losse wagons (keuring 20 november 2026, 15.34: een wagon staat op rails, niet in de lucht). */
+    zijspoor: Img | null = null;
     weekend = false;
     rondjes: Img[] = [];
     licht: string[] = [];
@@ -149,6 +151,22 @@ function maakScene(Phaser: PhaserModule, rustig: boolean) {
         }
       });
       this.plaats("dg-rails", 430, RAIL_Y + 5).setDepth(0);
+      /* Het zijspoor onder de losse wagons (15.34): dezelfde rails, zo breed als de 3 keuzes. Alleen in beeld als er
+         losse wagons zijn; de wielen staan precies op de rails (zelfde hoogte als bij de trein). */
+      const ZB = 3 * (WK + KT);
+      this.canvasPlaatje("dg-zijspoor", ZB, 22, (c) => {
+        c.fillStyle = "#8fa3c9";
+        c.beginPath();
+        c.roundRect(0, 4, ZB, 6, 3);
+        c.fill();
+        c.fillStyle = "#5d6f9a";
+        for (let i = 0; i < Math.floor(ZB / 30); i++) {
+          c.beginPath();
+          c.roundRect(i * 30 + 6, 10, 14, 7, 2);
+          c.fill();
+        }
+      });
+      this.zijspoor = this.plaats("dg-zijspoor", MIDDEN, KBODEM + 5).setDepth(0).setVisible(this.kaarten.length > 0);
       /* De koppeling tussen 2 wagons. */
       this.canvasPlaatje("dg-kop", TUS + 12, 8 * KK, (c) => {
         c.fillStyle = "#1d2b5e";
@@ -351,6 +369,7 @@ function maakScene(Phaser: PhaserModule, rustig: boolean) {
           return { dag, doos, thuis };
         });
       }
+      this.zijspoor?.setVisible(kaarten.length > 0);
       this.inGat = inGat;
       this.legKaarten();
     }

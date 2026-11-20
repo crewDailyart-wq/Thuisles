@@ -189,8 +189,8 @@ export const ZIN = {
       wat het kind doet (3.15). Dezelfde soort vraag houdt dezelfde woorden (3.11): hier geen varianten. */
   vraag: (v: Vraag, eersteKaart: boolean): string[] => {
     if (v.soort === "tik") return [`Tik op de wagon van ${naam(v.dag)}.`];
-    if (v.soort === "na") return [`Welke dag komt na ${naam(v.dag)}?`, ...(eersteKaart ? ["Tik op de goede kaart."] : [])];
-    if (v.soort === "voor") return [`Welke dag komt vóór ${naam(v.dag)}?`, ...(eersteKaart ? ["Tik op de goede kaart."] : [])];
+    if (v.soort === "na") return [`Welke dag komt na ${naam(v.dag)}?`, ...(eersteKaart ? ["Tik op de goede wagon."] : [])];
+    if (v.soort === "voor") return [`Welke dag komt vóór ${naam(v.dag)}?`, ...(eersteKaart ? ["Tik op de goede wagon."] : [])];
     if (v.soort === "gm") return [`Vandaag is het ${naam(v.dag)}.`, v.wat === "gisteren" ? "Welke dag was het gisteren?" : "Welke dag is het morgen?"];
     if (v.soort === "gmMaandag") return ["Vandaag is het maandag.", "Welke dag was het gisteren?"];
     /* Oude les: "2 dagen samen heten het weekend." Een zin die met een cijfer begint leest lastig (KEUZES Ronde 38). */
@@ -213,7 +213,7 @@ export const ZIN = {
   },
   /** Bij "Er mist een dag": eerst wat er is (1 stuk, met de pijl), dan de opdracht (zoals de ketting bij Vormen). */
   mistIntro: ["Er mist een dag in de trein.", "Oei, er mist een dag in de trein!", "Kijk, er is een lege plek in de trein."],
-  mistHand: ["Sleep een kaart naar de lege plek.", "Sleep maar een kaart naar de lege plek."],
+  mistHand: ["Sleep een wagon naar de lege plek.", "Sleep maar een wagon naar de lege plek."],
   /** 2e keer mis: Bliepo doet het samen voor (eigen invulling, niet van Synthesis). "Geeft niks" zegt Synthesis hier ook. */
   samen: ["Kom, we kijken samen.", "We zoeken het samen.", "Kom, samen lukt het.", "Geeft niks. We kijken samen.", "Weet je wat? We zoeken het samen."],
   /** tik: Bliepo loopt met het rondje langs de wagons, vanaf maandag (vast tempo, de pijl slaat het over). Het begin noemt
@@ -222,7 +222,7 @@ export const ZIN = {
   samenTelDag: (d: number) => `${Naam(d)}.`,
   /** "Nu jij": het kind tikt de wagon of kaart met het rondje. De dag noemt Bliepo niet nog een keer (hij zei hem net). */
   samenWagonJij: ["Tik jij op de wagon in het rondje?", "Nu jij! Tik op de wagon in het rondje."],
-  samenKaartJij: ["Tik jij op de kaart in het rondje?", "Nu jij! Tik op de kaart in het rondje."],
+  samenKaartJij: ["Tik jij op de wagon in het rondje?", "Nu jij! Tik op de losse wagon in het rondje."],
   samenTikKlaar: (d: number) => [`Ja, dat is de wagon van ${naam(d)}.`, `Goed zo! Dat is de wagon van ${naam(d)}.`, `Precies, daar rijdt ${naam(d)}.`],
   /* Na het vangnet (Bliepo deed de stap zelf): "Kijk, …", nooit "Ja" alsof het kind het deed (keuring Meer-minder). */
   samenTikZelf: (d: number) => [`Kijk, dit is de wagon van ${naam(d)}.`, `Kijk, ik tik hem aan. Dit is ${naam(d)}.`],
@@ -252,7 +252,7 @@ export const ZIN = {
             [`w${na(d)}`, [`Erachter hangt ${naam(na(d))}.`, `En erachter rijdt ${naam(na(d))}.`]],
           ],
   samenMistDag: (d: number) => (d === 0 ? ["De dag vóór dinsdag is maandag.", "Dus vooraan hoort maandag."] : [`Daartussen hoort ${naam(d)}.`, `Op de lege plek hoort dus ${naam(d)}.`, `Daar tussenin hoort ${naam(d)}.`]),
-  samenMistJij: ["Sleep jij de kaart in het rondje naar de lege plek?", "Nu jij! Sleep de kaart in het rondje naar de lege plek."],
+  samenMistJij: ["Sleep jij de wagon in het rondje naar de lege plek?", "Nu jij! Sleep de wagon in het rondje naar de lege plek."],
   samenMistKlaar: ["Ja, nu is de trein weer heel.", "Goed zo! De trein is weer heel.", "Precies, nu rijden alle dagen weer mee."],
   samenMistZelf: (d: number) => [`Kijk, ${naam(d)} hoort op de lege plek.`, `Kijk, ik sleep hem erin. Nu rijdt ${naam(d)} weer mee.`],
   /** Gisteren en morgen. */
@@ -276,8 +276,8 @@ export const ZIN = {
   samenWeekend2Zelf: ["Kijk, zaterdag en zondag zijn samen het weekend.", "Kijk, ik tik hem aan. Nu heb je allebei de dagen."],
   /** Het hulphandje bij de kleine stap. */
   handWagon: ["Tik op de wagon in het rondje.", "Tik maar op de wagon in het rondje."],
-  handKaart: ["Tik op de kaart in het rondje.", "Tik maar op de kaart in het rondje."],
-  handSleep: ["Sleep de kaart in het rondje naar de lege plek.", "Sleep maar de kaart in het rondje naar de lege plek."],
+  handKaart: ["Tik op de losse wagon in het rondje.", "Tik maar op de losse wagon in het rondje."],
+  handSleep: ["Sleep de wagon in het rondje naar de lege plek.", "Sleep maar de wagon in het rondje naar de lege plek."],
   /** Vangnet bij slepen: lang niets nagekeken. */
   mistVangnet: ["Deze doen we samen.", "Ik help je even."],
   /** Hetzelfde antwoord 2 keer: niet 2 keer dezelfde eerste zin (geleerd bij Tellen). Bliepo zegt wat hij ziet. */

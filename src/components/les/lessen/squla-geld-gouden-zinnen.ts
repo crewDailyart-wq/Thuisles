@@ -177,11 +177,13 @@ export const ZIN = {
   opnieuwWaar: (v: Waarvraag) => [`Waar zie je ${een(v.doel, "wit")}?`, `Waar ligt ${de(v.doel, "wit")}? Tik erop.`, `Zoek nog eens ${de(v.doel, "wit")}. Tik erop.`],
   /** Vraag 4 vraagt "Hoeveel euro is dit?"; de andere vragen "Wat is het?". Dezelfde vraag houdt dezelfde woorden (3.11). */
   opnieuwWat: (v: Watvraag) => (v.vraag.some((z) => /^Wat is/.test(z)) ? ["Wat is het?", "Wat is het, denk je?", "Kies nog een keer. Wat is het?"] : ["Hoeveel euro is dit?", "Hoeveel euro is dit, denk je?", "Kies nog een keer. Hoeveel euro is dit?"]),
-  /** De zwevende munten: eerst wat er gebeurt (1 stuk), dan de opdracht. */
-  /* Het aantal (3) verwijst naar de munten: in hun kleur (14.20, keuring Geld); het gezochte bedrag (1) blijft wit. */
+  /** De zwevende munten: eerst wat er in beeld is (1 stuk), dan de opdracht. */
+  /* Het aantal (3) verwijst naar de munten: in hun kleur (14.20, keuring Geld); het gezochte bedrag (1) blijft wit.
+     Keuring 20 november 2026 (15.36): in de gouden les liggen de munten stil in 6 vakjes; er zweeft niets. Dus geen
+     "zweeft" meer: de zin zegt wat het kind ziet. */
   bellenIntro: (v: Bellenvraag) => {
     const n = g(v.bellen.filter((b) => b === v.zoek).length, KLEUR[v.zoek]);
-    return [`Oei, het geld zweeft! Er zweven ${n} munten van ${wit(v.zoek)} euro.`, `Oei, kijk nou! Het geld zweeft. Er zijn ${n} munten van ${wit(v.zoek)} euro bij.`];
+    return [`Kijk, hier ligt geld. Er zijn ${n} munten van ${wit(v.zoek)} euro bij.`, `Kijk eens, wat veel geld! Daartussen liggen ${n} munten van ${wit(v.zoek)} euro.`];
   },
   bellenOpdracht: (v: Bellenvraag) => [`Tik op alle munten van ${wit(v.zoek)} euro.`, `Zoek ze allemaal. Tik op elke munt van ${wit(v.zoek)} euro.`],
   bellenHand: (v: Bellenvraag) => [`Tik op een munt van ${wit(v.zoek)} euro.`, `Tik maar op een munt van ${wit(v.zoek)} euro.`],

@@ -113,7 +113,7 @@ In de les staan de getallen in de kleur van het geld (munten geel, 5 grijs-wit, 
 | Begin van de les (na de groet) | 3 | In deze les ontdek je hoeveel munten en briefjes waard zijn. Je kijkt naar het getal op het geld. / Vandaag kijken we naar munten en briefjes. Het getal op het geld zegt hoeveel het waard is. / We gaan samen geld bekijken: munten en briefjes. Op het geld staat een getal. |
 | Waar zie je …?: de vraag opnieuw na de hint | 3 | Waar zie je een munt van 1 euro? / Waar ligt de munt van 1 euro? Tik erop. / Zoek nog eens de munt van 1 euro. Tik erop. |
 | Wat is dit?: de vraag opnieuw na de hint | 6 | Wat is het? / Wat is het, denk je? / Kies nog een keer. Wat is het? / Hoeveel euro is dit? / Hoeveel euro is dit, denk je? / Kies nog een keer. Hoeveel euro is dit? |
-| Zwevende munten: wat er gebeurt | 2 | Oei, het geld zweeft! Er zweven 3 munten van 1 euro. / Oei, kijk nou! Het geld zweeft. Er zijn 3 munten van 1 euro bij. |
+| Zwevende munten: wat er gebeurt | 2 | Kijk, hier ligt geld. Er zijn 3 munten van 1 euro bij. / Kijk eens, wat veel geld! Daartussen liggen 3 munten van 1 euro. |
 | Zwevende munten: de opdracht | 2 | Tik op alle munten van 1 euro. / Zoek ze allemaal. Tik op elke munt van 1 euro. |
 | Zwevende munten: het hulphandje | 2 | Tik op een munt van 1 euro. / Tik maar op een munt van 1 euro. |
 | Hulphandje: aanmoediging (komt vóór de opdracht) | 5 | Je bent goed bezig. / Jij kunt dit. / Het gaat goed zo. / Probeer het maar. / Toe maar, je doet het goed. |

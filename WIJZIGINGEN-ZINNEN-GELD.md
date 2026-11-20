@@ -139,3 +139,13 @@ Opdracht van Sara: het woord "nagekeken" (en "nakijken") komt niet meer voor in 
 | squla-geld-geldmachine-1-gouden | nagekeken weg | Nagekeken: alle ${n} zijn ${kn(v.zoek)} euro. | Inderdaad, elke munt die je vond is ${kn(v.zoek)} euro. |
 | squla-geld-geldmachine-1-gouden | nagekeken weg | ${kn(d)} ${e}, op een rechthoek van papier. / Nagekeken: het is precies ${kn(d)} ${e}. | ${kn(d)} ${e}, op een rechthoek van papier. / Zie je, ${kn(d)} ${e} is een briefje, geen munt. |
 | squla-geld-geldmachine-1-gouden | nagekeken weg | ${kn(d)} ${e}, en hij is rond. / Nagekeken: het is precies ${kn(d)} ${e}. | ${kn(d)} ${e}, en hij is rond. / Zie je, ${kn(d)} ${e} is een munt, geen briefje. |
+
+
+## 20 november 2026: niets zweeft (keuring KEURING-GELD-20NOV.md, BOUWREGELS 15.36, 15.48)
+
+In de gouden les liggen de munten stil in 6 vakjes. Zelfde plek, zelfde functie.
+
+| Plek (`squla-geld-gouden-zinnen.ts`) | Oud | Nieuw |
+|---|---|---|
+| `bellenIntro` versie 1 | Oei, het geld zweeft! Er zweven 3 munten van 1 euro. | Kijk, hier ligt geld. Er zijn 3 munten van 1 euro bij. |
+| `bellenIntro` versie 2 | Oei, kijk nou! Het geld zweeft. Er zijn 3 munten van 1 euro bij. | Kijk eens, wat veel geld! Daartussen liggen 3 munten van 1 euro. |

@@ -49,3 +49,12 @@ Afspeelknop, startvraag met Ja/Nee (hoort bij de klok), vraag altijd in beeld, k
 ## Niet kunnen nagaan
 
 Echte stem, geluiden horen, vloeiendheid (bewust niet), het testscript `test-klok-gouden-pijl.mjs` (liep 10 minuten zonder uitslag door de drukte; opnieuw draaien als de laptop rustig is).
+
+## HERSTELD 20 november 2026: zin na samen voordoen, en eigen zinnen in plaats van vertaalde Synthesis-zinnen
+
+- Fout 1 (15.39 punt 2, 15.49): na de kleine stap bij samen voordoen zegt Bliepo nu altijd een zin, direct na het groen en het geluid (een zin uit het rijtje BEVESTIG, bijvoorbeeld "Ja, nu klopt het."). Op beide plekken: de keuzevraag (`squla-klok-gouden.tsx`, na `bliepoScherm("goed")` in het samen-deel van `keuze`) en "Zet de kleine wijzer op de …" (`zetUur`, de kleine stap). Speelcontrole ALLEFOUT daarna: GOED-REACTIE 38 met zin, 1 stil, **0 zonder zin** (was 35), 34 keer goed-na-hulp.
+- Fout 2 (15.41): de 9 vertaalde zinnen zijn eigen zinnen op dezelfde plek, met dezelfde functie. Bijvoorbeeld "Volg de klok helemaal rond. Welk getal staat onderaan?" werd "Ga nu met je ogen naar de onderkant van de klok. Welk getal staat daar beneden?"; "Nu een lastige. Welk getal komt na de 12?" werd "Nu wordt het moeilijker. Wat komt er na de 12?". Alle 9 oud naast nieuw (met de Engelse zin erbij) onderaan WIJZIGINGEN-ZINNEN-KLOK.md; de onjuiste zin daar ("De klok had geen eigen Synthesis-zinnen meer") is doorgestreept en gecorrigeerd. Reden in WEGGEHAALD.md.
+- Na het herstel: fouttabel-script in orde (18812 zinnen, geen verklappen, alles past in het tekstvak, 20000 lessen zonder dubbele zin); speelcontrole GOED (route Nee) en ALLEFOUT allebei tot het eind, F16 0, 15.47 0.
+- Let op: een eerdere ALLEFOUT-run (2 speelcontroles tegelijk op een drukke laptop) gaf 1 keer F16 bij "Hij draait weer." en 1 keer 15.47 bij "Nog 1 keer."; bij de herhaling kwamen die niet terug. Ook de GOED-run bleef 2 keer hangen bij "Tik op een getal op de lijn." als er 2 tegelijk liepen; alleen gedraaid ging hij tot het eind. Dit lijkt drukte, geen lesfout.
+- NIET GEDRAAID: `test-klok-gouden-pijl.mjs` route ja-fout stopte na 10 minuten zonder uitslag (zelfde als bij de keuring; laptop druk). Opnieuw draaien als de laptop rustig is.
+- NIET HERSTELD (buiten de opdracht, voor Sara): "De bezorgbus staat klaar bij de bakkerij." zonder bakkerij in beeld; de getallenlijn in een wit vak; de pijl zonder tekst bij "stil bij goed".

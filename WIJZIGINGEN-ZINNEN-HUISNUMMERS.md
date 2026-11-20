@@ -178,3 +178,13 @@ Sara besliste: in onze gouden lessen geen zinnen van Synthesis, ook niet vertaal
 |---|---|---|---|
 | gouden | eerste zin, 1 huis te ver (plek 4) | Je koos 9. Je ging een beetje te ver. | Je koos 9. Dat huis ligt net te ver. |
 | gouden | begin van het laatste blok | We gaan nog een stukje verder. Nu komen de huisnummers tot 50. | Nu lopen we verder de straat in. Hier gaan de huisnummers tot 50. |
+
+
+## 20 november 2026: hint verklapt niet meer (keuring KEURING-HUISNUMMERS-20NOV.md opmerking 1, BOUWREGELS 15.17)
+
+"39 en 1 verder" is voor een kind bijna het antwoord (40), net als eerder "Begin bij de 5 en tel 1 streepje verder." bij Getallenlijn. Zelfde plek, zelfde functie; het rondje om het buurhuis blijft.
+
+| Plek (`squla-huisnummers-gouden-zinnen.ts`, `hintsVan` versie 2) | Oud | Nieuw |
+|---|---|---|
+| vooruit | Begin bij 39 en tel 1 verder. | Begin bij huis 39 en tel in je hoofd verder. |
+| terug | Begin bij 41 en tel 1 terug. | Begin bij huis 41 en tel in je hoofd terug. |

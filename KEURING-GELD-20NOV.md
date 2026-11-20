@@ -36,3 +36,8 @@ Afspeelknop, vraag altijd in beeld, "Wat is dit?"-knoppen rechts onder Bliepo (1
 ## Niet kunnen nagaan
 
 Echte stem, geluiden horen, vloeiendheid (bewust niet), de overige testroutes (goed, fouten, weer, vangnet, wachten) los: niet gedraaid door de tijdslimiet; de speelcontrole GOED dekt de goede route wel.
+
+## HERSTELD 20 november 2026: zin past nu bij het beeld
+
+- Fout 1 (15.36): "Oei, het geld zweeft! …" is weg. Nu: "Kijk, hier ligt geld. Er zijn 3 munten van 1 euro bij." of "Kijk eens, wat veel geld! Daartussen liggen 3 munten van 1 euro." (`squla-geld-gouden-zinnen.ts`, `bellenIntro`). Oud naast nieuw: WIJZIGINGEN-ZINNEN-GELD.md; reden: WEGGEHAALD.md.
+- Na het herstel: fouttabel-script in orde (12 vragen, 728 varianten); speelcontrole GOED en ALLEFOUT allebei tot het eind (F16 0, 15.47 0; ALLEFOUT 14 met zin, 0 zonder zin).

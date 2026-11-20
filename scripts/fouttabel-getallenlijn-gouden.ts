@@ -229,6 +229,16 @@ const REGELS: Regel[] = [
   [/^Tel bij elk getal de sprongen$|^Hoe minder sprongen, hoe dichterbij$|^Tel ze bij elk getal$|^Welk getal heeft de minste sprongen nodig$|^Tel ze maar$|^We tellen de sprongen op de getallenlijn$/, (_, c) => c.v.soort === "dichtst"],
   [/^Van (\d+) naar de (\d+) is het ver: (\d+) sprongen$/, (m, c) => +m[1] === c.X && +m[2] === c.v.n && Math.abs(c.X - c.v.n!) === +m[3] && +m[3] >= 5],
   [/^Dat is niet het dichtst bij$|^Dat getal ligt verder weg$/, (_, c) => c.v.soort === "dichtst" && c.x !== c.v.goed],
+  /* 20 november 2026 (keuring, 15.36): bij "het dichtst bij" staat nog geen lijn in beeld, dus "tellen" in plaats van "sprongen".
+     Waarheid: het juiste getal, de juiste afstand, en "verder" als het gekozen getal kleiner is dan het doel, anders "terug". */
+  [/^Van (\d+) naar de (\d+) tel je (\d+) (verder|terug)$|^Van (\d+) tot de (\d+) moet je (\d+) (verder|terug) tellen$/, (m, c) => {
+    const [x, n, d, k] = m[1] !== undefined ? [+m[1], +m[2], +m[3], m[4]] : [+m[5], +m[6], +m[7], m[8]];
+    return x === c.X && n === c.v.n && Math.abs(x - n) === d && d > 1 && k === (x < n ? "verder" : "terug");
+  }],
+  [/^Dan tel je (\d+) (verder|terug) tot de (\d+)$/, (m, c) => +m[3] === c.v.n && Math.abs(c.X - c.v.n!) === +m[1] && m[2] === (c.X < c.v.n! ? "verder" : "terug")],
+  [/^Van (\d+) naar de (\d+) is het ver: je telt (\d+) (verder|terug)$/, (m, c) => +m[1] === c.X && +m[2] === c.v.n && Math.abs(c.X - c.v.n!) === +m[3] && +m[3] >= 5 && m[4] === (c.X < c.v.n! ? "verder" : "terug")],
+  [/^Van (\d+) tel je (\d+) (verder|terug) tot de (\d+)$/, (m, c) => +m[1] === c.X && +m[4] === c.v.n && Math.abs(c.X - c.v.n!) === +m[2] && m[3] === (c.X < c.v.n! ? "verder" : "terug")],
+  [/^Tel in je hoofd vanaf elk bordje$|^Hoe minder je hoeft te tellen, hoe dichterbij$|^Hoe minder tellen, hoe dichterbij$|^Probeer het bij elk bordje in je hoofd$|^Tel bij elk bordje in je hoofd hoe ver het is$|^Kies het getal dat het minst ver is$|^We zetten de getallen op een lijn en tellen de sprongen$/, (_, c) => c.v.soort === "dichtst"],
   /* Ongeveer. */
   [/^(?:(\d+)|Dat getal|Dat) ligt vlak (na|vóór) de (\d+)$/, (m, c) => (m[1] === undefined || +m[1] === c.X) && c.X === +m[3] + (m[2] === "na" ? 1 : -1) && c.v.labels!.includes(+m[3])],
   [/^(?:(\d+)|Dat getal|Dat) ligt tussen de (\d+) en de (\d+)$/, (m, c) => (m[1] === undefined || +m[1] === c.X) && c.X > +m[2] + 1 && c.X < +m[3] - 1 && c.v.labels!.includes(+m[2]) && c.v.labels!.includes(+m[3])],

@@ -180,4 +180,30 @@ Opdracht van Sara: het woord "nagekeken" (en "nakijken") komt niet meer voor in 
 |---|---|---|
 | (eindzin uit het rijtje, zonder opdracht) | eindzin + "Tik op de kaart." / "Tik maar op de kaart." / "Kijk, een kaart voor jou! Tik erop." (`VAR.kaartTik`, dezelfde 3 als de andere gouden lessen); een afscheid ("Tot snel!") pas na de tik | terwijl de les op de tik wacht, moet de opdracht het laatste in beeld zijn (15.37); de eindzinnen zelf staan in WIJZIGINGEN-ZINNEN-RIJTJES.md |
 
-De klok had geen eigen Synthesis-zinnen meer: wat er in "Zinnen van Synthesis" hierboven staat, stond er al of is gewoon Nederlands ("Precies", "Dat klopt", "Dat ging snel!").
+~~De klok had geen eigen Synthesis-zinnen meer: wat er in "Zinnen van Synthesis" hierboven staat, stond er al of is gewoon Nederlands ("Precies", "Dat klopt", "Dat ging snel!").~~
+
+**[ONJUIST, gecorrigeerd 20 november 2026 (keuring KEURING-KLOK-20NOV.md, fout 2):** de zin hierboven klopte niet. Die vergelijking keek alleen naar het Nederlandse draaiboek, niet naar de Engelse opname van Synthesis (`SYNTHESIS-ANALYSE/T1-de-urenwijzer.md`, `T2-hele-uren-zetten.md`). Daarin stonden nog 9 zinnen die vrijwel woordelijk vertaald waren. Die zijn nu eigen zinnen op dezelfde plek, met dezelfde functie (15.41); zie de tabel hieronder.**]**
+
+
+## 20 november 2026: vertaalde Synthesis-zinnen vervangen door eigen zinnen (15.41, keuring KEURING-KLOK-20NOV.md fout 2)
+
+Zelfde plek, zelfde functie; de vraag van het skelet blijft (bij stap 18 blijft "Is het nu 7 uur?" staan, alleen de zin ervoor is nieuw).
+
+| Plek (`squla-klok-gouden-zinnen.ts`) | Synthesis (Engels) | Oud | Nieuw |
+|---|---|---|---|
+| `metDeKlokMee` | Going this direction around a clock is called clockwise. | Deze kant op heet: met de klok mee. | Zo draaien de wijzers rond. Dat heet: met de klok mee. |
+| `samenBeginnen` (versie 1) | No problem. Let's go through it together. | Dat geeft niks. We gaan het samen bekijken. | Prima! Dan gaan we het samen leren. |
+| `zetHand` (versie 1) | Tap the 5, or drag the orange hour hand there. | Tik op de {n}, of sleep de kleine wijzer erheen. | Sleep de kleine wijzer naar de {n}. Tikken mag ook. |
+| stap 7 (hoogste punt), vraag | Take a look at the highest point of the clock. What number do you see? | Kijk naar het hoogste punt van de klok. Welk getal staat daar? | Kijk eens naar de bovenkant van de klok. Welk getal zie je daar? |
+| stap 8 (laagste punt), vraag | Follow the clock all the way around. Which number sits at the very bottom? | Volg de klok helemaal rond. Welk getal staat onderaan? | Ga nu met je ogen naar de onderkant van de klok. Welk getal staat daar beneden? |
+| stap 9 (na de 6), vraag | Now look at the 6. Which number comes right after it? | Kijk naar de 6. Welk getal komt erna? | Zoek de 6 op de klok. Welk getal is het volgende? |
+| stap 10 (na de 12), vraag | Here's a tricky one. Which number comes right after the 12? | Nu een lastige. Welk getal komt na de 12? | Nu wordt het moeilijker. Wat komt er na de 12? |
+| stap 12 (korte wijzer), vraag | And this orange short hand. What do we call it? | En deze korte oranje wijzer? Hoe heet die? | En nu de korte oranje wijzer. Wat is de naam van deze wijzer? |
+| stap 18 (half 8), vraag | Here's a tricky one. Is this 7 o'clock? | Let op, deze is lastig. Is het nu 7 uur? | Kijk heel goed naar deze klok. Is het nu 7 uur? |
+
+## 20 november 2026: na samen voordoen altijd een zin (15.39 punt 2, 15.49; keuring KEURING-KLOK-20NOV.md fout 1)
+
+| Plek (`squla-klok-gouden.tsx`) | Oud | Nieuw |
+|---|---|---|
+| keuzevraag, na de kleine stap (samen voordoen) | groen scherm + geluid, 700 ms wachten, geen zin | groen scherm + geluid, dan direct een zin uit het rijtje BEVESTIG (bijvoorbeeld "Ja, nu is het goed."), dan door |
+| "Zet de kleine wijzer op de …", na de kleine stap | groen scherm + geluid, 1100 ms wachten, geen zin | groen scherm + geluid, dan direct een zin uit BEVESTIG (zonder "Gevonden!": geen keuzeknop), dan door |

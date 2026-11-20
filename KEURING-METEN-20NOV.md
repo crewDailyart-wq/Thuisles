@@ -39,3 +39,10 @@ Kaartjes van "Wat klopt er? Kies er 2." staan nu rechts onder Bliepo (15.32, bes
 ## Niet kunnen nagaan
 
 Echte stem, geluiden horen, vloeiendheid (bewust niet), vraag 8 t/m 11 en de eindkaart in het testscript (tijdslimiet; de speelcontrole kwam wel tot de eindkaart).
+
+## HERSTELD 20 november 2026: vals alarm van de 15.47-controle
+
+- `scripts/vraag-aanwezig-controle.mjs`: de 15.47-meting telt alleen nog als er echt iets te tikken is in de DOM (het kind is aan de beurt). Telt Bliepo zelf (`telZelf`, niets te tikken), dan geen melding meer.
+- Nagekeken met een klein proefje in Chrome: de oude fout (opdracht weg, kind moet tikken, alleen "2." in beeld) wordt nog steeds gevonden; het moment van Meten (Bliepo telt zelf, niets te tikken) niet meer. De oude versie van het script gaf bij dat tweede geval wél een melding.
+- Speelcontrole Meten na het herstel: GOED en ALLEFOUT tot het eind, 15.47: 0 meldingen (ALLEFOUT: 52 keer telwoord met opdracht erboven).
+- NIET GEDRAAID tot het eind: `test-meten-gouden.mjs` route allefout stopte na 10 minuten zonder uitslag (laptop zeer druk, net als bij de keuring); de speelcontrole kwam wel tot het eind.

@@ -21,7 +21,9 @@
  *   - MAAR (BOUWREGELS 15.47, Sara 19 november 2026; FOUTEN-VOORBEELDEN F19): telt Bliepo hardop mee, dan moet de
  *     opdracht zelf in beeld blijven ("Tik op elke appel." met "3 appels." eronder). Staat er terwijl de les op een tik
  *     wacht alleen nog een kort telwoord (hooguit 3 woorden, met een getal) en geen vraag of opdracht, dan komt dat in
- *     window.__f47 (meteen, zonder 3 s te wachten). speelcontrole.mjs meldt het als fout "15.47".
+ *     window.__f47 (meteen, zonder 3 s te wachten). speelcontrole.mjs meldt het als fout "15.47". Alleen als er iets te
+ *     tikken is in de DOM (het kind is aan de beurt); telt Bliepo zelf en is er niets te tikken (Meten, telZelf), dan
+ *     wacht de les niet op het kind en is het geen fout (20 november 2026, vals alarm bij Meten).
  *
  * De speler in speelcontrole.mjs werkt mee: staat er geen opdracht in beeld, dan wacht hij met tikken tot de meter het
  * moment beoordeeld heeft. Met RUSTIG=1 wacht hij bij ELKE antwoordstap 3 seconden (trager, maar dan ziet de meter ook
@@ -128,7 +130,10 @@ export const VRAAG_METER = `
       if (k !== sleutel) { sleutel = k; actie(); }
       if (s.t.some(heeftOpdracht)) opdrachtGezien = nu();
       /* 15.47 (19 nov 2026): hardop meetellen terwijl de les op een tik wacht; de opdracht moet in beeld blijven. */
-      if (s.wacht && s.t.length && opdrachtGezien && nu() - opdrachtGezien < 30000 && !s.t.some(heeftOpdracht) && s.t.some((t) => t.split(" ").length <= 3 && /[0-9]/.test(t))) {
+      /* Alleen als het kind echt aan de beurt is: er is iets te tikken in de DOM (s.k). Alleen een tekening (canvas) is hier
+         niet genoeg: dan telt Bliepo zelf (Meten, telZelf: "2." terwijl er niets te tikken is) en wacht de les niet op het
+         kind (keuring 20 november 2026: vals alarm bij Meten). De echte F19 (kind tikt, opdracht weg) heeft altijd iets te tikken. */
+      if (s.wacht && s.k.length > 0 && s.t.length && opdrachtGezien && nu() - opdrachtGezien < 30000 && !s.t.some(heeftOpdracht) && s.t.some((t) => t.split(" ").length <= 3 && /[0-9]/.test(t))) {
         /* pas na 0,8 s in dezelfde stand (geen kort tussenmoment tussen 2 stukken) */
         if (f47Kand !== k) { f47Kand = k; f47Sinds = nu(); }
         else if (f47Sleutel !== k && nu() - f47Sinds >= 800) { f47Sleutel = k; window.__f47.push({ t: nu(), tekst: s.t.join(" | ").slice(0, 120), knoppen: [...new Set(s.k)].join(", ").slice(0, 80) }); }
