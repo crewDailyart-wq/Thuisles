@@ -218,3 +218,6 @@ Bij deze klokken staat alleen de bezorgbus in beeld, geen bakkerij.
 |---|---|---|
 | oefenblok, klok 1 (1 uur) | De bezorgbus staat klaar bij de bakkerij. | De bezorgbus staat klaar. |
 | oefenblok, klok 6 (7 uur) | De bezorgbus staat klaar bij de bakkerij. | De bezorgbus staat weer klaar. |
+
+## 20 nov 2026: 6 klokzinnen passend bij het beeld
+Zie WEGGEHAALD.md (oud → nieuw, zelfde datum).

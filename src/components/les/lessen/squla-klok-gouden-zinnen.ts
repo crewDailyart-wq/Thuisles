@@ -578,17 +578,17 @@ export const KLOKKEN = [
   /* Sara 20 nov 2026 (15.36): bij deze klokken staat alleen de bus in beeld, geen bakkerij. Was: "De bezorgbus staat
      klaar bij de bakkerij." (klok 1 en klok 6). */
   { uur: 1, opties: [1, 9, 8], zin: "De bezorgbus staat klaar.", ding: "bezorgbus", plek: "naast", naspeel: "laden" },
-  { uur: 12, opties: [12, 10, 11], zin: "De zon staat hoog. De bus rijdt weg.", ding: "zon", plek: "hoog" },
+  { uur: 12, opties: [12, 10, 11], zin: "De zon staat hoog aan de hemel.", ding: "zon", plek: "hoog" },
   { uur: 1, opties: [2, 12, 1], zin: "De bus rijdt weer terug.", ding: "bezorgbus", plek: "naast", naspeel: "rijden" },
   { uur: 4, opties: [6, 4, 5], zin: "De zon staat al lager.", ding: "zon", plek: "laag" },
-  { uur: 11, opties: [11, 7, 8], zin: "De bus haalt nieuwe broodjes bij de bakkerij.", ding: "bakkerij", plek: "sfeer" },
+  { uur: 11, opties: [11, 7, 8], zin: "Kijk, de bakkerij is open. De broodjes zijn klaar.", ding: "bakkerij", plek: "sfeer" },
   { uur: 7, opties: [7, 11, 6], zin: "De bezorgbus staat weer klaar.", ding: "bezorgbus", plek: "naast", naspeel: "laden", weetje: "Vroeg in de ochtend begint de dag." },
   { uur: 8, opties: [8, 9, 1], zin: "De bezorgbus vertrekt.", ding: "bezorgbus", plek: "naast", naspeel: "wegrijden" },
-  { uur: 9, opties: [9, 3, 10], zin: "De zon schijnt. De bus rijdt naar de eerste halte.", ding: "zon", plek: "sfeer", weetje: "De zon schijnt overdag." },
-  { uur: 10, opties: [10, 2, 11], zin: "De bus komt bij de eerste halte.", ding: "bezorgbus", plek: "naast", naspeel: "rijden" },
+  { uur: 9, opties: [9, 3, 10], zin: "De zon schijnt vrolijk.", ding: "zon", plek: "sfeer", weetje: "De zon schijnt overdag." },
+  { uur: 10, opties: [10, 2, 11], zin: "De bus rijdt weer een stukje.", ding: "bezorgbus", plek: "naast", naspeel: "rijden" },
   { uur: 2, opties: [2, 10, 1], zin: "De bus rijdt weer weg.", ding: "bezorgbus", plek: "naast", naspeel: "wegrijden" },
-  { uur: 3, opties: [3, 9, 4], zin: "De bus komt bij de tweede halte.", ding: "bezorgbus", plek: "naast", naspeel: "rijden" },
-  { uur: 5, opties: [5, 4, 11], zin: "De bus is terug bij de bakkerij.", ding: "bakkerij", plek: "sfeer" },
+  { uur: 3, opties: [3, 9, 4], zin: "De bus rijdt nog een stukje verder.", ding: "bezorgbus", plek: "naast", naspeel: "rijden" },
+  { uur: 5, opties: [5, 4, 11], zin: "Kijk, hier is de bakkerij weer.", ding: "bakkerij", plek: "sfeer" },
   { uur: 6, opties: [6, 5, 12], zin: "Het wordt donker. De maan komt op.", ding: "maan", plek: "sfeer", weetje: "De maan zie je als het donker wordt." },
 ] as const;
 

@@ -1245,3 +1245,11 @@ Per regel: datum · les · wat · reden · teruggezet?
 20 nov 2026 · squla-tijd-dagen-1-gouden (geen les-id) · de dagkaarten links onder de trein (Phaser, KBODEM 560) · Sara Ronde 53 punt 2 (15.32): de dagkaarten komen rechts onder Bliepo's zin · vervangen door: dezelfde kaarten (zelfde wagons en bordjes) rechts onder Bliepo's zin, in HTML; de oude maten (kaartX, kaartRect, KBODEM) staan nog in de code
 20 nov 2026 · squla-min-machine-1-gouden (geen les-id) · de antwoordknoppen groot in het midden onder de machine of het bord (`midden`, 7 november) · Sara Ronde 53 punt 3 (15.32) · vervangen door: dezelfde knoppen rechts onder Bliepo's zin; de maten MIDDEN_MACHINE en MIDDEN_SOM staan nog in de code
 20 nov 2026 · squla-plus-bakkerij-1-gouden (geen les-id) · de antwoordknoppen groot in het midden onder het lekkers (`midden`, 7 november) · Sara Ronde 53 punt 3 (15.32) · vervangen door: dezelfde knoppen rechts onder Bliepo's zin; de maat MIDDEN_KEUZES staat nog in de code
+
+- 20 nov 2026 · Klok (squla-klok-gouden-zinnen.ts KLOKKEN): 6 zinnen die iets noemden dat niet in beeld staat (bus rijdt weg, halte, bakkerij bij de bus) vervangen door zinnen die kloppen met het beeld (15.36; Sara Ronde 53 punt 6 geldt voor alle klokken):
+  - "De zon staat hoog. De bus rijdt weg." → "De zon staat hoog aan de hemel."
+  - "De bus haalt nieuwe broodjes bij de bakkerij." → "Kijk, de bakkerij is open. De broodjes zijn klaar."
+  - "De zon schijnt. De bus rijdt naar de eerste halte." → "De zon schijnt vrolijk."
+  - "De bus komt bij de eerste halte." → "De bus rijdt weer een stukje."
+  - "De bus komt bij de tweede halte." → "De bus rijdt nog een stukje verder."
+  - "De bus is terug bij de bakkerij." → "Kijk, hier is de bakkerij weer."
