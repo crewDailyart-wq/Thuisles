@@ -12,15 +12,34 @@ import { headers } from "next/headers";
 import { huidigKind } from "@/lib/auth/sessie";
 import { voorbeeldMagBewaren } from "@/lib/data/lesuitkomsten-voorbeeld";
 import { bewaarLesUitkomst, type LesUitkomst } from "@/lib/data/lesuitkomsten";
+import { beloonInEenKeer } from "@/lib/data/sleutels";
+import { beloonSter } from "@/lib/data/sterren";
 
-export async function bewaarUitkomst(invoer: { lesId: string; vraagId: string; uitkomst: LesUitkomst; denkfouten: string[]; pogingen: number }): Promise<{ ok: boolean }> {
+export async function bewaarUitkomst(invoer: { lesId: string; vraagId: string; uitkomst: LesUitkomst; denkfouten: string[]; pogingen: number }): Promise<{ ok: boolean; nieuweSleutel?: boolean }> {
   try {
     const kind = await huidigKind();
     if (!kind) return { ok: false };
     /* PRIVACY.md punt C (besluit Sara 19 nov 2026, B5): de voorbeeldpagina bewaart alleen voor Testkind, ook zonder Referer. */
     const kop = await headers();
     if (!voorbeeldMagBewaren(kop.get("referer"), kind.roepnaam, kop.get("next-router-state-tree"))) return { ok: false };
-    return { ok: bewaarLesUitkomst({ kindId: kind.id, ...invoer, denkfouten: Array.isArray(invoer.denkfouten) ? invoer.denkfouten.map(String) : [] }) };
+    const ok = bewaarLesUitkomst({ kindId: kind.id, ...invoer, denkfouten: Array.isArray(invoer.denkfouten) ? invoer.denkfouten.map(String) : [] });
+    /* Sleutel alleen bij 'goed in één keer' (pogingen 1, geen denkfout); bij een fout verliest het kind nooit iets. */
+    const nieuweSleutel = ok && invoer.uitkomst === "goed in één keer" && invoer.pogingen === 1 ? beloonInEenKeer(kind.id, invoer.lesId, invoer.vraagId) : false;
+    return { ok, nieuweSleutel };
+  } catch {
+    return { ok: false };
+  }
+}
+
+/** Aan het einde van een les: de ster voor het afmaken (1 keer per les per kind). Zelfde regels als hierboven. */
+export async function bewaarLesAfgemaakt(lesId: string): Promise<{ ok: boolean; nieuweSter?: boolean }> {
+  try {
+    if (!/^[a-z0-9-]{1,80}$/.test(String(lesId))) return { ok: false };
+    const kind = await huidigKind();
+    if (!kind) return { ok: false };
+    const kop = await headers();
+    if (!voorbeeldMagBewaren(kop.get("referer"), kind.roepnaam, kop.get("next-router-state-tree"))) return { ok: false };
+    return { ok: true, nieuweSter: beloonSter(kind.id, lesId) };
   } catch {
     return { ok: false };
   }

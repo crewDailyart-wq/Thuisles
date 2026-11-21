@@ -492,6 +492,12 @@ Vraag niet tussendoor (12.10). Zet in KEUZES-VOOR-SARA.md, onder een nieuw kopje
 
 ---
 
+## 9b. Sleutels, sterren en verdergaan (BOUWREGELS 15.52 en 15.53)
+
+- Sleutel alleen bij een antwoord in 1 keer goed, nooit afgeschreven bij een fout; 1 ster voor het afmaken van de les, nooit dubbel bij opnieuw spelen. Alles gaat via `bewaarUitkomst` (al in elke gouden les) en aan het eind `bewaarLesAfgemaakt(LES_ID)`.
+- Een nieuwe sleutel speelt een kort geluidje via het geluidsysteem en stoort het leren niet.
+- Verdergaan waar het kind was en de voortgangsbalk: volgens BOUWREGELS 15.53 en het ontwerp van Sara (nog niet af).
+
 ## 10. Opslaan
 
 - Commit alleen naar de back-upbranch **`backup-squla`**, met "controle overgeslagen" in de commitregel als je de controle overslaat (12.7).

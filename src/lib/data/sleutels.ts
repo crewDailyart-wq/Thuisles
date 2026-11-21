@@ -33,7 +33,7 @@ import { verbinding } from "@/lib/db/sqlite";
 import type { Sleutelstand } from "@/lib/types";
 
 /** Waarom er sleutels bij of af gingen. Groeit mee met de eilandenkaart. */
-export type SleutelReden = "antwoord_goed" | "kist_geopend";
+export type SleutelReden = "antwoord_goed" | "kist_geopend" | "les_in_een_keer";
 
 const LEEG: Sleutelstand = { verdiend: 0, uitgegeven: 0, saldo: 0 };
 
@@ -106,4 +106,22 @@ export function besteedSleutels(
     .run(randomUUID(), kindId, -aantal, reden, bronId, new Date().toISOString());
 
   return true;
+}
+
+/**
+ * Gouden lessen (besluit Sara, 21 november 2026): een sleutel ALLEEN bij een antwoord dat in 1 keer goed was, dus niet
+ * na een hint of een tweede poging; en nooit een sleutel kwijt bij een fout (er wordt niets afgeschreven).
+ * Per kind, les en vraag maar 1 keer: opnieuw spelen geeft voor dezelfde vraag geen tweede sleutel (de bron bevat het kind,
+ * want de unieke index geldt voor alle kinderen samen). Geeft true als er nu echt een NIEUWE sleutel bij kwam
+ * (dan mag de les het sleutelgeluidje spelen via het geluidsysteem; het geluid mag het leren nooit storen).
+ */
+export function beloonInEenKeer(kindId: string, lesId: string, vraagId: string): boolean {
+  const r = verbinding()
+    .prepare(
+      `insert or ignore into sleutel_mutaties
+         (id, kind_id, aantal, reden, bron_id, gemaakt_op)
+       values (?, ?, 1, 'les_in_een_keer', ?, ?)`,
+    )
+    .run(randomUUID(), kindId, `${kindId}:${lesId}:${vraagId}`, new Date().toISOString());
+  return r.changes > 0;
 }

@@ -554,6 +554,21 @@ function maakTabellen(d: DatabaseSync) {
       gedaan_op  text not null
     );
 
+    /*
+      Sterren in de gouden lessen (besluit Sara, 21 november 2026). Per kind alleen: welke les, welke soort ster, wanneer.
+      soort    'afgemaakt' = de les afgemaakt (1 keer per les, nooit dubbel bij opnieuw spelen);
+               'herhaling' = later: 1 extra ster als het kind het onderwerp in een herhaling goed doet (nog niet gebouwd).
+      De primaire sleutel zorgt dat dezelfde ster nooit 2 keer wordt uitgedeeld. Het kind verdwijnt mee als het profiel
+      wordt verwijderd. Verder niets bewaard (geen tijd per vraag, geen scores).
+    */
+    create table if not exists les_sterren (
+      kind_id    text not null references kinderen (id) on delete cascade,
+      les_id     text not null,
+      soort      text not null check (soort in ('afgemaakt','herhaling')),
+      gemaakt_op text not null,
+      primary key (kind_id, les_id, soort)
+    );
+
     create index if not exists sleutels_op_kind on sleutel_mutaties (kind_id);
     create unique index if not exists sleutels_per_bron
       on sleutel_mutaties (reden, bron_id) where bron_id is not null;
