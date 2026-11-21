@@ -112,6 +112,8 @@ export const ZIN = {
   lijstOvergang: () => `Dit is de laatste opdracht. Kijk, hier is een lijstje. ${lijstZin()}`,
   lijstOpdracht: "Maak al het fruit van het lijstje. Kies eerst een soort fruit en tik dan op de vakjes.",
   lijstHand: ["Tik op een leeg vakje.", "Zoek een leeg vakje en tik erop."],
+  /** Handje terwijl er nog geen soort fruit gekozen is (besluit Sara 21 nov: bij het begin is niets gekozen). */
+  lijstHandKies: ["Tik eerst op een soort fruit in het lijstje.", "Kies eerst een soort fruit in het lijstje."],
   /** Het lijstje voorlezen (bij de hint na de 1e fout; draaiboek stap 9). */
   lijstVoor: () => lijstZin(),
   /** Samen tellen (2e fout, soort kiezen). */

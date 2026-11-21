@@ -219,7 +219,7 @@ export function maakBasis(LES_ID: string) {
    * Het hulphandje bij een opdracht (15.19): na ± 6 s stilte komt vanzelf het handje, de eerste keer met 1 korte zin.
    * `aan()` zet het handje in beeld; `uit()` haalt het weg. Elke tik van het kind zet de tijd terug (`opnieuw()`).
    */
-  function handKlok(l: Lesgids, o: { aan: () => void; uit: () => void; zin?: string | null }) {
+  function handKlok(l: Lesgids, o: { aan: () => void; uit: () => void; zin?: string | (() => string) | null }) {
     let klok: ReturnType<typeof setTimeout> | undefined;
     let gezegd = false;
     let weg = false;
@@ -231,9 +231,10 @@ export function maakBasis(LES_ID: string) {
         if (weg) return;
         log(l, "aanwijzing");
         o.aan();
-        if (!gezegd && o.zin) {
+        const zin = typeof o.zin === "function" ? o.zin() : o.zin;
+        if (!gezegd && zin) {
           gezegd = true;
-          void zeg(l, o.zin).catch(() => {});
+          void zeg(l, zin).catch(() => {});
         }
       }, AANWIJZING_MS);
     };

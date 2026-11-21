@@ -229,3 +229,7 @@ Het teken "×" in het lijstje blijft ("4 × [appel]"). Bliepo leest het voor als
 |---|---|---|---|
 | extra | begin van het lijstje (stap 9) | Dit is de laatste opdracht. Kijk, hier is een lijstje. | Dit is de laatste opdracht. Kijk, hier is een lijstje. Op het lijstje staat: 4 keer appel, 7 keer peer en 10 keer pruim. |
 | extra | hint na de 1e fout bij het lijstje (eerste deel) | Op het lijstje staan 4 appels, 7 peren en 10 pruimen. | Op het lijstje staat: 4 keer appel, 7 keer peer en 10 keer pruim. |
+
+## 21 november 2026 (besluit Sara): Tellen extra, lijstje begint zonder gekozen fruit
+- Er is niets weggehaald of vervangen. De zin "Kies eerst een soort fruit en tik dan op de vakjes." blijft staan en klopt nu, omdat de appel niet meer vooraf gekozen is.
+- Nieuw (alleen als het kind na een tijd nog niets gekozen heeft): "Tik eerst op een soort fruit in het lijstje." en "Kies eerst een soort fruit in het lijstje." (het handje wijst dan niet naar een vakje; vakjes tikken doet niets zolang er niets gekozen is).

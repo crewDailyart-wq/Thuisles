@@ -352,9 +352,11 @@ type RondeKeuze = {
   rooster: Rooster;
   lijst: ReturnType<typeof lijstRegels>;
   verfKiezen: boolean;
-  startVerf: Soort;
+  startVerf: Soort | null;
   opdracht: string[];
   handZin: string;
+  /** Zin voor het handje zolang er nog niets gekozen is (alleen als het kind eerst een soort moet kiezen). */
+  handZinKies?: string;
   /** Telt wat er staat: per regel van het lijstje hoeveel. */
   tel: (cellen: ExtraCel[]) => number[];
   klopt: (tel: number[]) => boolean;
@@ -362,7 +364,7 @@ type RondeKeuze = {
   goedZinnen: (lofZin: string) => string[];
   samen: (cellen: ExtraCel[], tel: number[]) => Promise<void>;
   /** Wat de automatische speler als volgende moet tikken (alleen voor de test). */
-  testStap: (cellen: ExtraCel[], verf: Soort) => string | null;
+  testStap: (cellen: ExtraCel[], verf: Soort | null) => string | null;
   eerste?: boolean;
 };
 
@@ -370,7 +372,7 @@ async function opdrachtRonde(l: Lesgids, c: RondeKeuze) {
   const s = B.st(l);
   s.vraag++;
   const cellen: ExtraCel[] = [...c.rooster.cellen];
-  let verf: Soort = c.startVerf;
+  let verf: Soort | null = c.startVerf;
   const toonNu = () => zet(l, { cellen: [...cellen], verf });
   toon(l, c.rooster, { lijst: c.lijst, verf, verfKiezen: c.verfKiezen });
   await l.wacht(150);
@@ -380,7 +382,7 @@ async function opdrachtRonde(l: Lesgids, c: RondeKeuze) {
   let zin: Promise<void> = B.zegOpdracht(l, c.opdracht.join(" "));
   for (let poging = 1 as 1 | 2; poging <= 2; poging++) {
     /* Het kind tikt vakjes; het vinkje komt na elke tik opnieuw (het lesscherm haalt het weg bij een tik in het vlak). */
-    const hk = B.handKlok(l, { aan: () => { const i = cellen.findIndex((x) => x === null); zet(l, { hand: i >= 0 ? i : null }); }, uit: () => zet(l, { hand: null }), zin: poging === 1 ? c.handZin : null });
+    const hk = B.handKlok(l, { aan: () => { const i = cellen.findIndex((x) => x === null); zet(l, { hand: verf !== null && i >= 0 ? i : null }); }, uit: () => zet(l, { hand: null }), zin: poging === 1 ? () => (verf === null && c.handZinKies ? c.handZinKies : c.handZin) : null });
     zet(l, { tikbaar: cellen.map(() => true) });
     hk.opnieuw();
     B.haak(l, { soort: "maak", poging, vraag: c.id });
@@ -391,7 +393,7 @@ async function opdrachtRonde(l: Lesgids, c: RondeKeuze) {
         if (r === null) break;
         B.log(l, "tik", { x: r.soort === "celTik" ? `cel-${r.index}` : `verf-${r.fruit}` });
         if (r.soort === "verfTik") verf = r.fruit as Soort;
-        else if (r.index != null) cellen[r.index] = cellen[r.index] === verf ? null : verf;
+        else if (r.index != null && verf !== null) cellen[r.index] = cellen[r.index] === verf ? null : verf;
         toonNu();
         hk.opnieuw();
       }
@@ -471,9 +473,10 @@ async function lijstRonde(l: Lesgids) {
     rooster: LIJST.rooster,
     lijst: lijstRegels(),
     verfKiezen: true,
-    startVerf: LIJST.regels[0].f.soort,
+    startVerf: null,
     opdracht: [ZIN.lijstOpdracht],
     handZin: variant("maakHand", ZIN.lijstHand),
+    handZinKies: variant("lijstHandKies", ZIN.lijstHandKies),
     tel,
     klopt: (t) => t.every((n, i) => n === LIJST.regels[i].n),
     fout: (t) => lijstFout(t),
@@ -536,7 +539,7 @@ const gouden: Lesdraaiboek = {
     /* Stap 9. Het lijstje (de laatste opdracht). */
     B.st(l).laatste = true;
     void l.zeg().catch(() => {});
-    toon(l, LIJST.rooster, { lijst: lijstRegels(), verf: LIJST.regels[0].f.soort, verfKiezen: true });
+    toon(l, LIJST.rooster, { lijst: lijstRegels(), verf: null, verfKiezen: true });
     speelLesgeluid("verschijn");
     await B.zegDoor(l, ZIN.lijstOvergang());
     await lijstRonde(l);
