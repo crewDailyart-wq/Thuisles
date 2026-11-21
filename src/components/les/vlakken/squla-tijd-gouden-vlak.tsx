@@ -105,7 +105,7 @@ const WAGON_H = BEELD_H + 2;
  * (besluit Sara, 20 november 2026). De rijen staan op dezelfde plek als eerst; alleen staan de 2 kaarten van de bovenste
  * rij iets verder uit elkaar (TUSSEN_DUBBEL), zodat het vinkje van de kaart eronder tussen die 2 kaarten past.
  */
-const TUSSEN_DUBBEL = 38;
+const TUSSEN_DUBBEL = 54;
 export type KaartPlek = { x: number; y: number; s: number; b: number; h: number; vinkBoven: boolean };
 /** Waar kaart i rechts onder Bliepo's zin staat: x = midden, y = onderkant (de wielen), s = schaal van 1 wagon, b × h = zichtbaar. */
 export function kaartPlekken(kaarten: string[]): KaartPlek[] {

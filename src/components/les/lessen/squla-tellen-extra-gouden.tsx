@@ -110,7 +110,7 @@ const robotGehad = new WeakSet<Lesgids>();
 /* ---------- het rooster in beeld ---------- */
 
 function toon(l: Lesgids, r: Rooster, extra: Partial<TelExtraProps> = {}) {
-  zet(l, { id: r.id, kolommen: r.kolommen, cellen: [...r.cellen], nummers: [], dof: [], tikbaar: [], stipjes: false, lijst: null, verf: null, verfKiezen: false, hand: null, ...extra });
+  zet(l, { id: r.id, kolommen: r.kolommen, cellen: [...r.cellen], nummers: [], dof: [], tikbaar: [], stipjes: false, lijst: null, verf: null, verfKiezen: false, hand: null, handRegel: null, ...extra });
 }
 const indicesVan = (cellen: ExtraCel[], soorten: string[]) => cellen.flatMap((c, i) => (c && soorten.includes(c) ? [i] : []));
 
@@ -288,7 +288,7 @@ async function samenMaken(l: Lesgids, id: string, rooster: Rooster, vooraf: Extr
   let geplaatst = 0;
   const leeg = () => cellen.flatMap((c, i) => (c === null ? [i] : []));
   const toonNu = () => zet(l, { cellen: [...cellen], nummers: [...nummers], tikbaar: cellen.map((c) => c === null), hand: null });
-  zet(l, { id: rooster.id, kolommen: rooster.kolommen, dof: [], stipjes: false });
+  zet(l, { id: rooster.id, kolommen: rooster.kolommen, dof: [], stipjes: false, verf: f.soort });
   toonNu();
   zetTestAntwoord(`cel-${leeg()[0]}`);
   B.haak(l, { soort: "tel", goed: `cel-${leeg()[0]}`, vraag: id });
@@ -382,7 +382,7 @@ async function opdrachtRonde(l: Lesgids, c: RondeKeuze) {
   let zin: Promise<void> = B.zegOpdracht(l, c.opdracht.join(" "));
   for (let poging = 1 as 1 | 2; poging <= 2; poging++) {
     /* Het kind tikt vakjes; het vinkje komt na elke tik opnieuw (het lesscherm haalt het weg bij een tik in het vlak). */
-    const hk = B.handKlok(l, { aan: () => { const i = cellen.findIndex((x) => x === null); zet(l, { hand: verf !== null && i >= 0 ? i : null }); }, uit: () => zet(l, { hand: null }), zin: poging === 1 ? () => (verf === null && c.handZinKies ? c.handZinKies : c.handZin) : null });
+    const hk = B.handKlok(l, { aan: () => { const i = cellen.findIndex((x) => x === null); zet(l, verf !== null ? { hand: i >= 0 ? i : null, handRegel: null } : { hand: null, handRegel: c.verfKiezen ? 0 : null }); }, uit: () => zet(l, { hand: null, handRegel: null }), zin: poging === 1 ? () => (verf === null && c.handZinKies ? c.handZinKies : c.handZin) : null });
     zet(l, { tikbaar: cellen.map(() => true) });
     hk.opnieuw();
     B.haak(l, { soort: "maak", poging, vraag: c.id });

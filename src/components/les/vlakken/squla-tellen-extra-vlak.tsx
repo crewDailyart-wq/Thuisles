@@ -43,6 +43,8 @@ export type TelExtraProps = {
   /** Mag het kind een regel van het lijstje kiezen? */
   verfKiezen?: boolean;
   hand?: number | null;
+  /** Het hulphandje wijst naar deze regel van het lijstje (zolang er nog geen soort gekozen is). */
+  handRegel?: number | null;
   goed?: number;
   fout?: number;
 };
@@ -62,7 +64,7 @@ export function celPlek(i: number, kolommen: number) {
   return { x: x0 + (i % kolommen) * m.b + m.b / 2, y: RASTER_TOP + Math.floor(i / kolommen) * m.h + m.h / 2 };
 }
 
-export function TelExtraVlak({ id, kolommen, cellen, nummers = [], dof = [], stipjes = false, tikbaar = [], lijst = null, verf = null, verfKiezen = false, hand = null, goed = 0, fout = 0, meld }: TelExtraProps & Vlakbasis) {
+export function TelExtraVlak({ id, kolommen, cellen, nummers = [], dof = [], stipjes = false, tikbaar = [], lijst = null, verf = null, verfKiezen = false, hand = null, handRegel = null, goed = 0, fout = 0, meld }: TelExtraProps & Vlakbasis) {
   const m = maatVan(kolommen);
   const [stip, setStip] = useState<Set<number>>(new Set());
   const [fx, setFx] = useState<"" | "goed" | "fout">("");
@@ -93,7 +95,7 @@ export function TelExtraVlak({ id, kolommen, cellen, nummers = [], dof = [], sti
   }, [fout]);
 
   const rijen = Math.ceil(cellen.length / kolommen);
-  const plekH = hand != null && hand >= 0 && hand < cellen.length ? celPlek(hand, kolommen) : null;
+  const plekH = hand != null && hand >= 0 && hand < cellen.length ? celPlek(hand, kolommen) : lijst && handRegel != null && handRegel >= 0 && handRegel < lijst.length ? { x: 122, y: 22 + handRegel * 60 } : null;
 
   return (
     <div className={s.vlak} data-tellen-extra="">
@@ -165,7 +167,7 @@ export function TelExtraVlak({ id, kolommen, cellen, nummers = [], dof = [], sti
         })}
       </div>
       {plekH && (
-        <HulphandDom key={`hand-${hand}`} left={plekH.x + 18} top={plekH.y + 14} animatie={s.wipPlaatje} handKlasse={s.hand} reserve={
+        <HulphandDom key={`hand-${hand}-${handRegel}`} left={plekH.x + 18} top={plekH.y + 14} animatie={s.wipPlaatje} handKlasse={s.hand} reserve={
           <svg viewBox="0 0 90 120" className={s.handTekening}>
             <g>
               <rect x="34" y="6" width="20" height="62" rx="10" />
