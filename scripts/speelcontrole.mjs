@@ -166,6 +166,20 @@ const STAAT = `(() => {
       return "";
     })(),
     kaart: !!document.querySelector('button[aria-label$="af te vinken"], [data-kaart] button, button[aria-label*="kaart"]'),
+    /* Voortgangsbalk (BOUWREGELS 15.54): de stand en of hij iets raakt (knop, tekst, plaatje). */
+    balk: (() => {
+      const b = document.querySelector("[data-voortgangsbalk]");
+      if (!b) return null;
+      const r = b.getBoundingClientRect();
+      let raakt = null;
+      for (const el of document.querySelectorAll("button, [data-ding], [data-knop], .bliepo-tekst, .les-tekst p, img")) {
+        if (b.contains(el) || !zichtbaar(el)) continue;
+        const q = el.getBoundingClientRect();
+        if (q.width > r.width * 0.9 && q.height > 200) continue;
+        if (q.left < r.right + 2 && q.right > r.left - 2 && q.top < r.bottom + 2 && q.bottom > r.top - 2) { raakt = (el.getAttribute("aria-label") || el.className || el.tagName).toString().slice(0, 40); break; }
+      }
+      return { v: Number(b.getAttribute("data-voortgang")), raakt };
+    })(),
     canvas: [...document.querySelectorAll("canvas")].some((c) => zichtbaar(c) && c.width > 200),
     /* De klokles zet het goede antwoord van een keuze in klokTaak.goed. */
     antwoord: window.__phaser?.antwoord ?? (window.__phaser?.klokTaak?.soort === "kies" ? window.__phaser.klokTaak.goed : null) ?? null,
@@ -204,6 +218,7 @@ async function speel(c, id) {
     return r;
   });
   const fouten = new Set();
+  let balkStaat = null;
   const handmatig = new Set();
   let stappen = 0;
   let einde = false;
@@ -569,9 +584,22 @@ async function speel(c, id) {
     while (Date.now() - begin < MAX_MS) {
       await wacht(400);
       const z = await ev(STAAT);
+      /* Voortgangsbalk (15.54): in gouden lessen aanwezig, nooit terug, raakt niets, vol aan het eind. */
+      if (id.includes("gouden") && z) {
+        const bs = (balkStaat ??= { max: 0, gezien: false });
+        if (z.balk) {
+          bs.gezien = true;
+          if (z.balk.v < bs.max - 0.0005) fouten.add(`voortgangsbalk ging terug (${bs.max} naar ${z.balk.v})`);
+          bs.max = Math.max(bs.max, z.balk.v);
+          if (z.balk.raakt) fouten.add(`voortgangsbalk raakt: ${z.balk.raakt}`);
+        }
+        if (z.teller) fouten.add(`sleutel: ${z.teller}`);
+        if (z.kaart || z.eind) {
+          if (!bs.gezien) fouten.add("geen voortgangsbalk in deze gouden les");
+          else if (bs.max < 0.999) fouten.add(`voortgangsbalk niet vol aan het eind (${bs.max})`);
+        }
+      }
       if (!z) continue;
-      /* Proef eindscherm (24 nov 2026): de sleutelteller en een vliegend sleuteltje raken niets. */
-      if (z.teller) fouten.add(`sleutel: ${z.teller}`);
       if (z.klaar) {
         einde = true;
         break;
