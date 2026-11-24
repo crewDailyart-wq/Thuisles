@@ -570,6 +570,14 @@ async function speel(c, id) {
         handmatig.add(`de speler komt hier niet verder ("${z.tekst.slice(0, 70)}")`);
         break;
       }
+      if (z.kaart && FOTOMAP && process.env.FOTOKAART && !gefotografeerd.has("eindkaart")) {
+        /* FOTOKAART=1 (voortgangsbalk, 24 nov 2026): de eindkaart zelf, voor het tikken. */
+        gefotografeerd.add("eindkaart");
+        await wacht(1500);
+        const { data } = await c.stuur("Page.captureScreenshot", { format: "jpeg", quality: 70 }, s);
+        mkdirSync(join(FOTOMAP, id), { recursive: true });
+        writeFileSync(join(FOTOMAP, id, "eindkaart.jpg"), Buffer.from(data, "base64"));
+      }
       if (z.kaart && (await klik(`(b) => /af te vinken|kaart/i.test(b.getAttribute("aria-label") || "")`))) continue;
       /* Staat de ronde afspeelknop er (BOUWREGELS 15.38: de browser houdt het geluid nog tegen), dan tikt de speler 1 keer echt op de knop, zoals een kind (iets naast het midden: de hele ronde moet reageren, niet alleen het driehoekje). */
       const startKnop = await ev(`(() => { const e = document.querySelector("[data-startknop]"); if (!e) return null; const r = e.getBoundingClientRect(); return r.width > 3 ? { x: Math.round(r.left + r.width * 0.25), y: Math.round(r.top + r.height * 0.7) } : null; })()`);
@@ -592,14 +600,15 @@ async function speel(c, id) {
       }
       /* PIJLTIK=nooit (20 nov 2026, meting 15.51): de speler tikt nooit op de pijl; de les moet vanzelf doorgaan. */
       const knoppen = z.knoppen.filter((b) => !["opnieuw", "terug"].includes(b.k) && !b.wolk && !(process.env.PIJLTIK === "nooit" && b.k === "verder"));
-      if (FOTOMAP && (knoppen.length || z.kaart) && !z.praat) {
+      const kaartFoto = !!(process.env.FOTOKAART && z.kaart); /* FOTOKAART=1: ook de eindkaart fotograferen terwijl Bliepo nog praat (voortgangsbalk, 24 nov 2026) */
+      if (FOTOMAP && (knoppen.length || z.kaart) && (!z.praat || kaartFoto)) {
         const sleutel = z.tekst + "|" + knoppen.map((b) => b.t).join(",");
         if (!gefotografeerd.has(sleutel)) {
           /* Alleen een scherm dat even stilstaat (geen tussenstand van een halve seconde). */
           await wacht(900);
           const nog = await ev(STAAT);
           const nogKnoppen = (nog?.knoppen ?? []).filter((b) => !["opnieuw", "terug"].includes(b.k) && !b.wolk);
-          if (!nog || nog.praat || nog.tekst + "|" + nogKnoppen.map((b) => b.t).join(",") !== sleutel) continue;
+          if (!nog || (nog.praat && !kaartFoto) || nog.tekst + "|" + nogKnoppen.map((b) => b.t).join(",") !== sleutel) continue;
           gefotografeerd.add(sleutel);
           const { data } = await c.stuur("Page.captureScreenshot", { format: "jpeg", quality: 70 }, s);
           const nr = String(gefotografeerd.size).padStart(3, "0");

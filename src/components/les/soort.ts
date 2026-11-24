@@ -81,6 +81,11 @@ export interface Lesgids {
    * lessen); zonder die optie is dit hetzelfde als `zeg(...zinnen)`.
    */
   zegBijOpdracht?(opdracht: string | readonly string[], ...zinnen: string[]): Promise<void>;
+  /**
+   * Voortgangsbalk bovenin (alleen gouden lessen, BOUWREGELS 15.54): `fractie` 0 tot 1 = hoever de les is; de balk gaat
+   * nooit terug (een lagere waarde wordt genegeerd). `null` haalt de balk weg.
+   */
+  voortgang?(fractie: number | null): void;
   /** Een invulvak links. Geeft het getal, of `null` bij "Weet ik niet". */
   getal(): Promise<number | null>;
   /**

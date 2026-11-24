@@ -514,6 +514,9 @@ const gouden: Lesdraaiboek = {
   kaarttekening: KaartTellenExtra,
   async speel(l) {
     B.log(l, "start");
+    /* Voortgangsbalk (15.54): 5 vragen (2x welk fruit, 2 soorten samen, zelf maken, het lijstje). */
+    B.st(l).totaal = 5;
+    l.voortgang?.(0);
     /* Stap 1. Openen: het rooster van stap 5 staat er al; Bliepo groet en zegt wat we gaan doen, in 1 stuk. */
     l.vlak<TelExtraProps>(TelExtraVlak, { id: SOORTVRAGEN[0].rooster.id, kolommen: SOORTVRAGEN[0].rooster.kolommen, cellen: [...SOORTVRAGEN[0].rooster.cellen] });
     speelLesgeluid("verschijn");

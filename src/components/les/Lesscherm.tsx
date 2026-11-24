@@ -42,6 +42,7 @@ import { lesTekst } from "@/lib/lessen/tekstwijzigingen";
 import { cijfersInTekst } from "@/lib/lessen/cijfertaal";
 import beginzinnenData from "@/lib/lessen/beginzinnen.json";
 import "@/components/oefenen/opdracht-nieuw.css";
+import { Voortgangsbalk } from "./Voortgangsbalk";
 
 /*
   Het ontwerp van de lessen (23 oktober 2026, opdracht eigenaar): "nieuw" =
@@ -513,6 +514,8 @@ function Lesscherm({
   const [ballonHoogte, setBallonHoogte] = useState(0);
   const staandVak = useRef<HTMLDivElement>(null);
   const [pauze, setPauze] = useState(false);
+  /** Voortgangsbalk (gouden lessen, 15.54): 0 tot 1, of null = geen balk. Gaat nooit terug. */
+  const [voortgang, setVoortgang] = useState<number | null>(null);
   const raster = useRef<HTMLDivElement>(null);
   const [sleep, setSleep] = useState<null | { n: number; x: number; y: number; vanX: number; vanY: number }>(null);
   const [gekozen, setGekozen] = useState<number | null>(null);
@@ -863,6 +866,7 @@ function Lesscherm({
     const gids: Lesgids = {
       lesId: les.id,
       naam,
+      ...(les.pijlZoalsSynthesis ? { voortgang: (f: number | null) => setVoortgang((v) => (f === null ? null : Math.max(v ?? 0, Math.max(0, Math.min(1, f))))) } : {}),
       ...(les.vraagBoven || les.opdrachtInVlak ? { opdracht: (tekst: string | null) => zet((b) => ({ ...b, opdracht: tekst })) } : {}),
       /* Nergens meer "Tik op het vinkje." (30 oktober 2026, opdracht eigenaar: in alle lessen). */
       zeg: (...zinnen) => {
@@ -1492,6 +1496,7 @@ function Lesscherm({
       >
         {/* naam en pauze */}
         {!pilBoven && !squlaMidden && pilBalk}
+        {voortgang !== null && <Voortgangsbalk fractie={voortgang} />}
         {!nieuw && tekstblok}
         {tegelsLinks && <div className={s.synthKolom}>{maakTekstblok("knoppen")}</div>}
         {keuzesMidden !== null && <div className={s.keuzesMidden} style={{ top: keuzesMidden }} data-keuzes-midden="">{maakTekstblok("knoppen")}</div>}
