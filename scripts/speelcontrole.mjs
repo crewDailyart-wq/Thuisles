@@ -136,7 +136,35 @@ const STAAT = `(() => {
     tekst,
     knoppen,
     praat: !!document.querySelector('[data-praat="true"]') || [...document.querySelectorAll(".bliepo-tekst-nog")].length > 0,
-    klaar: !!document.querySelector('[data-knop="opnieuw"]'),
+    /* Proef eindscherm (24 nov 2026): daar is de knop "Volgende les" (of "Nog een keer") het einde, net als bij de kaart. */
+    klaar: !!document.querySelector('[data-knop="opnieuw"], [data-eindscherm] [data-knop="volgende"]'),
+    eind: !!document.querySelector("[data-eindscherm]"),
+    /* Proef eindscherm: de sleutelteller en een vliegend sleuteltje raken niets (knop, tekst van Bliepo, fruit, de balk). */
+    teller: (() => {
+      const eigen = [...document.querySelectorAll("[data-sleutelteller], [data-vliegende-sleutel]")].filter(zichtbaar);
+      if (!eigen.length) return null;
+      const vakken = [];
+      for (const el of document.querySelectorAll("button, a[href], [data-ding], [data-knop], [data-cel], [data-lijst], [data-voortgangsbalk], img, svg")) {
+        if (eigen.some((e) => e === el || e.contains(el) || el.contains(e)) || !zichtbaar(el)) continue;
+        const q = el.getBoundingClientRect();
+        if (q.width > innerWidth * 0.6 && q.height > 200) continue;
+        vakken.push({ q, n: (el.getAttribute("aria-label") || el.getAttribute("data-knop") || el.className?.baseVal || el.className || el.tagName).toString().slice(0, 40) });
+      }
+      /* Tekst: alleen waar echt letters staan (een tekstblok is breder dan zijn zin). */
+      for (const el of document.querySelectorAll(".bliepo-tekst")) {
+        if (!zichtbaar(el)) continue;
+        const r = document.createRange();
+        r.selectNodeContents(el);
+        for (const q of r.getClientRects()) if (q.width > 2) vakken.push({ q, n: "tekst: " + el.textContent.trim().slice(0, 30) });
+      }
+      for (const e of eigen) {
+        const r = e.getBoundingClientRect();
+        /* Een kleine marge binnenin: de zachte rand van het plaatje telt niet. */
+        const a = { l: r.left + 6, r: r.right - 6, t: r.top + 6, b: r.bottom - 6 };
+        for (const { q, n } of vakken) if (q.left < a.r && q.right > a.l && q.top < a.b && q.bottom > a.t) return (e.hasAttribute("data-sleutelteller") ? "teller raakt " : "sleuteltje raakt ") + n;
+      }
+      return "";
+    })(),
     kaart: !!document.querySelector('button[aria-label$="af te vinken"], [data-kaart] button, button[aria-label*="kaart"]'),
     canvas: [...document.querySelectorAll("canvas")].some((c) => zichtbaar(c) && c.width > 200),
     /* De klokles zet het goede antwoord van een keuze in klokTaak.goed. */
@@ -542,6 +570,8 @@ async function speel(c, id) {
       await wacht(400);
       const z = await ev(STAAT);
       if (!z) continue;
+      /* Proef eindscherm (24 nov 2026): de sleutelteller en een vliegend sleuteltje raken niets. */
+      if (z.teller) fouten.add(`sleutel: ${z.teller}`);
       if (z.klaar) {
         einde = true;
         break;

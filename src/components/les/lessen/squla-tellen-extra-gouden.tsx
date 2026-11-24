@@ -12,7 +12,7 @@
  *   stap 7  "nu andersom" (terugverwijzing);
  *   stap 8  zelf maken: maak 4 peren in het rooster (tikken, dan het vinkje; het hulphandje komt vanzelf na ± 6 s);
  *   stap 9  het lijstje: 4 appels, 7 peren, 10 pruimen (een soort kiezen, vakjes tikken, het vinkje);
- *   stap 10 einde: slotzin, kaart, eindzin.
+ *   stap 10 einde: het nieuwe eindscherm (proef 24 nov 2026: feest, ster, sleutels, leerzin, knoppen; was: slotzin, kaart, eindzin).
  * Geen "weet je dit al?" en geen proef: dat heeft het draaiboek hier niet.
  *
  * Laag 1 (Bliepo): 2 pogingen (15.11): 1e fout = eerste zin (de denkfout) en een hint uit de fouttabel, daarna nog 1 keer;
@@ -25,11 +25,11 @@
  */
 
 import type { Lesdraaiboek, Lesgids, Vlakgebeurtenis } from "../soort";
-import { KaartTellenExtra, TelExtraVlak, type ExtraCel, type TelExtraProps } from "../vlakken/squla-tellen-extra-vlak";
+import { TelExtraVlak, type ExtraCel, type TelExtraProps } from "../vlakken/squla-tellen-extra-vlak";
 import type { Soort } from "../vlakken/squla-tellen-tekenen";
 import { speelLesgeluid } from "@/lib/lesgeluiden";
 import { zegTelwoord, zetTestAntwoord } from "./squla-hulp";
-import { EINDE, EINDE_VEEL_FOUTEN, maakBasis, schud, type Fout } from "./squla-extra-basis";
+import { maakBasis, schud, type Fout } from "./squla-extra-basis";
 import { deeltStuk, maakKiezer } from "./nooit-dubbel";
 import {
   ALLE_FRUIT,
@@ -58,7 +58,6 @@ import {
   type Rooster,
   type SoortVraag,
 } from "./squla-tellen-extra-zinnen";
-import { afscheidNa } from "./squla-klok-gouden-zinnen";
 
 const LES_ID = "squla-tellen-fruit-1-gouden-extra";
 const B = maakBasis(LES_ID);
@@ -511,9 +510,13 @@ const gouden: Lesdraaiboek = {
   stemHeelUitpraten: true,
   woordenMeeMetStem: true,
   voorwerpen: ["appel", "peer", "pruim", "citroen"],
-  kaarttekening: KaartTellenExtra,
+  /* De oude kaart (KaartTellenExtra) blijft in squla-tellen-extra-vlak.tsx staan; deze les gebruikt hem niet meer (WEGGEHAALD.md). */
+  eindscherm: true,
+  eindLeerzin: "Je kunt nu fruit tellen tot 10.",
+  eindPlaatje: "/voorwerpen/appel.png",
   async speel(l) {
     B.log(l, "start");
+    if (l.snelEinde) return snelNaarEinde(l);
     /* Voortgangsbalk (15.54): 5 vragen (2x welk fruit, 2 soorten samen, zelf maken, het lijstje). */
     B.st(l).totaal = 5;
     l.voortgang?.(0);
@@ -547,22 +550,52 @@ const gouden: Lesdraaiboek = {
     await B.zegDoor(l, ZIN.lijstOvergang());
     await lijstRonde(l);
 
-    /* Stap 10. Einde: slotzin, kaart, eindzin. */
+    /* Stap 10. Einde: het nieuwe eindscherm (proef, Sara 24 nov 2026; EINDSCHERM-ONTWERP.md). Was: slotzin, de kaart met
+       "Tik op de kaart." en een eindzin (WEGGEHAALD.md). */
     zet(l, { cellen: [], lijst: null, nummers: [], tikbaar: [], hand: null });
-    /* Zelfde stappen als B.einde (squla-extra-basis), met de slotzin en "Tik op de kaart." in varianten. */
-    void l.zeg().catch(() => {});
-    await B.zegDoor(l, variant("slot", ZIN.slot));
-    B.log(l, "kaart");
-    l.verderWeg?.();
-    const tik = l.kaart();
-    speelLesgeluid("kaart");
-    const eind = B.veelFouten(l) ? EINDE_VEEL_FOUTEN : B.kies(l, EINDE);
-    await B.zeg(l, `${eind} ${variant("kaartTik", ZIN.kaartTik)}`);
-    await tik;
-    /* Ronde 51 punt 10 (15.50): het afscheid ("Tot snel!") pas na de tik op de kaart; zo blijft "Tik op de kaart." het laatste in beeld. */
-    const afscheid = afscheidNa(eind);
-    if (afscheid) await B.zeg(l, afscheid);
+    await eindeScherm(l);
   },
 };
+
+/** Hoe ging het? Alles in 1 keer goed, gewoon, of de helft of meer niet in 1 keer goed (zelfde grens als B.veelFouten). */
+function uitslag(l: Lesgids): "alles" | "gewoon" | "moeite" {
+  if (l.snelEinde) return l.snelEinde;
+  const alle = [...B.st(l).eerste.values()];
+  if (alle.length > 0 && alle.every((x) => x === "goed")) return "alles";
+  return B.veelFouten(l) ? "moeite" : "gewoon";
+}
+
+/** Het eindscherm met 1 eindzin van Bliepo (geen pijl, geen opdracht: de knoppen staan in beeld). */
+async function eindeScherm(l: Lesgids) {
+  void l.zeg().catch(() => {});
+  l.verderWeg?.();
+  /* Het laatste sleuteltje vliegt nog (±0,9 s): eerst laten aankomen, dan pas het feest. */
+  await l.wacht(1000);
+  B.log(l, "eindscherm");
+  l.eindscherm?.();
+  /* Bliepo praat pas als het feestgeluid (±1,4 s) voorbij is en de ster komt. */
+  await l.wacht(1500);
+  const u = uitslag(l);
+  const zin = u === "alles" ? variant("eindAllesGoed", ZIN.eindAllesGoed) : u === "moeite" ? variant("eindMoeite", ZIN.eindMoeite) : variant("eindGewoon", ZIN.eindGewoon);
+  await B.zeg(l, zin);
+}
+
+/** Alleen op de voorbeeldpagina (`&snel=1`): meteen naar het eindscherm, met een paar sleutels om de teller te zien. */
+async function snelNaarEinde(l: Lesgids) {
+  B.st(l).totaal = 5;
+  l.voortgang?.(0);
+  const n = l.snelEinde === "alles" ? 5 : l.snelEinde === "moeite" ? 1 : 3;
+  l.vlak<TelExtraProps>(TelExtraVlak, { id: SOORTVRAGEN[0].rooster.id, kolommen: SOORTVRAGEN[0].rooster.kolommen, cellen: [...SOORTVRAGEN[0].rooster.cellen] });
+  /* Eerst de groet: bij een geplakte link komt dan de afspeelknop (15.38) en mag er daarna geluid klinken. */
+  await B.zeg(l, NAAM_GROET);
+  await l.wacht(300);
+  for (let i = 0; i < n; i++) {
+    l.voortgang?.((i + 1) / 5);
+    l.sleutel?.();
+    await l.wacht(1100);
+  }
+  l.voortgang?.(1);
+  await eindeScherm(l);
+}
 
 export const LESSEN_SQULA_TELLEN_EXTRA_GOUDEN: Lesdraaiboek[] = [gouden];

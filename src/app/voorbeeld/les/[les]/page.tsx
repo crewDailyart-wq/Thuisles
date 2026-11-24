@@ -6,7 +6,7 @@ import { Work_Sans, Figtree } from "next/font/google";
 import "./letterproef.css";
 import { zoekDraaiboek } from "@/components/les/lessen";
 import { LesVoorbeeld } from "./LesVoorbeeld";
-import { zoekLesregel } from "@/lib/lessen/catalogus";
+import { LESCATALOGUS, zoekLesregel } from "@/lib/lessen/catalogus";
 import { lesAdres, zoekSeoLesOpId } from "@/lib/seo/lessen-groep3";
 import { lesbeheerActief } from "@/lib/lessen/lokaal-beheer";
 
@@ -43,10 +43,20 @@ export default async function Pagina({
   searchParams,
 }: {
   params: Promise<{ les: string }>;
-  searchParams: Promise<{ naam?: string; uitleg?: string; beheer?: string }>;
+  searchParams: Promise<{ naam?: string; uitleg?: string; beheer?: string; snel?: string }>;
 }) {
   const { les } = await params;
-  const { naam, uitleg, beheer } = await searchParams;
+  const { naam, uitleg, beheer, snel } = await searchParams;
+  /*
+    Proef eindscherm (24 nov 2026; EINDSCHERM-ONTWERP.md): "Volgende les" gaat naar de volgende gouden les in de volgorde van
+    de lescatalogus (er is nog geen apart lesplan); "Terug" en "geen volgende" gaan naar het lesoverzicht. `&snel=1`
+    (of alles/moeite) laat meteen het eindscherm zien, alleen hier op de voorbeeldpagina.
+  */
+  const plek = LESCATALOGUS.findIndex((r) => r.id === les);
+  const volgende = plek >= 0 ? LESCATALOGUS.slice(plek + 1).find((r) => /-gouden(-|$)/.test(r.id)) : undefined;
+  const naamDeel = naam ? `?naam=${encodeURIComponent(naam)}` : "";
+  const volgendeHref = volgende ? `/voorbeeld/les/${volgende.id}${naamDeel}` : undefined;
+  const snelEinde = snel === "alles" || snel === "moeite" ? snel : snel ? ("gewoon" as const) : undefined;
   const bewerken = beheer === "1" && await lesbeheerActief();
   if (!zoekDraaiboek(les)) notFound();
   /* Sara heeft Figtree goedgekeurd (3 november 2026): alle nieuwe lessen (alle draaiboeken op deze pagina) gebruiken het. LETTERPROEF_LESSEN blijft staan als de oude proeflijst. */
@@ -55,7 +65,7 @@ export default async function Pagina({
     /* De leestekst uit de stijlkiezer (/admin/stijl) geldt ook voor de les; zonder keuze blijft het Work Sans. */
     <div className={proef ? `${letter.variable} ${proefLetter.variable}` : letter.variable} data-lettertype={proef ? "figtree" : undefined} style={{ ["--font-les" as string]: `var(--stijl-lettertype, ${letter.style.fontFamily})` }}>
       <StijlVariabelen />
-      <LesVoorbeeld id={les} naam={naam ?? ""} uitleg={process.env.NODE_ENV !== "production" && uitleg === "nee"} bewerken={bewerken} />
+      <LesVoorbeeld id={les} naam={naam ?? ""} uitleg={process.env.NODE_ENV !== "production" && uitleg === "nee"} bewerken={bewerken} volgendeHref={volgendeHref} overzichtHref="/alle-lessen.html" snelEinde={snelEinde} />
     </div>
   );
 }

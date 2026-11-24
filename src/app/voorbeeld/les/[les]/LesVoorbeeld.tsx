@@ -11,7 +11,7 @@ import s from "./bewerken.module.css";
  * `?indeling=synthesis` (28 oktober 2026): de les met de indeling van
  * Synthesis bekijken, ook als het draaiboek die nog niet zelf aanzet.
  */
-export function LesVoorbeeld({ id, naam, uitleg = false, bewerken = false }: { id: string; naam: string; uitleg?: boolean; bewerken?: boolean }) {
+export function LesVoorbeeld({ id, naam, uitleg = false, bewerken = false, volgendeHref, overzichtHref, snelEinde }: { id: string; naam: string; uitleg?: boolean; bewerken?: boolean; volgendeHref?: string; overzichtHref?: string; snelEinde?: "gewoon" | "alles" | "moeite" }) {
   const [bewerkZin, setBewerkZin] = useState<string | null>(null);
   const les = useMemo(() => {
     const d = zoekDraaiboek(id);
@@ -20,5 +20,5 @@ export function LesVoorbeeld({ id, naam, uitleg = false, bewerken = false }: { i
     return uitleg ? metUitlegVoorbeeld(voorbeeld) : voorbeeld;
   }, [id, uitleg]);
   const magBewerken = bewerken && id.startsWith("squla-");
-  return les ? <><Lesspeler les={les} naam={naam} bewerkTekst={magBewerken ? setBewerkZin : undefined} />{magBewerken && <button type="button" className={s.openen} onClick={() => setBewerkZin("")}>Les aanpassen</button>}{magBewerken && bewerkZin !== null && <LesBewerker id={id} bron={bewerkZin} sluit={() => setBewerkZin(null)} />}</> : null;
+  return les ? <><Lesspeler les={les} naam={naam} bewerkTekst={magBewerken ? setBewerkZin : undefined} volgendeHref={volgendeHref} overzichtHref={overzichtHref} snelEinde={snelEinde} />{magBewerken && <button type="button" className={s.openen} onClick={() => setBewerkZin("")}>Les aanpassen</button>}{magBewerken && bewerkZin !== null && <LesBewerker id={id} bron={bewerkZin} sluit={() => setBewerkZin(null)} />}</> : null;
 }

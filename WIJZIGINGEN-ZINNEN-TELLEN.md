@@ -233,3 +233,13 @@ Het teken "×" in het lijstje blijft ("4 × [appel]"). Bliepo leest het voor als
 ## 21 november 2026 (besluit Sara): Tellen extra, lijstje begint zonder gekozen fruit
 - Er is niets weggehaald of vervangen. De zin "Kies eerst een soort fruit en tik dan op de vakjes." blijft staan en klopt nu, omdat de appel niet meer vooraf gekozen is.
 - Nieuw (alleen als het kind na een tijd nog niets gekozen heeft): "Tik eerst op een soort fruit in het lijstje." en "Kies eerst een soort fruit in het lijstje." (het handje wijst dan niet naar een vakje; vakjes tikken doet niets zolang er niets gekozen is).
+
+## 24 november 2026 (opdracht Sara): Tellen extra, het nieuwe eindscherm (proef)
+Alleen de extra les (`squla-tellen-fruit-1-gouden-extra`). Bliepo zegt aan het eind nog maar **1 korte zin**, die past bij hoe het ging, en nooit iets wat als mislukking klinkt. De kaart en "Tik op de kaart." zijn weg (WEGGEHAALD.md, 24 nov 2026). De oude zinnen staan nog in de code (`ZIN.slot`, `ZIN.kaartTik`, `EINDE`, `EINDE_VEEL_FOUTEN`), maar deze les gebruikt ze niet meer.
+
+| Situatie | Oud | Nieuw (4 varianten, wisselen af via de kiezer) |
+|---|---|---|
+| slotzin vóór de kaart | Je hebt fruit geteld en gemaakt, tot wel 10! / Wat heb jij veel fruit geteld en gemaakt: tot wel 10! / Tot 10 tellen en fruit maken: dat kun jij nu! | (weg; wat het kind geleerd heeft staat nu als zin met een plaatje op het eindscherm: "Je kunt nu fruit tellen tot 10.") |
+| alles in 1 keer goed | een eindzin uit het rijtje EINDE + "Tik op de kaart." (of een variant) | Wauw, jij had alles in 1 keer goed! / Alles in 1 keer goed, wat knap van jou! / Jij deed alles in 1 keer goed, super! / Alles in 1 keer goed: dat is echt knap! |
+| gewone ronde | een eindzin uit het rijtje EINDE + "Tik op de kaart." (of een variant), soms daarna "Tot snel!" | Hoera, jij hebt de les helemaal af! / Klaar, en wat heb jij het goed gedaan! / Jij hebt de hele les goed afgemaakt! / De les is af, wat ben jij goed bezig! |
+| veel moeite (de helft of meer niet in 1 keer goed) | Je hebt goed doorgezet. Volgende keer gaat het nog beter. Tik op de kaart. | Wat heb jij goed geoefend, knap hoor! / Jij bleef proberen, en nu is de les af! / Jij hebt hard gewerkt, de hele les is af! / Goed geoefend, en jij hebt alles af! |

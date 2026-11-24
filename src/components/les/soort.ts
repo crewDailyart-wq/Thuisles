@@ -86,6 +86,22 @@ export interface Lesgids {
    * nooit terug (een lagere waarde wordt genegeerd). `null` haalt de balk weg.
    */
   voortgang?(fractie: number | null): void;
+  /**
+   * Proef eindscherm (Sara, 24 november 2026; EINDSCHERM-ONTWERP.md): er komt 1 sleutel bij (antwoord in 1 keer goed,
+   * BOUWREGELS 15.52). Het lesscherm laat een sleuteltje naar de teller rechtsboven vliegen en zet de teller +1. Alleen in
+   * lessen met `eindscherm`; anders bestaat deze functie niet.
+   */
+  sleutel?(): void;
+  /**
+   * Proef eindscherm: zet het nieuwe eindscherm in beeld (feestmoment, ster met "Les af!", sleutels, leerzin, knoppen
+   * "Volgende les" en "Terug"). Alleen in lessen met `eindscherm`. De les zegt daarna zelf 1 eindzin.
+   */
+  eindscherm?(): void;
+  /**
+   * Alleen op de voorbeeldpagina, als test (`&snel=1`, `&snel=alles`, `&snel=moeite`): de les slaat alles over en laat
+   * meteen het eindscherm zien. Leeg of afwezig = gewoon spelen.
+   */
+  snelEinde?: "gewoon" | "alles" | "moeite";
   /** Een invulvak links. Geeft het getal, of `null` bij "Weet ik niet". */
   getal(): Promise<number | null>;
   /**
@@ -226,6 +242,15 @@ export type Lesdraaiboek = {
    * Zonder deze optie verandert er niets.
    */
   woordenMeeMetStem?: true;
+  /**
+   * Opt-in (proef, Sara 24 november 2026; EINDSCHERM-ONTWERP.md): het nieuwe eindscherm in plaats van de kaart, met de
+   * sleutelteller rechtsboven tijdens de les. Nu alleen in Tellen extra. Zonder deze optie verandert er niets.
+   */
+  eindscherm?: true;
+  /** Bij `eindscherm`: 1 korte zin over wat het kind geleerd heeft ("Je kunt nu fruit tellen tot 10."). */
+  eindLeerzin?: string;
+  /** Bij `eindscherm`: een plaatje uit de les bij de leerzin (pad in public/, bijvoorbeeld "/voorwerpen/appel.png"). */
+  eindPlaatje?: string;
   /** Welke tegels er als lijntekening op de kaart staan. */
   kaarttegels?: number[];
   /** Of een eigen lijntekening voor op de kaart (SVG van 244 × 190). */

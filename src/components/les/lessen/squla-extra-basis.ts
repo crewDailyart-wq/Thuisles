@@ -91,7 +91,11 @@ export function maakBasis(LES_ID: string) {
 
   function noteer(l: Lesgids, vraag: string, uit: Uitkomst): Uitkomst {
     const s = st(l);
-    if (!s.eerste.has(vraag)) s.eerste.set(vraag, uit);
+    if (!s.eerste.has(vraag)) {
+      s.eerste.set(vraag, uit);
+      /* Proef eindscherm (24 nov 2026, 15.52): een sleutel bij goed in 1 keer; alleen lessen met `eindscherm` hebben l.sleutel. */
+      if (uit === "goed") l.sleutel?.();
+    }
     /* Voortgangsbalk (15.54): na elke afgeronde vraag een stukje verder; nooit terug bij een fout. */
     if (s.totaal > 0) l.voortgang?.(Math.min(1, s.eerste.size / s.totaal));
     const fouten = s.vraagFouten.get(vraag) ?? [];

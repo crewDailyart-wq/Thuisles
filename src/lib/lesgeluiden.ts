@@ -62,7 +62,14 @@ export type Lesgeluid =
   | "sfeerLantaarns"
   | "sfeerPaddenstoelen"
   /* Oplichten in plaats van een rondje (BOUWREGELS 7.9, 6 november 2026; zelf gemaakt in code, extra zacht en kort): */
-  | "oplicht"; // een zacht pingetje als Bliepo iets laat oplichten (bijvoorbeeld een wijzer van de klok)
+  | "oplicht" // een zacht pingetje als Bliepo iets laat oplichten (bijvoorbeeld een wijzer van de klok)
+  /* Proef eindscherm (Sara, 24 november 2026; EINDSCHERM-ONTWERP.md): 3 feestgeluiden uit Magnific (public/geluiden/
+     FEEST-KEUZE.md; versie A gebruikt feest2, versie B feest1, Sara kiest later 1) en het sleutelgeluidje (de plek
+     "beloning", public/geluiden/beloning.wav, BOUWREGELS 15.40 en 15.52). Vervangen = het .wav-bestand overschrijven. */
+  | "feest1"
+  | "feest2"
+  | "feest3"
+  | "sleutel";
 
 let ctx: AudioContext | null = null;
 let uit = false;
@@ -110,7 +117,8 @@ if (typeof window !== "undefined" && typeof window.addEventListener === "functio
  * zachtheid zijn van Synthesis overgenomen; de klanken niet.
  * ------------------------------------------------------------------------- */
 
-const BESTANDEN: Partial<Record<Lesgeluid, { bestand: string; vol: number }>> = {
+/* `pad`: een bestand buiten public/geluiden/les/ (de .wav-geluiden van het geluidsysteem in public/geluiden/). */
+const BESTANDEN: Partial<Record<Lesgeluid, { bestand: string; vol: number; pad?: string }>> = {
   beurt: { bestand: "beurt", vol: 0.12 },
   keuze: { bestand: "keuze", vol: 0.12 },
   mis: { bestand: "mis", vol: 0.12 },
@@ -141,6 +149,10 @@ const BESTANDEN: Partial<Record<Lesgeluid, { bestand: string; vol: number }>> = 
   sfeerVuurvliegjes: { bestand: "sfeer-vuurvliegjes", vol: 0.08 },
   sfeerLantaarns: { bestand: "sfeer-lantaarns", vol: 0.3 },
   sfeerPaddenstoelen: { bestand: "sfeer-paddenstoelen", vol: 0.27 },
+  feest1: { bestand: "feest-1", vol: 0.42, pad: "/geluiden/feest-1.wav" },
+  feest2: { bestand: "feest-2", vol: 0.42, pad: "/geluiden/feest-2.wav" },
+  feest3: { bestand: "feest-3", vol: 0.42, pad: "/geluiden/feest-3.wav" },
+  sleutel: { bestand: "beloning", vol: 0.3, pad: "/geluiden/beloning.wav" },
 };
 
 const MAP = "/geluiden/les/";
@@ -153,7 +165,9 @@ function laadBestanden(): void {
   if (!c) return;
   geladen = true;
   const laad = () => {
-    for (const [naam, b] of Object.entries(BESTANDEN) as [Lesgeluid, { bestand: string }][]) {
+    for (const [naam, b] of Object.entries(BESTANDEN) as [Lesgeluid, { bestand: string; pad?: string }][]) {
+      /* De eindscherm-geluiden (met `pad`) alleen in een les met het eindscherm: zie laadEindgeluiden. */
+      if (b.pad) continue;
       fetch(`${MAP}${b.bestand}.m4a`)
         .then((r) => (r.ok ? r.arrayBuffer() : Promise.reject(new Error(String(r.status)))))
         .then((data) => c.decodeAudioData(data))
@@ -168,6 +182,25 @@ function laadBestanden(): void {
   const w = window as unknown as { requestIdleCallback?: (f: () => void, o?: { timeout: number }) => void };
   if (w.requestIdleCallback) w.requestIdleCallback(laad, { timeout: 1500 });
   else setTimeout(laad, 300);
+}
+
+/** Proef eindscherm: de feestgeluiden en het sleutelgeluidje vooraf laden (alleen lessen met `eindscherm`). */
+let eindGeladen = false;
+export function laadEindgeluiden(): void {
+  if (eindGeladen || typeof window === "undefined" || typeof fetch !== "function") return;
+  const c = motor();
+  if (!c) return;
+  eindGeladen = true;
+  for (const [naam, b] of Object.entries(BESTANDEN) as [Lesgeluid, { pad?: string }][]) {
+    if (!b.pad) continue;
+    fetch(b.pad)
+      .then((r) => (r.ok ? r.arrayBuffer() : Promise.reject(new Error(String(r.status)))))
+      .then((data) => c.decodeAudioData(data))
+      .then((buf) => {
+        buffers.set(naam, buf);
+      })
+      .catch(() => {});
+  }
 }
 
 /* Eén hoofdknop voor alle geluidjes: zachter als Bliepo praat, op 0 als ze uit staan. */

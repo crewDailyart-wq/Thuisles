@@ -16,7 +16,7 @@
 import { MERKNAAM } from "@/lib/merk";
 import { useCallback, useEffect, useMemo, useRef, useState, useSyncExternalStore, type CSSProperties, type ReactNode } from "react";
 import { abonneerEersteTik, abonneerPraten, meldStemOnderweg, praatVos, stopPraten, wachtOpEersteTik, zegNaElkaar, zetLesStem } from "@/lib/stem";
-import { speelLesgeluid, zetGoedGeluidVervangen, zetLesgeluiden } from "@/lib/lesgeluiden";
+import { laadEindgeluiden, speelLesgeluid, zetGoedGeluidVervangen, zetLesgeluiden } from "@/lib/lesgeluiden";
 import { magGeluidSpelen, speelGeluid, zetGeluidenAan, type Geluidsplek } from "@/lib/reactiegeluid";
 import { abonneerBliepoScherm, huidigeBliepoScherm } from "@/lib/bliepo-scherm";
 import { isLofReactie, maakStilteKiezer } from "./lessen/stilte-bij-goed";
@@ -43,6 +43,9 @@ import { cijfersInTekst } from "@/lib/lessen/cijfertaal";
 import beginzinnenData from "@/lib/lessen/beginzinnen.json";
 import "@/components/oefenen/opdracht-nieuw.css";
 import { Voortgangsbalk } from "./Voortgangsbalk";
+import { Eindscherm, Sleutelteller, VliegendeSleutel, leesEindversie, type Eindversie } from "./Eindscherm";
+import es from "./Eindscherm.module.css";
+import { bewaarLesAfgemaakt } from "@/app/lesuitkomstacties";
 
 /*
   Het ontwerp van de lessen (23 oktober 2026, opdracht eigenaar): "nieuw" =
@@ -444,11 +447,20 @@ export function Lesspeler({
   tutor = null,
   startbeeld,
   bewerkTekst,
+  volgendeHref,
+  overzichtHref,
+  snelEinde,
 }: {
   les: Lesdraaiboek;
   naam?: string;
   onKlaar?: () => void;
   terugHref?: string;
+  /** Proef eindscherm (alleen lessen met `eindscherm`): waar "Volgende les" heen gaat; zonder: het lesoverzicht. */
+  volgendeHref?: string;
+  /** Proef eindscherm: het lesoverzicht (voor "Terug" en als er geen volgende les is); zonder: `terugHref`. */
+  overzichtHref?: string;
+  /** Alleen de voorbeeldpagina (`&snel=1`): meteen naar het eindscherm (zie Lesgids.snelEinde). */
+  snelEinde?: Lesgids["snelEinde"];
   /** Praten met Bliepo (22 oktober 2026): alleen als de ouder het aanzette. */
   tutor?: { groep: number } | null;
   /** Vervangt uitsluitend het voorbeeld tijdens de opgegeven openingszin. */
@@ -468,6 +480,9 @@ export function Lesspeler({
       tutor={tutor}
       startbeeld={startbeeld ?? geldStartbeeld(les.id)}
       bewerkTekst={bewerkTekst}
+      volgendeHref={volgendeHref}
+      overzichtHref={overzichtHref}
+      snelEinde={snelEinde}
     />
   );
 }
@@ -481,6 +496,9 @@ function Lesscherm({
   tutor,
   startbeeld,
   bewerkTekst,
+  volgendeHref,
+  overzichtHref,
+  snelEinde,
 }: {
   les: Lesdraaiboek;
   naam: string;
@@ -490,6 +508,9 @@ function Lesscherm({
   tutor: { groep: number } | null;
   startbeeld?: { tekst: string; inhoud: ReactNode };
   bewerkTekst?: (bron: string) => void;
+  volgendeHref?: string;
+  overzichtHref?: string;
+  snelEinde?: Lesgids["snelEinde"];
 }) {
   const klaarMelding = useRef(onKlaar);
   useEffect(() => {
@@ -516,6 +537,18 @@ function Lesscherm({
   const [pauze, setPauze] = useState(false);
   /** Voortgangsbalk (gouden lessen, 15.54): 0 tot 1, of null = geen balk. Gaat nooit terug. */
   const [voortgang, setVoortgang] = useState<number | null>(null);
+  /*
+    Proef eindscherm en sleutelteller (Sara, 24 november 2026; EINDSCHERM-ONTWERP.md): alleen in lessen met `eindscherm`.
+    `sleutels` = wat de teller rechtsboven laat zien; `vliegers` = sleuteltjes die nog onderweg zijn; `eind` = het eindscherm.
+  */
+  const [sleutels, setSleutels] = useState(0);
+  const [tellerTik, setTellerTik] = useState(0);
+  const [vliegers, setVliegers] = useState<number[]>([]);
+  const [eind, setEind] = useState<null | { versie: Eindversie; sleutels: number }>(null);
+  const snelRef = useRef(snelEinde);
+  useEffect(() => {
+    if (les.eindscherm) laadEindgeluiden();
+  }, [les.eindscherm]);
   const raster = useRef<HTMLDivElement>(null);
   const [sleep, setSleep] = useState<null | { n: number; x: number; y: number; vanX: number; vanY: number }>(null);
   const [gekozen, setGekozen] = useState<number | null>(null);
@@ -637,6 +670,8 @@ function Lesscherm({
     let staat = BEGIN;
     /* 15.51 (20 nov 2026): true zolang de pijl net is gezet en zijn eigen zin nog niet in beeld staat. */
     let pijlVers = false;
+    /* Proef eindscherm: hoeveel sleutels er in deze speelbeurt zijn verdiend (ook als het laatste sleuteltje nog vliegt). */
+    let sleutelNr = 0;
     /* "Jouw instellingen" bewaart onderweg, dus steeds opnieuw gelezen. */
     const vk = () => leesVoorkeuren();
     const pas = (f: (b: Beeld) => Beeld) => {
@@ -867,6 +902,30 @@ function Lesscherm({
       lesId: les.id,
       naam,
       ...(les.pijlZoalsSynthesis ? { voortgang: (f: number | null) => setVoortgang((v) => (f === null ? null : Math.max(v ?? 0, Math.max(0, Math.min(1, f))))) } : {}),
+      /* Proef eindscherm (24 nov 2026): de sleutelteller en het eindscherm, alleen in lessen met `eindscherm`. */
+      ...(les.eindscherm
+        ? {
+            snelEinde: snelRef.current,
+            sleutel: () => {
+              if (!levend) return;
+              const nr = ++sleutelNr;
+              setVliegers((v) => [...v, nr]);
+              setTimeout(() => {
+                if (!levend) return;
+                setVliegers((v) => v.filter((x) => x !== nr));
+                setSleutels((n) => n + 1);
+                setTellerTik((n) => n + 1);
+                speelLesgeluid("sleutel");
+              }, 900);
+            },
+            eindscherm: () => {
+              zet((b) => ({ ...b, bediening: null, kaart: null, som: null, hand: false }));
+              setEind({ versie: leesEindversie(), sleutels: sleutelNr });
+              /* De ster voor het afmaken (15.52): 1 keer per les per kind, stil zonder gekozen kind. Niet bij de snelle test. */
+              if (!snelRef.current) void bewaarLesAfgemaakt(les.id).catch(() => {});
+            },
+          }
+        : {}),
       ...(les.vraagBoven || les.opdrachtInVlak ? { opdracht: (tekst: string | null) => zet((b) => ({ ...b, opdracht: tekst })) } : {}),
       /* Nergens meer "Tik op het vinkje." (30 oktober 2026, opdracht eigenaar: in alle lessen). */
       zeg: (...zinnen) => {
@@ -1288,7 +1347,7 @@ function Lesscherm({
     laten zien; lib/bliepo-gebaren.ts); juichen als de les klaar is.
   */
   const lesZin = beeld.zichtbaar > 0 ? kaal(beeld.zinnen[beeld.zichtbaar - 1] ?? "") : "";
-  const lesGebaar = beeld.klaar
+  const lesGebaar = beeld.klaar || eind
     ? { naam: "correct", n: "klaar" }
     : lesZin
       ? { naam: kiesGebaar(vraagOfUitleg(lesZin), lesZin, beeld.zichtbaar), n: `${beeld.zichtbaar}:${lesZin}`, opStem: true }
@@ -1408,7 +1467,8 @@ function Lesscherm({
             2026, opdracht eigenaar): praten gaat met de ronde microfoonknop
             naast Bliepo (BliepoVloer), dezelfde als in de stijlkiezer.
           */}
-          {deel !== "zin" && beeld.klaar && (
+          {/* Proef eindscherm: daar staan deze knoppen op het eindscherm zelf, niet nog een keer bij Bliepo. */}
+          {deel !== "zin" && beeld.klaar && !eind && (
             <div className={s.bediening}>
               {/* Met iconen (groep 3 leest nog niet; 27 oktober 2026). */}
               <div className={s.rij}>
@@ -1496,7 +1556,26 @@ function Lesscherm({
       >
         {/* naam en pauze */}
         {!pilBoven && !squlaMidden && pilBalk}
-        {voortgang !== null && <Voortgangsbalk fractie={voortgang} />}
+        {voortgang !== null && !les.eindscherm && <Voortgangsbalk fractie={voortgang} />}
+        {/* Proef eindscherm (24 nov 2026): de balk iets smaller met de sleutelteller ernaast; op het eindscherm allebei weg. */}
+        {les.eindscherm && !eind && voortgang !== null && (
+          <div className={es.smal}>
+            <Voortgangsbalk fractie={voortgang} />
+          </div>
+        )}
+        {les.eindscherm && !eind && voortgang !== null && <Sleutelteller aantal={sleutels} tik={tellerTik} />}
+        {les.eindscherm && !eind && vliegers.map((nr) => <VliegendeSleutel key={nr} />)}
+        {eind && (
+          <Eindscherm
+            versie={eind.versie}
+            sleutels={eind.sleutels}
+            leerzin={les.eindLeerzin}
+            plaatje={les.eindPlaatje}
+            volgendeHref={volgendeHref ?? overzichtHref ?? terugHref ?? "/alle-lessen.html"}
+            terugHref={overzichtHref ?? terugHref ?? "/alle-lessen.html"}
+            opnieuw={opnieuw}
+          />
+        )}
         {!nieuw && tekstblok}
         {tegelsLinks && <div className={s.synthKolom}>{maakTekstblok("knoppen")}</div>}
         {keuzesMidden !== null && <div className={s.keuzesMidden} style={{ top: keuzesMidden }} data-keuzes-midden="">{maakTekstblok("knoppen")}</div>}
@@ -1567,13 +1646,13 @@ function Lesscherm({
         )}
 
         {/* een eigen speelvlak, of het raster met de torens */}
-        {beeld.vlak && !beeld.kaart && (
+        {beeld.vlak && !beeld.kaart && !eind && (
           <div inert={beeld.beheerVolgende || undefined} style={{ position: "absolute", left: 300, top: 0, width: 980, height: 720, visibility: toonStartbeeld ? "hidden" : undefined }}>
             <beeld.vlak.comp {...beeld.vlak.props} meld={meldVlak} schaal={schaal || 1} metSom={!!beeld.som} {...(vlakH > H ? { staandHoogte: vlakH } : {})} />
           </div>
         )}
         {toonStartbeeld && <div style={{ position: "absolute", left: 300, top: 0, width: 980, height: 720, pointerEvents: "none" }}>{startbeeld?.inhoud}</div>}
-        {!beeld.kaart && !beeld.vlak && (
+        {!beeld.kaart && !beeld.vlak && !eind && (
           <div
             ref={raster}
             className={s.raster}
@@ -1612,6 +1691,7 @@ function Lesscherm({
         {/* de bak */}
         {!beeld.kaart &&
           !beeld.vlak &&
+          !eind &&
           bak.plekken.map((p) => {
             const opSlot = beeld.bak.slot.includes(p.n);
             const pakbaar = praatTegel && !opSlot;

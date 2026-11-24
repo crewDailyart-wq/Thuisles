@@ -47,6 +47,7 @@ const verloop: [string, string[], number][] = [
   ["samenKlaar", ZIN.samenKlaar(8, f1), 2], ["samenKlaarTwee", ZIN.samenKlaarTwee(7, PEER, PRUIM), 2], ["samenZelf", ZIN.samenZelf(8, f1), 2], ["samenZelfTwee", ZIN.samenZelfTwee(7), 2],
   ["maakHelp", ZIN.maakHelp, 3], ["maakSamenZin", ZIN.maakSamenZin(f1), 2], ["maakKlaar", ZIN.maakKlaar(4, f1), 2], ["maakZelf", ZIN.maakZelf(4, f1), 2], ["lijstHelp", ZIN.lijstHelp(APPEL), 2],
   ["slot", ZIN.slot, 2], ["kaartTik", ZIN.kaartTik, 3], ["aanmoedigTikken", ZIN.aanmoedigTikken, 3], ["maakHand", ZIN.maakHand, 2],
+  ["eindAllesGoed", ZIN.eindAllesGoed, 4], ["eindGewoon", ZIN.eindGewoon, 4], ["eindMoeite", ZIN.eindMoeite, 4],
 ];
 for (const [naam, zinnen, min] of verloop) {
   if (new Set(zinnen).size < min) problemen.push(`${naam}: maar ${new Set(zinnen).size} variant(en), moet minstens ${min}`);

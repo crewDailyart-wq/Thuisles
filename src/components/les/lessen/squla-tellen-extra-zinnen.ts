@@ -137,7 +137,17 @@ export const ZIN = {
   lijstHelp: (f: Fruit) => [`Ik zet de rest klaar. Jij maakt de ${f.naam}: tik op de lege vakjes.`, `De rest leg ik vast neer. De ${f.naam} zijn voor jou: tik op de lege vakjes.`],
   /** Stap 10: einde. */
   slot: [`Je hebt fruit geteld en gemaakt, tot wel ${gw(10)}!`, `Wat heb jij veel fruit geteld en gemaakt: tot wel ${gw(10)}!`, `Tot ${gw(10)} tellen en fruit maken: dat kun jij nu!`],
+  /* `slot` en `kaartTik` gebruikt de les niet meer sinds het nieuwe eindscherm (proef, Sara 24 nov 2026; WEGGEHAALD.md,
+     WIJZIGINGEN-ZINNEN-TELLEN.md). Ze blijven hier staan zodat de oude eindkaart terug kan als Sara dat kiest. */
   kaartTik: ["Tik op de kaart.", "Tik maar op de kaart.", "Kijk, een kaart voor jou! Tik erop."],
+  /**
+   * Het nieuwe eindscherm (proef, Sara 24 nov 2026; EINDSCHERM-ONTWERP.md): Bliepo zegt 1 korte zin die past bij hoe het
+   * ging, nooit iets wat als mislukking klinkt. Alles goed = elke vraag in 1 keer goed; moeite = de helft of meer niet in 1
+   * keer goed (zelfde grens als vroeger bij "Volgende keer gaat het nog beter."); gewoon = de rest.
+   */
+  eindAllesGoed: [`Wauw, jij had alles in ${gw(1)} keer goed!`, `Alles in ${gw(1)} keer goed, wat knap van jou!`, `Jij deed alles in ${gw(1)} keer goed, super!`, `Alles in ${gw(1)} keer goed: dat is echt knap!`],
+  eindGewoon: ["Hoera, jij hebt de les helemaal af!", "Klaar, en wat heb jij het goed gedaan!", "Jij hebt de hele les goed afgemaakt!", "De les is af, wat ben jij goed bezig!"],
+  eindMoeite: ["Wat heb jij goed geoefend, knap hoor!", "Jij bleef proberen, en nu is de les af!", "Jij hebt hard gewerkt, de hele les is af!", "Goed geoefend, en jij hebt alles af!"],
   /** Aanmoediging bij het hulphandje tijdens samen tellen en samen maken (het kind moet tikken; 14.35). */
   aanmoedigTikken: ["Je bent goed bezig.", "Jij kunt dit.", "Het gaat goed zo.", "Probeer het maar.", "Toe maar, je doet het goed."],
   weerGekozen: (f: Fruit) => `Je koos weer de ${f.naam}.`,
