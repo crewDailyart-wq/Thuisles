@@ -140,9 +140,18 @@ export function legDenkfoutVast(l: Lesgids, d: Omit<Denkfout, "les" | "tijd">) {
  */
 export type UitkomstRegel = { les: string; vraag: string; uitkomst: "goed-in-een-keer" | "goed-na-fout" | "samen-gedaan" | "niet-afgemaakt"; teltVoorBeheersing: boolean; tijd: string };
 const UITKOMST_NAAM: Record<Uitkomst, UitkomstRegel["uitkomst"]> = { goed: "goed-in-een-keer", naFout: "goed-na-fout", voorgedaan: "samen-gedaan", gestopt: "niet-afgemaakt" };
+/* Voortgangsbalk (BOUWREGELS 15.54): zoveel vragen heeft een normale route; vragen die alleen na een fout terugkomen
+   tellen niet mee (Math.min). Na elke afgeronde vraag een stukje verder; nooit terug (het lesscherm negeert een lagere waarde). */
+/* Klok: de klokken van het oefenblok, 2 vragen tussendoor en de bonus. De uitleg (Nee-route) telt niet; een klok die
+   nog een keer komt (na een fout, of om aan MINIMAAL te komen) heeft hetzelfde id en telt dus niet dubbel. Geen bonus
+   (na een fout): dan wordt de balk vol bij de eindkaart. */
+const balkTotaal = (): number => KLOKKEN.length + (DRAAIBOEK_EXTRA ? 3 : 0);
+const balkTelt = (id: string): boolean => /^(klok\d|tussendoor-|bonus-)/.test(id);
+
 function noteer(l: Lesgids, vraag: string, uit: Uitkomst): Uitkomst {
   const s = st(l);
   if (!s.eerste.has(vraag)) s.eerste.set(vraag, uit);
+  l.voortgang?.(Math.min(1, [...s.eerste.keys()].filter(balkTelt).length / balkTotaal()));
   const fouten = s.vraagFouten.get(vraag) ?? [];
   s.vraagFouten.delete(vraag);
   /* "gestopt" (de proef stopt na 2 fouten) is geen uitkomst van de vraag: die klok komt later in het oefenblok opnieuw. */
@@ -604,6 +613,7 @@ const gouden: Lesdraaiboek = {
   kaarttekening: KaartKlokGouden,
   async speel(l) {
     STAAT.delete(l);
+    l.voortgang?.(0);
     log(l, "start");
     /* Stap 0. De klok op 3 uur (het voorbeeld op het beginscherm, BOUWREGELS 4.1). */
     l.vlak<GoudenKlokProps>(GoudenKlok, { stand: { tijd: u(3) } });
@@ -663,6 +673,8 @@ const gouden: Lesdraaiboek = {
     await zegDoor(l, K(l).kies("slot", VAR.slot));
     log(l, "kaart", { fouten });
     l.verderWeg?.();
+    /* Voortgangsbalk (15.54): bij de eindkaart precies vol. */
+    l.voortgang?.(1);
     const tik = l.kaart();
     speelLesgeluid("kaart");
     /* Ronde 51 punt 10 (15.50): eindzin + "Tik op de kaart." in 1 uiting (zoals de andere gouden lessen); het afscheid

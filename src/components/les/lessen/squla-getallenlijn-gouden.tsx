@@ -184,11 +184,16 @@ function legDenkfoutVast(l: Lesgids, d: { vraag: string; antwoord: string; denkf
   (w.__denkfouten ??= []).push({ les: LES_ID, tijd: new Date().toISOString(), ...d });
 }
 
+/* Voortgangsbalk (BOUWREGELS 15.54): zoveel vragen heeft een normale route; vragen die alleen na een fout terugkomen
+   tellen niet mee (Math.min). Na elke afgeronde vraag een stukje verder; nooit terug (het lesscherm negeert een lagere waarde). */
+const balkTotaal = (): number => VRAGEN.length;
+
 function noteer(l: Lesgids, vraag: string, uit: Uitkomst): Uitkomst {
   const s = st(l);
   /* "gestopt" (de proef stopt na 2 fouten) is geen uitkomst van de vraag: die vraag komt later opnieuw. */
   if (uit === "gestopt") return uit;
   if (!s.eerste.has(vraag)) s.eerste.set(vraag, uit);
+  l.voortgang?.(Math.min(1, s.eerste.size / balkTotaal()));
   const fouten = s.vraagFouten.get(vraag) ?? [];
   s.vraagFouten.delete(vraag);
   if (typeof window === "undefined") return uit;
@@ -932,6 +937,7 @@ const gouden: Lesdraaiboek = {
   voorwerpen: GETALLENLIJN_VOORWERPEN,
   async speel(l) {
     STAAT.delete(l);
+    l.voortgang?.(0);
     log(l, "start");
     /* Het voorbeeld op het beginscherm (4.1): de lijn en het raketje van vraag 1. */
     const c0 = maakCtx(VRAGEN[0]);
@@ -988,6 +994,8 @@ const gouden: Lesdraaiboek = {
     await zegDoor(l, variant("slot", ZIN.slot));
     log(l, "kaart");
     l.verderWeg?.();
+    /* Voortgangsbalk (15.54): bij de eindkaart precies vol. */
+    l.voortgang?.(1);
     const tik = l.kaart();
     speelLesgeluid("kaart");
     const eind = veelFouten(l) ? EINDE_VEEL_FOUTEN : kies(l, EINDE);

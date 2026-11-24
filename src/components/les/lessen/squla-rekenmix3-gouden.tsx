@@ -109,9 +109,14 @@ function legDenkfoutVast(l: Lesgids, d: { vraag: string; antwoord: string; denkf
   (w.__denkfouten ??= []).push(regel);
 }
 
+/* Voortgangsbalk (BOUWREGELS 15.54): zoveel vragen heeft een normale route; vragen die alleen na een fout terugkomen
+   tellen niet mee (Math.min). Na elke afgeronde vraag een stukje verder; nooit terug (het lesscherm negeert een lagere waarde). */
+const balkTotaal = (): number => VRAGEN.length;
+
 function noteer(l: Lesgids, vraag: string, uit: Uitkomst): Uitkomst {
   const s = st(l);
   if (!s.eerste.has(vraag)) s.eerste.set(vraag, uit);
+  l.voortgang?.(Math.min(1, s.eerste.size / balkTotaal()));
   const fouten = s.vraagFouten.get(vraag) ?? [];
   s.vraagFouten.delete(vraag);
   if (typeof window === "undefined") return uit;
@@ -479,6 +484,7 @@ const gouden: Lesdraaiboek = {
   kaarttekening: KaartRekenmixGouden,
   async speel(l) {
     STAAT.delete(l);
+    l.voortgang?.(0);
     log(l, "start");
     /* Stap 1. Openen: de appels van vraag 1 verschijnen; Bliepo groet en zegt wat we gaan doen, in 1 stuk. */
     l.vlak<GoudenRekenmixProps>(GoudenRekenmixVlak, { opgave: opgaveVan(VRAGEN[0]), ...beeldVan(VRAGEN[0]), voorraad: ALLE_BEELDEN });
@@ -504,6 +510,8 @@ const gouden: Lesdraaiboek = {
     log(l, "kaart");
     /* Geen pijl op de eindkaart (15.27). */
     l.verderWeg?.();
+    /* Voortgangsbalk (15.54): bij de eindkaart precies vol. */
+    l.voortgang?.(1);
     const tik = l.kaart();
     speelLesgeluid("kaart");
     /* Draaiboek stap 10: Bliepo zegt kort wat het kind met de kaart doet. 1 uiting. */
