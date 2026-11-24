@@ -243,3 +243,10 @@ Alleen de extra les (`squla-tellen-fruit-1-gouden-extra`). Bliepo zegt aan het e
 | alles in 1 keer goed | een eindzin uit het rijtje EINDE + "Tik op de kaart." (of een variant) | Wauw, jij had alles in 1 keer goed! / Alles in 1 keer goed, wat knap van jou! / Jij deed alles in 1 keer goed, super! / Alles in 1 keer goed: dat is echt knap! |
 | gewone ronde | een eindzin uit het rijtje EINDE + "Tik op de kaart." (of een variant), soms daarna "Tot snel!" | Hoera, jij hebt de les helemaal af! / Klaar, en wat heb jij het goed gedaan! / Jij hebt de hele les goed afgemaakt! / De les is af, wat ben jij goed bezig! |
 | veel moeite (de helft of meer niet in 1 keer goed) | Je hebt goed doorgezet. Volgende keer gaat het nog beter. Tik op de kaart. | Wat heb jij goed geoefend, knap hoor! / Jij bleef proberen, en nu is de les af! / Jij hebt hard gewerkt, de hele les is af! / Goed geoefend, en jij hebt alles af! |
+
+## 24 november 2026: eindzinnen na controle door Fable (alleen de nieuwe eindzinnen van het eindscherm, nog niet in gebruik door Sara geaccepteerd)
+- oud: "Alles in 1 keer goed: dat is echt knap!" -> nieuw: "Alles in 1 keer goed, jij hebt alle sleutels!" (te veel gelijk aan een andere zin)
+- oud: "Klaar, en wat heb jij het goed gedaan!" -> nieuw: "Klaar! Wat heb jij het goed gedaan!" (loopt natuurlijker)
+- oud: "Jij hebt de hele les goed afgemaakt!" -> nieuw: "Kijk, een gouden ster voor jou!" (zei hetzelfde als een andere zin; nu past hij bij de ster)
+- oud: "Jij bleef proberen, en nu is de les af!" -> nieuw: "Jij bleef proberen en nu is de les af!" (zonder komma)
+- oud: "Goed geoefend, en jij hebt alles af!" -> nieuw: "Goed geoefend, deze ster is voor jou!" (3 van de 4 eindigden op "af")

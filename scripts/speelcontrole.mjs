@@ -172,7 +172,7 @@ const STAAT = `(() => {
       if (!b) return null;
       const r = b.getBoundingClientRect();
       let raakt = null;
-      for (const el of document.querySelectorAll("button, [data-ding], [data-knop], .bliepo-tekst, .les-tekst p, img")) {
+      for (const el of document.querySelectorAll("button, [data-ding], [data-knop], .bliepo-tekst, .les-tekst p, img, [class*=sombalk] > *")) {
         if (b.contains(el) || !zichtbaar(el)) continue;
         const q = el.getBoundingClientRect();
         if (q.width > r.width * 0.9 && q.height > 200) continue;

@@ -794,6 +794,10 @@ a.knop {
   invulvak bovenaan piepklein (kleiner dan het zachte plusteken eronder). Alleen Squla-lessen op een staand scherm;
   van de Squla-lessen zet alleen Plussommen hier een som neer. Laptop blijft zoals hij was. Nog steeds 1 invulvak.
 */
+/* Gouden lessen met voortgangsbalk (24 nov 2026): de som bovenin staat 24 punten lager, zodat hij de balk niet raakt. */
+[data-pijl] .sombalk {
+  top: 52px;
+}
 [data-squla][data-staand] .sombalk {
   left: 330px;
   width: 920px;

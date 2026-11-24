@@ -145,9 +145,9 @@ export const ZIN = {
    * ging, nooit iets wat als mislukking klinkt. Alles goed = elke vraag in 1 keer goed; moeite = de helft of meer niet in 1
    * keer goed (zelfde grens als vroeger bij "Volgende keer gaat het nog beter."); gewoon = de rest.
    */
-  eindAllesGoed: [`Wauw, jij had alles in ${gw(1)} keer goed!`, `Alles in ${gw(1)} keer goed, wat knap van jou!`, `Jij deed alles in ${gw(1)} keer goed, super!`, `Alles in ${gw(1)} keer goed: dat is echt knap!`],
-  eindGewoon: ["Hoera, jij hebt de les helemaal af!", "Klaar, en wat heb jij het goed gedaan!", "Jij hebt de hele les goed afgemaakt!", "De les is af, wat ben jij goed bezig!"],
-  eindMoeite: ["Wat heb jij goed geoefend, knap hoor!", "Jij bleef proberen, en nu is de les af!", "Jij hebt hard gewerkt, de hele les is af!", "Goed geoefend, en jij hebt alles af!"],
+  eindAllesGoed: [`Wauw, jij had alles in ${gw(1)} keer goed!`, `Alles in ${gw(1)} keer goed, wat knap van jou!`, `Jij deed alles in ${gw(1)} keer goed, super!`, `Alles in ${gw(1)} keer goed, jij hebt alle sleutels!`],
+  eindGewoon: ["Hoera, jij hebt de les helemaal af!", "Klaar! Wat heb jij het goed gedaan!", "Kijk, een gouden ster voor jou!", "De les is af, wat ben jij goed bezig!"],
+  eindMoeite: ["Wat heb jij goed geoefend, knap hoor!", "Jij bleef proberen en nu is de les af!", "Jij hebt hard gewerkt, de hele les is af!", "Goed geoefend, deze ster is voor jou!"],
   /** Aanmoediging bij het hulphandje tijdens samen tellen en samen maken (het kind moet tikken; 14.35). */
   aanmoedigTikken: ["Je bent goed bezig.", "Jij kunt dit.", "Het gaat goed zo.", "Probeer het maar.", "Toe maar, je doet het goed."],
   weerGekozen: (f: Fruit) => `Je koos weer de ${f.naam}.`,
