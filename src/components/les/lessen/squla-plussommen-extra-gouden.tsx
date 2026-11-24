@@ -313,6 +313,10 @@ const gouden: Lesdraaiboek = {
   kaarttegels: [3, 1],
   async speel(l) {
     B.log(l, "start");
+    /* Voortgangsbalk (15.54): 10 vragen (3x welk getal, 2x totaal, samen 7, samen 10, de som, omwisselen, nog een manier
+       voor 10). Valt de laatste weg (na samen doen), dan wordt de balk vol bij de eindkaart. */
+    B.st(l).totaal = 10;
+    l.voortgang?.(0);
     const vak = new Werkvlak(l);
     /* Stap 1. Openen: een leeg rooster en de bak met tegels 1 t/m 9; Bliepo groet en zegt wat we gaan doen, in 1 stuk. */
     l.vlak<HoloTegelProps>(KleinTegelVlak, { torens: [], bak: ALLES });
@@ -394,6 +398,8 @@ const gouden: Lesdraaiboek = {
     await B.zegDoor(l, variant("slot", ZIN.slot));
     B.log(l, "kaart");
     l.verderWeg?.();
+    /* Voortgangsbalk (15.54): bij de eindkaart precies vol. */
+    l.voortgang?.(1);
     const tik = l.kaart();
     speelLesgeluid("kaart");
     const eind = B.veelFouten(l) ? EINDE_VEEL_FOUTEN : B.kies(l, EINDE);

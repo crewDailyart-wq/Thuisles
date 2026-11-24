@@ -491,6 +491,10 @@ const gouden: Lesdraaiboek = {
   async speel(l) {
     stand.delete(l);
     B.log(l, "start");
+    /* Voortgangsbalk (15.54): 8 vragen (totaal, de som, een andere manier voor 5, het nieuwe totaal, 2x splitsen van 7,
+       2x splitsen van het gekozen getal). */
+    B.st(l).totaal = 8;
+    l.voortgang?.(0);
     /* Stap 1. Openen: de lege machine; Bliepo groet en zegt wat we gaan doen, in 1 stuk. */
     l.vlak<SplitsExtraProps>(SplitsExtraVlak, { id: "start", delen: [0, 0], totaal: null, actief: [] });
     speelLesgeluid("verschijn");
@@ -542,6 +546,8 @@ const gouden: Lesdraaiboek = {
     await B.zegDoor(l, variant("slot", ZIN.slot));
     B.log(l, "kaart");
     l.verderWeg?.();
+    /* Voortgangsbalk (15.54): bij de eindkaart precies vol. */
+    l.voortgang?.(1);
     const tik = l.kaart();
     speelLesgeluid("kaart");
     const eind = B.veelFouten(l) ? EINDE_VEEL_FOUTEN : B.kies(l, EINDE);
