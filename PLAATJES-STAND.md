@@ -178,3 +178,8 @@ Gemaakt door `npm run voorwerpen`. 172 vervangen, 1 nog open.
 
 ## Nog open (1)
 - ⬜ 34. Leeg spiesje — `spies-leeg.png`
+
+## 24 november 2026 — sleutel en ster (Sara, Magnific)
+- `public/beloning/sleutel-goud.png` en `ster-goud.png`: de gouden sleutel (met ster erin) en de gouden ster met fonkelingen, transparante achtergrond (1024 x 1024). De originele bestanden (witte achtergrond, hoogste kwaliteit die Magnific heeft: 1K) staan als `sleutel-goud-origineel.png` en `ster-goud-origineel.png`.
+- Magnific-bronnen: "Meer goud en zonder 2" (sleutel) en "Maaak de ster goud net als de sleutel" (ster). De achtergrond is weggehaald met de tool "Remove Background" van Magnific (3 credits per plaatje), omdat rembg niet te installeren was op deze laptop (te oude Python). Het oude `public/sleutel.png` is niet aangeraakt.
+- Gebruik: sleutelteller, sleuteltjes die vliegen en de ster op het eindscherm (BOUWREGELS 15.52).
