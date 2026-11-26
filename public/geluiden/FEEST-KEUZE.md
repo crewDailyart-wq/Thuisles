@@ -35,3 +35,8 @@ Niet zelf beluisterd: Claude kan niet luisteren. Luister ze even voordat je kies
 - Horen in de les: zet `&pling=2` of `&pling=3` achter het lesadres.
 
 **Besluit Sara, 26 november 2026: pling-2 wordt het sleutelgeluid.** pling-1 en pling-3 blijven in de map staan maar worden niet gebruikt.
+
+## De ster die draait (26 november 2026, keuze voor Sara)
+
+Gemaakt met Magnific (geluidseffecten), 2 versies van dezelfde opdracht (een draaiende ster met opkomend zoeven en een glinsterende slotklank), 2 s, 20 credits samen. Claude kan niet luisteren: luister ze even.
+- `ster-draai-1.wav` (nu in gebruik), `ster-draai-2.wav` (hoor je met `&draai=2` achter het lesadres).

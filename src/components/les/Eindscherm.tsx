@@ -22,7 +22,8 @@ import { speelLesgeluid } from "@/lib/lesgeluiden";
 import { kleurCss, kleurVoorPercentage } from "@/lib/les-kleuren";
 import s from "./Eindscherm.module.css";
 
-export type Eindversie = "a" | "b";
+/** Twee nieuwe ontwerpen (26 nov 2026, Sara vond "te veel op het scherm"): "1" = ster en sleutel blijven klein bovenaan staan, "2" = ster en sleutel verdwijnen en alleen leerzin en kaart blijven over. */
+export type Eindversie = "1" | "2";
 
 export const STER_PLAATJE = "/beloning/ster-goud-400.png";
 export const SLEUTEL_PLAATJE = "/beloning/sleutel-goud-160.png";
@@ -30,13 +31,13 @@ export const SLEUTEL_PLAATJE = "/beloning/sleutel-goud-160.png";
 export const SLEUTELKLEUR = "#ffd75e";
 const FONKEL = "M0-10 C1.2-3.2 3.2-1.2 10 0 C3.2 1.2 1.2 3.2 0 10 C-1.2 3.2 -3.2 1.2 -10 0 C-3.2-1.2 -1.2-3.2 0-10Z";
 
-/** Sara koos versie B (25 nov 2026): dat is nu de standaard; `?eind=a` toont nog de oude proefversie. */
+/** Versie uit de adresbalk (`?eind=2`); zonder of met iets anders: 1. */
 export function leesEindversie(): Eindversie {
-  if (typeof window === "undefined") return "b";
+  if (typeof window === "undefined") return "1";
   try {
-    return new URLSearchParams(window.location.search).get("eind") === "a" ? "a" : "b";
+    return new URLSearchParams(window.location.search).get("eind") === "2" ? "2" : "1";
   } catch {
-    return "b";
+    return "1";
   }
 }
 
@@ -159,25 +160,33 @@ function Confetti({ aantal, duur }: { aantal: number; duur: number }) {
   return <canvas ref={ref} className={s.confetti} width={980} height={720} aria-hidden="true" data-confetti="" />;
 }
 
-/* ---------- het eindscherm ---------- */
+/* ---------- het eindscherm (nieuw ontwerp 26 november 2026) ---------- */
 
-/** Tijden in ms vanaf het begin van het eindscherm. */
-const STER_MS = 1500;
-const SLEUTELS_MS = 2500;
-const SLEUTEL_STAP_MS = 240;
-const SLEUTEL_VLIEG_MS = 700;
-
-function Fonkels({ klein = false }: { klein?: boolean }) {
+/*
+  Alles 1 voor 1, geen paneel:
+    0 s        de ster komt in het midden, groot, draait 3 keer (geluid ster-draai), een lichtflits en stralen
+    0,9 s      feest-1 en confetti als de ster landt
+    2,2 s      de sleutel erbij naast de ster, het getal telt op (pling per sleutel)
+    daarna     versie 1: ster en sleutel schuiven klein naar boven; versie 2: ze verdwijnen
+    +0,7 s     de leerzin
+    +1,0 s     de kaart met het onderwerp (licht op, tikken)
+*/
+function Fonkels() {
   return (
-    <div className={klein ? `${s.fonkels} ${s.fonkelsKlein}` : s.fonkels} aria-hidden="true">
+    <div className={s.fonkels} aria-hidden="true">
       {[0, 1, 2, 3, 4, 5].map((i) => (
         <svg key={i} className={`${s.fonkel} ${s[`f${i}`]}`} viewBox="-12 -12 24 24">
-          <path d={FONKEL} fill="#ffffff" />
+          <path d="M0-10 C1.2-3.2 3.2-1.2 10 0 C3.2 1.2 1.2 3.2 0 10 C-1.2 3.2 -3.2 1.2 -10 0 C-3.2-1.2 -1.2-3.2 0-10Z" fill="#ffffff" />
         </svg>
       ))}
     </div>
   );
 }
+
+const STER_MS = 1;
+const FEEST_MS = 900;
+const SLEUTEL_MS = 2300;
+const SLEUTEL_STAP_MS = 320;
 
 export function Eindscherm({
   versie,
@@ -192,83 +201,79 @@ export function Eindscherm({
   sleutels: number;
   leerzin?: string;
   plaatje?: string;
-  /** De kaart met het onderwerp van de les (26 nov 2026): licht zacht op tot het kind erop tikt. */
+  /** De kaart met het onderwerp van de les: licht zacht op tot het kind erop tikt. */
   onderwerp?: string;
   /** Percentage goed in 1 keer; bepaalt de kleur van de kaart na de tik (les-kleuren.ts). */
   percentage?: number;
   /** Na de tik op de kaart (de kaart heeft dan vinkje en kleur). */
   opAfgevinkt?: () => void;
 }) {
-  const [afgevinkt, setAfgevinkt] = useState(false);
-  const kleur = kleurVoorPercentage(percentage ?? 0);
+  /* fase: 1 ster, 2 sleutel, 3 ster en sleutel klein of weg, 4 leerzin, 5 kaart */
   const [fase, setFase] = useState(0);
   const [geteld, setGeteld] = useState(0);
-  const leerzinMs = SLEUTELS_MS + (sleutels > 0 ? SLEUTEL_VLIEG_MS + sleutels * SLEUTEL_STAP_MS + 300 : 0);
+  const [afgevinkt, setAfgevinkt] = useState(false);
+  const kleur = kleurVoorPercentage(percentage ?? 0);
+  const sleutelKlaarMs = sleutels > 0 ? SLEUTEL_MS + 600 + sleutels * SLEUTEL_STAP_MS : SLEUTEL_MS - 300;
+  const settleMs = sleutelKlaarMs + 900;
   useEffect(() => {
-    /* Sara koos feest-1 (25 nov 2026); feest-2 en feest-3 blijven in de map staan maar worden niet gebruikt. */
-    speelLesgeluid("feest1");
     const t: ReturnType<typeof setTimeout>[] = [];
+    speelLesgeluid("sterDraai");
     t.push(setTimeout(() => setFase(1), STER_MS));
-    t.push(setTimeout(() => setFase(2), SLEUTELS_MS));
+    /* Sara koos feest-1 (25 nov 2026); feest-2 en feest-3 blijven in de map staan maar worden niet gebruikt. */
+    t.push(setTimeout(() => speelLesgeluid("feest1"), FEEST_MS));
+    if (sleutels > 0) t.push(setTimeout(() => setFase(2), SLEUTEL_MS));
     for (let i = 0; i < sleutels; i++)
       t.push(
         setTimeout(() => {
           setGeteld(i + 1);
-          /* 1 zacht sleutelgeluidje bij de eerste sleutel die aankomt (niet bij elke: dat wordt te druk). */
-          if (i === 0) speelLesgeluid("sleutel");
-        }, SLEUTELS_MS + SLEUTEL_VLIEG_MS + i * SLEUTEL_STAP_MS),
+          speelLesgeluid("sleutel");
+        }, SLEUTEL_MS + 600 + i * SLEUTEL_STAP_MS),
       );
-    t.push(setTimeout(() => setFase(3), leerzinMs));
-    t.push(setTimeout(() => setFase(4), leerzinMs + 700));
+    t.push(setTimeout(() => setFase(3), settleMs));
+    t.push(setTimeout(() => setFase(4), settleMs + 700));
+    t.push(setTimeout(() => setFase(5), settleMs + 1700));
     if (typeof window !== "undefined") (window as unknown as { __eindscherm?: unknown }).__eindscherm = { versie, sleutels, start: Math.round(performance.now()) };
     return () => t.forEach(clearTimeout);
-  }, [versie, sleutels, leerzinMs]);
+  }, [versie, sleutels, settleMs]);
 
-  const b = versie === "b";
-  const ster = fase >= 1 && (
-    <div className={b ? s.sterB : s.sterA} data-eind-ster="">
-      <Fonkels />
-      {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img src={STER_PLAATJE} alt="" className={s.sterPlaatje} draggable={false} />
-    </div>
-  );
-  const lesAf = fase >= 1 && (
-    <p className={b ? `${s.lesAf} ${s.lesAfB}` : s.lesAf} data-eind-lesaf="">
-      Les af!
-    </p>
-  );
-  const sleutelRij = fase >= 2 && sleutels > 0 && (
-    <div className={b ? `${s.sleutels} ${s.sleutelsB}` : s.sleutels} data-eind-sleutels={sleutels} aria-label={`${sleutels} sleutels verdiend`}>
-      <div className={s.sleutelDoel}>
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img key={geteld} src={SLEUTEL_PLAATJE} alt="" className={geteld > 0 ? `${s.sleutelGroot} ${s.sleutelPuls}` : s.sleutelGroot} draggable={false} />
-        {Array.from({ length: sleutels }, (_, i) => {
-          /* Elk sleuteltje komt van een eigen plek eronder en vliegt in een boogje naar de grote sleutel. */
-          const hoek = (-150 + (i * 120) / Math.max(1, sleutels - 1)) * (Math.PI / 180);
-          const r = 150;
-          const stijl = { "--vx": `${Math.round(Math.cos(hoek) * r * 1.3)}px`, "--vy": `${Math.round(110 + Math.abs(Math.sin(hoek)) * 30)}px`, animationDelay: `${i * SLEUTEL_STAP_MS}ms` } as CSSProperties;
-          return (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img key={i} src={SLEUTEL_PLAATJE} alt="" className={s.eindVlieger} style={stijl} draggable={false} aria-hidden="true" />
-          );
-        })}
+  const v2 = versie === "2";
+  const groepStand = fase >= 3 ? (v2 ? s.groepWeg : s.groepKlein) : s.groepGroot;
+  const sterGroep = fase >= 1 && (
+    <div className={`${s.groep} ${groepStand}`} data-eind-groep="">
+      <div className={s.groepRij}>
+        <div className={s.sterWrap} data-eind-ster="">
+          <div className={s.stralen} aria-hidden="true" />
+          <div className={s.lichtstoot} aria-hidden="true" />
+          <Fonkels />
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src={STER_PLAATJE} alt="" className={s.sterDraai} draggable={false} />
+        {fase >= 2 && sleutels > 0 && (
+          <div className={s.sleutelNaast} data-eind-sleutels={sleutels} aria-label={`${sleutels} sleutels verdiend`}>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img key={geteld} src={SLEUTEL_PLAATJE} alt="" className={geteld > 0 ? `${s.sleutelGroot2} ${s.sleutelPuls}` : s.sleutelGroot2} draggable={false} />
+            <span className={s.sleutelGetal2} style={{ color: SLEUTELKLEUR }} data-eind-sleutelgetal={geteld}>
+              {geteld}
+            </span>
+          </div>
+        )}
+        </div>
       </div>
-      <span className={s.sleutelGetal} style={{ color: SLEUTELKLEUR }} data-eind-sleutelgetal={geteld}>
-        {geteld}
-      </span>
+      <p className={s.lesAf2} data-eind-lesaf="">
+        Les af!
+      </p>
     </div>
   );
-  const leer = fase >= 3 && leerzin && (
-    <div className={b ? `${s.leer} ${s.leerB}` : s.leer} data-eind-leerzin="">
+  const leer = fase >= 4 && leerzin && (
+    <div className={v2 ? `${s.leer2} ${s.leer2Midden}` : s.leer2} data-eind-leerzin="">
       {/* eslint-disable-next-line @next/next/no-img-element */}
-      {plaatje && <img src={plaatje} alt="" className={b ? `${s.leerPlaatje} ${s.leerPlaatjeB}` : s.leerPlaatje} draggable={false} />}
+      {plaatje && <img src={plaatje} alt="" className={v2 ? `${s.leer2Plaatje} ${s.leer2PlaatjeGroot}` : s.leer2Plaatje} draggable={false} />}
       <p>{leerzin}</p>
     </div>
   );
-  const kaart = fase >= 4 && onderwerp && (
+  const kaart = fase >= 5 && onderwerp && (
     <button
       type="button"
-      className={afgevinkt ? `${s.kaart} ${s.kaartKlaar}` : `${s.kaart} ${s.kaartLicht}`}
+      className={`${afgevinkt ? `${s.kaart} ${s.kaartKlaar}` : `${s.kaart} ${s.kaartLicht}`} ${v2 ? s.kaartV2 : s.kaartV1}`}
       style={afgevinkt ? ({ "--kaartkleur": kleurCss(kleur) } as CSSProperties) : undefined}
       data-eind-kaart=""
       data-afgevinkt={afgevinkt ? kleur.naam : ""}
@@ -295,28 +300,20 @@ export function Eindscherm({
 
   return (
     <div className={s.eind} data-eindscherm={versie} aria-live="polite">
-      <Confetti aantal={b ? 110 : 60} duur={b ? 2000 : 1500} />
-      {b ? (
-        <div className={`${s.paneel} ${fase >= 1 ? s.paneelIn : ""}`}>
-          <div className={s.paneelLinks}>
-            {ster}
-            {lesAf}
-          </div>
-          <div className={s.paneelRechts}>
-            {sleutelRij}
-            {leer}
-          </div>
-          {kaart}
-        </div>
-      ) : (
-        <div className={s.kolom}>
-          {ster}
-          {lesAf}
-          {sleutelRij}
-          {leer}
-          {kaart}
-        </div>
-      )}
+      {fase >= 1 && <ConfettiLater aantal={v2 ? 90 : 90} wacht={FEEST_MS - STER_MS} />}
+      {sterGroep}
+      {leer}
+      {kaart}
     </div>
   );
+}
+
+/** Confetti pas als de ster landt (de feestklank begint dan ook). */
+function ConfettiLater({ aantal, wacht }: { aantal: number; wacht: number }) {
+  const [aan, setAan] = useState(false);
+  useEffect(() => {
+    const t = setTimeout(() => setAan(true), wacht);
+    return () => clearTimeout(t);
+  }, [wacht]);
+  return aan ? <Confetti aantal={aantal} duur={2000} /> : null;
 }

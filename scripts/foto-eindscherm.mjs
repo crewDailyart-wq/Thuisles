@@ -41,28 +41,39 @@ await stuur("Page.addScriptToEvaluateOnNewDocument", { source: `
 
 const foto = async (naam) => writeFileSync(join(UIT, naam), Buffer.from((await stuur("Page.captureScreenshot", { format: "jpeg", quality: 85 }, s)).data, "base64"));
 
-for (const uitslag of ["alles", "gewoon", "moeite"]) {
-  await stuur("Page.navigate", { url: `http://localhost:3000/voorbeeld/les/${LES}?naam=Testkind&snel=${uitslag}&blijf=1` }, s);
+const VERSIES = (process.env.VERSIES ?? "1,2").split(",");
+for (const v of VERSIES) {
+  await stuur("Page.navigate", { url: `http://localhost:3000/voorbeeld/les/${LES}?naam=Testkind&snel=p72&blijf=1&eind=${v}` }, s);
   await wacht(1500);
   await langsStartknop(ev, tik);
-  const frames = [];
+  /* wacht tot het eindscherm begint */
+  let begin = null;
+  const w0 = Date.now();
+  while (Date.now() - w0 < 40000 && !begin) {
+    begin = await ev(`!!document.querySelector("[data-eindscherm]")`);
+    if (!begin) await wacht(100);
+  }
   const t0 = Date.now();
-  let klaar = false;
-  let teller = false;
-  while (Date.now() - t0 < 40000 && !klaar) {
+  const frames = [];
+  const stills = [[500, "1-ster-draait"], [1100, "2-licht-flits"], [2000, "3-ster-landt"], [3400, "4-sleutel-erbij"], [5600, "5-ster-en-sleutel-klein-of-weg"], [7600, "6-leerzin"], [9200, "7-kaart-licht-op"]];
+  let st = 0;
+  let kaart = null;
+  while (Date.now() - t0 < 16000) {
+    const nu = Date.now() - t0;
     const data = (await stuur("Page.captureScreenshot", { format: "jpeg", quality: 60 }, s)).data;
-    frames.push({ t: Date.now() - t0, b: Buffer.from(data, "base64") });
-    const st = await ev(`({ teller: document.querySelector("[data-sleutelteller]")?.getAttribute("data-sleutels") ?? null, eind: !!document.querySelector("[data-eindscherm]"), leer: !!document.querySelector("[data-eind-leerzin]") })`);
-    if (st.teller !== null && Number(st.teller) >= 2 && !teller) { teller = true; await foto(`${uitslag}-1-teller-in-de-les.jpg`); }
-    if (st.leer) { await wacht(1500); await foto(`${uitslag}-2-eindscherm.jpg`); klaar = true; }
+    frames.push(Buffer.from(data, "base64"));
+    if (st < stills.length && nu >= stills[st][0]) { await foto(`versie${v}-${stills[st][1]}.jpg`); st++; }
+    if (!kaart) kaart = await ev(`(() => { const k = document.querySelector("[data-eind-kaart]"); if (!k) return null; const r = k.getBoundingClientRect(); return r.width > 10 ? { x: r.left + r.width / 2, y: r.top + r.height / 2 } : null; })()`);
+    if (kaart && st >= stills.length) break;
   }
-  /* filmpje: laatste ±9 s, op de helft verkleind */
-  const uitFrames = frames.slice(-60);
+  if (kaart) {
+    await tik(kaart);
+    for (let i = 0; i < 12; i++) { frames.push(Buffer.from((await stuur("Page.captureScreenshot", { format: "jpeg", quality: 60 }, s)).data, "base64")); await wacht(100); }
+    await foto(`versie${v}-8-na-de-tik.jpg`);
+  }
   const B = 640, H = 360;
-  const raws = await Promise.all(uitFrames.map((f) => sharp(f.b).resize(B, H).removeAlpha().raw().toBuffer()));
-  if (raws.length) {
-    await sharp(Buffer.concat(raws), { raw: { width: B, height: H * raws.length, channels: 3, pageHeight: H } }).gif({ delay: raws.map(() => 150), loop: 0 }).toFile(join(UIT, `${uitslag}-3-filmpje.gif`));
-  }
-  console.log(uitslag, klaar ? "ok" : "geen eindscherm gezien", raws.length, "beelden");
+  const raws = await Promise.all(frames.map((f) => sharp(f).resize(B, H).removeAlpha().raw().toBuffer()));
+  if (raws.length) await sharp(Buffer.concat(raws), { raw: { width: B, height: H * raws.length, channels: 3, pageHeight: H } }).gif({ delay: raws.map(() => 120), loop: 0 }).toFile(join(UIT, `versie${v}-filmpje.gif`));
+  console.log("versie", v, raws.length, "beelden", kaart ? "kaart ok" : "geen kaart");
 }
 process.exit(0);

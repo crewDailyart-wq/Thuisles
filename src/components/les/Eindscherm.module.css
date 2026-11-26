@@ -434,3 +434,184 @@
 @keyframes tekenVinkje {
   to { stroke-dashoffset: 0; }
 }
+
+/* ======================= nieuw eindscherm (26 november 2026): alles 1 voor 1, geen paneel ======================= */
+.groep {
+  position: absolute;
+  left: 0;
+  top: 90px;
+  width: 960px;
+  height: 460px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  transform-origin: 50% 0;
+  transition: transform 0.9s cubic-bezier(0.45, 0.05, 0.25, 1), opacity 0.6s ease-out;
+}
+.groepGroot {
+  transform: none;
+  opacity: 1;
+}
+/* Versie 1: ster en sleutel schuiven klein naar boven en blijven staan. */
+.groepKlein {
+  transform: translateY(-80px) scale(0.46);
+  opacity: 1;
+}
+/* Versie 2: ster en sleutel verdwijnen; alleen leerzin en kaart blijven over. */
+.groepWeg {
+  transform: scale(0.5);
+  opacity: 0;
+  pointer-events: none;
+}
+.groepRij {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 54px;
+}
+.sterWrap {
+  position: relative;
+  width: 330px;
+  height: 330px;
+  perspective: 900px;
+}
+.sterDraai {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  animation: sterDraai 1.7s cubic-bezier(0.25, 0.8, 0.3, 1) both;
+  filter: drop-shadow(0 0 26px rgba(255, 214, 90, 0.75));
+}
+@keyframes sterDraai {
+  0% { transform: scale(0.05) rotateY(0deg) rotateZ(-30deg); opacity: 0; filter: brightness(1) drop-shadow(0 0 10px rgba(255, 214, 90, 0.4)); }
+  12% { opacity: 1; }
+  45% { transform: scale(1.25) rotateY(720deg) rotateZ(0deg); filter: brightness(2.4) drop-shadow(0 0 70px rgba(255, 246, 176, 1)); }
+  75% { transform: scale(0.96) rotateY(1010deg); filter: brightness(1.4) drop-shadow(0 0 50px rgba(255, 230, 140, 0.95)); }
+  100% { transform: scale(1) rotateY(1080deg); opacity: 1; filter: brightness(1) drop-shadow(0 0 28px rgba(255, 214, 90, 0.8)); }
+}
+/* De lichtflits: een felle wolk die uitzet en weer zachter wordt. */
+.lichtstoot {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 760px;
+  height: 760px;
+  margin: -380px 0 0 -380px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255, 252, 224, 0.98) 0%, rgba(255, 224, 120, 0.62) 22%, rgba(255, 190, 60, 0.18) 46%, rgba(255, 190, 60, 0) 68%);
+  pointer-events: none;
+  animation: lichtstoot 1.9s ease-out both;
+}
+@keyframes lichtstoot {
+  0% { transform: scale(0.1); opacity: 0; }
+  30% { transform: scale(0.9); opacity: 1; }
+  45% { transform: scale(1.15); opacity: 1; }
+  100% { transform: scale(0.8); opacity: 0.4; }
+}
+/* Draaiende lichtstralen achter de ster. */
+.stralen {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 900px;
+  height: 900px;
+  margin: -450px 0 0 -450px;
+  border-radius: 50%;
+  background: repeating-conic-gradient(from 0deg, rgba(255, 244, 180, 0.5) 0deg 7deg, rgba(255, 244, 180, 0) 7deg 22deg);
+  -webkit-mask-image: radial-gradient(circle, #000 6%, rgba(0, 0, 0, 0.55) 30%, transparent 62%);
+  mask-image: radial-gradient(circle, #000 6%, rgba(0, 0, 0, 0.55) 30%, transparent 62%);
+  pointer-events: none;
+  animation: stralenIn 1.2s ease-out 0.35s both, stralenDraai 14s linear 0.35s infinite;
+}
+@keyframes stralenIn {
+  0% { opacity: 0; }
+  100% { opacity: 0.85; }
+}
+@keyframes stralenDraai {
+  to { rotate: 360deg; }
+}
+/* De sleutel staat naast de ster zonder de ster te verschuiven: de ster blijft precies in het midden. */
+.sleutelNaast {
+  position: absolute;
+  left: calc(100% + 30px);
+  top: 50%;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  white-space: nowrap;
+  animation: sleutelPop 0.55s cubic-bezier(0.3, 1.4, 0.5, 1) both;
+}
+@keyframes sleutelPop {
+  0% { transform: translateY(-50%) scale(0.2); opacity: 0; }
+  55% { transform: translateY(-50%) scale(1.12); opacity: 1; }
+  100% { transform: translateY(-50%) scale(1); opacity: 1; }
+}
+.sleutelGroot2 {
+  width: 118px;
+  height: 118px;
+  filter: drop-shadow(0 0 14px rgba(255, 214, 90, 0.7));
+}
+.sleutelGetal2 {
+  min-width: 70px;
+  font-size: 104px;
+  font-weight: 800;
+  line-height: 1;
+  text-shadow: 0 3px 5px rgba(0, 0, 0, 0.35);
+}
+.lesAf2 {
+  margin: 14px 0 0;
+  font-size: 80px;
+  font-weight: 800;
+  line-height: 84px;
+  text-shadow: 0 0 18px rgba(255, 214, 90, 0.75), 0 2px 3px rgba(0, 0, 0, 0.3);
+  animation: omhoog 0.5s ease-out 0.9s both;
+}
+.leer2 {
+  position: absolute;
+  left: 0;
+  top: 262px;
+  width: 960px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 18px;
+  animation: omhoog 0.5s ease-out both;
+}
+.leer2 p {
+  margin: 0;
+  max-width: 640px;
+  font-size: 38px;
+  font-weight: 700;
+  line-height: 46px;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.35);
+}
+.leer2Plaatje {
+  height: 84px;
+  width: auto;
+}
+/* Versie 2: de leerzin staat alleen, groter en in het midden. */
+.leer2Midden {
+  top: 150px;
+  flex-direction: column;
+  gap: 22px;
+}
+.leer2Midden p {
+  max-width: 700px;
+  font-size: 48px;
+  line-height: 58px;
+  text-align: center;
+}
+.leer2PlaatjeGroot {
+  height: 170px;
+}
+.kaartV1 {
+  left: 50%;
+  bottom: auto;
+  top: 430px;
+}
+.kaartV2 {
+  left: 50%;
+  bottom: auto;
+  top: 470px;
+}

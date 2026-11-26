@@ -69,7 +69,9 @@ export type Lesgeluid =
   | "feest1"
   | "feest2"
   | "feest3"
-  | "sleutel";
+  | "sleutel"
+  /* De ster die draait en oplicht (Sara, 26 nov 2026): 2 versies (ster-draai-1/2.wav) om uit te kiezen; standaard 1, `?draai=2` voor de andere. */
+  | "sterDraai";
 /* Sleutelgeluid (Sara, 25 nov 2026): een kort pling bij elke nieuwe sleutel; 3 versies (pling-1/2/3.wav) om uit te kiezen.
    Sara koos pling-2 (25 nov 2026): dat is de standaard; met `?pling=1` of `?pling=3` in het lesadres hoor je een andere. Na haar keuze valt de rest weg. */
 
@@ -155,6 +157,7 @@ const BESTANDEN: Partial<Record<Lesgeluid, { bestand: string; vol: number; pad?:
   feest2: { bestand: "feest-2", vol: 0.42, pad: "/geluiden/feest-2.wav" },
   feest3: { bestand: "feest-3", vol: 0.42, pad: "/geluiden/feest-3.wav" },
   sleutel: { bestand: "pling", vol: 0.35, pad: "/geluiden/pling-2.wav" },
+  sterDraai: { bestand: "ster-draai", vol: 0.4, pad: "/geluiden/ster-draai-1.wav" },
 };
 
 const MAP = "/geluiden/les/";
@@ -202,6 +205,13 @@ export function laadEindgeluiden(): void {
         if (n === "1" || n === "3") pad = `/geluiden/pling-${n}.wav`;
       } catch {
         /* standaard pling-1 */
+      }
+    }
+    if (naam === "sterDraai") {
+      try {
+        if (new URLSearchParams(window.location.search).get("draai") === "2") pad = "/geluiden/ster-draai-2.wav";
+      } catch {
+        /* standaard ster-draai-1 */
       }
     }
     fetch(pad)
