@@ -2212,3 +2212,12 @@ De kleur hangt af van het **percentage goed** (goed in 1 keer, over alle vragen 
 | onder 30% | rood | brons (leeg bij 0%) |
 
 De randen zijn afgeleid uit de gemeten punten; de exacte rand is niet apart gemeten. Een afgemaakte les kan het kind niet zelf opnieuw doen (bij Junior Einstein moet een ouder dat vrijgeven); dat gedrag is niet getest en niet overgenomen.
+
+### Aanvulling op de kleurregels (26 november 2026, gebouwd in Tellen extra)
+
+Besluit Sara: dezelfde kleurtrap; het kind krijgt altijd een ster voor het afmaken; een sleutel per vraag is maar 1 keer te verdienen en bij opnieuw spelen niet (ze past dit later eventueel aan).
+Mijn keuzes, graag even bevestigen:
+1. **Herhaal-teken na 2 dagen** (Sara schreef "1 tot 3 dagen": het midden). Staat in `src/lib/les-kleuren.ts` (`HERHAAL_NA_DAGEN`).
+2. **Een herhaling verlaagt de kleur nooit.** Is de herhaling slechter, dan blijft de oude kleur staan (alleen de datum schuift door). Bij Junior Einstein heb ik dat niet kunnen testen.
+3. **Tweede ster** komt 1 keer, als een herhaling 95% of meer haalt en de eerste keer minder was.
+4. **Het onderwerpenscherm** (`/voorbeeld/onderwerpen`) is nieuw en voorlopig simpel: kaarten van alle gouden lessen; alleen Tellen extra heeft de kleur en het vinkje (de proef).

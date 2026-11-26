@@ -96,8 +96,12 @@ export interface Lesgids {
    * Proef eindscherm: zet het nieuwe eindscherm in beeld (feestmoment, ster met "Les af!", sleutels, leerzin, knoppen
    * "Volgende les" en "Terug"). Alleen in lessen met `eindscherm`. De les zegt daarna zelf 1 eindzin.
    */
-  eindscherm?(): void;
-  /** Na de eindzin: de leerzin hardop, even rust en dan vanzelf terug naar de onderwerpen (Sara, 25 nov 2026). Alleen in lessen met `eindscherm`. */
+  eindscherm?(r?: { percentage: number; denkfouten: string[] }): void;
+  /**
+   * Na de eindzin (26 nov 2026): de leerzin hardop, dan zegt Bliepo `eindKaartZin` ("Tik op de kaart om hem af te vinken."),
+   * de kaart met het onderwerp licht zacht op en wacht op de tik. Na de tik: vinkje + kleur (les-kleuren.ts), het resultaat
+   * wordt bewaard en het kind gaat terug naar de onderwerpen. Alleen in lessen met `eindscherm`.
+   */
   eindAfsluiten?(): Promise<void>;
   /**
    * Alleen op de voorbeeldpagina, als test (`&snel=1`, `&snel=alles`, `&snel=moeite`): de les slaat alles over en laat
@@ -253,6 +257,9 @@ export type Lesdraaiboek = {
   eindLeerzin?: string;
   /** Bij `eindscherm`: een plaatje uit de les bij de leerzin (pad in public/, bijvoorbeeld "/voorwerpen/appel.png"). */
   eindPlaatje?: string;
+  /** Bij `eindscherm`: het onderwerp op de kaart ("Fruit tellen") en wat Bliepo zegt als de kaart aangetikt moet worden. */
+  eindOnderwerp?: string;
+  eindKaartZin?: string;
   /** Welke tegels er als lijntekening op de kaart staan. */
   kaarttegels?: number[];
   /** Of een eigen lijntekening voor op de kaart (SVG van 244 × 190). */

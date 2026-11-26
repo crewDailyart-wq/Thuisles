@@ -65,7 +65,7 @@ export default async function Pagina({
     /* De leestekst uit de stijlkiezer (/admin/stijl) geldt ook voor de les; zonder keuze blijft het Work Sans. */
     <div className={proef ? `${letter.variable} ${proefLetter.variable}` : letter.variable} data-lettertype={proef ? "figtree" : undefined} style={{ ["--font-les" as string]: `var(--stijl-lettertype, ${letter.style.fontFamily})` }}>
       <StijlVariabelen />
-      <LesVoorbeeld id={les} naam={naam ?? ""} uitleg={process.env.NODE_ENV !== "production" && uitleg === "nee"} bewerken={bewerken} volgendeHref={volgendeHref} overzichtHref="/alle-lessen.html" snelEinde={snelEinde} />
+      <LesVoorbeeld id={les} naam={naam ?? ""} uitleg={process.env.NODE_ENV !== "production" && uitleg === "nee"} bewerken={bewerken} volgendeHref={volgendeHref} overzichtHref="/alle-lessen.html" onderwerpenHref="/voorbeeld/onderwerpen" snelEinde={snelEinde} />
     </div>
   );
 }

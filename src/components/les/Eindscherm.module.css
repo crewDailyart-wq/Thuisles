@@ -367,3 +367,70 @@
   align-items: center;
   gap: 22px;
 }
+
+/* ---------- de kaart met het onderwerp (26 nov 2026): licht zacht op, na de tik vinkje en kleur ---------- */
+.kaart {
+  position: absolute;
+  left: 50%;
+  bottom: 38px;
+  width: 340px;
+  height: 100px;
+  margin-left: -170px;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 0 16px;
+  border-radius: 22px;
+  border: 3px solid rgba(235, 252, 255, 0.85);
+  background: rgba(255, 255, 255, 0.16);
+  color: #ffffff;
+  font: inherit;
+  cursor: pointer;
+  text-align: left;
+  animation: omhoog 0.45s ease-out both;
+}
+.kaartLicht {
+  animation: omhoog 0.45s ease-out both, kaartGloed 1.8s ease-in-out 0.5s infinite;
+}
+@keyframes kaartGloed {
+  0%, 100% { box-shadow: 0 0 10px rgba(120, 220, 255, 0.35); border-color: rgba(235, 252, 255, 0.75); }
+  50% { box-shadow: 0 0 30px rgba(120, 220, 255, 0.95); border-color: rgba(255, 255, 255, 1); }
+}
+.kaartKlaar {
+  cursor: default;
+  border-color: var(--kaartkleur);
+  background: rgba(255, 255, 255, 0.22);
+  box-shadow: 0 0 26px var(--kaartkleur);
+  animation: kaartKlaar 0.5s cubic-bezier(0.3, 1.4, 0.5, 1) both;
+}
+@keyframes kaartKlaar {
+  0% { transform: scale(1); }
+  45% { transform: scale(1.07); }
+  100% { transform: scale(1); }
+}
+.kaartPlaatje {
+  height: 64px;
+  width: auto;
+  flex: none;
+}
+.kaartTitel {
+  flex: 1;
+  font-size: 30px;
+  font-weight: 800;
+  line-height: 34px;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.35);
+}
+.kaartRing {
+  flex: none;
+  width: 44px;
+  height: 44px;
+}
+.vinkje {
+  stroke-dasharray: 40;
+  stroke-dashoffset: 40;
+  animation: tekenVinkje 0.45s ease-out 0.1s forwards;
+}
+@keyframes tekenVinkje {
+  to { stroke-dashoffset: 0; }
+}

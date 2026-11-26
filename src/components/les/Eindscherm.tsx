@@ -19,6 +19,7 @@
 
 import { useEffect, useRef, useState, type CSSProperties } from "react";
 import { speelLesgeluid } from "@/lib/lesgeluiden";
+import { kleurCss, kleurVoorPercentage } from "@/lib/les-kleuren";
 import s from "./Eindscherm.module.css";
 
 export type Eindversie = "a" | "b";
@@ -183,12 +184,23 @@ export function Eindscherm({
   sleutels,
   leerzin,
   plaatje,
+  onderwerp,
+  percentage,
+  opAfgevinkt,
 }: {
   versie: Eindversie;
   sleutels: number;
   leerzin?: string;
   plaatje?: string;
+  /** De kaart met het onderwerp van de les (26 nov 2026): licht zacht op tot het kind erop tikt. */
+  onderwerp?: string;
+  /** Percentage goed in 1 keer; bepaalt de kleur van de kaart na de tik (les-kleuren.ts). */
+  percentage?: number;
+  /** Na de tik op de kaart (de kaart heeft dan vinkje en kleur). */
+  opAfgevinkt?: () => void;
 }) {
+  const [afgevinkt, setAfgevinkt] = useState(false);
+  const kleur = kleurVoorPercentage(percentage ?? 0);
   const [fase, setFase] = useState(0);
   const [geteld, setGeteld] = useState(0);
   const leerzinMs = SLEUTELS_MS + (sleutels > 0 ? SLEUTEL_VLIEG_MS + sleutels * SLEUTEL_STAP_MS + 300 : 0);
@@ -253,6 +265,34 @@ export function Eindscherm({
       <p>{leerzin}</p>
     </div>
   );
+  const kaart = fase >= 4 && onderwerp && (
+    <button
+      type="button"
+      className={afgevinkt ? `${s.kaart} ${s.kaartKlaar}` : `${s.kaart} ${s.kaartLicht}`}
+      style={afgevinkt ? ({ "--kaartkleur": kleurCss(kleur) } as CSSProperties) : undefined}
+      data-eind-kaart=""
+      data-afgevinkt={afgevinkt ? kleur.naam : ""}
+      aria-label={`${onderwerp}, tik om af te vinken`}
+      disabled={afgevinkt}
+      onClick={() => {
+        if (afgevinkt) return;
+        setAfgevinkt(true);
+        opAfgevinkt?.();
+      }}
+    >
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      {plaatje && <img src={plaatje} alt="" className={s.kaartPlaatje} draggable={false} />}
+      <span className={s.kaartTitel}>{onderwerp}</span>
+      <span className={s.kaartRing} aria-hidden="true">
+        <svg viewBox="0 0 44 44" width="44" height="44">
+          <circle cx="22" cy="22" r="18" fill="none" stroke="rgba(255,255,255,0.35)" strokeWidth="6" />
+          {afgevinkt && <circle cx="22" cy="22" r="18" fill="none" stroke="var(--kaartkleur)" strokeWidth="6" />}
+          {afgevinkt && <path d="M13 23 L20 30 L32 15" fill="none" stroke="#ffffff" strokeWidth="4.5" strokeLinecap="round" strokeLinejoin="round" className={s.vinkje} />}
+        </svg>
+      </span>
+    </button>
+  );
+
   return (
     <div className={s.eind} data-eindscherm={versie} aria-live="polite">
       <Confetti aantal={b ? 110 : 60} duur={b ? 2000 : 1500} />
@@ -266,6 +306,7 @@ export function Eindscherm({
             {sleutelRij}
             {leer}
           </div>
+          {kaart}
         </div>
       ) : (
         <div className={s.kolom}>
@@ -273,6 +314,7 @@ export function Eindscherm({
           {lesAf}
           {sleutelRij}
           {leer}
+          {kaart}
         </div>
       )}
     </div>

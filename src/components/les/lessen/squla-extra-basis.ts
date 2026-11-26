@@ -35,7 +35,7 @@ export const VANGNET_MS = 20000;
 
 export type Uitkomst = "goed" | "naFout" | "samen";
 
-type Staat = { totaal: number; vorige: Map<Rijtje, number>; zinNr: number; robotNr: number; naamVraag: number; naamKeer: number; namen: number; opRij: number; momenten: Set<string>; haak: number; goed: number; fout: number; vraag: number; laatste: boolean; eerste: Map<string, Uitkomst>; vraagFouten: Map<string, string[]>; log: unknown[] };
+type Staat = { totaal: number; vorige: Map<Rijtje, number>; zinNr: number; robotNr: number; naamVraag: number; naamKeer: number; namen: number; opRij: number; momenten: Set<string>; haak: number; goed: number; fout: number; vraag: number; laatste: boolean; eerste: Map<string, Uitkomst>; vraagFouten: Map<string, string[]>; alleDenkfouten: string[]; log: unknown[] };
 
 export function schud<T>(lijst: T[]): T[] {
   const a = [...lijst];
@@ -50,7 +50,7 @@ export function maakBasis(LES_ID: string) {
   const STAAT = new WeakMap<Lesgids, Staat>();
   const st = (l: Lesgids): Staat => {
     let s = STAAT.get(l);
-    if (!s) STAAT.set(l, (s = { totaal: 0, vorige: new Map(), zinNr: 0, robotNr: -99, naamVraag: -99, naamKeer: 0, namen: 0, opRij: 0, momenten: new Set(), haak: 0, goed: 0, fout: 0, vraag: 0, laatste: false, eerste: new Map(), vraagFouten: new Map(), log: [] }));
+    if (!s) STAAT.set(l, (s = { totaal: 0, vorige: new Map(), zinNr: 0, robotNr: -99, naamVraag: -99, naamKeer: 0, namen: 0, opRij: 0, momenten: new Set(), haak: 0, goed: 0, fout: 0, vraag: 0, laatste: false, eerste: new Map(), vraagFouten: new Map(), alleDenkfouten: [], log: [] }));
     return s;
   };
 
@@ -97,6 +97,7 @@ export function maakBasis(LES_ID: string) {
     if (s.totaal > 0) l.voortgang?.(Math.min(1, s.eerste.size / s.totaal));
     const fouten = s.vraagFouten.get(vraag) ?? [];
     s.vraagFouten.delete(vraag);
+    s.alleDenkfouten.push(...fouten);
     if (typeof window === "undefined") return uit;
     const naam = { goed: "goed in één keer", naFout: "goed na een fout", samen: "samen gedaan" } as const;
     /* Een sleutel per vraag is maar 1 keer te verdienen, ook bij opnieuw spelen (Sara, 25 nov 2026, 15.52): de server weet of

@@ -569,6 +569,21 @@ function maakTabellen(d: DatabaseSync) {
       primary key (kind_id, les_id, soort)
     );
 
+    /*
+      Het resultaat van een les per kind (besluit Sara, 26 november 2026; KEUZES-VOOR-SARA.md, "Kleurregels"). Alleen: de
+      kleur, het percentage goed, de denkfouten (lijst, als tekst) en de datum, zodat het ouderdashboard dit later kan
+      laten zien. Geen andere gegevens. Een herhaling overschrijft alleen als het percentage gelijk of hoger is.
+    */
+    create table if not exists les_resultaten (
+      kind_id    text not null references kinderen (id) on delete cascade,
+      les_id     text not null,
+      kleur      text not null,
+      percentage integer not null check (percentage between 0 and 100),
+      denkfouten text not null default '[]',
+      datum      text not null,
+      primary key (kind_id, les_id)
+    );
+
     create index if not exists sleutels_op_kind on sleutel_mutaties (kind_id);
     create unique index if not exists sleutels_per_bron
       on sleutel_mutaties (reden, bron_id) where bron_id is not null;

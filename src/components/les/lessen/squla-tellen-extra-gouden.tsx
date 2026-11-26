@@ -28,6 +28,7 @@ import type { Lesdraaiboek, Lesgids, Vlakgebeurtenis } from "../soort";
 import { TelExtraVlak, type ExtraCel, type TelExtraProps } from "../vlakken/squla-tellen-extra-vlak";
 import type { Soort } from "../vlakken/squla-tellen-tekenen";
 import { speelLesgeluid } from "@/lib/lesgeluiden";
+import { percentageGoed } from "@/lib/les-kleuren";
 import { zegTelwoord, zetTestAntwoord } from "./squla-hulp";
 import { maakBasis, schud, type Fout } from "./squla-extra-basis";
 import { deeltStuk, maakKiezer } from "./nooit-dubbel";
@@ -514,6 +515,8 @@ const gouden: Lesdraaiboek = {
   eindscherm: true,
   eindLeerzin: "Je kunt nu fruit tellen tot 10.",
   eindPlaatje: "/voorwerpen/appel.png",
+  eindOnderwerp: "Fruit tellen",
+  eindKaartZin: ZIN.eindTikKaart,
   async speel(l) {
     B.log(l, "start");
     if (l.snelEinde) return snelNaarEinde(l);
@@ -565,6 +568,26 @@ function uitslag(l: Lesgids): "alles" | "gewoon" | "moeite" {
   return B.veelFouten(l) ? "moeite" : "gewoon";
 }
 
+/**
+ * Percentage goed in 1 keer en de denkfouten van deze speelbeurt (voor de kleur van de kaart en het bewaren). Op de
+ * voorbeeldpagina kun je met `&snel=p72` een percentage forceren (alleen om elke kleur te kunnen zien).
+ */
+function resultaat(l: Lesgids): { percentage: number; denkfouten: string[] } {
+  if (l.snelEinde) {
+    let p = l.snelEinde === "alles" ? 100 : l.snelEinde === "moeite" ? 40 : 80;
+    try {
+      const m = /^p(\d{1,3})$/.exec(new URLSearchParams(window.location.search).get("snel") ?? "");
+      if (m) p = Math.min(100, Number(m[1]));
+    } catch {
+      /* standaard */
+    }
+    return { percentage: p, denkfouten: [] };
+  }
+  const s = B.st(l);
+  const goed = [...s.eerste.values()].filter((x) => x === "goed").length;
+  return { percentage: percentageGoed(goed, Math.max(s.totaal, s.eerste.size)), denkfouten: [...s.alleDenkfouten] };
+}
+
 /** Het eindscherm met 1 eindzin van Bliepo (geen pijl, geen opdracht: de knoppen staan in beeld). */
 async function eindeScherm(l: Lesgids) {
   void l.zeg().catch(() => {});
@@ -572,7 +595,7 @@ async function eindeScherm(l: Lesgids) {
   /* Het laatste sleuteltje vliegt nog (±0,9 s): eerst laten aankomen, dan pas het feest. */
   await l.wacht(1000);
   B.log(l, "eindscherm");
-  l.eindscherm?.();
+  l.eindscherm?.(resultaat(l));
   /* Bliepo praat pas als het feestgeluid (±1,4 s) voorbij is en de ster komt. */
   await l.wacht(1500);
   const u = uitslag(l);

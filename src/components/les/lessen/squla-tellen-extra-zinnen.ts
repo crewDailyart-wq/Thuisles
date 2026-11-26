@@ -148,6 +148,8 @@ export const ZIN = {
   eindAllesGoed: [`Wauw, jij had alles in ${gw(1)} keer goed!`, `Alles in ${gw(1)} keer goed, wat knap van jou!`, `Jij deed alles in ${gw(1)} keer goed, super!`, `Alles in ${gw(1)} keer goed, jij hebt alle sleutels!`],
   eindGewoon: ["Hoera, jij hebt de les helemaal af!", "Klaar! Wat heb jij het goed gedaan!", "Kijk, een gouden ster voor jou!", "De les is af, wat ben jij goed bezig!"],
   eindMoeite: ["Wat heb jij goed geoefend, knap hoor!", "Jij bleef proberen en nu is de les af!", "Jij hebt hard gewerkt, de hele les is af!", "Goed geoefend, deze ster is voor jou!"],
+  /** Na de leerzin (Sara, 26 nov 2026, haar eigen woorden): de kaart met het onderwerp licht op en moet aangetikt worden. */
+  eindTikKaart: "Tik op de kaart om hem af te vinken.",
   /** Aanmoediging bij het hulphandje tijdens samen tellen en samen maken (het kind moet tikken; 14.35). */
   aanmoedigTikken: ["Je bent goed bezig.", "Jij kunt dit.", "Het gaat goed zo.", "Probeer het maar.", "Toe maar, je doet het goed."],
   weerGekozen: (f: Fruit) => `Je koos weer de ${f.naam}.`,

@@ -14,6 +14,7 @@ import { voorbeeldMagBewaren } from "@/lib/data/lesuitkomsten-voorbeeld";
 import { bewaarLesUitkomst, type LesUitkomst } from "@/lib/data/lesuitkomsten";
 import { beloonInEenKeer } from "@/lib/data/sleutels";
 import { beloonSter, haalSterren } from "@/lib/data/sterren";
+import { bewaarResultaat } from "@/lib/data/lesresultaten";
 
 export async function bewaarUitkomst(invoer: { lesId: string; vraagId: string; uitkomst: LesUitkomst; denkfouten: string[]; pogingen: number }): Promise<{ ok: boolean; nieuweSleutel?: boolean }> {
   try {
@@ -52,5 +53,25 @@ export async function haalSterrenTotaal(): Promise<{ aantal: number }> {
     return { aantal: kind ? haalSterren(kind.id).aantal : 0 };
   } catch {
     return { aantal: 0 };
+  }
+}
+
+/**
+ * Na de tik op de kaart (26 nov 2026): het resultaat van de les bewaren: alleen de kleur (volgt uit het percentage), het
+ * percentage goed in 1 keer, de denkfouten en de datum. Zelfde regels als hierboven: alleen voor het gekozen kind, op de
+ * voorbeeldpagina alleen voor Testkind, nooit een fout of doorsturen. Een herhaling kan de kleur alleen verbeteren; haalt
+ * de herhaling de beste kleur, dan komt de tweede ster erbij (`nieuweHerhalingsster`).
+ */
+export async function bewaarLesResultaat(invoer: { lesId: string; percentage: number; denkfouten: string[] }): Promise<{ ok: boolean; nieuweHerhalingsster?: boolean }> {
+  try {
+    if (!/^[a-z0-9-]{1,80}$/.test(String(invoer.lesId))) return { ok: false };
+    const kind = await huidigKind();
+    if (!kind) return { ok: false };
+    const kop = await headers();
+    if (!voorbeeldMagBewaren(kop.get("referer"), kind.roepnaam, kop.get("next-router-state-tree"))) return { ok: false };
+    const r = bewaarResultaat(kind.id, invoer.lesId, Number(invoer.percentage), Array.isArray(invoer.denkfouten) ? invoer.denkfouten.map(String) : []);
+    return { ok: true, nieuweHerhalingsster: r.nieuweHerhalingsster };
+  } catch {
+    return { ok: false };
   }
 }

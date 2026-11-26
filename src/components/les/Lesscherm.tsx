@@ -45,7 +45,7 @@ import "@/components/oefenen/opdracht-nieuw.css";
 import { Voortgangsbalk } from "./Voortgangsbalk";
 import { Eindscherm, Sleutelteller, VliegendeSleutel, leesEindversie, type Eindversie } from "./Eindscherm";
 import es from "./Eindscherm.module.css";
-import { bewaarLesAfgemaakt, haalSterrenTotaal } from "@/app/lesuitkomstacties";
+import { bewaarLesAfgemaakt, bewaarLesResultaat, haalSterrenTotaal } from "@/app/lesuitkomstacties";
 
 /*
   Het ontwerp van de lessen (23 oktober 2026, opdracht eigenaar): "nieuw" =
@@ -449,6 +449,7 @@ export function Lesspeler({
   bewerkTekst,
   volgendeHref,
   overzichtHref,
+  onderwerpenHref,
   snelEinde,
 }: {
   les: Lesdraaiboek;
@@ -459,6 +460,8 @@ export function Lesspeler({
   volgendeHref?: string;
   /** Proef eindscherm: het lesoverzicht (voor "Terug" en als er geen volgende les is); zonder: `terugHref`. */
   overzichtHref?: string;
+  /** Waar het kind na het afvinken van de kaart heen gaat (het onderwerpenscherm); zonder: `overzichtHref`. */
+  onderwerpenHref?: string;
   /** Alleen de voorbeeldpagina (`&snel=1`): meteen naar het eindscherm (zie Lesgids.snelEinde). */
   snelEinde?: Lesgids["snelEinde"];
   /** Praten met Bliepo (22 oktober 2026): alleen als de ouder het aanzette. */
@@ -482,6 +485,7 @@ export function Lesspeler({
       bewerkTekst={bewerkTekst}
       volgendeHref={volgendeHref}
       overzichtHref={overzichtHref}
+      onderwerpenHref={onderwerpenHref}
       snelEinde={snelEinde}
     />
   );
@@ -498,6 +502,7 @@ function Lesscherm({
   bewerkTekst,
   volgendeHref,
   overzichtHref,
+  onderwerpenHref,
   snelEinde,
 }: {
   les: Lesdraaiboek;
@@ -510,6 +515,8 @@ function Lesscherm({
   bewerkTekst?: (bron: string) => void;
   volgendeHref?: string;
   overzichtHref?: string;
+  /** Waar het kind na het afvinken van de kaart heen gaat (het onderwerpenscherm); zonder: `overzichtHref`. */
+  onderwerpenHref?: string;
   snelEinde?: Lesgids["snelEinde"];
 }) {
   const klaarMelding = useRef(onKlaar);
@@ -547,7 +554,9 @@ function Lesscherm({
   const [sterren, setSterren] = useState(0);
   const [sterTik, setSterTik] = useState(0);
   const [vliegers, setVliegers] = useState<number[]>([]);
-  const [eind, setEind] = useState<null | { versie: Eindversie; sleutels: number }>(null);
+  const [eind, setEind] = useState<null | { versie: Eindversie; sleutels: number; percentage: number }>(null);
+  const afvinkRef = useRef<null | (() => void)>(null);
+  const eindDenkRef = useRef<string[]>([]);
   const snelRef = useRef(snelEinde);
   useEffect(() => {
     if (les.eindscherm) laadEindgeluiden();
@@ -922,9 +931,10 @@ function Lesscherm({
                 speelLesgeluid("sleutel");
               }, 900);
             },
-            eindscherm: () => {
+            eindscherm: (r) => {
               zet((b) => ({ ...b, bediening: null, kaart: null, som: null, hand: false }));
-              setEind({ versie: leesEindversie(), sleutels: sleutelNr });
+              eindDenkRef.current = r?.denkfouten ?? [];
+              setEind({ versie: leesEindversie(), sleutels: sleutelNr, percentage: r?.percentage ?? 0 });
               /* De ster voor het afmaken (15.52): 1 keer per les per kind, stil zonder gekozen kind. Niet bij de snelle test. */
               if (!snelRef.current)
                 void bewaarLesAfgemaakt(les.id)
@@ -936,14 +946,22 @@ function Lesscherm({
                   })
                   .catch(() => {});
             },
-            /* Na Bliepo's eindzin: de leerzin hardop (Sara, 25 nov 2026), even rust, en dan vanzelf terug naar de onderwerpen.
-               Niet bij de snelle test (`snel`) en niet met `?blijf=1` (voor schermfoto's en de speelcontrole). */
+            /* Na Bliepo's eindzin (26 nov 2026): de leerzin hardop, dan "Tik op de kaart om hem af te vinken.", de kaart licht
+               zacht op en wacht op de tik. Na de tik: vinkje en kleur (les-kleuren.ts), het resultaat wordt bewaard, even
+               kijken en dan terug naar de onderwerpen. Niet met `?blijf=1` (voor schermfoto's en de speelcontrole):
+               daar blijft het eindscherm staan. De snelle test (`snel`) gaat wel terug, maar bewaart niets. */
             eindAfsluiten: async () => {
-              for (let i = 0; i < 40 && levend && !document.querySelector("[data-eind-leerzin]"); i++) await new Promise((r) => setTimeout(r, 100));
+              for (let i = 0; i < 60 && levend && !document.querySelector("[data-eind-kaart]"); i++) await new Promise((r) => setTimeout(r, 100));
               if (!levend) return;
               if (les.eindLeerzin) await spreek([les.eindLeerzin]);
               if (!levend) return;
-              await new Promise((r) => setTimeout(r, 2500));
+              const getikt = new Promise<void>((klaar) => {
+                afvinkRef.current = klaar;
+              });
+              if (les.eindKaartZin) void spreek([les.eindKaartZin]);
+              await getikt;
+              if (!levend) return;
+              await new Promise((r) => setTimeout(r, 2600));
               const blijf = (() => {
                 try {
                   return new URLSearchParams(window.location.search).get("blijf") === "1";
@@ -951,8 +969,8 @@ function Lesscherm({
                   return false;
                 }
               })();
-              if (!levend || snelRef.current || blijf) return;
-              window.location.href = overzichtHref ?? terugHref ?? "/alle-lessen.html";
+              if (!levend || blijf) return;
+              window.location.href = onderwerpenHref ?? overzichtHref ?? terugHref ?? "/alle-lessen.html";
             },
           }
         : {}),
@@ -1601,6 +1619,13 @@ function Lesscherm({
             sleutels={eind.sleutels}
             leerzin={les.eindLeerzin}
             plaatje={les.eindPlaatje}
+            onderwerp={les.eindOnderwerp}
+            percentage={eind.percentage}
+            opAfgevinkt={() => {
+              /* Alleen niet bij de snelle test; het resultaat blijft stil zonder gekozen kind. */
+              if (!snelRef.current) void bewaarLesResultaat({ lesId: les.id, percentage: eind.percentage, denkfouten: eindDenkRef.current }).catch(() => {});
+              afvinkRef.current?.();
+            }}
 />
         )}
         {!nieuw && tekstblok}

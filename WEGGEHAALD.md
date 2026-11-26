@@ -1265,3 +1265,6 @@ Per regel: datum · les · wat · reden · teruggezet?
 - **Weg uit het eindscherm (alleen Tellen extra):** de knoppen "Volgende les", "Terug" en "Nog een keer". Reden: Sara wil het simpel; het kind gaat na de leerzin vanzelf terug naar de onderwerpen. Versie A bestaat nog in de code (`?eind=a`) maar is niet meer de standaard.
 - **Weg:** het oude sleutelgeluid `beloning.wav` als sleutelgeluid (het bestand zelf blijft staan); een nieuwe sleutel speelt nu een pling (pling-1/2/3, Sara kiest).
 - **Weg:** de feestgeluiden feest-2 en feest-3 uit het eindscherm (de bestanden blijven in de map geluiden).
+
+## 26 november 2026 — eindscherm Tellen extra: kaart met kleur
+- **Veranderd:** na de leerzin gaat het kind niet meer vanzelf terug; het moet op de kaart tikken (besluit Sara). De terugweg is nu het onderwerpenscherm (`/voorbeeld/onderwerpen`) in plaats van de lijst `alle-lessen.html`. Niets verwijderd.
