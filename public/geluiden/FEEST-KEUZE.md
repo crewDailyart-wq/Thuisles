@@ -33,3 +33,5 @@ Niet zelf beluisterd: Claude kan niet luisteren. Luister ze even voordat je kies
 
 - `pling-1.wav` (nu in gebruik), `pling-2.wav`, `pling-3.wav`.
 - Horen in de les: zet `&pling=2` of `&pling=3` achter het lesadres.
+
+**Besluit Sara, 26 november 2026: pling-2 wordt het sleutelgeluid.** pling-1 en pling-3 blijven in de map staan maar worden niet gebruikt.
