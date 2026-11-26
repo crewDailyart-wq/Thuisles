@@ -2189,3 +2189,26 @@ Bij het herstel van de keuring is hier **niets** aan veranderd. Graag ja of nee 
 2. **De dagkaarten in Tijd staan links onder de trein**, niet rechts onder Bliepo's zin (15.32). Je kunt de wagons zien als "voorwerpen in het beeld" (dan mogen ze daar). Voorstel: zo laten en bij 15.32 Tijd als uitzondering noemen. Advies: zo laten. **BESLOTEN (Sara, 20 nov 2026): de dagkaarten komen rechts onder Bliepo's zin. Gedaan (zie KEURING-TIJD-20NOV.md, herstel).**
 3. **De antwoordknoppen in Minsommen en Plussommen staan in het midden** (onder de machine of het bord), niet rechts onder Bliepo's zin (15.32). Dat was op 7 november zo gekozen ("Antwoorden groot in het midden"). Voorstel: als uitzondering bij 15.32 zetten, of naar rechts verplaatsen. Advies: kies jij; zonder besluit blijft het zo. **BESLOTEN (Sara, 20 nov 2026): naar rechts, onder Bliepo's zin. Gedaan (zie KEURING-MINSOMMEN-20NOV.md en KEURING-PLUSSOMMEN-20NOV.md, herstel).**
 4. **De pruim in Tellen extra lijkt op een paarse appel** (zelfde vorm met blaadje). Alleen genoteerd; er is geen nieuw plaatje gemaakt. Wil je een nieuw plaatje van een pruim? Advies: ja, bij de volgende plaatjesronde.
+
+---
+
+## Kleurregels voor de kaart na elke les (26 november 2026, voorstel op basis van het onderzoek bij Junior Einstein)
+
+Bron: `SYNTHESIS-ANALYSE/JUNIOR-EINSTEIN-KLEUREN.md` (18 metingen). Nog niet gebouwd; wacht op Sara's akkoord.
+De kleur hangt af van het **percentage goed** (goed in 1 keer, over alle vragen van de les):
+
+| Goed | Kleur | Ster |
+|---|---|---|
+| 95% of meer | donkergroen | goud (plusje bij 100%) |
+| 90 tot 95% | groen | goud |
+| 85 tot 90% | lichtgroen | goud |
+| 80 tot 85% | geelgroen | goud |
+| 75 tot 80% | geel-groen | goud |
+| 70 tot 75% | geel | goud |
+| 60 tot 70% | oranje | zilver |
+| 50 tot 60% | donkeroranje | zilver |
+| 40 tot 50% | roodoranje | zilver |
+| 30 tot 40% | bijna rood | brons |
+| onder 30% | rood | brons (leeg bij 0%) |
+
+De randen zijn afgeleid uit de gemeten punten; de exacte rand is niet apart gemeten. Een afgemaakte les kan het kind niet zelf opnieuw doen (bij Junior Einstein moet een ouder dat vrijgeven); dat gedrag is niet getest en niet overgenomen.
