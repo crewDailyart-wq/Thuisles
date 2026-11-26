@@ -31,13 +31,13 @@ export const SLEUTEL_PLAATJE = "/beloning/sleutel-goud-160.png";
 export const SLEUTELKLEUR = "#ffd75e";
 const FONKEL = "M0-10 C1.2-3.2 3.2-1.2 10 0 C3.2 1.2 1.2 3.2 0 10 C-1.2 3.2 -3.2 1.2 -10 0 C-3.2-1.2 -1.2-3.2 0-10Z";
 
-/** Versie uit de adresbalk (`?eind=2`); zonder of met iets anders: 1. */
+/** Sara koos versie 2 (26 nov 2026): dat is de standaard; `?eind=1` toont nog de andere (ster en sleutel blijven klein staan). */
 export function leesEindversie(): Eindversie {
-  if (typeof window === "undefined") return "1";
+  if (typeof window === "undefined") return "2";
   try {
-    return new URLSearchParams(window.location.search).get("eind") === "2" ? "2" : "1";
+    return new URLSearchParams(window.location.search).get("eind") === "1" ? "1" : "2";
   } catch {
-    return "1";
+    return "2";
   }
 }
 

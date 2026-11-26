@@ -557,6 +557,7 @@ function Lesscherm({
   const [eind, setEind] = useState<null | { versie: Eindversie; sleutels: number; percentage: number }>(null);
   const afvinkRef = useRef<null | (() => void)>(null);
   const eindDenkRef = useRef<string[]>([]);
+  const eindPctRef = useRef(0);
   const snelRef = useRef(snelEinde);
   useEffect(() => {
     if (les.eindscherm) laadEindgeluiden();
@@ -934,6 +935,7 @@ function Lesscherm({
             eindscherm: (r) => {
               zet((b) => ({ ...b, bediening: null, kaart: null, som: null, hand: false }));
               eindDenkRef.current = r?.denkfouten ?? [];
+              eindPctRef.current = r?.percentage ?? 0;
               setEind({ versie: leesEindversie(), sleutels: sleutelNr, percentage: r?.percentage ?? 0 });
               /* De ster voor het afmaken (15.52): 1 keer per les per kind, stil zonder gekozen kind. Niet bij de snelle test. */
               if (!snelRef.current)
@@ -970,7 +972,9 @@ function Lesscherm({
                 }
               })();
               if (!levend || blijf) return;
-              window.location.href = onderwerpenHref ?? overzichtHref ?? terugHref ?? "/alle-lessen.html";
+              /* De snelle test bewaart niets: dan laat het onderwerpenscherm het percentage van de test zien (`?demo=`). */
+              const doel = onderwerpenHref ?? overzichtHref ?? terugHref ?? "/alle-lessen.html";
+              window.location.href = snelRef.current && onderwerpenHref ? `${doel}?demo=${eindPctRef.current}` : doel;
             },
           }
         : {}),
