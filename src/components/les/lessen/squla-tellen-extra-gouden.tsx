@@ -578,6 +578,7 @@ async function eindeScherm(l: Lesgids) {
   const u = uitslag(l);
   const zin = u === "alles" ? variant("eindAllesGoed", ZIN.eindAllesGoed) : u === "moeite" ? variant("eindMoeite", ZIN.eindMoeite) : variant("eindGewoon", ZIN.eindGewoon);
   await B.zeg(l, zin);
+  await l.eindAfsluiten?.();
 }
 
 /** Alleen op de voorbeeldpagina (`&snel=1`): meteen naar het eindscherm, met een paar sleutels om de teller te zien. */

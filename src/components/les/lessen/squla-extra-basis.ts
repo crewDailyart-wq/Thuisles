@@ -91,19 +91,26 @@ export function maakBasis(LES_ID: string) {
 
   function noteer(l: Lesgids, vraag: string, uit: Uitkomst): Uitkomst {
     const s = st(l);
-    if (!s.eerste.has(vraag)) {
-      s.eerste.set(vraag, uit);
-      /* Proef eindscherm (24 nov 2026, 15.52): een sleutel bij goed in 1 keer; alleen lessen met `eindscherm` hebben l.sleutel. */
-      if (uit === "goed") l.sleutel?.();
-    }
+    const nieuweVraag = !s.eerste.has(vraag);
+    if (nieuweVraag) s.eerste.set(vraag, uit);
     /* Voortgangsbalk (15.54): na elke afgeronde vraag een stukje verder; nooit terug bij een fout. */
     if (s.totaal > 0) l.voortgang?.(Math.min(1, s.eerste.size / s.totaal));
     const fouten = s.vraagFouten.get(vraag) ?? [];
     s.vraagFouten.delete(vraag);
     if (typeof window === "undefined") return uit;
     const naam = { goed: "goed in één keer", naFout: "goed na een fout", samen: "samen gedaan" } as const;
+    /* Een sleutel per vraag is maar 1 keer te verdienen, ook bij opnieuw spelen (Sara, 25 nov 2026, 15.52): de server weet of
+       deze sleutel al verdiend is. Zegt hij "al verdiend", dan vliegt er geen sleutel; weet hij niets (geen kind gekozen),
+       dan wel, zodat het voorbeeld zijn sleutels laat zien. Alleen lessen met `eindscherm` hebben l.sleutel. */
+    const eerstKeer = uit === "goed" && nieuweVraag;
     try {
-      void bewaarUitkomst({ lesId: LES_ID, vraagId: vraag, uitkomst: naam[uit], denkfouten: uit === "goed" ? [] : fouten, pogingen: uit === "goed" ? 1 : 2 }).catch(() => {});
+      void bewaarUitkomst({ lesId: LES_ID, vraagId: vraag, uitkomst: naam[uit], denkfouten: uit === "goed" ? [] : fouten, pogingen: uit === "goed" ? 1 : 2 })
+        .then((r) => {
+          if (eerstKeer && !(r.ok && r.nieuweSleutel === false)) l.sleutel?.();
+        })
+        .catch(() => {
+          if (eerstKeer) l.sleutel?.();
+        });
     } catch {
       /* bewaren mislukt: de les gaat gewoon door */
     }

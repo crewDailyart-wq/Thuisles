@@ -4,7 +4,7 @@
 /* Iets smaller (ruimte voor de teller) en 10 punten hoger (het lijstje linksboven begint op y = 44). */
 .smal [data-voortgangsbalk] {
   top: 12px;
-  width: 820px;
+  width: 710px;
 }
 
 /* ---------- de sleutelteller rechtsboven ---------- */
@@ -13,8 +13,8 @@
   z-index: 21;
   display: flex;
   align-items: center;
-  gap: 6px;
-  padding: 0 12px 0 8px;
+  gap: 4px;
+  padding: 0 14px 0 8px;
   box-sizing: border-box;
   border-radius: 20px;
   background: rgba(20, 40, 96, 0.62);
@@ -24,13 +24,19 @@
   font-family: var(--font-grandstander), var(--font-fredoka), system-ui, sans-serif;
 }
 .tellerSleutel {
-  width: 32px;
-  height: 32px;
+  width: 42px;
+  height: 42px;
   flex: none;
 }
+.tellerSter {
+  width: 38px;
+  height: 38px;
+  flex: none;
+  margin-left: 6px;
+}
 .tellerGetal {
-  min-width: 26px;
-  font-size: 25px;
+  min-width: 30px;
+  font-size: 30px;
   font-weight: 800;
   line-height: 1;
   text-align: center;
@@ -321,7 +327,7 @@
 .paneelLinks {
   position: absolute;
   left: 20px;
-  top: 34px;
+  top: 90px;
   width: 400px;
   display: flex;
   flex-direction: column;
@@ -330,7 +336,7 @@
 .paneelRechts {
   position: absolute;
   left: 440px;
-  top: 96px;
+  top: 150px;
   width: 420px;
   display: flex;
   flex-direction: column;

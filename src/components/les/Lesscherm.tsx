@@ -45,7 +45,7 @@ import "@/components/oefenen/opdracht-nieuw.css";
 import { Voortgangsbalk } from "./Voortgangsbalk";
 import { Eindscherm, Sleutelteller, VliegendeSleutel, leesEindversie, type Eindversie } from "./Eindscherm";
 import es from "./Eindscherm.module.css";
-import { bewaarLesAfgemaakt } from "@/app/lesuitkomstacties";
+import { bewaarLesAfgemaakt, haalSterrenTotaal } from "@/app/lesuitkomstacties";
 
 /*
   Het ontwerp van de lessen (23 oktober 2026, opdracht eigenaar): "nieuw" =
@@ -543,11 +543,15 @@ function Lesscherm({
   */
   const [sleutels, setSleutels] = useState(0);
   const [tellerTik, setTellerTik] = useState(0);
+  /** Het totaal aantal sterren van het kind (teller rechtsboven); +1 zodra de ster van deze les echt nieuw is. */
+  const [sterren, setSterren] = useState(0);
+  const [sterTik, setSterTik] = useState(0);
   const [vliegers, setVliegers] = useState<number[]>([]);
   const [eind, setEind] = useState<null | { versie: Eindversie; sleutels: number }>(null);
   const snelRef = useRef(snelEinde);
   useEffect(() => {
     if (les.eindscherm) laadEindgeluiden();
+    if (les.eindscherm) void haalSterrenTotaal().then((r) => setSterren(r.aantal)).catch(() => {});
   }, [les.eindscherm]);
   const raster = useRef<HTMLDivElement>(null);
   const [sleep, setSleep] = useState<null | { n: number; x: number; y: number; vanX: number; vanY: number }>(null);
@@ -922,7 +926,33 @@ function Lesscherm({
               zet((b) => ({ ...b, bediening: null, kaart: null, som: null, hand: false }));
               setEind({ versie: leesEindversie(), sleutels: sleutelNr });
               /* De ster voor het afmaken (15.52): 1 keer per les per kind, stil zonder gekozen kind. Niet bij de snelle test. */
-              if (!snelRef.current) void bewaarLesAfgemaakt(les.id).catch(() => {});
+              if (!snelRef.current)
+                void bewaarLesAfgemaakt(les.id)
+                  .then((r) => {
+                    if (r.nieuweSter && levend) {
+                      setSterren((n) => n + 1);
+                      setSterTik((n) => n + 1);
+                    }
+                  })
+                  .catch(() => {});
+            },
+            /* Na Bliepo's eindzin: de leerzin hardop (Sara, 25 nov 2026), even rust, en dan vanzelf terug naar de onderwerpen.
+               Niet bij de snelle test (`snel`) en niet met `?blijf=1` (voor schermfoto's en de speelcontrole). */
+            eindAfsluiten: async () => {
+              for (let i = 0; i < 40 && levend && !document.querySelector("[data-eind-leerzin]"); i++) await new Promise((r) => setTimeout(r, 100));
+              if (!levend) return;
+              if (les.eindLeerzin) await spreek([les.eindLeerzin]);
+              if (!levend) return;
+              await new Promise((r) => setTimeout(r, 2500));
+              const blijf = (() => {
+                try {
+                  return new URLSearchParams(window.location.search).get("blijf") === "1";
+                } catch {
+                  return false;
+                }
+              })();
+              if (!levend || snelRef.current || blijf) return;
+              window.location.href = overzichtHref ?? terugHref ?? "/alle-lessen.html";
             },
           }
         : {}),
@@ -1563,7 +1593,7 @@ function Lesscherm({
             <Voortgangsbalk fractie={voortgang} />
           </div>
         )}
-        {les.eindscherm && !eind && voortgang !== null && <Sleutelteller aantal={sleutels} tik={tellerTik} />}
+        {les.eindscherm && !eind && voortgang !== null && <Sleutelteller aantal={sleutels} tik={tellerTik} sterren={sterren} sterTik={sterTik} />}
         {les.eindscherm && !eind && vliegers.map((nr) => <VliegendeSleutel key={nr} />)}
         {eind && (
           <Eindscherm
@@ -1571,10 +1601,7 @@ function Lesscherm({
             sleutels={eind.sleutels}
             leerzin={les.eindLeerzin}
             plaatje={les.eindPlaatje}
-            volgendeHref={volgendeHref ?? overzichtHref ?? terugHref ?? "/alle-lessen.html"}
-            terugHref={overzichtHref ?? terugHref ?? "/alle-lessen.html"}
-            opnieuw={opnieuw}
-          />
+/>
         )}
         {!nieuw && tekstblok}
         {tegelsLinks && <div className={s.synthKolom}>{maakTekstblok("knoppen")}</div>}

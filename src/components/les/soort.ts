@@ -97,6 +97,8 @@ export interface Lesgids {
    * "Volgende les" en "Terug"). Alleen in lessen met `eindscherm`. De les zegt daarna zelf 1 eindzin.
    */
   eindscherm?(): void;
+  /** Na de eindzin: de leerzin hardop, even rust en dan vanzelf terug naar de onderwerpen (Sara, 25 nov 2026). Alleen in lessen met `eindscherm`. */
+  eindAfsluiten?(): Promise<void>;
   /**
    * Alleen op de voorbeeldpagina, als test (`&snel=1`, `&snel=alles`, `&snel=moeite`): de les slaat alles over en laat
    * meteen het eindscherm zien. Leeg of afwezig = gewoon spelen.

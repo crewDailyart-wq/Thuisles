@@ -19,3 +19,17 @@ Originelen (mp3, 2,0 s) staan in Magnific, project Personal:
 - feest-1: https://www.magnific.com/app/creation/xSooo0DjfW
 - feest-2: https://www.magnific.com/app/creation/9ZqqqvTNYZ
 - feest-3: https://www.magnific.com/app/creation/ksdddWD16B
+
+---
+
+## Besluit Sara, 25 november 2026
+
+- **Feest: feest-1.** Dat geluid staat in het eindscherm. `feest-2.wav` en `feest-3.wav` blijven in de map staan maar worden niet gebruikt.
+
+## Pling bij een nieuwe sleutel (keuze voor Sara)
+
+Gemaakt op 26 november 2026 met Magnific (geluidseffecten), 3 versies van dezelfde opdracht, 1 s, 15 credits samen.
+Niet zelf beluisterd: Claude kan niet luisteren. Luister ze even voordat je kiest.
+
+- `pling-1.wav` (nu in gebruik), `pling-2.wav`, `pling-3.wav`.
+- Horen in de les: zet `&pling=2` of `&pling=3` achter het lesadres.

@@ -136,8 +136,8 @@ const STAAT = `(() => {
     tekst,
     knoppen,
     praat: !!document.querySelector('[data-praat="true"]') || [...document.querySelectorAll(".bliepo-tekst-nog")].length > 0,
-    /* Proef eindscherm (24 nov 2026): daar is de knop "Volgende les" (of "Nog een keer") het einde, net als bij de kaart. */
-    klaar: !!document.querySelector('[data-knop="opnieuw"], [data-eindscherm] [data-knop="volgende"]'),
+    /* Eindscherm (25 nov 2026): geen knoppen meer; het einde is de leerzin op het eindscherm (de les gaat daarna vanzelf terug, behalve met ?blijf=1). */
+    klaar: !!document.querySelector('[data-eindscherm] [data-eind-leerzin]'),
     eind: !!document.querySelector("[data-eindscherm]"),
     /* Proef eindscherm: de sleutelteller en een vliegend sleuteltje raken niets (knop, tekst van Bliepo, fruit, de balk). */
     teller: (() => {
@@ -286,7 +286,7 @@ async function speel(c, id) {
       if (!p) throw new Error(`les ${id} staat niet in het lesoverzicht`);
       await c.stuur("Input.dispatchMouseEvent", { type: "mousePressed", x: p.x, y: p.y, button: "left", clickCount: 1 }, s);
       await c.stuur("Input.dispatchMouseEvent", { type: "mouseReleased", x: p.x, y: p.y, button: "left", clickCount: 1 }, s);
-    } else await c.stuur("Page.navigate", { url: `${BASIS}/voorbeeld/les/${id}?naam=Testkind` }, s);
+    } else await c.stuur("Page.navigate", { url: `${BASIS}/voorbeeld/les/${id}?naam=Testkind&blijf=1` }, s);
     const begin = Date.now();
     let stilSinds = null;
     let vorigeTekst = "";
@@ -863,7 +863,7 @@ await Promise.all(
       const id = rij.shift();
       const u = await speel(c, id);
       uitslagen.push(u);
-      const pad = `${BASIS}/voorbeeld/les/${id}?naam=Testkind`;
+      const pad = `${BASIS}/voorbeeld/les/${id}?naam=Testkind&blijf=1`;
       if (u.fouten.length) console.log(`✗ ${id} (${u.stappen} stappen) ${pad}\n   - ${u.fouten.join("\n   - ")}`);
       else if (u.handmatig.length) console.log(`? ${id} (${u.stappen} stappen): ${u.handmatig.join("; ")}`);
       else console.log(`✓ ${id} (${u.stappen} stappen, tot het eind)`);

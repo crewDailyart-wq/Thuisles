@@ -70,6 +70,8 @@ export type Lesgeluid =
   | "feest2"
   | "feest3"
   | "sleutel";
+/* Sleutelgeluid (Sara, 25 nov 2026): een kort pling bij elke nieuwe sleutel; 3 versies (pling-1/2/3.wav) om uit te kiezen.
+   Standaard pling-1; met `?pling=2` of `?pling=3` in het lesadres hoor je een andere. Na haar keuze valt de rest weg. */
 
 let ctx: AudioContext | null = null;
 let uit = false;
@@ -152,7 +154,7 @@ const BESTANDEN: Partial<Record<Lesgeluid, { bestand: string; vol: number; pad?:
   feest1: { bestand: "feest-1", vol: 0.42, pad: "/geluiden/feest-1.wav" },
   feest2: { bestand: "feest-2", vol: 0.42, pad: "/geluiden/feest-2.wav" },
   feest3: { bestand: "feest-3", vol: 0.42, pad: "/geluiden/feest-3.wav" },
-  sleutel: { bestand: "beloning", vol: 0.3, pad: "/geluiden/beloning.wav" },
+  sleutel: { bestand: "pling", vol: 0.35, pad: "/geluiden/pling-1.wav" },
 };
 
 const MAP = "/geluiden/les/";
@@ -193,7 +195,16 @@ export function laadEindgeluiden(): void {
   eindGeladen = true;
   for (const [naam, b] of Object.entries(BESTANDEN) as [Lesgeluid, { pad?: string }][]) {
     if (!b.pad) continue;
-    fetch(b.pad)
+    let pad = b.pad;
+    if (naam === "sleutel") {
+      try {
+        const n = new URLSearchParams(window.location.search).get("pling");
+        if (n === "2" || n === "3") pad = `/geluiden/pling-${n}.wav`;
+      } catch {
+        /* standaard pling-1 */
+      }
+    }
+    fetch(pad)
       .then((r) => (r.ok ? r.arrayBuffer() : Promise.reject(new Error(String(r.status)))))
       .then((data) => c.decodeAudioData(data))
       .then((buf) => {

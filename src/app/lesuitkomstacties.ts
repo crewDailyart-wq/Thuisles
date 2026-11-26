@@ -13,7 +13,7 @@ import { huidigKind } from "@/lib/auth/sessie";
 import { voorbeeldMagBewaren } from "@/lib/data/lesuitkomsten-voorbeeld";
 import { bewaarLesUitkomst, type LesUitkomst } from "@/lib/data/lesuitkomsten";
 import { beloonInEenKeer } from "@/lib/data/sleutels";
-import { beloonSter } from "@/lib/data/sterren";
+import { beloonSter, haalSterren } from "@/lib/data/sterren";
 
 export async function bewaarUitkomst(invoer: { lesId: string; vraagId: string; uitkomst: LesUitkomst; denkfouten: string[]; pogingen: number }): Promise<{ ok: boolean; nieuweSleutel?: boolean }> {
   try {
@@ -42,5 +42,15 @@ export async function bewaarLesAfgemaakt(lesId: string): Promise<{ ok: boolean; 
     return { ok: true, nieuweSter: beloonSter(kind.id, lesId) };
   } catch {
     return { ok: false };
+  }
+}
+
+/** Het totaal aantal sterren van het kind (voor de teller rechtsboven). Zonder gekozen kind: 0. Gooit nooit een fout. */
+export async function haalSterrenTotaal(): Promise<{ aantal: number }> {
+  try {
+    const kind = await huidigKind();
+    return { aantal: kind ? haalSterren(kind.id).aantal : 0 };
+  } catch {
+    return { aantal: 0 };
   }
 }

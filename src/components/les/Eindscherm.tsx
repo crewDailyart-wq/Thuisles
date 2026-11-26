@@ -9,9 +9,9 @@
  *   2. de gouden ster groot met een zachte pop en fonkelingen, met "Les af!";
  *   3. de sleutels van deze les: kleine sleuteltjes vliegen naar de teller, het getal telt mee;
  *   4. 1 korte zin over wat het kind geleerd heeft, met een plaatje uit de les;
- *   5. de knoppen: groot "Volgende les", kleiner "Terug" en "Nog een keer".
+ *   5. geen knoppen meer (Sara, 25 nov 2026): na het voorlezen van de leerzin gaat het kind vanzelf terug naar de onderwerpen.
  * Versie A (`?eind=a`, ook zonder parameter): rustig en groot, alles in 1 kolom in het midden van het speelvlak.
- * Versie B (`?eind=b`): een breed paneel, links de ster, rechts sleutels en leerzin, knoppen onderaan, meer confetti.
+ * Versie B (standaard sinds 25 nov 2026): een breed paneel, links de ster, rechts sleutels en leerzin, meer confetti.
  *
  * Alles in punten van het vaste speelvlak (1280 × 720). Het speelvlak voor de les loopt van x = 0 tot 980; rechts staat
  * Bliepo met zijn tekstvak. Het eindscherm blijft links van x = 960, zodat het Bliepo en zijn zin niet raakt.
@@ -19,7 +19,6 @@
 
 import { useEffect, useRef, useState, type CSSProperties } from "react";
 import { speelLesgeluid } from "@/lib/lesgeluiden";
-import { IkoonTeken } from "./ikonen";
 import s from "./Eindscherm.module.css";
 
 export type Eindversie = "a" | "b";
@@ -30,13 +29,13 @@ export const SLEUTEL_PLAATJE = "/beloning/sleutel-goud-160.png";
 export const SLEUTELKLEUR = "#ffd75e";
 const FONKEL = "M0-10 C1.2-3.2 3.2-1.2 10 0 C3.2 1.2 1.2 3.2 0 10 C-1.2 3.2 -3.2 1.2 -10 0 C-3.2-1.2 -1.2-3.2 0-10Z";
 
-/** Versie uit de adresbalk (`?eind=b`); zonder of met iets anders: A. */
+/** Sara koos versie B (25 nov 2026): dat is nu de standaard; `?eind=a` toont nog de oude proefversie. */
 export function leesEindversie(): Eindversie {
-  if (typeof window === "undefined") return "a";
+  if (typeof window === "undefined") return "b";
   try {
-    return new URLSearchParams(window.location.search).get("eind") === "b" ? "b" : "a";
+    return new URLSearchParams(window.location.search).get("eind") === "a" ? "a" : "b";
   } catch {
-    return "a";
+    return "b";
   }
 }
 
@@ -46,24 +45,29 @@ export function leesEindversie(): Eindversie {
  * Waar de teller staat (punten van het speelvlak): rechts naast de (iets smallere en iets hogere) voortgangsbalk, links
  * van naam en pauze, boven Bliepo's tekstvak (dat begint op y = 58).
  */
-export const TELLER = { x: 896, y: 4, b: 92, h: 36 };
+export const TELLER = { x: 770, y: 4, b: 210, h: 48 };
 /** Het midden van het sleuteltje in de teller: daar landt een vliegend sleuteltje. */
-const TELLER_DOEL = { x: TELLER.x + 26, y: TELLER.y + TELLER.h / 2 };
+const TELLER_DOEL = { x: TELLER.x + 28, y: TELLER.y + TELLER.h / 2 };
 /**
  * De route van een sleuteltje (gemeten in alle scènes van Tellen extra, speelcontrole): het verschijnt boven in het
  * midden van het speelvlak (boven het fruit, rechts van het lijstje), vliegt onder de balk door naar rechts tot vlak
  * voor Bliepo's tekstvak (x < 880) en gaat dan schuin omhoog de teller in, boven de tekst langs.
  */
 const VLIEG_START = { x: 520, y: 150 };
-const VLIEG_BOCHT = { x: 850, y: 80 };
+const VLIEG_BOCHT = { x: 812, y: 118 };
 
-export function Sleutelteller({ aantal, tik }: { aantal: number; tik: number }) {
+export function Sleutelteller({ aantal, tik, sterren, sterTik }: { aantal: number; tik: number; sterren: number; sterTik: number }) {
   return (
-    <div className={s.teller} style={{ left: TELLER.x, top: TELLER.y, width: TELLER.b, height: TELLER.h }} data-sleutelteller="" data-sleutels={aantal} role="status" aria-label={`${aantal} sleutels`}>
+    <div className={s.teller} style={{ left: TELLER.x, top: TELLER.y, width: TELLER.b, height: TELLER.h }} data-sleutelteller="" data-sleutels={aantal} data-sterren={sterren} role="status" aria-label={`${aantal} sleutels, ${sterren} sterren`}>
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img key={`s${tik}`} src={SLEUTEL_PLAATJE} alt="" className={tik > 0 ? `${s.tellerSleutel} ${s.tellerPuls}` : s.tellerSleutel} draggable={false} />
       <span key={`g${tik}`} className={tik > 0 ? `${s.tellerGetal} ${s.tellerPuls}` : s.tellerGetal} style={{ color: SLEUTELKLEUR }}>
         {aantal}
+      </span>
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img key={`t${sterTik}`} src={STER_PLAATJE} alt="" className={sterTik > 0 ? `${s.tellerSter} ${s.tellerPuls}` : s.tellerSter} draggable={false} />
+      <span key={`n${sterTik}`} className={sterTik > 0 ? `${s.tellerGetal} ${s.tellerPuls}` : s.tellerGetal} style={{ color: SLEUTELKLEUR }}>
+        {sterren}
       </span>
     </div>
   );
@@ -179,23 +183,18 @@ export function Eindscherm({
   sleutels,
   leerzin,
   plaatje,
-  volgendeHref,
-  terugHref,
-  opnieuw,
 }: {
   versie: Eindversie;
   sleutels: number;
   leerzin?: string;
   plaatje?: string;
-  volgendeHref: string;
-  terugHref: string;
-  opnieuw: () => void;
 }) {
   const [fase, setFase] = useState(0);
   const [geteld, setGeteld] = useState(0);
   const leerzinMs = SLEUTELS_MS + (sleutels > 0 ? SLEUTEL_VLIEG_MS + sleutels * SLEUTEL_STAP_MS + 300 : 0);
   useEffect(() => {
-    speelLesgeluid(versie === "b" ? "feest1" : "feest2");
+    /* Sara koos feest-1 (25 nov 2026); feest-2 en feest-3 blijven in de map staan maar worden niet gebruikt. */
+    speelLesgeluid("feest1");
     const t: ReturnType<typeof setTimeout>[] = [];
     t.push(setTimeout(() => setFase(1), STER_MS));
     t.push(setTimeout(() => setFase(2), SLEUTELS_MS));
@@ -254,27 +253,6 @@ export function Eindscherm({
       <p>{leerzin}</p>
     </div>
   );
-  const knoppen = fase >= 4 && (
-    <div className={b ? `${s.knoppen} ${s.knoppenB}` : s.knoppen} data-eind-knoppen="">
-      <a className={s.volgende} href={volgendeHref} data-knop="volgende" aria-label="Volgende les">
-        Volgende les
-        <svg width="30" height="30" viewBox="0 0 24 24" aria-hidden="true">
-          <path d="M5 12h13M13 6l6 6-6 6" fill="none" stroke="currentColor" strokeWidth="2.8" strokeLinecap="round" strokeLinejoin="round" />
-        </svg>
-      </a>
-      <div className={s.kleineKnoppen}>
-        <a className={s.klein} href={terugHref} data-knop="terug" aria-label="Terug">
-          <IkoonTeken ikoon="terug" maat={22} />
-          Terug
-        </a>
-        <button type="button" className={s.klein} data-knop="opnieuw" aria-label="Nog een keer" onClick={opnieuw}>
-          <IkoonTeken ikoon="opnieuw" maat={22} />
-          Nog een keer
-        </button>
-      </div>
-    </div>
-  );
-
   return (
     <div className={s.eind} data-eindscherm={versie} aria-live="polite">
       <Confetti aantal={b ? 110 : 60} duur={b ? 2000 : 1500} />
@@ -288,7 +266,6 @@ export function Eindscherm({
             {sleutelRij}
             {leer}
           </div>
-          {knoppen}
         </div>
       ) : (
         <div className={s.kolom}>
@@ -296,7 +273,6 @@ export function Eindscherm({
           {lesAf}
           {sleutelRij}
           {leer}
-          {knoppen}
         </div>
       )}
     </div>
