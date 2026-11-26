@@ -560,12 +560,17 @@ const gouden: Lesdraaiboek = {
   },
 };
 
-/** Hoe ging het? Alles in 1 keer goed, gewoon, of de helft of meer niet in 1 keer goed (zelfde grens als B.veelFouten). */
-function uitslag(l: Lesgids): "alles" | "gewoon" | "moeite" {
-  if (l.snelEinde) return l.snelEinde;
-  const alle = [...B.st(l).eerste.values()];
-  if (alle.length > 0 && alle.every((x) => x === "goed")) return "alles";
-  return B.veelFouten(l) ? "moeite" : "gewoon";
+/**
+ * Hoe ging het? De eindzin hoort bij het PERCENTAGE goed in 1 keer (Sara, 26 nov 2026: tegen een kind dat bijna alles fout had
+ * zeg je niet "wat heb jij het goed gedaan"): alles = 100%; gewoon = 70 tot 99%; moeite = 40 tot 70%; weinig = onder 40%.
+ * Dezelfde percentages als het resultaat van de kaart (resultaat()), ook bij de snelle test (`&snel=p35`).
+ */
+function uitslag(l: Lesgids): "alles" | "gewoon" | "moeite" | "weinig" {
+  const p = resultaat(l).percentage;
+  if (p >= 100) return "alles";
+  if (p >= 70) return "gewoon";
+  if (p >= 40) return "moeite";
+  return "weinig";
 }
 
 /**
@@ -599,7 +604,7 @@ async function eindeScherm(l: Lesgids) {
   /* Bliepo praat pas als het feestgeluid (±1,4 s) voorbij is en de ster komt. */
   await l.wacht(1500);
   const u = uitslag(l);
-  const zin = u === "alles" ? variant("eindAllesGoed", ZIN.eindAllesGoed) : u === "moeite" ? variant("eindMoeite", ZIN.eindMoeite) : variant("eindGewoon", ZIN.eindGewoon);
+  const zin = u === "alles" ? variant("eindAllesGoed", ZIN.eindAllesGoed) : u === "weinig" ? variant("eindWeinig", ZIN.eindWeinig) : u === "moeite" ? variant("eindMoeite", ZIN.eindMoeite) : variant("eindGewoon", ZIN.eindGewoon);
   await B.zeg(l, zin);
   await l.eindAfsluiten?.();
 }

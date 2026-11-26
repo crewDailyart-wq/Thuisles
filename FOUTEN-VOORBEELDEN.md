@@ -128,3 +128,10 @@ Elke fout die Sara vindt komt hier, met de regel die erbij hoort (BOUWREGELS.md 
 
 ## F22 · Streepjes op letters (Sara, 20 november 2026)
 Fout: "Tel de peren én de pruimen." en "vóór", "ná": kinderen in groep 3 leren geen streepjes op letters. Regel (BOUWREGELS): in zichtbare lesteksten nooit "é", "ó", "á" voor nadruk; schrijf "en", "voor", "na". Gecontroleerd in alle gouden lessen; "hè" blijft (gewoon woord).
+
+## F23 · De eindzin prees een uitslag die er niet was (Sara, 26 november 2026)
+Fout: bij weinig goed (bijvoorbeeld 20% goed) zei Bliepo aan het eind "Klaar! Wat heb jij het goed gedaan!". Dat kun je niet tegen een kind zeggen dat bijna alles fout had.
+- Oorzaak: in Tellen extra koos de les de eindzin op de uitslag van de snelle test (altijd "gewoon") en bij echt spelen op maar 3 trappen (alles goed, gewoon, de helft of meer niet in 1 keer goed). "Knap hoor" stond ook bij 40%.
+- Regel (BOUWREGELS 15.56): de eindzin hoort bij het PERCENTAGE goed in 1 keer, in 4 trappen: 100% (alles in 1 keer goed), 70 tot 99% (gewoon), 40 tot 70% (inzet prijzen, niet het resultaat: "flink geoefend") en onder 40% (warm en eerlijk, geen lof voor de uitslag: oefenen, de les is af). Nooit "slecht", "fout" of mislukking.
+- Gedaan in Tellen extra (4 nieuwe zinnen onder 40%, 2 zinnen bij 40 tot 70% aangepast, gecontroleerd door Fable).
+- Andere lessen (20 andere gouden lessen met een eindzin): nergens zegt een les "goed gedaan" bij een heel slecht resultaat (bij de helft of meer niet in 1 keer goed staat daar "Je hebt goed doorgezet. Volgende keer gaat het nog beter."); wel hebben ze maar 2 trappen, dus bij 50 tot 70% goed staat nog "Goed gedaan!" en onder 40% dezelfde zin als bij 50% fout. Pas aanpassen als Sara het nieuwe eindscherm voor alle lessen goedkeurt (dan komen de 4 trappen overal).
