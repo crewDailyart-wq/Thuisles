@@ -49,15 +49,14 @@ export default async function Onderwerpen({ searchParams }: { searchParams: Prom
           return (
             <li key={l.id}>
               <a href={`/voorbeeld/les/${l.id}?naam=Testkind`} className={s.kaart} style={k ? ({ "--kaartkleur": kleurCss(k) } as React.CSSProperties) : undefined} data-kaart={l.id} data-kleur={k?.naam ?? ""} data-herhalen={r?.herhalen ? "ja" : ""}>
+                {/* Het rondje (27 nov 2026): alleen de ring, links van het onderwerp. Lichtblauw = nog niet gedaan; klaar = ring vol in de kleur van het resultaat. */}
+                <span className={s.ring} aria-hidden="true">
+                  <svg viewBox="0 0 60 60" width="56" height="56" style={{ overflow: "visible" }}>
+                    <circle cx="30" cy="30" r="23" fill="none" stroke="#bfe0ee" strokeWidth="10" />
+                    {k && <circle cx="30" cy="30" r="23" fill="none" stroke="var(--kaartkleur)" strokeWidth="10" />}
+                  </svg>
+                </span>
                 <span className={s.titel}>{l.titel}</span>
-                {k && (
-                  <span className={s.ring} aria-hidden="true">
-                    <svg viewBox="0 0 44 44" width="44" height="44">
-                      <circle cx="22" cy="22" r="18" fill="none" stroke="var(--kaartkleur)" strokeWidth="6" />
-                      <path d="M13 23 L20 30 L32 15" fill="none" stroke="#ffffff" strokeWidth="4.5" strokeLinecap="round" strokeLinejoin="round" />
-                    </svg>
-                  </span>
-                )}
                 {r?.herhalen && (
                   <span className={s.herhaal} role="img" aria-label="Nog een keer oefenen">
                     <svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true">

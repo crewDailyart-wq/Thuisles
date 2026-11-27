@@ -270,6 +270,7 @@ export function Eindscherm({
       <p>{leerzin}</p>
     </div>
   );
+  const RING_OMTREK = 2 * Math.PI * 23;
   const kaart = fase >= 5 && onderwerp && (
     <button
       type="button"
@@ -287,14 +288,15 @@ export function Eindscherm({
     >
       {/* eslint-disable-next-line @next/next/no-img-element */}
       {plaatje && <img src={plaatje} alt="" className={s.kaartPlaatje} draggable={false} />}
-      <span className={s.kaartTitel}>{onderwerp}</span>
+      {/* Het rondje (27 nov 2026, Sara): alleen de ring, geen wit vlak en geen vinkje. Lichtblauw = nog niet afgevinkt; na de tik loopt de ring
+          vol in de kleur van het resultaat (les-kleuren.ts). Staat links van het onderwerp, net als op het onderwerpenscherm. */}
       <span className={s.kaartRing} aria-hidden="true">
-        <svg viewBox="0 0 44 44" width="44" height="44">
-          <circle cx="22" cy="22" r="18" fill="none" stroke="rgba(255,255,255,0.35)" strokeWidth="6" />
-          {afgevinkt && <circle cx="22" cy="22" r="18" fill="none" stroke="var(--kaartkleur)" strokeWidth="6" />}
-          {afgevinkt && <path d="M13 23 L20 30 L32 15" fill="none" stroke="#ffffff" strokeWidth="4.5" strokeLinecap="round" strokeLinejoin="round" className={s.vinkje} />}
+        <svg viewBox="0 0 60 60" width="60" height="60" style={{ overflow: "visible" }}>
+          <circle cx="30" cy="30" r="23" fill="none" stroke="#bfe0ee" strokeWidth="10" />
+          {afgevinkt && <circle cx="30" cy="30" r="23" fill="none" stroke="var(--kaartkleur)" strokeWidth="10" strokeDasharray={RING_OMTREK} className={s.ringBoog} transform="rotate(-90 30 30)" />}
         </svg>
       </span>
+      <span className={s.kaartTitel}>{onderwerp}</span>
     </button>
   );
 

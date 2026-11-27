@@ -15,7 +15,7 @@ import { langsStartknop } from "./startknop-hulp.mjs";
 const UIT = process.env.UIT;
 if (!UIT) throw new Error("zet UIT=<map>");
 mkdirSync(UIT, { recursive: true });
-const LES = "squla-tellen-fruit-1-gouden-extra";
+const LES = process.env.LES ?? "squla-tellen-fruit-1-gouden-extra";
 const PERC = (process.env.PERC ?? "100,92,87,82,77,72,65,55,45,35,20").split(",").map(Number);
 const wacht = (ms) => new Promise((r) => setTimeout(r, ms));
 const CHROME = "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome";

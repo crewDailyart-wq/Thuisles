@@ -399,9 +399,8 @@
 }
 .kaartKlaar {
   cursor: default;
-  border-color: var(--kaartkleur);
-  background: rgba(255, 255, 255, 0.22);
-  box-shadow: 0 0 26px var(--kaartkleur);
+  border-color: rgba(235, 252, 255, 0.9);
+  background: rgba(255, 255, 255, 0.16);
   animation: kaartKlaar 0.5s cubic-bezier(0.3, 1.4, 0.5, 1) both;
 }
 @keyframes kaartKlaar {
@@ -423,8 +422,15 @@
 }
 .kaartRing {
   flex: none;
-  width: 44px;
-  height: 44px;
+  width: 60px;
+  height: 60px;
+}
+.ringBoog {
+  stroke-dashoffset: 145;
+  animation: ringVol 1.4s cubic-bezier(0.3, 0.1, 0.25, 1) 0.05s forwards;
+}
+@keyframes ringVol {
+  to { stroke-dashoffset: 0; }
 }
 .vinkje {
   stroke-dasharray: 40;

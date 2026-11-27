@@ -29,6 +29,7 @@ import { TelExtraVlak, type ExtraCel, type TelExtraProps } from "../vlakken/squl
 import type { Soort } from "../vlakken/squla-tellen-tekenen";
 import { speelLesgeluid } from "@/lib/lesgeluiden";
 import { percentageGoed } from "@/lib/les-kleuren";
+import { eindzin } from "../eindzinnen";
 import { zegTelwoord, zetTestAntwoord } from "./squla-hulp";
 import { maakBasis, schud, type Fout } from "./squla-extra-basis";
 import { deeltStuk, maakKiezer } from "./nooit-dubbel";
@@ -603,8 +604,8 @@ async function eindeScherm(l: Lesgids) {
   l.eindscherm?.(resultaat(l));
   /* Bliepo praat pas als het feestgeluid (±1,4 s) voorbij is en de ster komt. */
   await l.wacht(1500);
-  const u = uitslag(l);
-  const zin = u === "alles" ? variant("eindAllesGoed", ZIN.eindAllesGoed) : u === "weinig" ? variant("eindWeinig", ZIN.eindWeinig) : u === "moeite" ? variant("eindMoeite", ZIN.eindMoeite) : variant("eindGewoon", ZIN.eindGewoon);
+  /* De standaardzinnen van alle gouden lessen (eindzinnen.ts, door Fable gecontroleerd). De oude zinnen van deze les staan nog in de zinnen-lijst. */
+  const zin = eindzin(resultaat(l).percentage);
   await B.zeg(l, zin);
   await l.eindAfsluiten?.();
 }

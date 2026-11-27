@@ -53,10 +53,7 @@
   color: #ffffff;
   text-decoration: none;
 }
-.kaart[data-kleur]:not([data-kleur=""]) {
-  border-color: var(--kaartkleur);
-  box-shadow: 0 0 20px var(--kaartkleur);
-}
+/* De kaart blijft gewoon; de kleur zit alleen in het rondje (27 nov 2026). */
 .kaart:hover {
   background: rgba(255, 255, 255, 0.2);
 }
