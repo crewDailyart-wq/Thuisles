@@ -11,13 +11,13 @@ export const dynamic = "force-dynamic";
  * (les-kleuren.ts), op het eindscherm én naast elke les op het onderwerpenscherm. De kaart zelf blijft gewoon.
  *   /voorbeeld/rondje-kleur?pct=72                          het eindscherm
  *   /voorbeeld/rondje-kleur?pct=72&scherm=onderwerpen       het overzicht
- * Er wordt niets bewaard. De zinnen van Bliepo zijn een voorstel en nog niet door Fable gecontroleerd.
+ * Er wordt niets bewaard. Bliepo zegt niets over de kleur, alleen hoe het ging. De zinnen zijn een voorstel en nog niet door Fable gecontroleerd.
  */
 function zinVoor(p: number): string {
-  if (p >= 80) return "Kijk, je rondje is groen! Dat komt door jouw goede antwoorden.";
-  if (p >= 70) return "Kijk, je rondje is geel. Bijna groen! Nog een keer oefenen en het wordt groen.";
-  if (p >= 40) return "Je rondje is oranje. Jij hebt flink geoefend! Als we nog eens oefenen, wordt het groener.";
-  return "Je rondje is nog rood. Als we nog eens oefenen, wordt het groener!";
+  if (p >= 100) return "Alles goed! Wat heb jij dat mooi gedaan.";
+  if (p >= 70) return "Kijk, dat ging goed! Dat komt door jouw goede antwoorden.";
+  if (p >= 40) return "Jij hebt flink geoefend! Nog een keer oefenen en het gaat steeds beter.";
+  return "De les is af. Van oefenen word je steeds beter! We doen het samen nog een keer.";
 }
 
 /** Alleen de ring: lichtblauw = nog niet gemaakt, de kleur loopt tot waar het kind het heeft gemaakt (af = % van de les). Geen wit vlak, geen vinkje. */
