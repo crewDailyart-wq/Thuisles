@@ -118,3 +118,5 @@
 .eind .metRondje { width: 400px; }
 .raster .rondje { width: 56px; height: 56px; }
 .eind .metRondje { width: 420px; }
+.rondje { overflow: visible; }
+.raster .rondje { width: 58px; height: 58px; }
