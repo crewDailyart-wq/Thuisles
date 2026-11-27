@@ -20,7 +20,7 @@ const PERC = (process.env.PERC ?? "100,92,87,82,77,72,65,55,45,35,20").split(","
 const wacht = (ms) => new Promise((r) => setTimeout(r, ms));
 const CHROME = "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome";
 const map = mkdtempSync(join(tmpdir(), "foto-kleur-"));
-const poort = 9750 + (process.pid % 50);
+const poort = 10000 + Math.floor(Math.random() * 20000);
 const chrome = spawn(CHROME, ["--headless=new", "--mute-audio", `--remote-debugging-port=${poort}`, `--user-data-dir=${map}`, "--window-size=1280,720", "--no-first-run", "about:blank"], { stdio: "ignore" });
 process.on("exit", () => { try { chrome.kill("SIGKILL"); } catch {} try { rmSync(map, { recursive: true, force: true }); } catch {} });
 let wsUrl = null;

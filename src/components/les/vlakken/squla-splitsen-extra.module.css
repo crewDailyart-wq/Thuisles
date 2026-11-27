@@ -76,7 +76,9 @@
 .lijst {
   position: absolute;
   right: 20px;
-  top: 40px;
+  /* Was 40px; lager zodat het lijstje de sleutelteller rechtsboven en de route van het vliegende sleuteltje niet raakt
+     (nieuw eindscherm, 27 nov 2026). */
+  top: 150px;
   width: 210px;
   display: flex;
   flex-direction: column;

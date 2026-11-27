@@ -39,17 +39,17 @@
 
 import { WAS_NAKIJKEN } from "./squla-klok-gouden-zinnen";
 import type { Lesdraaiboek, Lesgids } from "../soort";
-import { KaartRekentaal, type RekenDing } from "../vlakken/squla-rekentaal-keuken";
+import { type RekenDing } from "../vlakken/squla-rekentaal-keuken";
 import { RekentaalGoudenVlak, plankPlek, plekVan, type Punt, type RTProps } from "../vlakken/squla-rekentaal-gouden-vlak";
 import { zetTestAntwoord } from "./squla-hulp";
 import { speelLesgeluid } from "@/lib/lesgeluiden";
 import { bliepoScherm } from "@/lib/bliepo-scherm";
 import { bewaarUitkomst } from "@/app/lesuitkomstacties";
+import { percentageGoed } from "@/lib/les-kleuren";
+import { EIND_TIK_KAART, eindzin } from "../eindzinnen";
 import {
   AANMOEDIG_DOEN,
   BEVESTIG,
-  EINDE,
-  EINDE_VEEL_FOUTEN,
   LOF,
   MOMENT,
   NAAM_GROET,
@@ -74,7 +74,6 @@ import {
 } from "./squla-rekentaal-gouden-zinnen";
 import { deeltStuk, maakKiezer } from "./nooit-dubbel";
 import { alleenBijKeuze } from "./squla-klok-gouden-zinnen";
-import { afscheidNa } from "./squla-klok-gouden-zinnen";
 
 const LES_ID = "squla-rekentaal-gouden";
 
@@ -118,6 +117,7 @@ type Staat = {
   laatste: boolean;
   eerste: Map<string, Uitkomst>;
   vraagFouten: Map<string, string[]>;
+  alleDenkfouten: string[];
   log: unknown[];
   robotReactie: boolean;
   nakijk: number;
@@ -137,7 +137,7 @@ const st = (l: Lesgids): Staat => {
   if (!s)
     STAAT.set(
       l,
-      (s = { vorige: new Map(), recent: new Map(), zinNr: 0, robotNr: -99, namen: 0, naamKeer: 0, naamVraag: -99, opRij: 0, momenten: new Set(), vraag: 0, haak: 0, laatste: false, eerste: new Map(), vraagFouten: new Map(), log: [], robotReactie: false, nakijk: 0, nr: 0, golf: 0, gezegd: [], m: { ...LEEG, beeld: "b0" } }),
+      (s = { vorige: new Map(), recent: new Map(), zinNr: 0, robotNr: -99, namen: 0, naamKeer: 0, naamVraag: -99, opRij: 0, momenten: new Set(), vraag: 0, haak: 0, laatste: false, eerste: new Map(), vraagFouten: new Map(), alleDenkfouten: [], log: [], robotReactie: false, nakijk: 0, nr: 0, golf: 0, gezegd: [], m: { ...LEEG, beeld: "b0" } }),
     );
   return s;
 };
@@ -199,14 +199,25 @@ const balkTotaal = (): number => VRAGEN.length;
 
 function noteer(l: Lesgids, vraag: string, uit: Uitkomst): Uitkomst {
   const s = st(l);
-  if (!s.eerste.has(vraag)) s.eerste.set(vraag, uit);
+  const nieuweVraag = !s.eerste.has(vraag);
+  if (nieuweVraag) s.eerste.set(vraag, uit);
   l.voortgang?.(Math.min(1, s.eerste.size / balkTotaal()));
   const fouten = s.vraagFouten.get(vraag) ?? [];
   s.vraagFouten.delete(vraag);
+  s.alleDenkfouten.push(...fouten);
   if (typeof window === "undefined") return uit;
   const naamU = { goed: "goed in één keer", naFout: "goed na een fout", samen: "samen gedaan" } as const;
+  /* Een sleutel per vraag is maar 1 keer te verdienen, ook bij opnieuw spelen (15.52, 15.55; zoals noteer in
+     squla-extra-basis.ts): zegt de server "al verdiend", dan vliegt er geen sleutel. */
+  const eerstKeer = uit === "goed" && nieuweVraag;
   try {
-    void bewaarUitkomst({ lesId: LES_ID, vraagId: vraag, uitkomst: naamU[uit], denkfouten: uit === "goed" ? [] : fouten, pogingen: uit === "goed" ? 1 : 2 }).catch(() => {});
+    void bewaarUitkomst({ lesId: LES_ID, vraagId: vraag, uitkomst: naamU[uit], denkfouten: uit === "goed" ? [] : fouten, pogingen: uit === "goed" ? 1 : 2 })
+      .then((r) => {
+        if (eerstKeer && !(r.ok && r.nieuweSleutel === false)) l.sleutel?.();
+      })
+      .catch(() => {
+        if (eerstKeer) l.sleutel?.();
+      });
   } catch {
     /* bewaren mislukt: de les gaat gewoon door */
   }
@@ -668,11 +679,18 @@ const gouden: Lesdraaiboek = {
   woordenMeeMetStem: true,
   /* De donkere ruimte van alle gouden lessen (skelet). */
   nacht: true,
-  kaarttekening: KaartRekentaal,
+  /* Het nieuwe eindscherm (15.55, EINDSCHERM-INBOUW.md). De oude kaart (KaartRekentaal) blijft in
+     squla-rekentaal-keuken.tsx staan; deze les gebruikt hem niet meer. */
+  eindscherm: true,
+  eindOnderwerp: "Rekentaal",
+  eindLeerzin: "Je kunt nu rekenwoorden gebruiken.",
+  eindPlaatje: "/voorwerpen/rt-pannenkoek.png",
+  eindKaartZin: EIND_TIK_KAART,
   async speel(l) {
     STAAT.delete(l);
-    l.voortgang?.(0);
     log(l, "start");
+    if (l.snelEinde) return snelNaarEinde(l);
+    l.voortgang?.(0);
     /* Het beeld op het beginscherm (4.1): een grote en een kleine pannenkoek op tafel, zoals de oude les. */
     const s = st(l);
     s.m = {
@@ -708,23 +726,67 @@ const gouden: Lesdraaiboek = {
       await speelVraag(l, VRAGEN[i], i === 0);
     }
 
-    /* Einde: slotzin, kaart, eindzin uit het rijtje en wat het kind met de kaart doet (geen pijl). */
+    /* Einde: het nieuwe eindscherm (15.55). Was: slotzin (ZIN.slot), de kaart en een eindzin uit het rijtje. */
     void l.zeg().catch(() => {});
     nieuwBeeld(l, { indeling: "rij", ondergrond: "kleed", dingen: [] });
-    await zegDoor(l, variant("slot", ZIN.slot));
-    log(l, "kaart");
-    l.verderWeg?.();
-    /* Voortgangsbalk (15.54): bij de eindkaart precies vol. */
     l.voortgang?.(1);
-    const tik = l.kaart();
-    speelLesgeluid("kaart");
-    const eind = veelFouten(l) ? EINDE_VEEL_FOUTEN : kies(l, EINDE);
-    await zeg(l, `${eind} ${variant("kaartTik", ZIN.kaartTik)}`);
-    await tik;
-    /* Ronde 51 punt 10 (15.50): het afscheid ("Tot snel!") pas na de tik op de kaart; zo blijft "Tik op de kaart." het laatste in beeld. */
-    const afscheid = afscheidNa(eind);
-    if (afscheid) await zeg(l, afscheid);
+    await eindeScherm(l);
   },
 };
+
+/**
+ * Percentage goed in 1 keer en de denkfouten van deze speelbeurt (voor de kleur van het rondje en het bewaren). Op de
+ * voorbeeldpagina kun je met `&snel=p72` een percentage forceren (alleen om elke kleur te kunnen zien).
+ */
+function resultaat(l: Lesgids): { percentage: number; denkfouten: string[] } {
+  if (l.snelEinde) {
+    let p = l.snelEinde === "alles" ? 100 : l.snelEinde === "moeite" ? 40 : 80;
+    try {
+      const m = /^p(\d{1,3})$/.exec(new URLSearchParams(window.location.search).get("snel") ?? "");
+      if (m) p = Math.min(100, Number(m[1]));
+    } catch {
+      /* standaard */
+    }
+    return { percentage: p, denkfouten: [] };
+  }
+  const s = st(l);
+  const goed = [...s.eerste.values()].filter((x) => x === "goed").length;
+  return { percentage: percentageGoed(goed, Math.max(balkTotaal(), s.eerste.size)), denkfouten: [...s.alleDenkfouten] };
+}
+
+/** Het eindscherm met 1 standaard eindzin van Bliepo (eindzinnen.ts), daarna de leerzin en de kaart (Lesscherm). */
+async function eindeScherm(l: Lesgids) {
+  void l.zeg().catch(() => {});
+  l.verderWeg?.();
+  /* Het laatste sleuteltje vliegt nog (±0,9 s): eerst laten aankomen, dan pas het feest. */
+  await l.wacht(1000);
+  log(l, "eindscherm");
+  l.eindscherm?.(resultaat(l));
+  /* Bliepo praat pas als het feestgeluid (±1,4 s) voorbij is en de ster komt. */
+  await l.wacht(1500);
+  await zeg(l, eindzin(resultaat(l).percentage));
+  await l.eindAfsluiten?.();
+}
+
+/** Alleen op de voorbeeldpagina (`&snel=1`): meteen naar het eindscherm, met een paar sleutels om de teller te zien. Bewaart niets. */
+async function snelNaarEinde(l: Lesgids) {
+  const totaal = balkTotaal();
+  l.voortgang?.(0);
+  const n = l.snelEinde === "alles" ? 5 : l.snelEinde === "moeite" ? 1 : 3;
+  const s = st(l);
+  s.m = { ...LEEG, beeld: `b${++s.nr}`, indeling: "rij", ondergrond: "tafel", dingen: [{ id: "groot", soort: "pannenkoek", naam: "de grote pannenkoek", maat: 1 }, { id: "klein", soort: "pannenkoek", naam: "de kleine pannenkoek", maat: 0.5 }] };
+  l.vlak<RTProps>(RekentaalGoudenVlak, { ...s.m, voorbak: VRAGEN.flatMap((v) => v.dingen) });
+  /* Eerst de groet: bij een geplakte link komt dan de afspeelknop (15.38) en mag er daarna geluid klinken. */
+  await zeg(l, NAAM_GROET);
+  await l.wacht(300);
+  for (let i = 0; i < n; i++) {
+    l.voortgang?.(Math.min(1, ((i + 1) * 3) / totaal));
+    l.sleutel?.();
+    await l.wacht(1100);
+  }
+  l.voortgang?.(1);
+  nieuwBeeld(l, { indeling: "rij", ondergrond: "kleed", dingen: [] });
+  await eindeScherm(l);
+}
 
 export const LESSEN_SQULA_REKENTAAL_GOUDEN: Lesdraaiboek[] = [gouden];

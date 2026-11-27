@@ -25,15 +25,16 @@
  */
 
 import type { Lesdraaiboek, Lesgids } from "../soort";
-import { GoudenRekenmixVlak, KaartRekenmixGouden, type GoudenRekenmixProps, type RmgOpgave } from "../vlakken/squla-rekenmix-gouden-vlak";
+import { GoudenRekenmixVlak, type GoudenRekenmixProps, type RmgOpgave } from "../vlakken/squla-rekenmix-gouden-vlak";
 import { zegTelwoord, zetTestAntwoord } from "./squla-hulp";
 import { speelLesgeluid } from "@/lib/lesgeluiden";
 import { bliepoScherm } from "@/lib/bliepo-scherm";
 import { bewaarUitkomst } from "@/app/lesuitkomstacties";
-import { BEVESTIG, EINDE, EINDE_VEEL_FOUTEN, LOF, LOF_KIJK_INDEX, MOMENT, NAAM_GROET, NAAM_LOF, ONDUIDELIJK, ONDUIDELIJK_NOG_1_KEER, OVERGANG, RM4, TELREACTIE_4, TELREACTIE_JA, TELREACTIE_ROBOT, VRAGEN, WISSEL_4, foutReactie4, fouten4, gk, hard4, herhaling4, metNaam, opnieuw4, past4, plekken, type Fout, type Fout4, type Rijtje, type Vraag4 as Rmvraag } from "./squla-rekenmix4-gouden-zinnen";
+import { percentageGoed } from "@/lib/les-kleuren";
+import { EIND_TIK_KAART, eindzin } from "../eindzinnen";
+import { BEVESTIG, LOF, LOF_KIJK_INDEX, MOMENT, NAAM_GROET, NAAM_LOF, ONDUIDELIJK, ONDUIDELIJK_NOG_1_KEER, OVERGANG, RM4, TELREACTIE_4, TELREACTIE_JA, TELREACTIE_ROBOT, VRAGEN, WISSEL_4, foutReactie4, fouten4, gk, hard4, herhaling4, metNaam, opnieuw4, past4, plekken, type Fout, type Fout4, type Rijtje, type Vraag4 as Rmvraag } from "./squla-rekenmix4-gouden-zinnen";
 import { maakKiezer } from "./nooit-dubbel";
 import { alleenBijKeuze } from "./squla-klok-gouden-zinnen";
-import { afscheidNa } from "./squla-klok-gouden-zinnen";
 
 const LES_ID = "squla-rekenmix-mix4-1-gouden";
 
@@ -58,11 +59,11 @@ const VANGNET_MS = 20000;
 /* ---------- staat per les ---------- */
 
 type Uitkomst = "goed" | "naFout" | "samen";
-type Staat = { vorige: Map<Rijtje, number>; zinNr: number; robotNr: number; naamVraag: number; naamKeer: number; namen: number; opRij: number; momenten: Set<string>; haak: number; goed: number; fout: number; vraag: number; laatste: boolean; eerste: Map<string, Uitkomst>; vraagFouten: Map<string, string[]>; log: unknown[]; robotTel: boolean; telVorige: number };
+type Staat = { vorige: Map<Rijtje, number>; zinNr: number; robotNr: number; naamVraag: number; naamKeer: number; namen: number; opRij: number; momenten: Set<string>; haak: number; goed: number; fout: number; vraag: number; laatste: boolean; eerste: Map<string, Uitkomst>; vraagFouten: Map<string, string[]>; alleDenkfouten: string[]; log: unknown[]; robotTel: boolean; telVorige: number };
 const STAAT = new WeakMap<Lesgids, Staat>();
 const st = (l: Lesgids): Staat => {
   let s = STAAT.get(l);
-  if (!s) STAAT.set(l, (s = { vorige: new Map(), zinNr: 0, robotNr: -99, naamVraag: -99, naamKeer: 0, namen: 0, opRij: 0, momenten: new Set(), haak: 0, goed: 0, fout: 0, vraag: 0, laatste: false, eerste: new Map(), vraagFouten: new Map(), log: [], robotTel: false, telVorige: -1 }));
+  if (!s) STAAT.set(l, (s = { vorige: new Map(), zinNr: 0, robotNr: -99, naamVraag: -99, naamKeer: 0, namen: 0, opRij: 0, momenten: new Set(), haak: 0, goed: 0, fout: 0, vraag: 0, laatste: false, eerste: new Map(), vraagFouten: new Map(), alleDenkfouten: [], log: [], robotTel: false, telVorige: -1 }));
   return s;
 };
 
@@ -119,14 +120,25 @@ const balkTotaal = (): number => VRAGEN.length;
 
 function noteer(l: Lesgids, vraag: string, uit: Uitkomst): Uitkomst {
   const s = st(l);
-  if (!s.eerste.has(vraag)) s.eerste.set(vraag, uit);
+  const nieuweVraag = !s.eerste.has(vraag);
+  if (nieuweVraag) s.eerste.set(vraag, uit);
   l.voortgang?.(Math.min(1, s.eerste.size / balkTotaal()));
   const fouten = s.vraagFouten.get(vraag) ?? [];
   s.vraagFouten.delete(vraag);
+  s.alleDenkfouten.push(...fouten);
   if (typeof window === "undefined") return uit;
   const naam = { goed: "goed in één keer", naFout: "goed na een fout", samen: "samen gedaan" } as const;
+  /* Een sleutel per vraag is maar 1 keer te verdienen, ook bij opnieuw spelen (15.52, 15.55; zoals noteer in
+     squla-extra-basis.ts): zegt de server "al verdiend", dan vliegt er geen sleutel. */
+  const eerstKeer = uit === "goed" && nieuweVraag;
   try {
-    void bewaarUitkomst({ lesId: LES_ID, vraagId: vraag, uitkomst: naam[uit], denkfouten: uit === "goed" ? [] : fouten, pogingen: uit === "goed" ? 1 : 2 }).catch(() => {});
+    void bewaarUitkomst({ lesId: LES_ID, vraagId: vraag, uitkomst: naam[uit], denkfouten: uit === "goed" ? [] : fouten, pogingen: uit === "goed" ? 1 : 2 })
+      .then((r) => {
+        if (eerstKeer && !(r.ok && r.nieuweSleutel === false)) l.sleutel?.();
+      })
+      .catch(() => {
+        if (eerstKeer) l.sleutel?.();
+      });
   } catch {
     /* bewaren mislukt: de les gaat gewoon door */
   }
@@ -469,12 +481,19 @@ const gouden: Lesdraaiboek = {
   /* Elk woord licht op als Bliepo het zegt (BOUWREGELS 3.7). */
   woordenMeeMetStem: true,
   voorwerpen: ALLE_BEELDEN,
-  kaarttekening: KaartRekenmixGouden,
+  /* Het nieuwe eindscherm (15.55, EINDSCHERM-INBOUW.md). De oude kaart (KaartRekenmixGouden) blijft in
+     squla-rekenmix-gouden-vlak.tsx staan; deze les gebruikt hem niet meer. */
+  eindscherm: true,
+  eindOnderwerp: "Rekenmix 4",
+  eindLeerzin: "Je kunt nu tellen tot 12.",
+  eindPlaatje: "/voorwerpen/raketje.png",
+  eindKaartZin: EIND_TIK_KAART,
   async speel(l) {
     STAAT.delete(l);
-    l.voortgang?.(0);
     SOORTEN.delete(l);
     log(l, "start");
+    if (l.snelEinde) return snelNaarEinde(l);
+    l.voortgang?.(0);
     /* Stap 1. Openen: de appels van vraag 1 verschijnen; Bliepo groet en zegt wat we gaan doen, in 1 stuk. */
     l.vlak<GoudenRekenmixProps>(GoudenRekenmixVlak, { opgave: opgaveVan(VRAGEN[0]), nummers: [], kleur: VRAGEN[0].ding.kleur, voorraad: ALLE_BEELDEN });
     speelLesgeluid("verschijn");
@@ -492,25 +511,65 @@ const gouden: Lesdraaiboek = {
       await telVraag(l, v, i === 0);
     }
 
-    /* Stap 10. Einde: slotzin, kaart, eindzin uit het rijtje. */
+    /* Stap 10. Einde: het nieuwe eindscherm (15.55). Was: slotzin (RM4.slot), de kaart en een eindzin uit het rijtje. */
     void l.zeg().catch(() => {});
     zet(l, { opgave: null, nummers: [], hand: null, tikbaar: false });
-    await zegDoor(l, variant("slot", RM4.slot));
-    log(l, "kaart");
-    /* Geen pijl op de eindkaart (15.27). */
-    l.verderWeg?.();
-    /* Voortgangsbalk (15.54): bij de eindkaart precies vol. */
     l.voortgang?.(1);
-    const tik = l.kaart();
-    speelLesgeluid("kaart");
-    /* Draaiboek stap 10: Bliepo zegt kort wat het kind met de kaart doet. 1 uiting. */
-    const eind = veelFouten(l) ? EINDE_VEEL_FOUTEN : kies(l, EINDE);
-    await zeg(l, `${eind} ${variant("kaartTik", hard4(RM4.kaartTik, (z) => past4(eind, z)))}`);
-    await tik;
-    /* Ronde 51 punt 10 (15.50): het afscheid ("Tot snel!") pas na de tik op de kaart; zo blijft "Tik op de kaart." het laatste in beeld. */
-    const afscheid = afscheidNa(eind);
-    if (afscheid) await zeg(l, afscheid);
+    await eindeScherm(l);
   },
 };
+
+/**
+ * Percentage goed in 1 keer en de denkfouten van deze speelbeurt (voor de kleur van het rondje en het bewaren). Op de
+ * voorbeeldpagina kun je met `&snel=p72` een percentage forceren (alleen om elke kleur te kunnen zien).
+ */
+function resultaat(l: Lesgids): { percentage: number; denkfouten: string[] } {
+  if (l.snelEinde) {
+    let p = l.snelEinde === "alles" ? 100 : l.snelEinde === "moeite" ? 40 : 80;
+    try {
+      const m = /^p(\d{1,3})$/.exec(new URLSearchParams(window.location.search).get("snel") ?? "");
+      if (m) p = Math.min(100, Number(m[1]));
+    } catch {
+      /* standaard */
+    }
+    return { percentage: p, denkfouten: [] };
+  }
+  const s = st(l);
+  const goed = [...s.eerste.values()].filter((x) => x === "goed").length;
+  return { percentage: percentageGoed(goed, Math.max(balkTotaal(), s.eerste.size)), denkfouten: [...s.alleDenkfouten] };
+}
+
+/** Het eindscherm met 1 standaard eindzin van Bliepo (eindzinnen.ts), daarna de leerzin en de kaart (Lesscherm). */
+async function eindeScherm(l: Lesgids) {
+  void l.zeg().catch(() => {});
+  l.verderWeg?.();
+  /* Het laatste sleuteltje vliegt nog (±0,9 s): eerst laten aankomen, dan pas het feest. */
+  await l.wacht(1000);
+  log(l, "eindscherm");
+  l.eindscherm?.(resultaat(l));
+  /* Bliepo praat pas als het feestgeluid (±1,4 s) voorbij is en de ster komt. */
+  await l.wacht(1500);
+  await zeg(l, eindzin(resultaat(l).percentage));
+  await l.eindAfsluiten?.();
+}
+
+/** Alleen op de voorbeeldpagina (`&snel=1`): meteen naar het eindscherm, met een paar sleutels om de teller te zien. Bewaart niets. */
+async function snelNaarEinde(l: Lesgids) {
+  const totaal = balkTotaal();
+  l.voortgang?.(0);
+  const n = l.snelEinde === "alles" ? 5 : l.snelEinde === "moeite" ? 1 : 3;
+  l.vlak<GoudenRekenmixProps>(GoudenRekenmixVlak, { opgave: opgaveVan(VRAGEN[0]), nummers: [], kleur: VRAGEN[0].ding.kleur, voorraad: ALLE_BEELDEN });
+  /* Eerst de groet: bij een geplakte link komt dan de afspeelknop (15.38) en mag er daarna geluid klinken. */
+  await zeg(l, NAAM_GROET);
+  await l.wacht(300);
+  for (let i = 0; i < n; i++) {
+    l.voortgang?.(Math.min(1, ((i + 1) * 3) / totaal));
+    l.sleutel?.();
+    await l.wacht(1100);
+  }
+  l.voortgang?.(1);
+  zet(l, { opgave: null, nummers: [], hand: null, tikbaar: false });
+  await eindeScherm(l);
+}
 
 export const LESSEN_SQULA_REKENMIX4_GOUDEN: Lesdraaiboek[] = [gouden];

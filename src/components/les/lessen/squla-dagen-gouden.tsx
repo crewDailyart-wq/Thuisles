@@ -44,13 +44,13 @@ import { zetTestAntwoord } from "./squla-hulp";
 import { speelLesgeluid } from "@/lib/lesgeluiden";
 import { bliepoScherm } from "@/lib/bliepo-scherm";
 import { bewaarUitkomst } from "@/app/lesuitkomstacties";
+import { percentageGoed } from "@/lib/les-kleuren";
+import { EIND_TIK_KAART, eindzin } from "../eindzinnen";
 import { maakKiezer, type Kiezer } from "./nooit-dubbel";
 import {
   AANMOEDIG_DOEN,
   ALLE,
   BEVESTIG,
-  EINDE,
-  EINDE_VEEL_FOUTEN,
   LOF,
   LOF_KIJK_INDEX,
   MOMENT,
@@ -80,7 +80,6 @@ import {
   type Vraag,
 } from "./squla-dagen-gouden-zinnen";
 import { alleenBijKeuze } from "./squla-klok-gouden-zinnen";
-import { afscheidNa } from "./squla-klok-gouden-zinnen";
 
 const LES_ID = "squla-dagen-van-de-week-gouden";
 
@@ -115,6 +114,8 @@ type Staat = {
   laatste: boolean;
   eerste: Map<string, Uitkomst>;
   vraagFouten: Map<string, string[]>;
+  /** Alle denkfouten van deze speelbeurt (voor het eindscherm). */
+  alleDenkfouten: string[];
   log: unknown[];
   robotReactie: boolean;
   nakijk: number;
@@ -135,7 +136,7 @@ const st = (l: Lesgids): Staat => {
   if (!s)
     STAAT.set(
       l,
-      (s = { vorige: new Map(), recent: new Map(), zinNr: 0, robotNr: -99, namen: 0, naamKeer: 0, naamVraag: -99, opRij: 0, momenten: new Set(), vraag: 0, haak: 0, laatste: false, eerste: new Map(), vraagFouten: new Map(), log: [], robotReactie: false, nakijk: 0, nr: 0, golf: 0, kaartUitgelegd: false, kiezer: maakKiezer({ wissel: WISSEL }), m: { ...LEEG, beeld: "b0" } }),
+      (s = { vorige: new Map(), recent: new Map(), zinNr: 0, robotNr: -99, namen: 0, naamKeer: 0, naamVraag: -99, opRij: 0, momenten: new Set(), vraag: 0, haak: 0, laatste: false, eerste: new Map(), vraagFouten: new Map(), alleDenkfouten: [], log: [], robotReactie: false, nakijk: 0, nr: 0, golf: 0, kaartUitgelegd: false, kiezer: maakKiezer({ wissel: WISSEL }), m: { ...LEEG, beeld: "b0" } }),
     );
   return s;
 };
@@ -202,14 +203,26 @@ const balkTotaal = (): number => VRAGEN.length;
 
 function noteer(l: Lesgids, vraag: string, uit: Uitkomst): Uitkomst {
   const s = st(l);
-  if (!s.eerste.has(vraag)) s.eerste.set(vraag, uit);
+  const nieuweVraag = !s.eerste.has(vraag);
+  if (nieuweVraag) s.eerste.set(vraag, uit);
   l.voortgang?.(Math.min(1, s.eerste.size / balkTotaal()));
   const fouten = s.vraagFouten.get(vraag) ?? [];
   s.vraagFouten.delete(vraag);
+  /* Voor het eindscherm: alle denkfouten van deze speelbeurt (bewaard bij de kaart). */
+  s.alleDenkfouten.push(...fouten);
   if (typeof window === "undefined") return uit;
   const naamU = { goed: "goed in één keer", naFout: "goed na een fout", samen: "samen gedaan" } as const;
   try {
-    void bewaarUitkomst({ lesId: LES_ID, vraagId: vraag, uitkomst: naamU[uit], denkfouten: uit === "goed" ? [] : fouten, pogingen: uit === "goed" ? 1 : 2 }).catch(() => {});
+    /* Een sleutel per vraag is maar 1 keer te verdienen, ook bij opnieuw spelen (Sara, 25 nov 2026, 15.52): zegt de server
+       "al verdiend", dan vliegt er geen sleutel; weet hij niets (geen kind gekozen), dan wel. Zoals squla-extra-basis. */
+    const eerstKeer = uit === "goed" && nieuweVraag;
+    void bewaarUitkomst({ lesId: LES_ID, vraagId: vraag, uitkomst: naamU[uit], denkfouten: uit === "goed" ? [] : fouten, pogingen: uit === "goed" ? 1 : 2 })
+      .then((r) => {
+        if (eerstKeer && !(r.ok && r.nieuweSleutel === false)) l.sleutel?.();
+      })
+      .catch(() => {
+        if (eerstKeer) l.sleutel?.();
+      });
   } catch {
     /* bewaren mislukt: de les gaat gewoon door */
   }
@@ -218,7 +231,8 @@ function noteer(l: Lesgids, vraag: string, uit: Uitkomst): Uitkomst {
   return uit;
 }
 
-/** "Volgende keer gaat het nog beter" alleen als de helft of meer niet in 1 keer goed was (15.13 punt 3). */
+/** "Volgende keer gaat het nog beter" alleen als de helft of meer niet in 1 keer goed was (15.13 punt 3). Hoorde bij de oude eindkaart; blijft staan. */
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 function veelFouten(l: Lesgids): boolean {
   const alle = [...st(l).eerste.values()];
   return alle.length > 0 && alle.filter((x) => x !== "goed").length * 2 >= alle.length;
@@ -787,11 +801,18 @@ const gouden: Lesdraaiboek = {
   /* Elk woord licht op als Bliepo het zegt, ook met de browserstem (BOUWREGELS 3.7; lib/stem.ts woordenMee). */
   woordenMeeMetStem: true,
   nacht: true,
+  /* De oude kaart (KaartWeektrein) gebruikt deze les niet meer sinds het nieuwe eindscherm (27 nov 2026). */
   kaarttekening: KaartWeektrein,
+  eindscherm: true,
+  eindLeerzin: "Je kunt nu de 7 dagen van de week op volgorde noemen.",
+  eindPlaatje: "/squla/trein-glow/locomotief.png",
+  eindOnderwerp: "De week",
+  eindKaartZin: EIND_TIK_KAART,
   async speel(l) {
     STAAT.delete(l);
     l.voortgang?.(0);
     log(l, "start");
+    if (l.snelEinde) return snelNaarEinde(l);
     /* Het beeld op het beginscherm (4.1): de hele weektrein, zoals de oude les. */
     const s = st(l);
     s.m = { ...LEEG, beeld: `b${++s.nr}`, wagons: ALLE };
@@ -818,23 +839,67 @@ const gouden: Lesdraaiboek = {
       if (v.soort === "weekend1") weekendDag = r.dag;
     }
 
-    /* Einde: slotzin, kaart, eindzin uit het rijtje en wat het kind met de kaart doet (geen pijl). */
-    void l.zeg().catch(() => {});
-    nieuwBeeld(l, { wagons: ALLE, weekend: false });
-    await zegDoor(l, variant(l, "slot", ZIN.slot));
-    log(l, "kaart");
-    l.verderWeg?.();
-    /* Voortgangsbalk (15.54): bij de eindkaart precies vol. */
+    /* Einde: het nieuwe eindscherm (27 nov 2026). Was: slotzin (ZIN.slot), de kaart (KaartWeektrein), een eindzin
+       (EINDE / EINDE_VEEL_FOUTEN) met "Tik op de kaart." (ZIN.kaartTik) en het afscheid (afscheidNa). */
+    nieuwBeeld(l, { wagons: null, weekend: false });
+    /* Voortgangsbalk (15.54): aan het eind precies vol. */
     l.voortgang?.(1);
-    const tik = l.kaart();
-    speelLesgeluid("kaart");
-    const eind = veelFouten(l) ? EINDE_VEEL_FOUTEN : kies(l, EINDE);
-    await zeg(l, `${eind} ${variant(l, "kaartTik", ZIN.kaartTik)}`);
-    await tik;
-    /* Ronde 51 punt 10 (15.50): het afscheid ("Tot snel!") pas na de tik op de kaart; zo blijft "Tik op de kaart." het laatste in beeld. */
-    const afscheid = afscheidNa(eind);
-    if (afscheid) await zeg(l, afscheid);
+    await eindeScherm(l);
   },
 };
+
+/**
+ * Percentage goed in 1 keer en de denkfouten van deze speelbeurt (voor de kleur van de kaart en het bewaren). Op de
+ * voorbeeldpagina kun je met `&snel=p72` een percentage forceren (alleen om elke kleur te kunnen zien).
+ */
+function resultaat(l: Lesgids): { percentage: number; denkfouten: string[] } {
+  if (l.snelEinde) {
+    let p = l.snelEinde === "alles" ? 100 : l.snelEinde === "moeite" ? 40 : 80;
+    try {
+      const m = /^p(\d{1,3})$/.exec(new URLSearchParams(window.location.search).get("snel") ?? "");
+      if (m) p = Math.min(100, Number(m[1]));
+    } catch {
+      /* standaard */
+    }
+    return { percentage: p, denkfouten: [] };
+  }
+  const s = st(l);
+  const goed = [...s.eerste.values()].filter((x) => x === "goed").length;
+  return { percentage: percentageGoed(goed, Math.max(balkTotaal(), s.eerste.size)), denkfouten: [...s.alleDenkfouten] };
+}
+
+/** Het eindscherm met 1 standaard eindzin van Bliepo (eindzinnen.ts), daarna de leerzin en de kaart (Lesscherm). */
+async function eindeScherm(l: Lesgids) {
+  void l.zeg().catch(() => {});
+  l.verderWeg?.();
+  /* Het laatste sleuteltje vliegt nog (±0,9 s): eerst laten aankomen, dan pas het feest. */
+  await l.wacht(1000);
+  log(l, "eindscherm");
+  l.eindscherm?.(resultaat(l));
+  /* Bliepo praat pas als het feestgeluid (±1,4 s) voorbij is en de ster komt. */
+  await l.wacht(1500);
+  await zeg(l, eindzin(resultaat(l).percentage));
+  await l.eindAfsluiten?.();
+}
+
+/** Alleen op de voorbeeldpagina (`&snel=1`): meteen naar het eindscherm, met een paar sleutels om de teller te zien. Bewaart niets. */
+async function snelNaarEinde(l: Lesgids) {
+  const totaal = balkTotaal();
+  l.voortgang?.(0);
+  const n = Math.min(totaal, l.snelEinde === "alles" ? 5 : l.snelEinde === "moeite" ? 1 : 3);
+  const s = st(l);
+  s.m = { ...LEEG, beeld: `b${++s.nr}`, wagons: ALLE };
+  l.vlak<DagenGoudenProps>(DagenGoudenVlak, { ...s.m });
+  /* Eerst de groet: bij een geplakte link komt dan de afspeelknop (15.38) en mag er daarna geluid klinken. */
+  await zeg(l, NAAM_GROET);
+  await l.wacht(300);
+  for (let i = 0; i < n; i++) {
+    l.voortgang?.((i + 1) / totaal);
+    l.sleutel?.();
+    await l.wacht(1100);
+  }
+  l.voortgang?.(1);
+  await eindeScherm(l);
+}
 
 export const LESSEN_SQULA_DAGEN_GOUDEN: Lesdraaiboek[] = [gouden];

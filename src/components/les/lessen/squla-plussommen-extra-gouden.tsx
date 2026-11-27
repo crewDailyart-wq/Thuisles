@@ -9,7 +9,7 @@
  *     stap 7    maak samen 7;
  *     stap 8    maak samen 10, de som kiezen, OMWISSELEN ("ik draai ze om; wat is het totaal nu?");
  *     stap 12   nog een manier om 10;
- *     stap 13   einde.
+ *     stap 13   einde: het nieuwe eindscherm (27 nov 2026, EINDSCHERM-INBOUW.md; was: slotzin, kaart, eindzin).
  * Het vlak is het tegelvlak van Optellen tot 10 (optellen10-holo-tegels.tsx, ongewijzigd), net als de les Optellen onder de 10, iets kleiner vanaf links (squla-plussommen-extra-vlak.tsx) zodat de bak niet onder het tekstvak ligt (15.30).
  * Niet gebouwd: de som zelf typen (stap 10) en de slot-tegels van stap 5 (zie plussommen-extra-zinnen.ts).
  *
@@ -29,10 +29,11 @@ import { KleinTegelVlak } from "../vlakken/squla-plussommen-extra-vlak";
 import { Werkvlak, pas, telHokjes } from "./optellen-tot-10";
 import { speelLesgeluid } from "@/lib/lesgeluiden";
 import { zetTestAntwoord } from "./squla-hulp";
-import { EINDE, EINDE_VEEL_FOUTEN, maakBasis, schud, type Fout, type Uitkomst } from "./squla-extra-basis";
+import { percentageGoed } from "@/lib/les-kleuren";
+import { EIND_TIK_KAART, eindzin } from "../eindzinnen";
+import { maakBasis, schud, type Fout, type Uitkomst } from "./squla-extra-basis";
 import { maakKiezer } from "./nooit-dubbel";
 import { NAAM_GROET, SOMREACTIE, SOMREACTIE_ROBOT, ZIN, aanvulFout, dichtbij, g, getalFout, maakFoutKiezer, omwisselFout, somFout, somKeuzes, totaalFout } from "./squla-plussommen-extra-zinnen";
-import { afscheidNa } from "./squla-klok-gouden-zinnen";
 
 const LES_ID = "squla-plus-bakkerij-1-gouden-extra";
 const B = maakBasis(LES_ID);
@@ -310,9 +311,16 @@ const gouden: Lesdraaiboek = {
   pijlZoalsSynthesis: true,
   stemHeelUitpraten: true,
   woordenMeeMetStem: true,
+  /* De oude kaart met tegels (kaarttegels) gebruikt deze les niet meer sinds het nieuwe eindscherm (27 nov 2026). */
   kaarttegels: [3, 1],
+  eindscherm: true,
+  eindLeerzin: "Je kunt nu met tegels optellen tot 10.",
+  eindPlaatje: "/voorwerpen/tegels/tegel-7.png",
+  eindOnderwerp: "Optellen met tegels",
+  eindKaartZin: EIND_TIK_KAART,
   async speel(l) {
     B.log(l, "start");
+    if (l.snelEinde) return snelNaarEinde(l);
     /* Voortgangsbalk (15.54): 10 vragen (3x welk getal, 2x totaal, samen 7, samen 10, de som, omwisselen, nog een manier
        voor 10). Valt de laatste weg (na samen doen), dan wordt de balk vol bij de eindkaart. */
     B.st(l).totaal = 10;
@@ -391,24 +399,67 @@ const gouden: Lesdraaiboek = {
     }
     void uit10;
 
-    /* Stap 13. Einde: slotzin, kaart, eindzin. */
+    /* Stap 13. Einde: het nieuwe eindscherm (27 nov 2026). Was: slotzin (ZIN.slot), de kaart met tegels, een eindzin
+       (EINDE / EINDE_VEEL_FOUTEN) met "Tik op de kaart." (ZIN.kaartTik) en het afscheid (afscheidNa). */
     pas(l, { bak: [], torens: [], som: null });
-    /* Zelfde stappen als B.einde (squla-extra-basis), met de slotzin en "Tik op de kaart." in varianten. */
-    void l.zeg().catch(() => {});
-    await B.zegDoor(l, variant("slot", ZIN.slot));
-    B.log(l, "kaart");
-    l.verderWeg?.();
-    /* Voortgangsbalk (15.54): bij de eindkaart precies vol. */
+    /* Voortgangsbalk (15.54): aan het eind precies vol (ook als de laatste vraag wegviel). */
     l.voortgang?.(1);
-    const tik = l.kaart();
-    speelLesgeluid("kaart");
-    const eind = B.veelFouten(l) ? EINDE_VEEL_FOUTEN : B.kies(l, EINDE);
-    await B.zeg(l, `${eind} ${variant("kaartTik", ZIN.kaartTik)}`);
-    await tik;
-    /* Ronde 51 punt 10 (15.50): het afscheid ("Tot snel!") pas na de tik op de kaart; zo blijft "Tik op de kaart." het laatste in beeld. */
-    const afscheid = afscheidNa(eind);
-    if (afscheid) await B.zeg(l, afscheid);
+    await eindeScherm(l);
   },
 };
+
+/**
+ * Percentage goed in 1 keer en de denkfouten van deze speelbeurt (voor de kleur van de kaart en het bewaren). Op de
+ * voorbeeldpagina kun je met `&snel=p72` een percentage forceren (alleen om elke kleur te kunnen zien).
+ * Deze les heeft 10 vragen, of 9 als "nog een manier om 10" wegvalt (na samen omwisselen): dan telt de 10e niet mee.
+ */
+function resultaat(l: Lesgids): { percentage: number; denkfouten: string[] } {
+  if (l.snelEinde) {
+    let p = l.snelEinde === "alles" ? 100 : l.snelEinde === "moeite" ? 40 : 80;
+    try {
+      const m = /^p(\d{1,3})$/.exec(new URLSearchParams(window.location.search).get("snel") ?? "");
+      if (m) p = Math.min(100, Number(m[1]));
+    } catch {
+      /* standaard */
+    }
+    return { percentage: p, denkfouten: [] };
+  }
+  const s = B.st(l);
+  const goed = [...s.eerste.values()].filter((x) => x === "goed").length;
+  const gesteld = s.eerste.size > 0 ? s.eerste.size : s.totaal;
+  return { percentage: percentageGoed(goed, gesteld), denkfouten: [...s.alleDenkfouten] };
+}
+
+/** Het eindscherm met 1 standaard eindzin van Bliepo (eindzinnen.ts), daarna de leerzin en de kaart (Lesscherm). */
+async function eindeScherm(l: Lesgids) {
+  void l.zeg().catch(() => {});
+  l.verderWeg?.();
+  /* Het laatste sleuteltje vliegt nog (±0,9 s): eerst laten aankomen, dan pas het feest. */
+  await l.wacht(1000);
+  B.log(l, "eindscherm");
+  l.eindscherm?.(resultaat(l));
+  /* Bliepo praat pas als het feestgeluid (±1,4 s) voorbij is en de ster komt. */
+  await l.wacht(1500);
+  await B.zeg(l, eindzin(resultaat(l).percentage));
+  await l.eindAfsluiten?.();
+}
+
+/** Alleen op de voorbeeldpagina (`&snel=1`): meteen naar het eindscherm, met een paar sleutels om de teller te zien. Bewaart niets. */
+async function snelNaarEinde(l: Lesgids) {
+  B.st(l).totaal = 10;
+  l.voortgang?.(0);
+  const n = l.snelEinde === "alles" ? 5 : l.snelEinde === "moeite" ? 1 : 3;
+  l.vlak<HoloTegelProps>(KleinTegelVlak, { torens: [], bak: ALLES });
+  /* Eerst de groet: bij een geplakte link komt dan de afspeelknop (15.38) en mag er daarna geluid klinken. */
+  await B.zeg(l, NAAM_GROET);
+  await l.wacht(300);
+  for (let i = 0; i < n; i++) {
+    l.voortgang?.((i + 1) / 5);
+    l.sleutel?.();
+    await l.wacht(1100);
+  }
+  l.voortgang?.(1);
+  await eindeScherm(l);
+}
 
 export const LESSEN_SQULA_PLUSSOMMEN_EXTRA_GOUDEN: Lesdraaiboek[] = [gouden];

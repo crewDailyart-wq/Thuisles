@@ -21,7 +21,7 @@
  *     - goed na een fout: alleen een korte bevestiging;
  *     - heel snel: Bliepo zegt niets (6.10); lang wachten bij een keuzevraag: niets (zoals het draaiboek);
  *     - samen tellen is een opdracht: na ± 6 s stilte komt vanzelf het hulphandje met 1 korte zin (15.19);
- *   stap 10 einde: een slotzin, de kaart en een eindzin uit het rijtje.
+ *   stap 10 einde: het nieuwe eindscherm (27 nov 2026, EINDSCHERM-INBOUW.md; was: een slotzin, de kaart en een eindzin uit het rijtje).
  *   Stap 2 (zelf een kleur kiezen) en stap 5 t/m 9 (welke kleur, 2 kleuren samen, zelf maken, lijstje) zitten er NIET in:
  *   de Squla-les heeft die vragen niet (KEUZES-VOOR-SARA.md, Ronde 20).
  * Alle vragen zijn 11 t/m 17 (boven het draaiboek, dat tot 10 gaat): zelfde skelet; de hints en de fouttabel zijn eigen
@@ -43,10 +43,11 @@ import { zegTelwoord, zetTestAntwoord } from "./squla-hulp";
 import { speelLesgeluid } from "@/lib/lesgeluiden";
 import { bliepoScherm } from "@/lib/bliepo-scherm";
 import { bewaarUitkomst } from "@/app/lesuitkomstacties";
-import { BEVESTIG, EINDE, EINDE_VEEL_FOUTEN, LOF, LOF_KIJK_INDEX, MOMENT, NAAM_GROET, NAAM_LOF, ONDUIDELIJK, ONDUIDELIJK_NOG_1_KEER, OVERGANG, TEL, TELREACTIE_JA, TELREACTIE_ROBOT, TELREACTIE_WARM, VRAGEN, foutenVan, gk, metNaam, tweedeEerste, type Fout, type Rijtje, type Telvraag } from "./squla-tellen-gouden-zinnen";
+import { percentageGoed } from "@/lib/les-kleuren";
+import { EIND_TIK_KAART, eindzin } from "../eindzinnen";
+import { BEVESTIG, LOF, LOF_KIJK_INDEX, MOMENT, NAAM_GROET, NAAM_LOF, ONDUIDELIJK, ONDUIDELIJK_NOG_1_KEER, OVERGANG, TEL, TELREACTIE_JA, TELREACTIE_ROBOT, TELREACTIE_WARM, VRAGEN, foutenVan, gk, metNaam, tweedeEerste, type Fout, type Rijtje, type Telvraag } from "./squla-tellen-gouden-zinnen";
 import { deeltStuk, maakKiezer } from "./nooit-dubbel";
 import { alleenBijKeuze } from "./squla-klok-gouden-zinnen";
-import { afscheidNa } from "./squla-klok-gouden-zinnen";
 
 const LES_ID = "squla-tellen-fruit-1-gouden";
 
@@ -66,11 +67,11 @@ const VANGNET_MS = 20000;
 /* ---------- staat per les ---------- */
 
 type Uitkomst = "goed" | "naFout" | "samen";
-type Staat = { vorige: Map<Rijtje, number>; zinNr: number; robotNr: number; naamVraag: number; naamKeer: number; namen: number; opRij: number; momenten: Set<string>; haak: number; goed: number; fout: number; vraag: number; laatste: boolean; eerste: Map<string, Uitkomst>; vraagFouten: Map<string, string[]>; log: unknown[]; robotTel: boolean; telVorige: number };
+type Staat = { vorige: Map<Rijtje, number>; zinNr: number; robotNr: number; naamVraag: number; naamKeer: number; namen: number; opRij: number; momenten: Set<string>; haak: number; goed: number; fout: number; vraag: number; laatste: boolean; eerste: Map<string, Uitkomst>; vraagFouten: Map<string, string[]>; alleDenkfouten: string[]; log: unknown[]; robotTel: boolean; telVorige: number };
 const STAAT = new WeakMap<Lesgids, Staat>();
 const st = (l: Lesgids): Staat => {
   let s = STAAT.get(l);
-  if (!s) STAAT.set(l, (s = { vorige: new Map(), zinNr: 0, robotNr: -99, naamVraag: -99, naamKeer: 0, namen: 0, opRij: 0, momenten: new Set(), haak: 0, goed: 0, fout: 0, vraag: 0, laatste: false, eerste: new Map(), vraagFouten: new Map(), log: [], robotTel: false, telVorige: -1 }));
+  if (!s) STAAT.set(l, (s = { vorige: new Map(), zinNr: 0, robotNr: -99, naamVraag: -99, naamKeer: 0, namen: 0, opRij: 0, momenten: new Set(), haak: 0, goed: 0, fout: 0, vraag: 0, laatste: false, eerste: new Map(), vraagFouten: new Map(), alleDenkfouten: [], log: [], robotTel: false, telVorige: -1 }));
   return s;
 };
 
@@ -128,14 +129,26 @@ const balkTotaal = (): number => VRAGEN.length;
 
 function noteer(l: Lesgids, vraag: string, uit: Uitkomst): Uitkomst {
   const s = st(l);
-  if (!s.eerste.has(vraag)) s.eerste.set(vraag, uit);
+  const nieuweVraag = !s.eerste.has(vraag);
+  if (nieuweVraag) s.eerste.set(vraag, uit);
   l.voortgang?.(Math.min(1, s.eerste.size / balkTotaal()));
   const fouten = s.vraagFouten.get(vraag) ?? [];
   s.vraagFouten.delete(vraag);
+  /* Voor het eindscherm: alle denkfouten van deze speelbeurt (bewaard bij de kaart). */
+  s.alleDenkfouten.push(...fouten);
   if (typeof window === "undefined") return uit;
   const naam = { goed: "goed in één keer", naFout: "goed na een fout", samen: "samen gedaan" } as const;
   try {
-    void bewaarUitkomst({ lesId: LES_ID, vraagId: vraag, uitkomst: naam[uit], denkfouten: uit === "goed" ? [] : fouten, pogingen: uit === "goed" ? 1 : 2 }).catch(() => {});
+    /* Een sleutel per vraag is maar 1 keer te verdienen, ook bij opnieuw spelen (Sara, 25 nov 2026, 15.52): zegt de server
+       "al verdiend", dan vliegt er geen sleutel; weet hij niets (geen kind gekozen), dan wel. Zoals squla-extra-basis. */
+    const eerstKeer = uit === "goed" && nieuweVraag;
+    void bewaarUitkomst({ lesId: LES_ID, vraagId: vraag, uitkomst: naam[uit], denkfouten: uit === "goed" ? [] : fouten, pogingen: uit === "goed" ? 1 : 2 })
+      .then((r) => {
+        if (eerstKeer && !(r.ok && r.nieuweSleutel === false)) l.sleutel?.();
+      })
+      .catch(() => {
+        if (eerstKeer) l.sleutel?.();
+      });
   } catch {
     /* bewaren mislukt: de les gaat gewoon door */
   }
@@ -144,7 +157,8 @@ function noteer(l: Lesgids, vraag: string, uit: Uitkomst): Uitkomst {
   return uit;
 }
 
-/** "Volgende keer gaat het nog beter" alleen als de helft of meer niet in 1 keer goed was (15.13 punt 3). */
+/** "Volgende keer gaat het nog beter" alleen als de helft of meer niet in 1 keer goed was (15.13 punt 3). Hoorde bij de oude eindkaart; blijft staan. */
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 function veelFouten(l: Lesgids): boolean {
   const alle = [...st(l).eerste.values()];
   return alle.length > 0 && alle.filter((x) => x !== "goed").length * 2 >= alle.length;
@@ -497,11 +511,18 @@ const gouden: Lesdraaiboek = {
   /* Elk woord licht op als Bliepo het zegt, ook met de browserstem (BOUWREGELS 3.7; lib/stem.ts woordenMee). */
   woordenMeeMetStem: true,
   voorwerpen: ["appel", "peer", "pruim"],
+  /* De oude kaart (KaartTellenGouden) gebruikt deze les niet meer sinds het nieuwe eindscherm (27 nov 2026). */
   kaarttekening: KaartTellenGouden,
+  eindscherm: true,
+  eindLeerzin: "Je kunt nu fruit tellen tot 17.",
+  eindPlaatje: "/voorwerpen/peer.png",
+  eindOnderwerp: "Tellen tot 17",
+  eindKaartZin: EIND_TIK_KAART,
   async speel(l) {
     STAAT.delete(l);
     l.voortgang?.(0);
     log(l, "start");
+    if (l.snelEinde) return snelNaarEinde(l);
     /* Stap 1. Openen: de appels van vraag 1 verschijnen; Bliepo groet en zegt wat we gaan doen, in 1 stuk (Sara, 10 nov
        2026: geen aparte begroeting). Zonder eerdere tik zegt Bliepo het bij de eerste tik (lib/stem.ts heelUitpraten). */
     const plaatjes = [...new Map(VRAGEN.map((v) => [v.fruit.soort, { soort: v.fruit.soort, kleur: v.fruit.kleur }])).values()];
@@ -520,25 +541,66 @@ const gouden: Lesdraaiboek = {
       await telVraag(l, v, i === 0);
     }
 
-    /* Stap 10. Einde: slotzin, kaart, eindzin uit het rijtje. */
-    void l.zeg().catch(() => {});
+    /* Stap 10. Einde: het nieuwe eindscherm (27 nov 2026). Was: slotzin (TEL.slot), de kaart (KaartTellenGouden), een
+       eindzin (EINDE / EINDE_VEEL_FOUTEN) met "Tik op de kaart." (TEL.kaartTik) en het afscheid (afscheidNa). */
     zet(l, { opgave: null, nummers: [], hand: null, tikbaar: false });
-    await zegDoor(l, variant("slot", TEL.slot));
-    log(l, "kaart");
-    /* Geen pijl op de eindkaart (15.27). */
-    l.verderWeg?.();
-    /* Voortgangsbalk (15.54): bij de eindkaart precies vol. */
+    /* Voortgangsbalk (15.54): aan het eind precies vol. */
     l.voortgang?.(1);
-    const tik = l.kaart();
-    speelLesgeluid("kaart");
-    /* Draaiboek stap 10: Bliepo zegt kort wat het kind met de kaart doet (kind-test 9 nov). 1 uiting. */
-    const eind = veelFouten(l) ? EINDE_VEEL_FOUTEN : kies(l, EINDE);
-    await zeg(l, `${eind} ${variant("kaartTik", TEL.kaartTik)}`);
-    await tik;
-    /* Ronde 51 punt 10 (15.50): het afscheid ("Tot snel!") pas na de tik op de kaart; zo blijft "Tik op de kaart." het laatste in beeld. */
-    const afscheid = afscheidNa(eind);
-    if (afscheid) await zeg(l, afscheid);
+    await eindeScherm(l);
   },
 };
+
+/**
+ * Percentage goed in 1 keer en de denkfouten van deze speelbeurt (voor de kleur van de kaart en het bewaren). Op de
+ * voorbeeldpagina kun je met `&snel=p72` een percentage forceren (alleen om elke kleur te kunnen zien).
+ */
+function resultaat(l: Lesgids): { percentage: number; denkfouten: string[] } {
+  if (l.snelEinde) {
+    let p = l.snelEinde === "alles" ? 100 : l.snelEinde === "moeite" ? 40 : 80;
+    try {
+      const m = /^p(\d{1,3})$/.exec(new URLSearchParams(window.location.search).get("snel") ?? "");
+      if (m) p = Math.min(100, Number(m[1]));
+    } catch {
+      /* standaard */
+    }
+    return { percentage: p, denkfouten: [] };
+  }
+  const s = st(l);
+  const goed = [...s.eerste.values()].filter((x) => x === "goed").length;
+  return { percentage: percentageGoed(goed, Math.max(balkTotaal(), s.eerste.size)), denkfouten: [...s.alleDenkfouten] };
+}
+
+/** Het eindscherm met 1 standaard eindzin van Bliepo (eindzinnen.ts), daarna de leerzin en de kaart (Lesscherm). */
+async function eindeScherm(l: Lesgids) {
+  void l.zeg().catch(() => {});
+  l.verderWeg?.();
+  /* Het laatste sleuteltje vliegt nog (±0,9 s): eerst laten aankomen, dan pas het feest. */
+  await l.wacht(1000);
+  log(l, "eindscherm");
+  l.eindscherm?.(resultaat(l));
+  /* Bliepo praat pas als het feestgeluid (±1,4 s) voorbij is en de ster komt. */
+  await l.wacht(1500);
+  await zeg(l, eindzin(resultaat(l).percentage));
+  await l.eindAfsluiten?.();
+}
+
+/** Alleen op de voorbeeldpagina (`&snel=1`): meteen naar het eindscherm, met een paar sleutels om de teller te zien. Bewaart niets. */
+async function snelNaarEinde(l: Lesgids) {
+  const totaal = balkTotaal();
+  l.voortgang?.(0);
+  const n = Math.min(totaal, l.snelEinde === "alles" ? 5 : l.snelEinde === "moeite" ? 1 : 3);
+  const plaatjes = [...new Map(VRAGEN.map((v) => [v.fruit.soort, { soort: v.fruit.soort, kleur: v.fruit.kleur }])).values()];
+  l.vlak<GoudenTelProps>(GoudenTelVlak, { opgave: opgaveVan(VRAGEN[0]), nummers: [], kleur: VRAGEN[0].fruit.kleur, voorraad: plaatjes });
+  /* Eerst de groet: bij een geplakte link komt dan de afspeelknop (15.38) en mag er daarna geluid klinken. */
+  await zeg(l, NAAM_GROET);
+  await l.wacht(300);
+  for (let i = 0; i < n; i++) {
+    l.voortgang?.((i + 1) / totaal);
+    l.sleutel?.();
+    await l.wacht(1100);
+  }
+  l.voortgang?.(1);
+  await eindeScherm(l);
+}
 
 export const LESSEN_SQULA_TELLEN_GOUDEN: Lesdraaiboek[] = [gouden];

@@ -503,3 +503,6 @@ Vraag niet tussendoor (12.10). Zet in KEUZES-VOOR-SARA.md, onder een nieuw kopje
 - Commit alleen naar de back-upbranch **`backup-squla`**, met "controle overgeslagen" in de commitregel als je de controle overslaat (12.7).
 - Nooit naar `main` en nooit online zonder alle controles groen én Sara's "zet online" (12.9).
 - Wil Sara de les zien, dan op de laptop of op de back-upbranch.
+
+## 11. Het einde van de les (27 november 2026, BOUWREGELS 15.57)
+Elke gouden les eindigt met het nieuwe eindscherm: zet `eindscherm: true`, `eindOnderwerp`, `eindLeerzin` (1 korte zin "Je kunt nu …"), `eindPlaatje` en `eindKaartZin: EIND_TIK_KAART` in het draaiboek, bewaar per vraag de uitkomst en geef een sleutel bij de eerste keer in 1 keer goed, en sluit af met `eindeScherm(l)` met alleen `eindzin()` uit `eindzinnen.ts`. Referentie: `squla-tellen-extra-gouden.tsx`. Volledige opdracht: EINDSCHERM-INBOUW.md.

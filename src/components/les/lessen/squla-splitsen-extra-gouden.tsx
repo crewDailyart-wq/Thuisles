@@ -6,7 +6,7 @@
  *   Squla-les zitten: de splitsmachine met het totaal boven en 2 delen onder (een min en een plus bij elk deel), de
  *   somvraag "welke som heb je gemaakt?", het lijstje met gevonden sommen, een andere manier voor 5, een nieuw totaal,
  *   "zoek 2 delen die samen 7 maken", "nog een manier", en kiezen tussen 8 en 10 (SYNTHESIS-ANALYSE/DRAAIBOEKEN-NIEUW/splitsen.md,
- *   stap 7 t/m 16; getallen 5, 7, 8 en 10).
+ *   stap 7 t/m 16; getallen 5, 7, 8 en 10). Einde: het nieuwe eindscherm (27 nov 2026, EINDSCHERM-INBOUW.md).
  *
  * Niet gebouwd (de stof past niet bij Squla of is Engels; draaiboek §10): de woorden "samenstellen" en "ontleden", de piano,
  * "weet je nog hoe dat heet?" en de tegel van 5. Het getal 12 uit "Larger" is 10 geworden: Squla splitsen gaat tot 10.
@@ -24,7 +24,9 @@ import type { Lesdraaiboek, Lesgids } from "../soort";
 import { KaartSplitsenExtra, SplitsExtraVlak, type Knop, type Kop, type Som, type SplitsExtraProps } from "../vlakken/squla-splitsen-extra-vlak";
 import { speelLesgeluid } from "@/lib/lesgeluiden";
 import { zetTestAntwoord } from "./squla-hulp";
-import { EINDE, EINDE_VEEL_FOUTEN, maakBasis, schud, type Fout, type Uitkomst } from "./squla-extra-basis";
+import { percentageGoed } from "@/lib/les-kleuren";
+import { EIND_TIK_KAART, eindzin } from "../eindzinnen";
+import { maakBasis, schud, type Fout, type Uitkomst } from "./squla-extra-basis";
 import { deeltStuk, maakKiezer } from "./nooit-dubbel";
 import {
   AANMOEDIG_TIKKEN,
@@ -48,7 +50,6 @@ import {
   B_DEEL,
   type FoutV,
 } from "./squla-splitsen-extra-zinnen";
-import { afscheidNa } from "./squla-klok-gouden-zinnen";
 
 const LES_ID = "squla-splits-splitsen1-1-gouden-extra";
 const B = maakBasis(LES_ID);
@@ -487,10 +488,17 @@ const gouden: Lesdraaiboek = {
   opdrachtInVlak: true,
   stemHeelUitpraten: true,
   woordenMeeMetStem: true,
+  /* De oude kaart (KaartSplitsenExtra) gebruikt deze les niet meer sinds het nieuwe eindscherm (27 nov 2026). */
   kaarttekening: KaartSplitsenExtra,
+  eindscherm: true,
+  eindLeerzin: "Je kunt nu getallen tot 10 op veel manieren splitsen.",
+  eindPlaatje: "/voorwerpen/splitsmachine.png",
+  eindOnderwerp: "Splitsen tot 10",
+  eindKaartZin: EIND_TIK_KAART,
   async speel(l) {
     stand.delete(l);
     B.log(l, "start");
+    if (l.snelEinde) return snelNaarEinde(l);
     /* Voortgangsbalk (15.54): 8 vragen (totaal, de som, een andere manier voor 5, het nieuwe totaal, 2x splitsen van 7,
        2x splitsen van het gekozen getal). */
     B.st(l).totaal = 8;
@@ -538,25 +546,67 @@ const gouden: Lesdraaiboek = {
     B.st(l).laatste = true;
     await splitsOpdracht(l, { id: `splits-${T}-2`, T, vast: false, kop: ZIN.keuzeKop(T), opdracht: ZIN.keuzeNogOpdracht(T), hand: variant("plusMin", ZIN.plusMin), vinkje: true, ruil: "niet", gehad: gehadT });
 
-    /* Stap 16. Einde: slotzin, kaart, eindzin. */
+    /* Stap 16. Einde: het nieuwe eindscherm (27 nov 2026). Was: slotzin (ZIN.slot), de kaart (KaartSplitsenExtra), een
+       eindzin (EINDE / EINDE_VEEL_FOUTEN) met "Tik op de kaart." (ZIN.kaartTik) en het afscheid (afscheidNa). */
     zet(l, { delen: [0, 0], totaal: null, lijst: [], kop: null, actief: [], hand: null, ring: null });
     l.opdracht?.(null);
-    /* Zelfde stappen als B.einde (squla-extra-basis), met de slotzin en "Tik op de kaart." in varianten. */
-    void l.zeg().catch(() => {});
-    await B.zegDoor(l, variant("slot", ZIN.slot));
-    B.log(l, "kaart");
-    l.verderWeg?.();
-    /* Voortgangsbalk (15.54): bij de eindkaart precies vol. */
+    /* Voortgangsbalk (15.54): aan het eind precies vol. */
     l.voortgang?.(1);
-    const tik = l.kaart();
-    speelLesgeluid("kaart");
-    const eind = B.veelFouten(l) ? EINDE_VEEL_FOUTEN : B.kies(l, EINDE);
-    await B.zeg(l, `${eind} ${variant("kaartTik", ZIN.kaartTik)}`);
-    await tik;
-    /* Ronde 51 punt 10 (15.50): het afscheid ("Tot snel!") pas na de tik op de kaart; zo blijft "Tik op de kaart." het laatste in beeld. */
-    const afscheid = afscheidNa(eind);
-    if (afscheid) await B.zeg(l, afscheid);
+    await eindeScherm(l);
   },
 };
+
+/**
+ * Percentage goed in 1 keer en de denkfouten van deze speelbeurt (voor de kleur van de kaart en het bewaren). Op de
+ * voorbeeldpagina kun je met `&snel=p72` een percentage forceren (alleen om elke kleur te kunnen zien).
+ */
+function resultaat(l: Lesgids): { percentage: number; denkfouten: string[] } {
+  if (l.snelEinde) {
+    let p = l.snelEinde === "alles" ? 100 : l.snelEinde === "moeite" ? 40 : 80;
+    try {
+      const m = /^p(\d{1,3})$/.exec(new URLSearchParams(window.location.search).get("snel") ?? "");
+      if (m) p = Math.min(100, Number(m[1]));
+    } catch {
+      /* standaard */
+    }
+    return { percentage: p, denkfouten: [] };
+  }
+  const s = B.st(l);
+  const goed = [...s.eerste.values()].filter((x) => x === "goed").length;
+  return { percentage: percentageGoed(goed, Math.max(s.totaal, s.eerste.size)), denkfouten: [...s.alleDenkfouten] };
+}
+
+/** Het eindscherm met 1 standaard eindzin van Bliepo (eindzinnen.ts), daarna de leerzin en de kaart (Lesscherm). */
+async function eindeScherm(l: Lesgids) {
+  void l.zeg().catch(() => {});
+  l.verderWeg?.();
+  /* Het laatste sleuteltje vliegt nog (±0,9 s): eerst laten aankomen, dan pas het feest. */
+  await l.wacht(1000);
+  B.log(l, "eindscherm");
+  l.eindscherm?.(resultaat(l));
+  /* Bliepo praat pas als het feestgeluid (±1,4 s) voorbij is en de ster komt. */
+  await l.wacht(1500);
+  await B.zeg(l, eindzin(resultaat(l).percentage));
+  await l.eindAfsluiten?.();
+}
+
+/** Alleen op de voorbeeldpagina (`&snel=1`): meteen naar het eindscherm, met een paar sleutels om de teller te zien. Bewaart niets. */
+async function snelNaarEinde(l: Lesgids) {
+  const totaal = 8;
+  B.st(l).totaal = totaal;
+  l.voortgang?.(0);
+  const n = Math.min(totaal, l.snelEinde === "alles" ? 5 : l.snelEinde === "moeite" ? 1 : 3);
+  l.vlak<SplitsExtraProps>(SplitsExtraVlak, { id: "start", delen: [0, 0], totaal: null, actief: [] });
+  /* Eerst de groet: bij een geplakte link komt dan de afspeelknop (15.38) en mag er daarna geluid klinken. */
+  await B.zeg(l, NAAM_GROET);
+  await l.wacht(300);
+  for (let i = 0; i < n; i++) {
+    l.voortgang?.((i + 1) / totaal);
+    l.sleutel?.();
+    await l.wacht(1100);
+  }
+  l.voortgang?.(1);
+  await eindeScherm(l);
+}
 
 export const LESSEN_SQULA_SPLITSEN_EXTRA_GOUDEN: Lesdraaiboek[] = [gouden];

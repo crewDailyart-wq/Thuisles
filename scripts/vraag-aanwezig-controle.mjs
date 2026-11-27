@@ -103,7 +103,7 @@ export const VRAAG_METER = `
     };
     const stand = () => {
       const pijl = [...document.querySelectorAll('[data-knop="verder"]')].some(zichtbaar);
-      const einde = !!document.querySelector('[data-knop="opnieuw"], button[aria-label$="af te vinken"], [data-kaart] button, button[aria-label*="kaart"]');
+      const einde = !!document.querySelector('[data-knop="opnieuw"], button[aria-label$="af te vinken"], [data-kaart] button, button[aria-label*="kaart"], [data-eindscherm]');
       const praat = !!document.querySelector('[data-praat="true"]') || [...document.querySelectorAll(".bliepo-tekst-nog")].some((e) => !e.closest(".bliepo-tekst-later"));
       const canvas = [...document.querySelectorAll("canvas")].some((c) => c.width > 200 && zichtbaar(c));
       const t = teksten();

@@ -186,7 +186,8 @@ function Fonkels() {
 const STER_MS = 1;
 const FEEST_MS = 900;
 const SLEUTEL_MS = 2300;
-const SLEUTEL_STAP_MS = 320;
+/** Tijd per geteld sleuteltje; bij veel sleutels sneller, zodat het tellen nooit langer dan ±1,6 s duurt (anders staat er te lang niets om op te tikken). */
+const sleutelStap = (n: number) => Math.min(320, Math.floor(1600 / Math.max(n, 1)));
 
 export function Eindscherm({
   versie,
@@ -213,7 +214,7 @@ export function Eindscherm({
   const [geteld, setGeteld] = useState(0);
   const [afgevinkt, setAfgevinkt] = useState(false);
   const kleur = kleurVoorPercentage(percentage ?? 0);
-  const sleutelKlaarMs = sleutels > 0 ? SLEUTEL_MS + 600 + sleutels * SLEUTEL_STAP_MS : SLEUTEL_MS - 300;
+  const sleutelKlaarMs = sleutels > 0 ? SLEUTEL_MS + 600 + sleutels * sleutelStap(sleutels) : SLEUTEL_MS - 300;
   const settleMs = sleutelKlaarMs + 900;
   useEffect(() => {
     const t: ReturnType<typeof setTimeout>[] = [];
@@ -227,7 +228,7 @@ export function Eindscherm({
         setTimeout(() => {
           setGeteld(i + 1);
           speelLesgeluid("sleutel");
-        }, SLEUTEL_MS + 600 + i * SLEUTEL_STAP_MS),
+        }, SLEUTEL_MS + 600 + i * sleutelStap(sleutels)),
       );
     t.push(setTimeout(() => setFase(3), settleMs));
     t.push(setTimeout(() => setFase(4), settleMs + 700));
