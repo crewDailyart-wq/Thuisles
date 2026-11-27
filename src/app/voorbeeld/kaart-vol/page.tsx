@@ -19,21 +19,39 @@ function zinVoor(p: number): string {
   return "Je kaart is nog bijna leeg. Als we nog eens oefenen, wordt hij voller!";
 }
 
-function Kaart({ titel, pct }: { titel: string; pct: number }) {
+/** Het rondje (zoals bij Junior Einstein): wit cirkeltje, lichtblauwe ring = nog niet gedaan, de ring loopt vol tot het percentage, vinkje in het midden zodra de les klaar is. */
+function Rondje({ pct, klaar }: { pct: number; klaar: boolean }) {
+  const C = 2 * Math.PI * 20;
   return (
-    <div className={`${s.kaart} ${pct >= 100 ? s.vol : ""} ${pct <= 0 ? s.leeg : ""}`} style={{ "--vol": `${pct}%` } as React.CSSProperties} data-kaart-vol={pct}>
-      <div className={s.vulling} />
+    <svg className={s.rondje} viewBox="0 0 60 60" aria-hidden="true" style={{ "--omtrek": C, "--rest": C * (1 - pct / 100) } as React.CSSProperties}>
+      <circle cx="30" cy="30" r="28" fill="#ffffff" />
+      <circle cx="30" cy="30" r="19" fill="none" stroke="#bfe0ee" strokeWidth="9" />
+      {klaar && pct > 0 && <circle cx="30" cy="30" r="19" fill="none" stroke="#2fa9e6" strokeWidth="9" strokeDasharray={C} className={s.boog} transform="rotate(-90 30 30)" />}
+      {klaar && <path d="M22 31 L28 37 L39 24" fill="none" stroke="#1b86c4" strokeWidth="4.5" strokeLinecap="round" strokeLinejoin="round" className={s.vinkje} />}
+    </svg>
+  );
+}
+
+function Kaart({ titel, pct, klaar, vul, rondje }: { titel: string; pct: number; klaar: boolean; vul: boolean; rondje: boolean }) {
+  return (
+    <div className={`${s.kaart} ${pct >= 100 ? s.vol : ""} ${rondje ? s.metRondje : ""}`} style={{ "--vol": `${vul ? pct : 0}%` } as React.CSSProperties} data-kaart-vol={pct}>
+      {vul && <div className={s.vulling} />}
+      {rondje && <Rondje pct={pct} klaar={klaar} />}
       <span className={s.titel}>{titel}</span>
-      <svg className={s.ring} viewBox="0 0 44 44" aria-hidden="true">
-        <circle cx="22" cy="22" r="18" fill="none" stroke="rgba(255,255,255,0.55)" strokeWidth="6" />
-        <path d="M13 23 L20 30 L32 15" fill="none" stroke="#ffffff" strokeWidth="4.5" strokeLinecap="round" strokeLinejoin="round" className={s.vinkje} />
-      </svg>
+      {!rondje && (
+        <svg className={s.ring} viewBox="0 0 44 44" aria-hidden="true">
+          <circle cx="22" cy="22" r="18" fill="none" stroke="rgba(255,255,255,0.55)" strokeWidth="6" />
+          <path d="M13 23 L20 30 L32 15" fill="none" stroke="#ffffff" strokeWidth="4.5" strokeLinecap="round" strokeLinejoin="round" className={s.vinkje} />
+        </svg>
+      )}
     </div>
   );
 }
 
-export default async function KaartVol({ searchParams }: { searchParams: Promise<{ pct?: string; scherm?: string }> }) {
-  const { pct, scherm } = await searchParams;
+export default async function KaartVol({ searchParams }: { searchParams: Promise<{ pct?: string; scherm?: string; rondje?: string; vul?: string }> }) {
+  const { pct, scherm, rondje: r, vul: v } = await searchParams;
+  const rondje = r !== "0";
+  const vul = v !== "0";
   const p = Math.max(0, Math.min(100, Number(pct ?? 85) || 0));
   if (scherm === "onderwerpen") {
     const lessen = LESCATALOGUS.filter((r) => /-gouden(-|$)/.test(r.id));
@@ -41,18 +59,22 @@ export default async function KaartVol({ searchParams }: { searchParams: Promise
       <main className={s.pagina}>
         <h1 className={s.kop}>Onderwerpen</h1>
         <ul className={s.raster}>
-          {lessen.map((l) => (
-            <li key={l.id}>
-              <Kaart titel={l.titel} pct={l.id === "squla-tellen-fruit-1-gouden-extra" ? p : 0} />
-            </li>
-          ))}
+          {lessen.map((l, i) => {
+            const demo = [100, 85, 60, 30][i];
+            const pr = l.id === "squla-tellen-fruit-1-gouden-extra" ? p : demo ?? -1;
+            return (
+              <li key={l.id}>
+                <Kaart titel={l.titel} pct={Math.max(pr, 0)} klaar={pr >= 0} vul={vul} rondje={rondje} />
+              </li>
+            );
+          })}
         </ul>
       </main>
     );
   }
   return (
     <main className={`${s.pagina} ${s.eind}`}>
-      <Kaart titel="Fruit tellen" pct={p} />
+      <Kaart titel="Fruit tellen" pct={p} klaar vul={vul} rondje={rondje} />
       <div className={s.bliepo}>
         <p className={s.zin} data-bliepo-zin="">{zinVoor(p)}</p>
       </div>

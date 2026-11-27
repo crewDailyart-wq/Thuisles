@@ -106,3 +106,14 @@
 .raster .titel { font-size: 23px; line-height: 26px; }
 .raster .vinkje { animation: none; stroke-dashoffset: 0; }
 .raster .leeg .vinkje { stroke-dashoffset: 40; }
+
+/* Het rondje (voorbeeld, 27 nov 2026): zoals bij Junior Einstein, naast elke les en op het eindscherm. */
+.rondje { position: relative; flex: none; width: 64px; height: 64px; }
+.boog { stroke-dashoffset: var(--omtrek); animation: boog 1.8s cubic-bezier(0.3, 0.1, 0.25, 1) 0.7s forwards; }
+@keyframes boog { to { stroke-dashoffset: var(--rest); } }
+.metRondje .vinkje { animation-delay: 2.5s; }
+.raster .boog { animation: none; stroke-dashoffset: var(--rest); }
+.raster .metRondje .vinkje { stroke-dashoffset: 0; }
+.metRondje { padding-left: 14px; }
+.eind .metRondje { width: 400px; }
+.raster .rondje { width: 56px; height: 56px; }

@@ -34,7 +34,7 @@ await stuur("Emulation.setDeviceMetricsOverride", { width: 1280, height: 720, de
 const vang = async (q = 60) => { for (let i = 0; i < 20; i++) { try { return Buffer.from((await stuur("Page.captureScreenshot", { format: "jpeg", quality: q }, s)).data, "base64"); } catch { await wacht(150); await stuur("Page.bringToFront", {}, s).catch(() => {}); } } throw new Error("geen schermfoto"); };
 const naam = (p) => String(p).padStart(3, "0");
 for (const p of PERC) {
-  await stuur("Page.navigate", { url: `http://localhost:3000/voorbeeld/kaart-vol?pct=${p}` }, s);
+  await stuur("Page.navigate", { url: `http://localhost:3000/voorbeeld/kaart-vol?pct=${p}${process.env.EXTRA ?? ""}` }, s);
   const frames = [];
   for (let i = 0; i < 46; i++) { frames.push(await vang()); await wacht(70); }
   await wacht(500);
@@ -42,7 +42,7 @@ for (const p of PERC) {
   const B = 640, H = 360;
   const raws = await Promise.all(frames.map((f) => sharp(f).resize(B, H).removeAlpha().raw().toBuffer()));
   await sharp(Buffer.concat(raws), { raw: { width: B, height: H * raws.length, channels: 3, pageHeight: H } }).gif({ delay: raws.map(() => 110), loop: 0 }).toFile(join(UIT, `${naam(p)}-2-filmpje.gif`));
-  await stuur("Page.navigate", { url: `http://localhost:3000/voorbeeld/kaart-vol?pct=${p}&scherm=onderwerpen` }, s);
+  await stuur("Page.navigate", { url: `http://localhost:3000/voorbeeld/kaart-vol?pct=${p}${process.env.EXTRA ?? ""}&scherm=onderwerpen` }, s);
   await wacht(1500);
   writeFileSync(join(UIT, `${naam(p)}-3-onderwerpen.jpg`), await vang(88));
 }
