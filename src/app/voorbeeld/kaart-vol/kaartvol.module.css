@@ -1,0 +1,108 @@
+/* Voorbeeld (27 nov 2026): de kaart die vol loopt als een glas. Alleen een proef, nog niet in een les. */
+.pagina {
+  position: relative;
+  min-height: 100vh;
+  box-sizing: border-box;
+  background: radial-gradient(ellipse at 50% 0%, #1c3f9e 0%, #0b1f5e 70%);
+  color: #ffffff;
+  font-family: var(--font-grandstander), var(--font-fredoka), system-ui, sans-serif;
+}
+.eind {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 34px;
+  min-height: 100vh;
+  padding: 24px;
+}
+.kaart {
+  position: relative;
+  width: 360px;
+  height: 110px;
+  box-sizing: border-box;
+  border-radius: 24px;
+  border: 3px solid rgba(235, 252, 255, 0.9);
+  background: rgba(255, 255, 255, 0.14);
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 0 18px;
+  animation: opKomen 0.45s ease-out both;
+}
+@keyframes opKomen {
+  from { opacity: 0; transform: translateY(14px); }
+  to { opacity: 1; transform: none; }
+}
+/* De vulling: komt van onderaf omhoog tot het percentage, in 1 kleur uit de huisstijl (het lichtblauw van de gloed). */
+.vulling {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: var(--vol);
+  background: linear-gradient(180deg, #7fdcff 0%, #38b6ee 100%);
+  border-top: 3px solid #d9f6ff;
+  box-shadow: 0 -4px 18px rgba(120, 220, 255, 0.75);
+  animation: vul 2s cubic-bezier(0.3, 0.1, 0.25, 1) 0.7s both;
+}
+.vol .vulling { border-top-width: 0; }
+@keyframes vul {
+  from { height: 0; }
+  to { height: var(--vol); }
+}
+.titel {
+  position: relative;
+  flex: 1;
+  font-size: 32px;
+  font-weight: 800;
+  line-height: 36px;
+  text-shadow: 0 2px 4px rgba(6, 22, 70, 0.7);
+}
+.ring {
+  position: relative;
+  flex: none;
+  width: 44px;
+  height: 44px;
+}
+.vinkje {
+  stroke-dasharray: 40;
+  stroke-dashoffset: 40;
+  animation: teken 0.45s ease-out 2.7s forwards;
+}
+@keyframes teken { to { stroke-dashoffset: 0; } }
+.bliepo {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  max-width: 640px;
+  opacity: 0;
+  animation: opKomen 0.5s ease-out 2.9s both;
+}
+.bliepo img { width: 90px; height: auto; flex: none; }
+.zin {
+  margin: 0;
+  padding: 14px 20px;
+  border-radius: 22px;
+  background: rgba(255, 255, 255, 0.16);
+  border: 2px solid rgba(235, 252, 255, 0.6);
+  font-size: 28px;
+  font-weight: 700;
+  line-height: 34px;
+}
+.kop { max-width: 980px; margin: 0 auto 22px; padding: 24px 20px 0; font-size: 40px; font-weight: 800; }
+.raster {
+  list-style: none;
+  max-width: 980px;
+  margin: 0 auto;
+  padding: 0 20px 48px;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 16px;
+}
+.raster .kaart { width: auto; height: 96px; animation: none; }
+.raster .vulling { animation: none; }
+.raster .titel { font-size: 23px; line-height: 26px; }
+.raster .vinkje { animation: none; stroke-dashoffset: 0; }
+.raster .leeg .vinkje { stroke-dashoffset: 40; }
