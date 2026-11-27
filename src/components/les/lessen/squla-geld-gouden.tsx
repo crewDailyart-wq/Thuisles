@@ -219,7 +219,8 @@ function noteer(l: Lesgids, vraag: string, uit: Uitkomst): Uitkomst {
   try {
     /* Een sleutel per vraag is maar 1 keer te verdienen, ook bij opnieuw spelen (Sara, 25 nov 2026, 15.52): zegt de server
        "al verdiend", dan vliegt er geen sleutel; weet hij niets (geen kind gekozen), dan wel. Zoals squla-extra-basis. */
-    const eerstKeer = uit === "goed" && nieuweVraag;
+    /* Een vraag die terugkomt ("-terug") is dezelfde vraag: geen 2e sleutel (15.55: 1 sleutel per vraag). */
+    const eerstKeer = uit === "goed" && nieuweVraag && !vraag.endsWith("-terug");
     void bewaarUitkomst({ lesId: LES_ID, vraagId: vraag, uitkomst: naam[uit], denkfouten: uit === "goed" ? [] : fouten, pogingen: uit === "goed" ? 1 : 2 })
       .then((r) => {
         if (eerstKeer && !(r.ok && r.nieuweSleutel === false)) l.sleutel?.();

@@ -715,7 +715,8 @@ function resultaat(l: Lesgids): { percentage: number; denkfouten: string[] } {
   const s = st(l);
   const vragen = [...s.eerste.entries()].filter(([id]) => balkTelt(id));
   const goed = vragen.filter(([, x]) => x === "goed").length;
-  return { percentage: percentageGoed(goed, Math.max(balkTotaal(), vragen.length)), denkfouten: [...s.alleDenkfouten] };
+  /* Delen door de vragen die echt gesteld zijn: de bonus komt alleen als alles goed ging, anders is hij er niet. */
+  return { percentage: percentageGoed(goed, vragen.length), denkfouten: [...s.alleDenkfouten] };
 }
 
 /** Het eindscherm met 1 eindzin van Bliepo (zoals Tellen extra; alleen de standaardzinnen uit eindzinnen.ts). */
