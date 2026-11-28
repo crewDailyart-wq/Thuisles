@@ -49,8 +49,9 @@ export const TERUGZINNEN = {
   verder: ["Welkom terug! We gaan verder waar je was.", "Fijn dat je er weer bent. We gaan verder waar je was.", "Daar ben je weer! We gaan verder met de les."],
   /* Zonder groet: de les groet daarna zelf. Door Fable gecontroleerd (28 nov 2026). */
   opnieuw: ["Je hebt deze les al gedaan. We beginnen opnieuw.", "Je doet deze les nog 1 keer. We beginnen bij het begin.", "Deze les heb je al gedaan. We doen hem nog 1 keer."],
-  /* Bewaard wordt de beste uitslag, niet de laatste: daarom niet "de vorige keer". */
-  perfect: ["Deze les ging al heel goed. Je doet hem nog 1 keer.", "Deze les deed je al heel goed. We doen hem nog 1 keer.", "Deze les ging eerder al heel goed. Kom, we beginnen weer!"],
+  /* Eerder met de beste kleur: de uitleg wordt overgeslagen (BOUWREGELS 15.60). De les groet eerst en zegt dan deze zin.
+     Bewaard wordt de beste uitslag, niet de laatste: daarom niet "de vorige keer". Door Fable gecontroleerd (28 nov 2026). */
+  perfect: ["Dit ken je al. We gaan meteen oefenen.", "Dit heb je al eens heel goed gedaan. We gaan meteen oefenen.", "Deze les ken je al. Kom, we gaan meteen oefenen!"],
 } as const;
 
 export const terugzin = (soort: keyof typeof TERUGZINNEN): string => TERUGZINNEN[soort][Math.floor(Math.random() * TERUGZINNEN[soort].length)];

@@ -608,7 +608,8 @@ async function speelVraag(l: Lesgids, v: Vraag, eersteVraag: boolean): Promise<U
   const fouten = foutenVan(v);
   s.gezegd = [];
   /* De vraagzinnen van de oude les (de kijk-zin ervoor in varianten; op volgorde de 2e keer met "En nu …"). */
-  let zinnen = ZIN.vraagZinnen(v, variant);
+  const vorige = VRAGEN[VRAGEN.indexOf(v) - 1];
+  let zinnen = ZIN.vraagZinnen(v, variant, !!vorige && !!l.hervat?.antwoorden.some((a) => a[0] === hervatId(vorige.id)));
   s.gezegd.push(...zinnen);
   let eerder: Fout | null = null;
   let eersteX: string | null = null;
@@ -731,6 +732,8 @@ const gouden: Lesdraaiboek = {
     /* Verdergaan (15.53): "welkom terug" in plaats van de groet en het uitlegdeel. Opnieuw doen: eerst zeggen dat het kind
        de les al deed, daarna de les zoals altijd. */
     if (l.hervat) await zegDoor(l, l.openingsZin ?? NAAM_GROET);
+    /* Opnieuw doen na de beste kleur (15.60, zoals Synthesis): eerst de groet, dan "Dit ken je al", geen uitlegdeel. */
+    else if (l.zonderUitleg) await zegDoor(l, NAAM_GROET, l.openingsZin ?? "");
     else await zegDoor(l, ...(l.openingsZin ? [l.openingsZin] : []), NAAM_GROET, variant("start", passend(ZIN.start, NAAM_GROET.replace("{naam}", l.naam ?? ""))));
     st(l).naamKeer = 1;
     st(l).naamVraag = 0;

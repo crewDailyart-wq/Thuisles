@@ -65,11 +65,11 @@ const u = (uur: number, minuut = 0) => (uur % 12) * 60 + minuut;
 
 const zet = (l: Lesgids, p: Partial<GoudenKlokProps>) => l.pasVlakAan<GoudenKlokProps>(p);
 
-type Staat = { vorige: Map<Rijtje, number>; zinNr: number; robotNr: number; snelVraag: number; naamVraag: number; naamKeer: number; opRij: number; momenten: Set<string>; pijlUitgelegd: boolean; goed: number; rondje: number; speel: number; haak: number; vraag: number; denkfouten: Map<string, number>; foutVragen: Set<string>; laatste: boolean; eerste: Map<string, Uitkomst>; namen: number; snelGehad: Set<number>; log: unknown[]; vraagFouten: Map<string, string[]>; alleDenkfouten: string[]; klokVorige: number; kiezer: Kiezer; proef: [string, HervatUitkomst, string[]][] | null; metUitleg: boolean };
+type Staat = { vorige: Map<Rijtje, number>; zinNr: number; robotNr: number; snelVraag: number; naamVraag: number; naamKeer: number; opRij: number; momenten: Set<string>; pijlUitgelegd: boolean; goed: number; rondje: number; speel: number; haak: number; vraag: number; denkfouten: Map<string, number>; foutVragen: Set<string>; laatste: boolean; eerste: Map<string, Uitkomst>; namen: number; snelGehad: Set<number>; log: unknown[]; vraagFouten: Map<string, string[]>; alleDenkfouten: string[]; klokVorige: number; kiezer: Kiezer; proef: [string, HervatUitkomst, string[]][] | null; metUitleg: boolean; proefTel: number; sleutelVragen: Set<string> };
 const STAAT = new WeakMap<Lesgids, Staat>();
 const st = (l: Lesgids): Staat => {
   let s = STAAT.get(l);
-  if (!s) STAAT.set(l, (s = { vorige: new Map(), zinNr: 0, robotNr: -99, snelVraag: -99, naamVraag: -99, naamKeer: 0, opRij: 0, momenten: new Set(), pijlUitgelegd: false, goed: 0, rondje: 0, speel: 0, haak: 0, vraag: 0, denkfouten: new Map(), foutVragen: new Set(), laatste: false, eerste: new Map(), namen: 0, snelGehad: new Set(), log: [], vraagFouten: new Map(), alleDenkfouten: [...(l.hervat?.denkfouten ?? [])], klokVorige: -1, kiezer: nieuweKiezer(), proef: null, metUitleg: false }));
+  if (!s) STAAT.set(l, (s = { vorige: new Map(), zinNr: 0, robotNr: -99, snelVraag: -99, naamVraag: -99, naamKeer: 0, opRij: 0, momenten: new Set(), pijlUitgelegd: false, goed: 0, rondje: 0, speel: 0, haak: 0, vraag: 0, denkfouten: new Map(), foutVragen: new Set(), laatste: false, eerste: new Map(), namen: 0, snelGehad: new Set(), log: [], vraagFouten: new Map(), alleDenkfouten: [...(l.hervat?.denkfouten ?? [])], klokVorige: -1, kiezer: nieuweKiezer(), proef: null, metUitleg: false, proefTel: 0, sleutelVragen: new Set() }));
   return s;
 };
 
@@ -155,8 +155,12 @@ const balkTelt = (id: string): boolean => /^(klok\d|tussendoor-|bonus-)/.test(id
  * ook mee met de 17 vragen van de uitleg, zodat het rondje op het onderwerpenscherm laat zien dat het kind al begonnen is
  * (vroeger stond de balk de hele uitleg op 0). Het percentage goed (de kleur) telt de uitleg nog steeds niet mee.
  */
-const UITLEG_VRAGEN = 17;
-const balkStand = (s: Staat): number => Math.min(1, [...s.eerste.keys()].filter((id) => balkTelt(id) || (s.metUitleg && /^stap\d/.test(id))).length / (balkTotaal() + (s.metUitleg ? UITLEG_VRAGEN : 0)));
+/* 28 nov 2026: de uitleg heeft 20 vragen (stap 4 t/m 18; was hier 17, waardoor de balk 3 vragen voor het einde al vol was).
+   De extra keer verzetten (stap14-zet-7) komt alleen na een fout en telt niet. Een mislukte proef: de vragen die het kind
+   daar afmaakte, tellen voor de balk mee (`proefTel`), niet voor het percentage; de klokken komen in het oefenblok terug. */
+const UITLEG_VRAGEN = 20;
+const uitlegTelt = (id: string): boolean => /^stap\d/.test(id) && id !== "stap14-zet-7";
+const balkStand = (s: Staat): number => Math.min(1, ([...s.eerste.keys()].filter((id) => balkTelt(id) || (s.metUitleg && uitlegTelt(id))).length + s.proefTel) / (balkTotaal() + (s.metUitleg ? UITLEG_VRAGEN : 0) + s.proefTel));
 
 /**
  * Verdergaan waar je was (15.53): is deze vraag al gemaakt vóór het kind wegging, dan telt het antwoord van toen en slaat de
@@ -177,7 +181,8 @@ const klokId = (i: number) => `klok${i + 1}-${KLOKKEN[i].uur}uur`;
 function noteer(l: Lesgids, vraag: string, uit: Uitkomst): Uitkomst {
   const s = st(l);
   const nieuweVraag = !s.eerste.has(vraag);
-  if (nieuweVraag) s.eerste.set(vraag, uit);
+  /* "Gestopt" (de proef stopt) is niet afgemaakt: geen uitkomst en de balk loopt niet (28 nov 2026). */
+  if (nieuweVraag && uit !== "gestopt") s.eerste.set(vraag, uit);
   l.voortgang?.(balkStand(s));
   const fouten = s.vraagFouten.get(vraag) ?? [];
   s.vraagFouten.delete(vraag);
@@ -194,7 +199,9 @@ function noteer(l: Lesgids, vraag: string, uit: Uitkomst): Uitkomst {
     const naam = { goed: "goed in één keer", naFout: "goed na een fout", voorgedaan: "samen gedaan" } as const;
     /* Een sleutel per vraag is maar 1 keer te verdienen, ook bij opnieuw spelen (15.52, 15.55; zoals noteer in
        squla-extra-basis.ts): zegt de server "al verdiend", dan vliegt er geen sleutel; weet hij niets, dan wel. */
-    const eerstKeer = uit === "goed" && nieuweVraag;
+    /* Na een mislukte proef komt dezelfde klok terug met een lege uitkomst (zie de proef); de sleutel blijft 1 keer. */
+    const eerstKeer = uit === "goed" && nieuweVraag && !s.sleutelVragen.has(vraag);
+    if (eerstKeer) s.sleutelVragen.add(vraag);
     try {
       void bewaarUitkomst({ lesId: l.lesId ?? "squla-klok-hoelaat-1-gouden", vraagId: vraag, uitkomst: naam[uit], denkfouten: uit === "goed" ? [] : fouten, pogingen: uit === "goed" ? 1 : 2 })
         .then((r) => {
@@ -675,14 +682,28 @@ const gouden: Lesdraaiboek = {
     if (l.hervat) {
       st(l).naamKeer = 1;
       st(l).metUitleg = l.hervat.antwoorden.some((a) => /^stap\d/.test(a[0]));
+      st(l).proefTel = Number(l.hervat.extra.proefTel ?? 0);
       await zegDoor(l, l.openingsZin ?? NAAM_GROET);
       const ex = l.hervat.extra;
       const vanaf = Number(ex.vanaf ?? 0);
       const proefMis: number[] = [];
       for (let i = 0; i < vanaf; i++) if (klaarAl(l, klokId(i)) && st(l).eerste.get(klokId(i)) !== "goed") proefMis.push(i);
       const oefenBegonnen = KLOKKEN.some((_, i) => alGemaakt(l, klokId(i)));
-      if (!vanaf && !ex.uitleg && !oefenBegonnen) await uitlegRoute(l);
+      /* Begon deze beurt zonder uitleg (15.60), dan komt de uitleg ook nu niet. */
+      if (!vanaf && !ex.uitleg && !oefenBegonnen && !l.zonderUitleg) await uitlegRoute(l);
       const fouten = await oefenblok(l, vanaf, proefMis);
+      zet(l, { verhaal: null, ring: null, licht: null, getalKleur: null, hand: null, uurwijzer: "fel", minuutwijzer: "fel" });
+      log(l, "einde", { fouten });
+      await eindeScherm(l);
+      return;
+    }
+
+    /* Opnieuw doen na de beste kleur (15.60, zoals Synthesis): eerst de groet, dan "dit ken je al", en meteen de klokken van
+       het oefenblok. Geen startvraag, proef of uitleg; de vragen tussendoor, de klokken die terugkomen en de bonus blijven. */
+    if (l.zonderUitleg) {
+      st(l).naamKeer = 1;
+      await zegDoor(l, ...[NAAM_GROET, l.openingsZin ?? ""].filter(Boolean));
+      const fouten = await oefenblok(l, 0, []);
       zet(l, { verhaal: null, ring: null, licht: null, getalKleur: null, hand: null, uurwijzer: "fel", minuutwijzer: "fel" });
       log(l, "einde", { fouten });
       await eindeScherm(l);
@@ -729,6 +750,14 @@ const gouden: Lesdraaiboek = {
         l.onthoud?.("vanaf", 2);
       }
       if (uitleg) {
+        /* 28 nov 2026: de klokken van de proef tellen niet (ze komen in het oefenblok terug). Hun uitkomst bleef eerst staan,
+           waardoor een klok die later wel in 1 keer goed was, toch als fout telde (percentage) en geen sleutel gaf. Voor de
+           balk tellen de afgemaakte proefvragen wel mee (de balk gaat nooit terug). */
+        const s = st(l);
+        for (let i = 0; i < 2; i++) s.eerste.delete(klokId(i));
+        s.momenten.delete("eerste");
+        s.proefTel = proef.length;
+        if (proef.length) l.onthoud?.("proefTel", proef.length);
         zet(l, { verhaal: null, getalKleur: null, ring: null, licht: null, hand: null, uurwijzer: "fel", minuutwijzer: "fel" });
         await zegDoor(l, ...kiesStuk(K(l), "proefLastig", VAR.proefLastig));
         proefMis.length = 0;
@@ -1089,7 +1118,8 @@ async function uitlegRoute(l: Lesgids) {
 async function oefenblok(l: Lesgids, vanaf: number, mis: number[]): Promise<number> {
   zet(l, { stand: { tijd: u(12) }, wijzers: true, vorm: "klok", licht: null, ring: null, getalKleur: null, uurwijzer: "fel", minuutwijzer: "fel", driehoek: null, pijl: null, hand: null });
   /* Verdergaan (15.53): was het oefenblok al begonnen, dan niet nog eens de beginzin. */
-  if (!KLOKKEN.some((_, i) => i >= vanaf && alGemaakt(l, klokId(i)))) await zegDoor(l, vanaf ? K(l).kies("oefenVerder", VAR.oefenVerder) : K(l).kies("oefenBegin", VAR.oefenBegin));
+  /* Zonder uitleg (15.60) zei Bliepo net al "we gaan meteen oefenen": dan niet nog eens een beginzin. */
+  if (!l.zonderUitleg && !KLOKKEN.some((_, i) => i >= vanaf && alGemaakt(l, klokId(i)))) await zegDoor(l, vanaf ? K(l).kies("oefenVerder", VAR.oefenVerder) : K(l).kies("oefenBegin", VAR.oefenBegin));
   let fouten = mis.length;
   let tussen = 0;
   for (let i = vanaf; i < KLOKKEN.length; i++) {

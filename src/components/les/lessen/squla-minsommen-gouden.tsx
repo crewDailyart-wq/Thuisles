@@ -150,6 +150,8 @@ type Staat = {
   nakijk: number;
   /** Hoeveel keer het hulphandje bij de plusknop kwam: de zin wisselt (F8: nooit 2 keer dezelfde zin vlak na elkaar). */
   handNr: number;
+  /** Voortgangsbalk (28 nov 2026, zoals Klok): de 2 keer op de plus tikken bij het leren kennen van de machine (geen vraag). */
+  plusTel: number;
 };
 const STAAT = new WeakMap<Lesgids, Staat>();
 const st = (l: Lesgids): Staat => {
@@ -157,7 +159,7 @@ const st = (l: Lesgids): Staat => {
   if (!s)
     STAAT.set(
       l,
-      (s = { vorige: new Map(), recent: new Map(), zinNr: 0, robotNr: -99, namen: 0, naamKeer: 0, naamVraag: -99, opRij: 0, momenten: new Set(), goed: 0, fout: 0, vraag: 0, haak: 0, laatste: false, eerste: new Map(), vraagFouten: new Map(), alleDenkfouten: [...(l.hervat?.denkfouten ?? [])], log: [], robotReactie: false, nakijk: 0, handNr: 0 }),
+      (s = { vorige: new Map(), recent: new Map(), zinNr: 0, robotNr: -99, namen: 0, naamKeer: 0, naamVraag: -99, opRij: 0, momenten: new Set(), goed: 0, fout: 0, vraag: 0, haak: 0, laatste: false, eerste: new Map(), vraagFouten: new Map(), alleDenkfouten: [...(l.hervat?.denkfouten ?? [])], log: [], robotReactie: false, nakijk: 0, handNr: 0, plusTel: 0 }),
     );
   return s;
 };
@@ -206,6 +208,16 @@ function legDenkfoutVast(l: Lesgids, d: { vraag: string; antwoord: string; denkf
    tellen niet mee (Math.min). Na elke afgeronde vraag een stukje verder; nooit terug (het lesscherm negeert een lagere waarde). */
 /* Minsommen: de 2 vragen bij het leren kennen van de machine (intro-totaal, intro-optellen) horen bij de normale route. */
 const balkTotaal = (): number => VRAGEN.length + 2;
+/**
+ * Opnieuw doen na de beste kleur (15.60): dan valt het leren kennen van de machine weg, met zijn 2 vragen. Die tellen dan
+ * niet voor het percentage en de balk (zo kan een perfecte herhaling 100% halen). Anders telt de balk ook de 2 opdrachten
+ * op de plus mee (28 nov 2026, zoals Klok); het percentage niet.
+ */
+const vragenTotaal = (l: Lesgids): number => (l.zonderUitleg ? VRAGEN.length : balkTotaal());
+const balk = (l: Lesgids) => {
+  const s = st(l);
+  l.voortgang?.(Math.min(1, (s.eerste.size + s.plusTel) / (vragenTotaal(l) + (l.zonderUitleg ? 0 : 2))));
+};
 
 /**
  * Verdergaan waar je was (15.53): is deze vraag al gemaakt vóór het kind wegging, dan telt het antwoord van toen en slaat de
@@ -216,7 +228,7 @@ function klaarAl(l: Lesgids, vraag: string): boolean {
   if (!al) return false;
   const s = st(l);
   if (!s.eerste.has(vraag)) s.eerste.set(vraag, al);
-  l.voortgang?.(Math.min(1, s.eerste.size / balkTotaal()));
+  balk(l);
   return true;
 }
 
@@ -224,7 +236,7 @@ function noteer(l: Lesgids, vraag: string, uit: Uitkomst): Uitkomst {
   const s = st(l);
   const nieuweVraag = !s.eerste.has(vraag);
   if (nieuweVraag) s.eerste.set(vraag, uit);
-  l.voortgang?.(Math.min(1, s.eerste.size / balkTotaal()));
+  balk(l);
   const fouten = s.vraagFouten.get(vraag) ?? [];
   s.vraagFouten.delete(vraag);
   s.alleDenkfouten.push(...fouten);
@@ -626,19 +638,29 @@ const rijtjeIntro = (q: IntroVraag): Rijtje => ({ zinnen: q.goedReactie, robot: 
 async function leerMachineKennen(l: Lesgids) {
   /* Verdergaan (15.53): de vragen van het leren kennen die al gemaakt zijn, komen niet terug (met hun uitleg ervoor). */
   const gedaan = INTRO_VRAGEN.map((q) => klaarAl(l, q.id));
-  if (gedaan.every(Boolean)) return;
+  if (gedaan.every(Boolean)) {
+    st(l).plusTel = 2;
+    balk(l);
+    return;
+  }
   let n: number;
   if (gedaan.some(Boolean)) {
-    /* Halverwege: de machine staat weer met het aantal stippen van toen (onthouden). */
+    /* Halverwege: de machine staat weer met het aantal stippen van toen (onthouden). De 2 opdrachten op de plus waren al gedaan. */
+    st(l).plusTel = 2;
+    balk(l);
     n = Number(l.hervat?.extra.stippen ?? 3);
     toonMachine(l, n, "dof");
   } else {
     await zegDoor(l, variant("introBegin", INTRO.begin));
     n = await tikPlus(l, 0, 1, INTRO.plusEerst, "intro-plus-1", true);
+    st(l).plusTel++;
+    balk(l);
     zet(l, { ring: "teller" });
     await zegDoor(l, INTRO.eersteStip);
     zet(l, { ring: null });
     n = await tikPlus(l, n, 2, INTRO.meer, "intro-plus-3", false);
+    st(l).plusTel++;
+    balk(l);
   }
   for (const [k, q] of INTRO_VRAGEN.entries()) {
     if (gedaan[k]) continue;
@@ -759,10 +781,13 @@ const gouden: Lesdraaiboek = {
     st(l).naamVraag = 0;
     /* Verdergaan (15.53): "welkom terug" in plaats van de groet. Opnieuw doen: eerst zeggen dat het kind de les al deed. */
     if (l.hervat) await zegDoor(l, l.openingsZin ?? NAAM_GROET);
+    /* Opnieuw doen na de beste kleur (15.60, zoals Synthesis): eerst de groet, dan "dit ken je al", en meteen vraag 1. Geen
+       uitlegdeel en geen machine leren kennen (ook niet bij verdergaan in zo'n beurt). */
+    else if (l.zonderUitleg) await zegDoor(l, ...[NAAM_GROET, l.openingsZin ?? ""].filter(Boolean));
     else await zegDoor(l, ...(l.openingsZin ? [l.openingsZin] : []), NAAM_GROET, variant("begin", ZIN.begin));
 
     /* De machine leren kennen (ronde 34, 12 november 2026): draaiboek stap 1 t/m 7, in eigen woorden. */
-    await leerMachineKennen(l);
+    if (!l.zonderUitleg) await leerMachineKennen(l);
     /* Dan de eerste vraag van de Squla-les: de min-machine met blokjes. */
     void l.zeg().catch(() => {});
     toonBeeld(l, VRAGEN[0]);
@@ -804,7 +829,7 @@ function resultaat(l: Lesgids): { percentage: number; denkfouten: string[] } {
   }
   const s = st(l);
   const goed = [...s.eerste.values()].filter((x) => x === "goed").length;
-  return { percentage: percentageGoed(goed, Math.max(balkTotaal(), s.eerste.size)), denkfouten: [...s.alleDenkfouten] };
+  return { percentage: percentageGoed(goed, Math.max(vragenTotaal(l), s.eerste.size)), denkfouten: [...s.alleDenkfouten] };
 }
 
 /** Het eindscherm met 1 eindzin van Bliepo (zoals Tellen extra; de standaardzinnen uit eindzinnen.ts). */

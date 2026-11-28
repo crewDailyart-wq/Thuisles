@@ -158,6 +158,10 @@ type Staat = {
   soortKeer: Map<string, number>;
   /** Verdergaan (15.53): tijdens de proef wacht de stand; pas als de proef gehaald is, tellen de 2 vragen als gemaakt. */
   proefStap: [string, Uitkomst, string[]][] | null;
+  /** Voortgangsbalk (28 nov 2026, zoals Klok): wat het kind in de uitleg afmaakte en hoeveel stappen de uitleg in deze
+      route heeft (na een mislukte proef ook de afgemaakte proefvraag). Telt niet voor het percentage. */
+  uitlegTel: number;
+  uitlegTotaal: number;
 };
 const STAAT = new WeakMap<Lesgids, Staat>();
 const st = (l: Lesgids): Staat => {
@@ -165,7 +169,7 @@ const st = (l: Lesgids): Staat => {
   if (!s)
     STAAT.set(
       l,
-      (s = { vorige: new Map(), zinNr: 0, robotNr: -99, namen: 0, naamKeer: 0, naamVraag: -99, opRij: 0, momenten: new Set(), sleepUitgelegd: false, vinkjeUitgelegd: false, goed: 0, fout: 0, vraag: 0, laatste: false, opnieuwNr: 0, eerste: new Map(), vraagFouten: new Map(), alleDenkfouten: [...(l.hervat?.denkfouten ?? [])], gehad: new Set(), log: [], robotReactie: false, huidig: "", nakijk: 0, soortKeer: new Map(), proefStap: null }),
+      (s = { vorige: new Map(), zinNr: 0, robotNr: -99, namen: 0, naamKeer: 0, naamVraag: -99, opRij: 0, momenten: new Set(), sleepUitgelegd: false, vinkjeUitgelegd: false, goed: 0, fout: 0, vraag: 0, laatste: false, opnieuwNr: 0, eerste: new Map(), vraagFouten: new Map(), alleDenkfouten: [...(l.hervat?.denkfouten ?? [])], gehad: new Set(), log: [], robotReactie: false, huidig: "", nakijk: 0, soortKeer: new Map(), proefStap: null, uitlegTel: 0, uitlegTotaal: 0 }),
     );
   return s;
 };
@@ -205,6 +209,18 @@ function legDenkfoutVast(l: Lesgids, d: { vraag: string; antwoord: string; denkf
 /* Voortgangsbalk (BOUWREGELS 15.54): zoveel vragen heeft een normale route; vragen die alleen na een fout terugkomen
    tellen niet mee (Math.min). Na elke afgeronde vraag een stukje verder; nooit terug (het lesscherm negeert een lagere waarde). */
 const balkTotaal = (): number => VRAGEN.length;
+/** De balk: de 15 vragen, plus de stappen van de uitleg alleen als het kind de uitleg echt krijgt (28 nov 2026, zoals Klok). */
+const balk = (l: Lesgids) => {
+  const s = st(l);
+  l.voortgang?.(Math.min(1, (s.eerste.size + s.uitlegTel) / (balkTotaal() + s.uitlegTotaal)));
+};
+/** Een stap van de uitleg is af: de balk loopt mee (onthouden voor verdergaan). */
+const uitlegStap = (l: Lesgids) => {
+  const s = st(l);
+  s.uitlegTel++;
+  l.onthoud?.("uitleg", s.uitlegTel);
+  balk(l);
+};
 
 function noteer(l: Lesgids, vraag: string, uit: Uitkomst, telt = true): Uitkomst {
   const s = st(l);
@@ -214,7 +230,7 @@ function noteer(l: Lesgids, vraag: string, uit: Uitkomst, telt = true): Uitkomst
      proef terugkomen). De uitlegvraag (`telt` = false) geeft geen sleutel: hij hoort niet bij de vragen van de les. */
   const eerstKeer = telt && uit === "goed" && !s.gehad.has(vraag);
   if (telt) s.gehad.add(vraag);
-  l.voortgang?.(Math.min(1, s.eerste.size / balkTotaal()));
+  balk(l);
   const fouten = s.vraagFouten.get(vraag) ?? [];
   s.vraagFouten.delete(vraag);
   s.alleDenkfouten.push(...fouten);
@@ -253,7 +269,7 @@ function klaarAl(l: Lesgids, vraag: string): Uitkomst | null {
   if (!al) return null;
   const s = st(l);
   if (!s.eerste.has(vraag)) s.eerste.set(vraag, al);
-  l.voortgang?.(Math.min(1, s.eerste.size / balkTotaal()));
+  balk(l);
   return al;
 }
 
@@ -1092,6 +1108,8 @@ async function uitlegRoute(l: Lesgids) {
   const spec = b.spec({ oplossing: [1, 4], fout: [1, 4], route });
   const uitlegBeeld = (o: { la?: string; lb?: string; top?: string }) => ({ ...b.beeld({ la: "?", lb: "?", ...o }), id: "gouden-uitleg" });
   toonBeeld(l, uitlegBeeld({}), spec);
+  /* Voortgangsbalk: de uitleg heeft 4 stappen voor het kind (2 keer slepen, "hoeveel samen?", een andere manier). */
+  s.uitlegTotaal += 4;
   await l.wacht(150);
   await zegDoor(l, ZIN.uitlegHuis);
 
@@ -1161,16 +1179,19 @@ async function uitlegRoute(l: Lesgids) {
   /* Stap a: 1 pion naar het paarse vak. */
   await stap(ZIN.uitlegEen, [1, 0], ZIN.uitlegEen, (q) => (q.tel[1] > 0 ? oranjeTerug(q) : q.tel[0] > 1 ? paarsTerug(q) : null));
   zet(l, { beeld: uitlegBeeld({ la: "1" }) });
+  uitlegStap(l);
   await zegDoor(l, ZIN.uitlegEenKlaar);
   /* Stap b: de andere pionnen naar het oranje vak. Het paarse vak blijft 1 (ook 2 en 3, of 0 en 5, worden opgevangen). */
   await stap(ZIN.uitlegRest, [1, 4], ZIN.uitlegRest, (q) =>
     q.tel[0] > 1 ? paarsTerug(q) : q.tel[0] === 0 ? { zin: ZIN.uitlegPaarsLeeg, kort: ZIN.handNaarPaars, hand: { van: q.los > 0 ? hoopVan(spec, 0) : midden(1), naar: midden(0), sleutel: `paars-leeg-${q.tel.join("")}` } } : null,
   );
   goedMoment(l, { beeld: uitlegBeeld({ la: "1", lb: "4" }) });
+  uitlegStap(l);
   await zegDoor(l, ZIN.uitlegRestKlaar);
 
   /* Stap 7 (slot) en 8: "Hoeveel pionnen zijn er samen?" (keuzevraag, 2 pogingen), dan: het totaal staat boven. */
   await totaalVraag(l);
+  uitlegStap(l);
   zet(l, { beeld: uitlegBeeld({ la: "1", lb: "4", top: "5" }) });
   /* In 2 stukken, zodat elk stuk in het vaste tekstvak past (15.30; geleerd bij Meten). */
   await zegDoor(l, ZIN.totaalUitleg[0]);
@@ -1178,6 +1199,7 @@ async function uitlegRoute(l: Lesgids) {
 
   /* Stap 10: kun je 5 ook anders splitsen? Het kind zoekt zelf 2 delen (elk juist antwoord is goed, 14.30). */
   await andersSplitsen(l);
+  uitlegStap(l);
   s.huidig = "";
 }
 
@@ -1331,8 +1353,16 @@ const gouden: Lesdraaiboek = {
        bij de eerste tik (lib/stem.ts heelUitpraten). */
     /* Verdergaan (15.53): "welkom terug" in plaats van de groet, de startvraag, de proef en de uitleg. */
     let start: string | null = "";
-    if (l.hervat) await zegDoor(l, l.openingsZin ?? NAAM_GROET);
-    else {
+    if (l.hervat) {
+      /* De balk staat weer waar hij was: de stappen van de uitleg die het kind al deed, tellen mee. */
+      st(l).uitlegTel = st(l).uitlegTotaal = Number(l.hervat.extra.uitleg ?? 0);
+      await zegDoor(l, l.openingsZin ?? NAAM_GROET);
+    } else if (l.zonderUitleg) {
+      /* Opnieuw doen na de beste kleur (15.60, zoals Synthesis): eerst de groet, dan "dit ken je al", en meteen vraag 1.
+         Geen startvraag, proef of uitleg. De uitleg van het slepen bij de eerste opdracht blijft (zonder kan het kind de
+         opdracht niet doen). */
+      await zegDoor(l, ...[NAAM_GROET, l.openingsZin ?? ""].filter(Boolean));
+    } else {
       /* Opnieuw doen (15.59): eerst zeggen dat het kind de les al deed (nog zonder Ja en Nee), daarna de les zoals altijd. */
       if (l.openingsZin) await zegDoor(l, l.openingsZin);
       log(l, "vraag", { zin: "startvraag", opties: ["Ja", "Nee"] });
@@ -1348,7 +1378,7 @@ const gouden: Lesdraaiboek = {
       await l.wacht(DENK_MS);
     }
 
-    let uitleg = !l.hervat && start !== "Ja";
+    let uitleg = !l.hervat && !l.zonderUitleg && start !== "Ja";
     let vanaf = 0;
     if (start === "Ja") {
       /* Stap 2a. De proef: vraag 1 en 2. Twee fouten samen = alsnog de uitleg (draaiboek §1 en §3 A.4). */
@@ -1369,10 +1399,15 @@ const gouden: Lesdraaiboek = {
         await zegDoor(l, ZIN.proefGoed);
         vanaf = 2;
       } else {
-        /* De vragen van de proef komen in de les opnieuw: hun uitkomst telt dan pas. */
+        /* De vragen van de proef komen in de les opnieuw: hun uitkomst telt dan pas. Voor de balk telt een afgemaakte
+           proefvraag wel mee (hij gaat nooit terug; 28 nov 2026). */
+        const s = st(l);
+        s.uitlegTel += s.eerste.size;
+        s.uitlegTotaal += s.eerste.size;
+        if (s.uitlegTel) l.onthoud?.("uitleg", s.uitlegTel);
         st(l).eerste.clear();
       }
-    } else if (!l.hervat) {
+    } else if (!l.hervat && !l.zonderUitleg) {
       /* Stap 2b. Nee: geen probleem, vanzelf door naar de uitleg. */
       await zegDoor(l, ZIN.nee);
     }

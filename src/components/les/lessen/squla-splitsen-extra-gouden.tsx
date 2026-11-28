@@ -511,7 +511,12 @@ const gouden: Lesdraaiboek = {
     B.st(l).naamVraag = 0;
     /* Verdergaan (15.53): "welkom terug" in plaats van de groet. Opnieuw doen: eerst zeggen dat het kind de les al deed. */
     if (l.hervat) await B.zegDoor(l, l.openingsZin ?? NAAM_GROET);
+    /* Opnieuw doen na de beste kleur (15.60, zoals Synthesis): eerst de groet, dan "dit ken je al", zonder het uitlegdeel en
+       zonder de machine stap voor stap; meteen de eerste vraag. */
+    else if (l.zonderUitleg) await B.zegDoor(l, ...[NAAM_GROET, l.openingsZin ?? ""].filter(Boolean));
     else await B.zegDoor(l, ...(l.openingsZin ? [l.openingsZin] : []), NAAM_GROET, `${variant("begin", ZIN.begin)} ${ZIN.beginKijk}`);
+    /* Voortgangsbalk (28 nov 2026, zoals Klok): de 3 opdrachten van de machine stap voor stap lopen mee, als ze er zijn. */
+    if (!l.zonderUitleg) B.st(l).uitlegTotaal = 3;
     /* Verdergaan (15.53): het gekozen getal en de gevonden delen bepalen de volgende vragen; die worden onthouden. */
     const eerder = (k: string) => l.hervat?.extra[k];
     const paarVan = (k: string): Paar | null => {
@@ -521,18 +526,31 @@ const gouden: Lesdraaiboek = {
     const sv = S(l);
 
     if (B.klaarAl(l, "totaal-5")) {
-      /* Verdergaan: de machine staat weer op 3 en 2, zoals na de vraag. */
+      /* Verdergaan: de machine staat weer op 3 en 2, zoals na de vraag. De 3 opdrachten ervoor waren al gedaan. */
+      if (!l.zonderUitleg) {
+        B.st(l).uitleg = 3;
+        B.balk(l);
+      }
       sv.delen = [A, B_DEEL];
       zetDelen(l);
+    } else if (l.zonderUitleg) {
+      /* Zonder uitleg (15.60): de machine staat meteen op 3 en 2 (wat het kind anders zelf maakt), en dan de vraag. */
+      sv.delen = [A, B_DEEL];
+      zetDelen(l);
+      await l.wacht(400);
+      await totaalVraag(l);
     } else {
       /* Stap 7. De machine stap voor stap: 4 maken, 1 eraf (3), en 2 in het andere deel (totaal 5). */
       await tikTot(l, { id: "machine-plus-4", deel: 0, d: 1, doel: 4, knop: "plus0", zin: ZIN.a1, hand: variant("tikPlus", ZIN.tikPlus) });
+      B.uitlegStap(l);
       await B.zegDoor(l, ZIN.a1Klaar);
       await tikTot(l, { id: "machine-min-3", deel: 0, d: -1, doel: 3, knop: "min0", zin: ZIN.a2, hand: ZIN.a2Hand });
+      B.uitlegStap(l);
       zet(l, { ring: "totaal" });
       await B.zegDoor(l, ...ZIN.a2Klaar);
       zet(l, { ring: null });
       await tikTot(l, { id: "machine-plus-2", deel: 1, d: 1, doel: 2, knop: "plus1", zin: ZIN.a3, hand: variant("tikPlus", ZIN.tikPlus) });
+      B.uitlegStap(l);
       /* Wat staat er nu in het totaal? */
       await totaalVraag(l);
     }

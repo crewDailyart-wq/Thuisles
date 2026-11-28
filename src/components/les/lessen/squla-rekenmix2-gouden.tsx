@@ -511,6 +511,8 @@ const gouden: Lesdraaiboek = {
     /* Verdergaan (15.53): "welkom terug" in plaats van de groet en het uitlegdeel. Opnieuw doen: eerst zeggen dat het kind
        de les al deed, daarna de les zoals altijd. */
     if (l.hervat) await zegDoor(l, l.openingsZin ?? NAAM_GROET);
+    /* Opnieuw doen na de beste kleur (15.60, zoals Synthesis): eerst de groet, dan "Dit ken je al", geen uitlegdeel. */
+    else if (l.zonderUitleg) await zegDoor(l, NAAM_GROET, l.openingsZin ?? "");
     else await zegDoor(l, ...(l.openingsZin ? [l.openingsZin] : []), NAAM_GROET, variant("begin", ZIN.begin));
 
     /* Stap 3 en 4. De 15 vragen van squla-rekenmix-mix2-1. */

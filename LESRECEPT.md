@@ -498,6 +498,7 @@ Vraag niet tussendoor (12.10). Zet in KEUZES-VOOR-SARA.md, onder een nieuw kopje
 - Een nieuwe sleutel speelt een kort geluidje via het geluidsysteem en stoort het leren niet.
 - Verdergaan waar het kind was (BOUWREGELS 15.53): vaste vraag-id's, `l.stap` in `noteer`, `klaarAl` om gemaakte vragen met hun uitleg over te slaan, `l.openingsZin` bij terugkomen, `l.onthoud` alleen voor een keuze die nodig is. Referentie: `squla-tellen-extra-gouden.tsx`; volledige opdracht HERVAT-INBOUW.md; controle `scripts/hervat-controle.mjs`.
 - Opnieuw doen na afmaken en het rondje: BOUWREGELS 15.59. Voortgangsbalk: 15.54 (`B.st(l).totaal` of het aantal vragen, `l.voortgang`).
+- Na de beste kleur opnieuw doen: zonder uitleg (BOUWREGELS 15.60, `l.zonderUitleg`): groet, `l.openingsZin`, meteen de eerste echte vraag. De balk loopt ook tijdens de uitleg mee (15.54); overgeslagen stappen tellen nergens mee.
 
 ## 10. Opslaan
 

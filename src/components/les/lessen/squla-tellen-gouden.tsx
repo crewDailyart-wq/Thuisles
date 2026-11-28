@@ -548,6 +548,9 @@ const gouden: Lesdraaiboek = {
     st(l).naamVraag = 0;
     /* Verdergaan (15.53): "welkom terug" in plaats van de groet. Opnieuw doen: eerst zeggen dat het kind de les al deed. */
     if (l.hervat) await zegDoor(l, l.openingsZin ?? NAAM_GROET);
+    /* Opnieuw doen na de beste kleur (15.60, zoals Synthesis): eerst de groet, dan "dit ken je al", en meteen vraag 1 (zonder
+       "vandaag gaan we fruit tellen" en de rijen van 5). */
+    else if (l.zonderUitleg) await zegDoor(l, ...[NAAM_GROET, l.openingsZin ?? ""].filter(Boolean));
     else await zegDoor(l, ...(l.openingsZin ? [l.openingsZin] : []), NAAM_GROET, `${variant("begin", TEL.begin)} ${TEL.beginKijk}`);
 
     /* Stap 3 en 4. De 15 vragen van squla-tellen-fruit-1. Al gemaakt (verdergaan): overslaan, met de overgangszin. */

@@ -334,6 +334,9 @@ const gouden: Lesdraaiboek = {
     B.st(l).naamVraag = 0;
     /* Verdergaan (15.53): "welkom terug" in plaats van de groet. Opnieuw doen: eerst zeggen dat het kind de les al deed. */
     if (l.hervat) await B.zegDoor(l, l.openingsZin ?? NAAM_GROET);
+    /* Opnieuw doen na de beste kleur (15.60, zoals Synthesis): eerst de groet, dan "dit ken je al", en meteen de eerste
+       opdracht (zonder "vandaag rekenen we met tegels" en "tel de vakjes"). */
+    else if (l.zonderUitleg) await B.zegDoor(l, ...[NAAM_GROET, l.openingsZin ?? ""].filter(Boolean));
     else await B.zegDoor(l, ...(l.openingsZin ? [l.openingsZin] : []), NAAM_GROET, `${variant("begin", ZIN.begin)} ${ZIN.beginTegels}`);
     /* Verdergaan (15.53): de vraag-id's hangen af van de tegels die het kind koos; die worden onthouden (l.onthoud). */
     const eerder = (k: string) => Number(l.hervat?.extra[k] ?? 0);

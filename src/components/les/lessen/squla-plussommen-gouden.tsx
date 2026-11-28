@@ -948,6 +948,9 @@ const gouden: Lesdraaiboek = {
     /* Verdergaan (15.53): "welkom terug" in plaats van de groet en het uitlegdeel. Opnieuw doen: eerst zeggen dat het kind
        de les al deed, daarna de les zoals altijd. */
     if (l.hervat) await zegDoor(l, l.openingsZin ?? NAAM_GROET);
+    /* Opnieuw doen na de beste kleur (15.60, zoals Synthesis): eerst de groet, dan "dit ken je al", en meteen vraag 1 (zonder
+       "vandaag tellen we lekkers op" en "dat heet een plussom"). */
+    else if (l.zonderUitleg) await zegDoor(l, ...[NAAM_GROET, l.openingsZin ?? ""].filter(Boolean));
     else await zegDoor(l, ...(l.openingsZin ? [l.openingsZin] : []), NAAM_GROET, `${variant("begin", ZIN.begin)} ${ZIN.beginNaam}`);
 
     /* De 16 vragen van squla-plus-bakkerij-1. */

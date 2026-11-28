@@ -35,7 +35,9 @@ export const VANGNET_MS = 20000;
 
 export type Uitkomst = "goed" | "naFout" | "samen";
 
-type Staat = { totaal: number; vorige: Map<Rijtje, number>; zinNr: number; robotNr: number; naamVraag: number; naamKeer: number; namen: number; opRij: number; momenten: Set<string>; haak: number; goed: number; fout: number; vraag: number; laatste: boolean; eerste: Map<string, Uitkomst>; vraagFouten: Map<string, string[]>; alleDenkfouten: string[]; log: unknown[] };
+/* `uitleg` / `uitlegTotaal` (28 nov 2026, zoals Klok): stappen die het kind in een uitleg of voordoen zelf doet (geen vraag);
+   ze laten de voortgangsbalk meelopen als de les ze echt doet (`uitlegTotaal` zet de les), en tellen niet voor het percentage. */
+type Staat = { totaal: number; uitleg: number; uitlegTotaal: number; vorige: Map<Rijtje, number>; zinNr: number; robotNr: number; naamVraag: number; naamKeer: number; namen: number; opRij: number; momenten: Set<string>; haak: number; goed: number; fout: number; vraag: number; laatste: boolean; eerste: Map<string, Uitkomst>; vraagFouten: Map<string, string[]>; alleDenkfouten: string[]; log: unknown[] };
 
 export function schud<T>(lijst: T[]): T[] {
   const a = [...lijst];
@@ -50,7 +52,7 @@ export function maakBasis(LES_ID: string) {
   const STAAT = new WeakMap<Lesgids, Staat>();
   const st = (l: Lesgids): Staat => {
     let s = STAAT.get(l);
-    if (!s) STAAT.set(l, (s = { totaal: 0, vorige: new Map(), zinNr: 0, robotNr: -99, naamVraag: -99, naamKeer: 0, namen: 0, opRij: 0, momenten: new Set(), haak: 0, goed: 0, fout: 0, vraag: 0, laatste: false, eerste: new Map(), vraagFouten: new Map(), alleDenkfouten: [...(l.hervat?.denkfouten ?? [])], log: [] }));
+    if (!s) STAAT.set(l, (s = { totaal: 0, uitleg: 0, uitlegTotaal: 0, vorige: new Map(), zinNr: 0, robotNr: -99, naamVraag: -99, naamKeer: 0, namen: 0, opRij: 0, momenten: new Set(), haak: 0, goed: 0, fout: 0, vraag: 0, laatste: false, eerste: new Map(), vraagFouten: new Map(), alleDenkfouten: [...(l.hervat?.denkfouten ?? [])], log: [] }));
     return s;
   };
 
@@ -89,12 +91,24 @@ export function maakBasis(LES_ID: string) {
     (w.__denkfouten ??= []).push(regel);
   }
 
+  /** De voortgangsbalk (15.54): de vragen, plus de stappen van een uitleg alleen als de les ze echt doet. Nooit terug. */
+  function balk(l: Lesgids) {
+    const s = st(l);
+    const noemer = s.totaal + s.uitlegTotaal;
+    if (noemer > 0) l.voortgang?.(Math.min(1, (s.eerste.size + s.uitleg) / noemer));
+  }
+  /** Een stap van de uitleg (een opdracht die geen vraag is) is af: de balk loopt een stukje mee. */
+  function uitlegStap(l: Lesgids) {
+    st(l).uitleg++;
+    balk(l);
+  }
+
   function noteer(l: Lesgids, vraag: string, uit: Uitkomst): Uitkomst {
     const s = st(l);
     const nieuweVraag = !s.eerste.has(vraag);
     if (nieuweVraag) s.eerste.set(vraag, uit);
     /* Voortgangsbalk (15.54): na elke afgeronde vraag een stukje verder; nooit terug bij een fout. */
-    if (s.totaal > 0) l.voortgang?.(Math.min(1, s.eerste.size / s.totaal));
+    balk(l);
     const fouten = s.vraagFouten.get(vraag) ?? [];
     s.vraagFouten.delete(vraag);
     s.alleDenkfouten.push(...fouten);
@@ -353,11 +367,11 @@ export function maakBasis(LES_ID: string) {
     if (!al) return false;
     const s = st(l);
     if (!s.eerste.has(vraag)) s.eerste.set(vraag, al);
-    if (s.totaal > 0) l.voortgang?.(Math.min(1, s.eerste.size / s.totaal));
+    balk(l);
     return true;
   }
 
-  return { klaarAl, st, zeg, log, haak, legDenkfoutVast, noteer, veelFouten, kies, lof, bevestig, zegDoor, zegOpdracht, vraagMetKnoppen, foutZinnen, goedMoment, foutMoment, handKlok, keuzeVraag, einde };
+  return { klaarAl, balk, uitlegStap, st, zeg, log, haak, legDenkfoutVast, noteer, veelFouten, kies, lof, bevestig, zegDoor, zegOpdracht, vraagMetKnoppen, foutZinnen, goedMoment, foutMoment, handKlok, keuzeVraag, einde };
 }
 
 export type Basis = ReturnType<typeof maakBasis>;

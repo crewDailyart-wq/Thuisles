@@ -138,6 +138,10 @@ type Staat = {
   zetK: number;
   golf: number;
   ordenUitgelegd: boolean;
+  /** Voortgangsbalk (28 nov 2026): wat het kind in de uitleg afmaakte (springen, de vraag; na een mislukte proef ook de
+      afgemaakte proefvraag) en hoeveel stappen de uitleg in deze route heeft. Telt niet voor het percentage. */
+  uitlegTel: number;
+  uitlegTotaal: number;
 };
 const STAAT = new WeakMap<Lesgids, Staat>();
 const st = (l: Lesgids): Staat => {
@@ -145,7 +149,7 @@ const st = (l: Lesgids): Staat => {
   if (!s)
     STAAT.set(
       l,
-      (s = { vorige: new Map(), recent: new Map(), zinNr: 0, robotNr: -99, namen: 0, naamKeer: 0, naamVraag: -99, opRij: 0, momenten: new Set(), vraag: 0, haak: 0, laatste: false, eerste: new Map(), vraagFouten: new Map(), alleDenkfouten: [...(l.hervat?.denkfouten ?? [])], sleutelVragen: new Set(), proef: null, log: [], robotReactie: false, nakijk: 0, terug: 0, zetK: 0, golf: 0, ordenUitgelegd: false }),
+      (s = { vorige: new Map(), recent: new Map(), zinNr: 0, robotNr: -99, namen: 0, naamKeer: 0, naamVraag: -99, opRij: 0, momenten: new Set(), vraag: 0, haak: 0, laatste: false, eerste: new Map(), vraagFouten: new Map(), alleDenkfouten: [...(l.hervat?.denkfouten ?? [])], sleutelVragen: new Set(), proef: null, log: [], robotReactie: false, nakijk: 0, terug: 0, zetK: 0, golf: 0, ordenUitgelegd: false, uitlegTel: 0, uitlegTotaal: 0 }),
     );
   return s;
 };
@@ -192,6 +196,18 @@ function legDenkfoutVast(l: Lesgids, d: { vraag: string; antwoord: string; denkf
 /* Voortgangsbalk (BOUWREGELS 15.54): zoveel vragen heeft een normale route; vragen die alleen na een fout terugkomen
    tellen niet mee (Math.min). Na elke afgeronde vraag een stukje verder; nooit terug (het lesscherm negeert een lagere waarde). */
 const balkTotaal = (): number => VRAGEN.length;
+/** De balk: de 15 vragen, plus de stappen van de uitleg alleen als het kind de uitleg echt krijgt (28 nov 2026, zoals Klok). */
+const balk = (l: Lesgids) => {
+  const s = st(l);
+  l.voortgang?.(Math.min(1, (s.eerste.size + s.uitlegTel) / (balkTotaal() + s.uitlegTotaal)));
+};
+/** Een stap van de uitleg is af: de balk loopt mee (onthouden voor verdergaan). */
+const uitlegStap = (l: Lesgids) => {
+  const s = st(l);
+  s.uitlegTel++;
+  l.onthoud?.("uitleg", s.uitlegTel);
+  balk(l);
+};
 
 /**
  * Verdergaan waar je was (15.53): is deze vraag al gemaakt vóór het kind wegging, dan telt het antwoord van toen en slaat de
@@ -202,7 +218,7 @@ function klaarAl(l: Lesgids, vraag: string): boolean {
   if (!al) return false;
   const s = st(l);
   if (!s.eerste.has(vraag)) s.eerste.set(vraag, al);
-  l.voortgang?.(Math.min(1, s.eerste.size / balkTotaal()));
+  balk(l);
   return true;
 }
 
@@ -212,7 +228,7 @@ function noteer(l: Lesgids, vraag: string, uit: Uitkomst): Uitkomst {
   if (uit === "gestopt") return uit;
   const nieuweVraag = !s.eerste.has(vraag);
   if (nieuweVraag) s.eerste.set(vraag, uit);
-  l.voortgang?.(Math.min(1, s.eerste.size / balkTotaal()));
+  balk(l);
   const fouten = s.vraagFouten.get(vraag) ?? [];
   s.vraagFouten.delete(vraag);
   /* Voor het eindscherm: alle denkfouten van deze speelbeurt (bewaard bij de kaart). */
@@ -793,6 +809,8 @@ async function speelVraag(l: Lesgids, v: Vraag, eersteVraag: boolean, stopNaFout
 async function uitlegRoute(l: Lesgids, naProef: boolean) {
   const lijn: Extract<GLBeeld, { soort: "lijn" }> = { soort: "lijn", id: "uitleg", van: 0, tot: 10, labels: Array.from({ length: 11 }, (_, i) => i) };
   void l.zeg().catch(() => {});
+  /* Voortgangsbalk: de uitleg heeft 2 stappen voor het kind (springen en "hoe ver sprong hij?"). */
+  st(l).uitlegTotaal += 2;
   zet(l, { ...LEEG, beeld: lijn, raketje: null, orden: null });
   speelLesgeluid("verschijn");
   await l.wacht(300);
@@ -879,6 +897,7 @@ async function uitlegRoute(l: Lesgids, naProef: boolean) {
   zet(l, { tik: null, grijs: false });
   haak(l, null);
   zetTestAntwoord(null);
+  uitlegStap(l);
   /* Na de laatste sprong even kijken (de boog komt erbij), dan de vraag (draaiboek §3 B.1: de laatste sprong + 1 à 2 s). */
   if (!zelf) await l.wacht(700);
 
@@ -949,6 +968,7 @@ async function uitlegRoute(l: Lesgids, naProef: boolean) {
     /* Het aantal sprongen is net gezegd ("1. 2. 3. Zoveel sprongen …"): niet nog een keer; na het vangnet geen "Ja". */
     await zegDoor(l, t === null ? variant("samenZelf", ZIN.uitlegSamenZelf) : variant("samenKlaar", ZIN.uitlegSamenNa));
   }
+  uitlegStap(l);
   /* 6. Met minder hulp verder. */
   await zegDoor(l, variant("nuJij", ZIN.nuJij));
 }
@@ -994,9 +1014,26 @@ const gouden: Lesdraaiboek = {
     if (l.hervat) {
       st(l).naamKeer = 1;
       st(l).naamVraag = 0;
+      /* De balk staat weer waar hij was: de stappen van de uitleg die het kind al deed, tellen mee. */
+      st(l).uitlegTel = st(l).uitlegTotaal = Number(l.hervat.extra.uitleg ?? 0);
       await zegDoor(l, l.openingsZin ?? NAAM_GROET);
       for (let i = 0; i < VRAGEN.length; i++) {
         if (klaarAl(l, VRAGEN[i].id)) continue;
+        st(l).laatste = i === VRAGEN.length - 1;
+        await speelVraag(l, VRAGEN[i], i === 0);
+      }
+      zet(l, { ...LEEG, beeld: { soort: "leeg", id: "einde" }, raketje: null, orden: null });
+      l.voortgang?.(1);
+      await eindeScherm(l);
+      return;
+    }
+    /* Opnieuw doen na de beste kleur (15.60, zoals Synthesis): eerst de groet, dan "dit ken je al", en meteen de 15 vragen.
+       Geen startvraag, proef of uitleg. */
+    if (l.zonderUitleg) {
+      st(l).naamKeer = 1;
+      st(l).naamVraag = 0;
+      await zegDoor(l, ...[NAAM_GROET, l.openingsZin ?? ""].filter(Boolean));
+      for (let i = 0; i < VRAGEN.length; i++) {
         st(l).laatste = i === VRAGEN.length - 1;
         await speelVraag(l, VRAGEN[i], i === 0);
       }
@@ -1037,7 +1074,12 @@ const gouden: Lesdraaiboek = {
       if (!uitleg) for (const [vraag, uit, fouten] of proef) l.stap?.(vraag, uit, fouten);
       if (uitleg) {
         await zegDoor(l, ...variantStukken("proefLastig", ZIN.proefLastig));
-        /* De vragen uit de proef tellen niet: alle 15 komen na de uitleg. */
+        /* De vragen uit de proef tellen niet: alle 15 komen na de uitleg. Voor de balk telt een afgemaakte proefvraag
+           wel mee (hij gaat nooit terug; 28 nov 2026). */
+        const s = st(l);
+        s.uitlegTel += s.eerste.size;
+        s.uitlegTotaal += s.eerste.size;
+        if (s.uitlegTel) l.onthoud?.("uitleg", s.uitlegTel);
         st(l).eerste.clear();
         st(l).momenten.delete("eerste");
       } else {

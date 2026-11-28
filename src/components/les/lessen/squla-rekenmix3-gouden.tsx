@@ -449,11 +449,12 @@ async function telVraag(l: Lesgids, v: Rmvraag, eersteVraag: boolean): Promise<U
     if (x === goed) {
       speelLesgeluid("goed");
       bliepoScherm("goed");
-      zet(l, { goed: ++s.goed, ...(poging === 1 && eersteVraag ? {} : { nummers: alle(v), verborgen: [] }) });
+      zet(l, { goed: ++s.goed, ...(poging === 1 && eersteVraag && !l.zonderUitleg ? {} : { nummers: alle(v), verborgen: [] }) });
       if (poging === 1) {
         const lof = lofZinnen(l, v, eersteVraag);
         log(l, "reactie", { soort: "goed", vraag: v.id, zin: lof.join(" ") });
-        if (eersteVraag) {
+        /* Opnieuw doen na de beste kleur (15.60): geen samen natellen bij de eerste vraag. */
+        if (eersteVraag && !l.zonderUitleg) {
           await zegDoor(l, lof[0], variant("natellen", hard4(RM3.natellen(v), (z) => past4(lof[0], z))));
           await natellen(l, v);
         } else await zegDoor(l, lof.join(" "));
@@ -533,6 +534,8 @@ const gouden: Lesdraaiboek = {
     /* Verdergaan (15.53): "welkom terug" in plaats van de groet en het uitlegdeel. Opnieuw doen: eerst zeggen dat het kind
        de les al deed, daarna de les zoals altijd. */
     if (l.hervat) await zegDoor(l, l.openingsZin ?? NAAM_GROET);
+    /* Opnieuw doen na de beste kleur (15.60, zoals Synthesis): eerst de groet, dan "Dit ken je al", geen uitlegdeel. */
+    else if (l.zonderUitleg) await zegDoor(l, NAAM_GROET, l.openingsZin ?? "");
     else await zegDoor(l, ...(l.openingsZin ? [l.openingsZin] : []), NAAM_GROET, variant("begin", hard4(RM3.begin, (z) => past4(metNaam(NAAM_GROET, l.naam), z))));
 
     /* Stap 3 en 4. De 15 vragen van squla-rekenmix-mix3-4. */

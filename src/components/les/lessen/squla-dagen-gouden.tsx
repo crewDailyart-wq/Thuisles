@@ -839,6 +839,8 @@ const gouden: Lesdraaiboek = {
        eerste tik (lib/stem.ts heelUitpraten). */
     /* Verdergaan (15.53): "welkom terug" in plaats van de groet. Opnieuw doen: eerst zeggen dat het kind de les al deed. */
     if (l.hervat) await zegDoor(l, l.openingsZin ?? NAAM_GROET);
+    /* Opnieuw doen na de beste kleur (15.60, zoals Synthesis): eerst de groet, dan "Dit ken je al", geen uitlegdeel. */
+    else if (l.zonderUitleg) await zegDoor(l, NAAM_GROET, l.openingsZin ?? "");
     else await zegDoor(l, ...(l.openingsZin ? [l.openingsZin] : []), NAAM_GROET, variant(l, "start", ZIN.start));
     st(l).naamKeer = 1;
     st(l).naamVraag = 0;
@@ -850,6 +852,8 @@ const gouden: Lesdraaiboek = {
     for (let i = 0; i < VRAGEN.length; i++) {
       /* Al gemaakt vóór het weggaan: overslaan, met de overgangszin. */
       if (klaarAl(l, VRAGEN[i].id)) {
+        /* Verdergaan: "Tik op de goede wagon." hoorde het kind al bij een eerdere kaartvraag; niet nog een keer. */
+        if (VRAGEN[i].invoer === "kaart") st(l).kaartUitgelegd = true;
         overgeslagen = true;
         continue;
       }

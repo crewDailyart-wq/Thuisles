@@ -981,6 +981,8 @@ const gouden: Lesdraaiboek = {
     /* Verdergaan (15.53): "welkom terug" in plaats van de groet en het uitlegdeel. Opnieuw doen: eerst zeggen dat het kind
        de les al deed, daarna de les zoals altijd. */
     if (l.hervat) await zegDoor(l, l.openingsZin ?? NAAM_GROET);
+    /* Opnieuw doen na de beste kleur (15.60, zoals Synthesis): eerst de groet, dan "Dit ken je al", geen uitlegdeel. */
+    else if (l.zonderUitleg) await zegDoor(l, NAAM_GROET, l.openingsZin ?? "");
     else await zegDoor(l, ...(l.openingsZin ? [l.openingsZin] : []), NAAM_GROET, variant("start", passend(ZIN.start, NAAM_GROET)));
     st(l).naamKeer = 1;
     st(l).naamVraag = 0;
@@ -988,7 +990,12 @@ const gouden: Lesdraaiboek = {
     /* De 15 vragen van squla-vormen-patronen-1. */
     for (let i = 0; i < VRAGEN.length; i++) {
       /* Verdergaan (15.53): een vraag die al gemaakt is, wordt met zijn overgangszin overgeslagen. */
-      if (klaarAl(l, VRAGEN[i].id)) continue;
+      if (klaarAl(l, VRAGEN[i].id)) {
+        /* Verdergaan: hoe tikken of de puzzel werkt, hoorde het kind al bij een eerdere vraag van die soort; niet nog een keer. */
+        if (VRAGEN[i].soort === "keuze") st(l).kiesUitgelegd = true;
+        if (VRAGEN[i].soort === "puzzel") st(l).puzzelUitgelegd = true;
+        continue;
+      }
       st(l).laatste = i === VRAGEN.length - 1;
       /* Af en toe een overgangszin (BLIEPO-KARAKTER.md §12); meestal niet, het tempo gaat voor. */
       if (i === 10) await zegDoor(l, kies(l, OVERGANG));

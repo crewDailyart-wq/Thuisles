@@ -532,6 +532,8 @@ const gouden: Lesdraaiboek = {
     B.st(l).naamVraag = 0;
     /* Verdergaan (15.53): "welkom terug" in plaats van de groet. Opnieuw doen: eerst zeggen dat het kind de les al deed. */
     if (l.hervat) await B.zegDoor(l, l.openingsZin ?? NAAM_GROET);
+    /* Opnieuw doen na de beste kleur (15.60, zoals Synthesis): eerst de groet, dan "dit ken je al", en meteen de eerste vraag. */
+    else if (l.zonderUitleg) await B.zegDoor(l, ...[NAAM_GROET, l.openingsZin ?? ""].filter(Boolean));
     else await B.zegDoor(l, ...(l.openingsZin ? [l.openingsZin] : []), NAAM_GROET, ZIN.begin.join(" "));
 
     /* Stap 5. Van welk fruit zie je er N? (2 rondes) */

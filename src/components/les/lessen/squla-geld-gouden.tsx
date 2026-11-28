@@ -837,6 +837,8 @@ const gouden: Lesdraaiboek = {
        eerste tik (lib/stem.ts heelUitpraten). */
     /* Verdergaan (15.53): "welkom terug" in plaats van de groet. Opnieuw doen: eerst zeggen dat het kind de les al deed. */
     if (l.hervat) await zegDoor(l, l.openingsZin ?? NAAM_GROET);
+    /* Opnieuw doen na de beste kleur (15.60, zoals Synthesis): eerst de groet, dan "Dit ken je al", geen uitlegdeel. */
+    else if (l.zonderUitleg) await zegDoor(l, NAAM_GROET, l.openingsZin ?? "");
     else await zegDoor(l, ...(l.openingsZin ? [l.openingsZin] : []), NAAM_GROET, variant(l, "start", ZIN.start));
     st(l).naamKeer = 1;
     st(l).naamVraag = 0;
@@ -846,6 +848,8 @@ const gouden: Lesdraaiboek = {
     for (let i = 0; i < VRAGEN.length; i++) {
       /* Verdergaan (15.53): al gemaakt vóór het weggaan? Dan telt het antwoord van toen (ook voor de vragen die terugkomen). */
       if (klaarAl(l, VRAGEN[i].id)) {
+        /* Verdergaan: "Tik erop." hoorde het kind al bij een eerdere waar-vraag; niet nog een keer. */
+        if (VRAGEN[i].soort === "waar") st(l).waarUitgelegd = true;
         if (st(l).eerste.get(VRAGEN[i].id) !== "goed") mis.push(i);
         continue;
       }
@@ -864,15 +868,18 @@ const gouden: Lesdraaiboek = {
       await zegDoor(l, variant(l, "terug", mis.length ? (terug.length === 1 ? ZIN.terug1 : ZIN.terugN(terug.length)) : terug.length === 1 ? ZIN.extra1 : ZIN.extraN(terug.length)));
     }
     let weerFout = 0;
+    let nuGespeeld = false;
     for (const [n, i] of terug.entries()) {
       if (klaarAl(l, `${VRAGEN[i].id}-terug`)) {
         if (st(l).eerste.get(`${VRAGEN[i].id}-terug`) !== "goed") weerFout++;
         continue;
       }
       st(l).laatste = n === terug.length - 1;
+      nuGespeeld = true;
       if ((await speelVraag(l, VRAGEN[i], { eerste: false, terug: true })) !== "goed") weerFout++;
     }
-    if (weerFout) await zegDoor(l, variant(l, "terugLastig", ZIN.terugLastig));
+    /* Gestopt na de laatste vraag (15.53 punt 4): meteen naar het eindscherm, zonder deze zin nog een keer. */
+    if (weerFout && nuGespeeld) await zegDoor(l, variant(l, "terugLastig", ZIN.terugLastig));
 
     /* Einde: het nieuwe eindscherm (27 nov 2026). Was: slotzin (ZIN.slot), de kaart (KaartMuntBriefje), een eindzin
        (EINDE / EINDE_VEEL_FOUTEN) met "Tik op de kaart." (ZIN.kaartTik) en het afscheid (afscheidNa). */

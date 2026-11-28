@@ -105,7 +105,9 @@ function verbind(url) {
   const stuur = (method, params = {}, sessionId) =>
     new Promise((res, rej) => {
       const id = ++n;
-      wachtend.set(id, (m) => (m.error ? rej(new Error(m.error.message)) : res(m.result)));
+      /* Geeft Chrome na 60 seconden geen antwoord, dan stopt de controle met een melding in plaats van eindeloos te wachten. */
+      const klok = setTimeout(() => (wachtend.delete(id), rej(new Error(`Chrome antwoordt niet (${method})`))), 60_000);
+      wachtend.set(id, (m) => (clearTimeout(klok), m.error ? rej(new Error(m.error.message)) : res(m.result)));
       ws.send(JSON.stringify({ id, method, params, sessionId }));
     });
   return new Promise((res) => ws.addEventListener("open", () => res({ stuur, sluit: () => ws.close(), op: (f) => (luisteraars.add(f), () => luisteraars.delete(f)) })));
@@ -221,6 +223,11 @@ async function speel(c, id) {
   let balkStaat = null;
   const handmatig = new Set();
   let stappen = 0;
+  /* FOUTEERST=n (28 nov 2026): de eerste n antwoorden fout (bijvoorbeeld met JA=1: de proef mislukt). BALKLOG=1: elke stap
+     van de voortgangsbalk met het aantal afgeronde vragen op dat moment. */
+  let foutTel = 0;
+  let jaGetikt = false;
+  const balkSpoor = [];
   let einde = false;
   let stemAf = null;
   const stemTel = { gevraagd: 0, ruth: 0 };
@@ -590,6 +597,7 @@ async function speel(c, id) {
         if (z.balk) {
           bs.gezien = true;
           if (z.balk.v < bs.max - 0.0005) fouten.add(`voortgangsbalk ging terug (${bs.max} naar ${z.balk.v})`);
+          if (process.env.BALKLOG && z.balk.v > bs.max + 0.0005) balkSpoor.push(`${Number(z.balk.v).toFixed(3)}@${await ev(`(window.__uitkomsten ?? []).length`)}`);
           bs.max = Math.max(bs.max, z.balk.v);
           if (z.balk.raakt) fouten.add(`voortgangsbalk raakt: ${z.balk.raakt}`);
         }
@@ -601,7 +609,7 @@ async function speel(c, id) {
       }
       if (!z) continue;
       /* STOPNA=n (verdergaan, 28 nov 2026): stop na n nieuw beantwoorde vragen, zoals een kind dat weggaat. UITLOG=1 meldt welke. */
-      const gemeld = async () => process.env.UITLOG && console.log(`ZINNEN ${id} ${JSON.stringify([...zinnen].slice(0, 3))}`) === undefined && console.log(`UITKOMSTEN ${id} ${await ev(`JSON.stringify((window.__uitkomsten ?? []).map((u) => u.vraag))`)}`);
+      const gemeld = async () => (process.env.BALKLOG && console.log(`BALK ${id} ${JSON.stringify(balkSpoor)}`), process.env.ALLEZINNEN && console.log(`ALLEZINNEN ${id} ${JSON.stringify([...zinnen])}`), process.env.UITLOG) && console.log(`ZINNEN ${id} ${JSON.stringify([...zinnen].slice(0, 3))}`) === undefined && console.log(`UITKOMSTEN ${id} ${await ev(`JSON.stringify((window.__uitkomsten ?? []).map((u) => u.vraag))`)}`);
       if (process.env.STOPNA && Number(await ev(`(window.__uitkomsten ?? []).length`)) >= Number(process.env.STOPNA)) {
         await wacht(2500);
         await gemeld();
@@ -703,7 +711,18 @@ async function speel(c, id) {
           writeFileSync(join(FOTOMAP, id, `${nr}.jpg`), Buffer.from(data, "base64"));
           appendFileSync(join(FOTOMAP, id, "schermen.txt"), `${nr}.jpg\tBliepo: ${z.tekst}\tknoppen: (alleen in de tekening)\n`);
         }
-        if (z.canvas && !z.praat && (await canvasStap(z, "goed"))) {
+        /* FOUTEERST geldt ook voor stappen waar alleen gesleept kan worden (Splitsen: de proef moet kunnen mislukken). */
+        const sleepFout = !!process.env.FOUTEERST && foutTel < Number(process.env.FOUTEERST) && (await ev(`!!window.__phaser?.s1Stap`));
+        /* Liggen de dingen na een fout nog zo (de proef), dan valt er niets nieuws fout te slepen: dan eerst goed leggen. De
+           volgende fout komt bij de volgende vraag. */
+        let sleepte = false;
+        if (z.canvas && !z.praat) {
+          if (sleepFout && (await canvasStap(z, "fout"))) {
+            sleepte = true;
+            foutTel++;
+          } else sleepte = await canvasStap(z, "goed");
+        }
+        if (sleepte) {
           laatsteTik = Date.now();
           stilSinds = null;
           continue;
@@ -725,8 +744,16 @@ async function speel(c, id) {
       stilSinds = null;
       stappen++;
       laatsteTik = Date.now();
-      const soort = process.env.ALLEFOUT ? "fout" : process.env.GOED ? "goed" : (stappen + Number(process.env.VARIANT ?? 0)) % 7 === 3 ? "weetniet" : (stappen + Number(process.env.VARIANT ?? 0)) % 7 === 5 ? "fout" : "goed";
-      if (await canvasStap(z, soort)) continue;
+      const soort = process.env.FOUTEERST && foutTel < Number(process.env.FOUTEERST) && (!process.env.JA || jaGetikt || (await ev(`!!window.__phaser?.s1Stap && ![...document.querySelectorAll("button")].some((b) => b.textContent.trim() === "Ja" && b.getBoundingClientRect().width > 3)`))) ? "fout" : process.env.ALLEFOUT ? "fout" : process.env.GOED ? "goed" : (stappen + Number(process.env.VARIANT ?? 0)) % 7 === 3 ? "weetniet" : (stappen + Number(process.env.VARIANT ?? 0)) % 7 === 5 ? "fout" : "goed";
+      if (await canvasStap(z, soort)) {
+        if (soort === "fout") foutTel++;
+        continue;
+      }
+      /* JA=1: bij "Kun je dit al?" op Ja tikken (de proef). */
+      if (process.env.JA && !jaGetikt && (await klik(`(b) => (b.textContent || "").trim() === "Ja"`))) {
+        jaGetikt = true;
+        continue;
+      }
       /* NEE=1: bij "Kun je dit al?" op Nee tikken, om de uitleg te zien (alleen dan; anders gaat het kind door met Ja). */
       if (process.env.NEE && (await klik(`(b) => (b.textContent || "").trim() === "Nee"`))) continue;
       /* Afwisselend: meestal goed, soms "weet ik niet", soms fout. */
@@ -749,7 +776,10 @@ async function speel(c, id) {
       if (soort === "goed" && goed && (await klik(`(b) => (b.textContent || "").trim() === ${JSON.stringify(goed)} || b.getAttribute("data-ding") === ${JSON.stringify(goed)}`))) continue;
       /* FOUTANTWOORD="10 uur": bij een fout dit antwoord kiezen als het er staat (om één denkfout, zoals spiegelbeeld, te testen). */
       if (soort === "fout" && process.env.FOUTANTWOORD && process.env.FOUTANTWOORD !== goed && (await klik(`(b) => b.closest('[data-knop="keuzes"], [class*="bediening"]') && (b.textContent || "").trim() === ${JSON.stringify(process.env.FOUTANTWOORD)}`))) continue;
-      if (soort === "fout" && goed && (await klik(`(b) => b.closest('[data-knop="keuzes"], [class*="bediening"]') && (b.textContent || "").trim() !== ${JSON.stringify(goed)} && b.getAttribute("data-knop") !== "weetniet"`))) continue;
+      if (soort === "fout" && goed && (await klik(`(b) => b.closest('[data-knop="keuzes"], [class*="bediening"]') && (b.textContent || "").trim() !== ${JSON.stringify(goed)} && b.getAttribute("data-knop") !== "weetniet"`))) {
+        foutTel++;
+        continue;
+      }
       /* Anders: de eerste keuze, of een tikbaar ding in het vlak. */
       if (await klik(`(b) => b.tagName === "BUTTON" && b.hasAttribute("data-plek")`)) continue;
       if (await klik(`(b) => b.closest('[data-knop="keuzes"], [class*="bediening"], [class*="raster3"]') && !b.querySelector(".bliepo-tekst") && b.getAttribute("data-knop") !== "weetniet" && b.getAttribute("aria-pressed") !== "true"`)) continue;

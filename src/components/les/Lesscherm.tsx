@@ -1306,10 +1306,19 @@ function Lesscherm({
             gemaakt.antwoorden.push(...start.stand.antwoorden);
             gemaakt.denkfouten.push(...start.stand.denkfouten);
             Object.assign(gemaakt.extra, start.stand.extra);
+            /* Deze beurt begon zonder uitleg (15.60): bij verdergaan blijft dat zo. */
+            if (start.stand.extra.zonderUitleg) gids.zonderUitleg = true;
             /* De sleutels die al verdiend waren in deze beurt staan weer op de teller (een terugkomende vraag gaf er geen). */
-            sleutelNr = start.stand.antwoorden.filter((a) => a[1] === "goed" && !a[0].endsWith("-terug")).length;
+            sleutelNr = start.stand.antwoorden.filter((a) => a[1] === "goed" && !a[0].endsWith("-terug") && !a[0].startsWith("uitleg-")).length;
             setSleutels(sleutelNr);
-          } else if (start && start.eerder !== null) gids.openingsZin = terugzin(start.eerder >= BESTE_VANAF ? "perfect" : "opnieuw");
+          } else if (start && start.eerder !== null) {
+            gids.openingsZin = terugzin(start.eerder >= BESTE_VANAF ? "perfect" : "opnieuw");
+            /* Eerder met de beste kleur: meteen oefenen, zoals Synthesis (15.60). */
+            if (start.eerder >= BESTE_VANAF) {
+              gids.zonderUitleg = true;
+              gemaakt.extra.zonderUitleg = 1;
+            }
+          }
         }
         return les.speel(gids);
       })

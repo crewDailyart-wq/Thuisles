@@ -1026,6 +1026,8 @@ const gouden: Lesdraaiboek = {
     /* Verdergaan (15.53): "welkom terug" in plaats van de groet en het uitlegdeel. Opnieuw doen: eerst zeggen dat het kind
        de les al deed, daarna de les zoals altijd. */
     if (l.hervat) await zegDoor(l, l.openingsZin ?? NAAM_GROET);
+    /* Opnieuw doen na de beste kleur (15.60, zoals Synthesis): eerst de groet, dan "Dit ken je al", geen uitlegdeel. */
+    else if (l.zonderUitleg) await zegDoor(l, NAAM_GROET, l.openingsZin ?? "");
     else await zegDoor(l, ...(l.openingsZin ? [l.openingsZin] : []), NAAM_GROET, variant("start", ZIN.start));
     st(l).naamKeer = 1;
     st(l).naamVraag = 0;
@@ -1034,7 +1036,11 @@ const gouden: Lesdraaiboek = {
     const mis: number[] = [];
     for (let i = 0; i < VRAGEN.length; i++) {
       /* Verdergaan (15.53): een vraag die al gemaakt is, telt met de uitkomst van toen (ook voor de vragen die terugkomen). */
-      const uit = klaarAl(l, VRAGEN[i].id) ?? (await speelVraag(l, VRAGEN[i], { eerste: i === 0, terug: false, ctx: i === 0 ? c0 : undefined }));
+      const al = klaarAl(l, VRAGEN[i].id);
+      /* Verdergaan: hoe slepen of 2 kaartjes kiezen werkt, hoorde het kind al bij een eerdere vraag van die soort. */
+      if (al && VRAGEN[i].soort === "orden") st(l).ordenUitgelegd = true;
+      if (al && VRAGEN[i].soort === "twee") st(l).tweeUitgelegd = true;
+      const uit = al ?? (await speelVraag(l, VRAGEN[i], { eerste: i === 0, terug: false, ctx: i === 0 ? c0 : undefined }));
       if (uit !== "goed") mis.push(i);
     }
 

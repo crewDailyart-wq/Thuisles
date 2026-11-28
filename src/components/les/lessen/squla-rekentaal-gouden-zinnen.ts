@@ -300,9 +300,10 @@ const KIJK_INTRO: Record<string, string[]> = {
 /** Op volgorde 2 keer achter elkaar: de 2e keer met "En nu …" (niet 2 keer precies dezelfde zinnen; de schoolterm blijft). */
 const NOG_EEN_VOLGORDE = (v: Vraag) => [`En nu de ${meervoud(v)}.`, "Zet ze ook op volgorde, van klein naar groot.", `Tik eerst op de kleinste ${v.ding}.`];
 /** Wat Bliepo bij de vraag zegt: de zinnen van de oude les, met de kijk-zin in varianten. */
-export function vraagZinnen(v: Vraag, kies: Kies): string[] {
+export function vraagZinnen(v: Vraag, kies: Kies, vorigeNietGehoord = false): string[] {
   const vorige = VRAGEN[VRAGEN.indexOf(v) - 1];
-  if (v.soort === "volgorde" && vorige?.soort === "volgorde") return NOG_EEN_VOLGORDE(v);
+  /* Verdergaan (15.53): was de vorige vraag al gemaakt vóór het weggaan, dan hoorde het kind hem nu niet; dan geen "En nu …". */
+  if (v.soort === "volgorde" && vorige?.soort === "volgorde" && !vorigeNietGehoord) return NOG_EEN_VOLGORDE(v);
   return v.vraag.map((z) => (KIJK_INTRO[z] ? kies(`intro-${z}`, KIJK_INTRO[z]) : z));
 }
 /** Alle mogelijke vraagzinnen van een vraag (voor het script). */

@@ -30,7 +30,7 @@ const resultaat = () => db.prepare("select percentage, kleur from les_resultaten
 const sterren = () => db.prepare("select count(*) as n from les_sterren where kind_id = ? and les_id = ?").get(kind, les).n;
 
 function speel(extra) {
-  const r = spawnSync("node", ["scripts/speelcontrole.mjs"], { env: { ...process.env, LESSEN: les, GOED: "1", UITLOG: "1", KIND_ID: kind, ...extra }, encoding: "utf8", timeout: 600_000 });
+  const r = spawnSync("node", ["scripts/speelcontrole.mjs"], { env: { ...process.env, LESSEN: les, GOED: "1", UITLOG: "1", KIND_ID: kind, ...extra }, encoding: "utf8", timeout: (Number(process.env.MAXMIN ?? 10) + 1) * 60_000 });
   spawnSync("pkill", ["-f", "--", "--headless=new"]);
   const uit = (r.stdout ?? "") + (r.stderr ?? "");
   const m = /^UITKOMSTEN \S+ (.*)$/m.exec(uit);
@@ -69,11 +69,14 @@ const ster1 = sterren();
 
 const c = speel({ STOPNA: "1" });
 const s3 = stand();
-eis(c.ids[0] !== undefined && c.ids[0] === a.ids[0], `5. opnieuw doen begint bij het begin (eerste vraag ${c.ids[0]}, de eerste keer ${a.ids[0]})`);
+/* Beste kleur (95% of meer): de uitleg wordt overgeslagen (15.60), dus de eerste vraag mag dan een latere zijn dan de eerste keer. */
+const best = (r1?.percentage ?? 0) >= 95;
+eis(c.ids[0] !== undefined && (best ? [...a.ids, ...b.ids].includes(c.ids[0]) : c.ids[0] === a.ids[0]), `5. opnieuw doen begint bij het begin (eerste vraag ${c.ids[0]}, de eerste keer ${a.ids[0]}${best ? ", zonder uitleg" : ""})`);
+eis(!best || s3?.ids?.length >= 1, "5. de nieuwe beurt zonder uitleg wordt bewaard");
 eis(resultaat()?.percentage === r1?.percentage && sterren() === ster1 && s3?.ids?.length >= 1, `5. oud resultaat blijft (${resultaat()?.percentage}%), sterren ${sterren()}, nieuwe stand ${s3?.ids?.length}`);
 const o3 = await rondje();
 eis(o3.af === 100, `5. tijdens het opnieuw doen blijft het rondje vol (${o3.af}%)`);
-eis(/nog 1 keer|al gedaan|heel goed|beginnen/i.test(c.zinnen), `5. Bliepo zegt dat het kind de les al deed (${c.zinnen.slice(0, 90)})`);
+eis((best ? /meteen oefenen/i : /nog 1 keer|al gedaan|heel goed|beginnen/i).test(c.zinnen), `5. Bliepo zegt dat het kind de les al deed (${c.zinnen.slice(0, 90)})`);
 
 mkdirSync("output/hervat", { recursive: true });
 console.log(fouten.length ? `AFGEKEURD ${les}: ${fouten.length} punt(en)` : `GOEDGEKEURD ${les}`);

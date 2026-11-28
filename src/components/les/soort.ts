@@ -97,6 +97,11 @@ export interface Lesgids {
   onthoud?(sleutel: string, waarde: string | number): void;
   openingsZin?: string;
   /**
+   * Opnieuw doen na de beste kleur (BOUWREGELS 15.60, zoals Synthesis): de les slaat de uitleg (en een startvraag met proef)
+   * over en begint met oefenen. Eerst de groet, dan `openingsZin`. Blijft gelden als het kind weggaat en verdergaat.
+   */
+  zonderUitleg?: boolean;
+  /**
    * Proef eindscherm (Sara, 24 november 2026; EINDSCHERM-ONTWERP.md): er komt 1 sleutel bij (antwoord in 1 keer goed,
    * BOUWREGELS 15.52). Het lesscherm laat een sleuteltje naar de teller rechtsboven vliegen en zet de teller +1. Alleen in
    * lessen met `eindscherm`; anders bestaat deze functie niet.
