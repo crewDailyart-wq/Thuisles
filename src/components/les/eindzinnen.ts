@@ -46,10 +46,11 @@ export const EIND_TIK_KAART = "Tik op de kaart om hem af te vinken.";
  * verder = halverwege gestopt; opnieuw = al eens afgemaakt, nog niet de beste kleur; perfect = al eens met de beste kleur.
  */
 export const TERUGZINNEN = {
-  verder: ["Welkom terug! We gaan verder waar je was.", "Fijn dat je er weer bent. We gaan verder waar je was.", "Daar ben je weer! We maken de les samen af."],
-  /* Zonder groet: de les groet daarna zelf. */
-  opnieuw: ["Deze les deed je al eens. We beginnen weer bij het begin.", "Je doet deze les nog 1 keer. We beginnen bij het begin.", "Deze les ken je al. We doen hem nog 1 keer."],
-  perfect: ["Deze les ging al heel goed. Leuk dat je hem nog 1 keer doet!", "Dit deed je al heel goed. We doen het nog 1 keer.", "De vorige keer ging dit heel goed. Daar gaan we weer!"],
+  verder: ["Welkom terug! We gaan verder waar je was.", "Fijn dat je er weer bent. We gaan verder waar je was.", "Daar ben je weer! We gaan verder met de les."],
+  /* Zonder groet: de les groet daarna zelf. Door Fable gecontroleerd (28 nov 2026). */
+  opnieuw: ["Je hebt deze les al gedaan. We beginnen opnieuw.", "Je doet deze les nog 1 keer. We beginnen bij het begin.", "Deze les heb je al gedaan. We doen hem nog 1 keer."],
+  /* Bewaard wordt de beste uitslag, niet de laatste: daarom niet "de vorige keer". */
+  perfect: ["Deze les ging al heel goed. Je doet hem nog 1 keer.", "Deze les deed je al heel goed. We doen hem nog 1 keer.", "Deze les ging eerder al heel goed. Kom, we beginnen weer!"],
 } as const;
 
 export const terugzin = (soort: keyof typeof TERUGZINNEN): string => TERUGZINNEN[soort][Math.floor(Math.random() * TERUGZINNEN[soort].length)];

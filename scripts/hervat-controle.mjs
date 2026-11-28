@@ -62,7 +62,7 @@ eis(b.ids.length > 0 && dubbel.length === 0, `3. verder waar het was: eerste vra
 const r1 = resultaat();
 eis(b.code === 0 && !!r1, `4. afgemaakt en op de kaart getikt (resultaat ${r1?.percentage}% ${r1?.kleur})${b.code ? " " + b.regels.join(" | ") : ""}`);
 eis(stand()?.ids === null, "4. stand gesloten na het afmaken");
-eis(/waar je was|samen af/i.test(b.zinnen), `3. Bliepo heet welkom terug (${b.zinnen.slice(0, 90)})`);
+eis(/waar je was|verder met de les/i.test(b.zinnen), `3. Bliepo heet welkom terug (${b.zinnen.slice(0, 90)})`);
 const o2 = await rondje();
 eis(o2.af === 100, `4. na het afmaken is het rondje vol (${o2.af}%, ${o2.kleur})`);
 const ster1 = sterren();
@@ -73,7 +73,7 @@ eis(c.ids[0] !== undefined && c.ids[0] === a.ids[0], `5. opnieuw doen begint bij
 eis(resultaat()?.percentage === r1?.percentage && sterren() === ster1 && s3?.ids?.length >= 1, `5. oud resultaat blijft (${resultaat()?.percentage}%), sterren ${sterren()}, nieuwe stand ${s3?.ids?.length}`);
 const o3 = await rondje();
 eis(o3.af === 100, `5. tijdens het opnieuw doen blijft het rondje vol (${o3.af}%)`);
-eis(/nog 1 keer|al eens|heel goed|ken je al/i.test(c.zinnen), `5. Bliepo zegt dat het kind de les al deed (${c.zinnen.slice(0, 90)})`);
+eis(/nog 1 keer|al gedaan|heel goed|beginnen/i.test(c.zinnen), `5. Bliepo zegt dat het kind de les al deed (${c.zinnen.slice(0, 90)})`);
 
 mkdirSync("output/hervat", { recursive: true });
 console.log(fouten.length ? `AFGEKEURD ${les}: ${fouten.length} punt(en)` : `GOEDGEKEURD ${les}`);
