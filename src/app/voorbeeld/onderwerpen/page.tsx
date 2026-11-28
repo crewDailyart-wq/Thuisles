@@ -4,6 +4,7 @@ import { LESCATALOGUS } from "@/lib/lessen/catalogus";
 import { huidigKind } from "@/lib/auth/sessie";
 import { haalResultaten } from "@/lib/data/lesresultaten";
 import { haalSterren } from "@/lib/data/sterren";
+import { haalTussenstanden } from "@/lib/data/lestussenstanden";
 import { herhaalTekenNodig, kleurCss, kleurOpNaam, kleurVoorPercentage } from "@/lib/les-kleuren";
 import s from "./onderwerpen.module.css";
 
@@ -17,20 +18,28 @@ export const dynamic = "force-dynamic";
  * Voorlopig alleen voor de gouden lessen, en alleen met kleuren in Tellen extra (de proef).
  * `?demo=72` laat voor Tellen extra een voorbeeldresultaat zien (72%), `&dagen=3` hoe lang geleden; er wordt niets bewaard.
  */
-export default async function Onderwerpen({ searchParams }: { searchParams: Promise<{ demo?: string; dagen?: string }> }) {
-  const { demo, dagen } = await searchParams;
+export default async function Onderwerpen({ searchParams }: { searchParams: Promise<{ demo?: string; dagen?: string; af?: string }> }) {
+  const { demo, dagen, af } = await searchParams;
   const kind = await huidigKind();
   const lessen = LESCATALOGUS.filter((r) => /-gouden(-|$)/.test(r.id));
   const resultaten = new Map<string, { kleur: string; herhalen: boolean }>();
+  const tussen = new Map<string, { af: number; kleur: string }>();
   let sterren = 0;
   if (kind) {
     for (const r of haalResultaten(kind.id)) resultaten.set(r.lesId, { kleur: r.kleur, herhalen: r.herhalen });
     sterren = haalSterren(kind.id).aantal;
+    for (const t of haalTussenstanden(kind.id)) tussen.set(t.lesId, { af: t.af, kleur: kleurVoorPercentage(t.percentage).naam });
   }
   if (demo && /^\d{1,3}$/.test(demo)) {
     const k = kleurVoorPercentage(Number(demo));
     const geleden = new Date(Date.now() - (Number(dagen) || 0) * 24 * 3600 * 1000).toISOString();
-    resultaten.set("squla-tellen-fruit-1-gouden-extra", { kleur: k.naam, herhalen: herhaalTekenNodig(k.naam, geleden) });
+    /* `&af=40` laat zien hoe het rondje staat als de les voor 40% gemaakt is. */
+    if (af && /^\d{1,3}$/.test(af) && Number(af) < 100) {
+      resultaten.delete("squla-tellen-fruit-1-gouden-extra");
+      tussen.set("squla-tellen-fruit-1-gouden-extra", { af: Number(af), kleur: k.naam });
+    } else {
+      resultaten.set("squla-tellen-fruit-1-gouden-extra", { kleur: k.naam, herhalen: herhaalTekenNodig(k.naam, geleden) });
+    }
   }
   return (
     <main className={s.pagina}>
@@ -45,15 +54,18 @@ export default async function Onderwerpen({ searchParams }: { searchParams: Prom
       <ul className={s.raster}>
         {lessen.map((l) => {
           const r = resultaten.get(l.id);
-          const k = r ? kleurOpNaam(r.kleur) : undefined;
+          /* Klaar = vol in de kleur van het resultaat; halverwege gestopt = gevuld tot waar het kind was. */
+          const half = r ? undefined : tussen.get(l.id);
+          const k = r ? kleurOpNaam(r.kleur) : half ? kleurOpNaam(half.kleur) : undefined;
+          const gevuld = r ? 100 : (half?.af ?? 0);
           return (
             <li key={l.id}>
-              <a href={`/voorbeeld/les/${l.id}?naam=Testkind`} className={s.kaart} style={k ? ({ "--kaartkleur": kleurCss(k) } as React.CSSProperties) : undefined} data-kaart={l.id} data-kleur={k?.naam ?? ""} data-herhalen={r?.herhalen ? "ja" : ""}>
-                {/* Het rondje (27 nov 2026): alleen de ring, links van het onderwerp. Lichtblauw = nog niet gedaan; klaar = ring vol in de kleur van het resultaat. */}
+              <a href={`/voorbeeld/les/${l.id}?naam=Testkind`} className={s.kaart} style={k ? ({ "--kaartkleur": kleurCss(k) } as React.CSSProperties) : undefined} data-kaart={l.id} data-kleur={k?.naam ?? ""} data-af={gevuld} data-herhalen={r?.herhalen ? "ja" : ""}>
+                {/* Het rondje (27 nov 2026): alleen de ring, links van het onderwerp. Lichtblauw = nog niet gedaan; klaar = ring vol in de kleur van het resultaat; halverwege = gevuld tot waar het kind was. */}
                 <span className={s.ring} aria-hidden="true">
                   <svg viewBox="0 0 60 60" width="56" height="56" style={{ overflow: "visible" }}>
                     <circle cx="30" cy="30" r="23" fill="none" stroke="#bfe0ee" strokeWidth="10" />
-                    {k && <circle cx="30" cy="30" r="23" fill="none" stroke="var(--kaartkleur)" strokeWidth="10" />}
+                    {k && gevuld > 0 && <circle cx="30" cy="30" r="23" fill="none" stroke="var(--kaartkleur)" strokeWidth="10" strokeDasharray={`${(2 * Math.PI * 23 * gevuld) / 100} ${2 * Math.PI * 23}`} transform="rotate(-90 30 30)" />}
                   </svg>
                 </span>
                 <span className={s.titel}>{l.titel}</span>

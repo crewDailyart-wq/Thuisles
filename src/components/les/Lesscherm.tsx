@@ -45,7 +45,7 @@ import "@/components/oefenen/opdracht-nieuw.css";
 import { Voortgangsbalk } from "./Voortgangsbalk";
 import { Eindscherm, Sleutelteller, VliegendeSleutel, leesEindversie, type Eindversie } from "./Eindscherm";
 import es from "./Eindscherm.module.css";
-import { bewaarLesAfgemaakt, bewaarLesResultaat, haalSterrenTotaal } from "@/app/lesuitkomstacties";
+import { bewaarLesAfgemaakt, bewaarLesResultaat, bewaarLesTussenstand, haalSterrenTotaal } from "@/app/lesuitkomstacties";
 
 /*
   Het ontwerp van de lessen (23 oktober 2026, opdracht eigenaar): "nieuw" =
@@ -545,6 +545,19 @@ function Lesscherm({
   const [pauze, setPauze] = useState(false);
   /** Voortgangsbalk (gouden lessen, 15.54): 0 tot 1, of null = geen balk. Gaat nooit terug. */
   const [voortgang, setVoortgang] = useState<number | null>(null);
+  /* De tussenstand voor het rondje op het onderwerpenscherm (28 nov 2026): bij elke nieuwe stap van de voortgangsbalk. */
+  const beurtStartRef = useRef(0);
+  useEffect(() => {
+    beurtStartRef.current = Date.now();
+  }, [les.id]);
+  useEffect(() => {
+    if (!les.eindscherm || !voortgang || snelRef.current) return;
+    /* Even wachten: het antwoord van deze vraag wordt tegelijk bewaard en telt mee voor de kleur. */
+    const t = setTimeout(() => {
+      void bewaarLesTussenstand({ lesId: les.id, af: Math.round(voortgang * 100), duurMs: Date.now() - beurtStartRef.current }).catch(() => {});
+    }, 800);
+    return () => clearTimeout(t);
+  }, [voortgang, les.id, les.eindscherm]);
   /*
     Proef eindscherm en sleutelteller (Sara, 24 november 2026; EINDSCHERM-ONTWERP.md): alleen in lessen met `eindscherm`.
     `sleutels` = wat de teller rechtsboven laat zien; `vliegers` = sleuteltjes die nog onderweg zijn; `eind` = het eindscherm.

@@ -15,6 +15,7 @@ import { bewaarLesUitkomst, type LesUitkomst } from "@/lib/data/lesuitkomsten";
 import { beloonInEenKeer } from "@/lib/data/sleutels";
 import { beloonSter, haalSterren } from "@/lib/data/sterren";
 import { bewaarResultaat } from "@/lib/data/lesresultaten";
+import { bewaarTussenstand, goedSinds } from "@/lib/data/lestussenstanden";
 
 export async function bewaarUitkomst(invoer: { lesId: string; vraagId: string; uitkomst: LesUitkomst; denkfouten: string[]; pogingen: number }): Promise<{ ok: boolean; nieuweSleutel?: boolean }> {
   try {
@@ -71,6 +72,29 @@ export async function bewaarLesResultaat(invoer: { lesId: string; percentage: nu
     if (!voorbeeldMagBewaren(kop.get("referer"), kind.roepnaam, kop.get("next-router-state-tree"))) return { ok: false };
     const r = bewaarResultaat(kind.id, invoer.lesId, Number(invoer.percentage), Array.isArray(invoer.denkfouten) ? invoer.denkfouten.map(String) : []);
     return { ok: true, nieuweHerhalingsster: r.nieuweHerhalingsster };
+  } catch {
+    return { ok: false };
+  }
+}
+
+/**
+ * Tijdens de les (28 nov 2026): hoe ver het kind is, voor het rondje op het onderwerpenscherm. `duurMs` = hoe lang deze
+ * speelbeurt al duurt; de kleur volgt uit de antwoorden van deze beurt. Zelfde regels als hierboven.
+ */
+export async function bewaarLesTussenstand(invoer: { lesId: string; af: number; duurMs: number }): Promise<{ ok: boolean }> {
+  try {
+    if (!/^[a-z0-9-]{1,80}$/.test(String(invoer.lesId))) return { ok: false };
+    const af = Number(invoer.af);
+    const duur = Number(invoer.duurMs);
+    if (!(af > 0 && af <= 100) || !(duur >= 0 && duur < 24 * 3600 * 1000)) return { ok: false };
+    const kind = await huidigKind();
+    if (!kind) return { ok: false };
+    const kop = await headers();
+    if (!voorbeeldMagBewaren(kop.get("referer"), kind.roepnaam, kop.get("next-router-state-tree"))) return { ok: false };
+    const goed = goedSinds(kind.id, invoer.lesId, new Date(Date.now() - duur - 2000).toISOString());
+    if (goed === null) return { ok: false };
+    bewaarTussenstand(kind.id, invoer.lesId, af, goed);
+    return { ok: true };
   } catch {
     return { ok: false };
   }

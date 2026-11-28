@@ -574,6 +574,16 @@ function maakTabellen(d: DatabaseSync) {
       kleur, het percentage goed, de denkfouten (lijst, als tekst) en de datum, zodat het ouderdashboard dit later kan
       laten zien. Geen andere gegevens. Een herhaling overschrijft alleen als het percentage gelijk of hoger is.
     */
+    /* Hoe ver een kind in een les is gekomen (Sara, 28 nov 2026): het rondje op het onderwerpenscherm is daar tot gevuld. */
+    create table if not exists les_tussenstanden (
+      kind_id    text not null references kinderen (id) on delete cascade,
+      les_id     text not null,
+      af         integer not null check (af between 0 and 100),
+      percentage integer not null check (percentage between 0 and 100),
+      datum      text not null,
+      primary key (kind_id, les_id)
+    );
+
     create table if not exists les_resultaten (
       kind_id    text not null references kinderen (id) on delete cascade,
       les_id     text not null,
