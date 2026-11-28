@@ -530,29 +530,35 @@ const gouden: Lesdraaiboek = {
     await l.wacht(600);
     B.st(l).naamKeer = 1;
     B.st(l).naamVraag = 0;
-    await B.zegDoor(l, NAAM_GROET, ZIN.begin.join(" "));
+    /* Verdergaan (15.53): "welkom terug" in plaats van de groet. Opnieuw doen: eerst zeggen dat het kind de les al deed. */
+    if (l.hervat) await B.zegDoor(l, l.openingsZin ?? NAAM_GROET);
+    else await B.zegDoor(l, ...(l.openingsZin ? [l.openingsZin] : []), NAAM_GROET, ZIN.begin.join(" "));
 
     /* Stap 5. Van welk fruit zie je er N? (2 rondes) */
-    await soortVraag(l, SOORTVRAGEN[0], true);
-    await soortVraag(l, SOORTVRAGEN[1], false);
+    if (!B.klaarAl(l, SOORTVRAGEN[0].id)) await soortVraag(l, SOORTVRAGEN[0], true);
+    if (!B.klaarAl(l, SOORTVRAGEN[1].id)) await soortVraag(l, SOORTVRAGEN[1], false);
     /* Stap 6. 2 soorten samen. */
-    await tweeVraag(l);
+    if (!B.klaarAl(l, TWEE.id)) await tweeVraag(l);
 
     /* Stap 7. "Nu andersom" (terugverwijzing). Het rooster wordt leeg. */
-    void l.zeg().catch(() => {});
-    toon(l, MAAK.rooster);
-    speelLesgeluid("verschijn");
-    await B.zegDoor(l, ...ZIN.andersom);
-    /* Stap 8. Zelf maken. */
-    await maakRonde(l);
+    if (!B.klaarAl(l, MAAK.id)) {
+      void l.zeg().catch(() => {});
+      toon(l, MAAK.rooster);
+      speelLesgeluid("verschijn");
+      await B.zegDoor(l, ...ZIN.andersom);
+      /* Stap 8. Zelf maken. */
+      await maakRonde(l);
+    }
 
     /* Stap 9. Het lijstje (de laatste opdracht). */
-    B.st(l).laatste = true;
-    void l.zeg().catch(() => {});
-    toon(l, LIJST.rooster, { lijst: lijstRegels(), verf: null, verfKiezen: true });
-    speelLesgeluid("verschijn");
-    await B.zegDoor(l, ZIN.lijstOvergang());
-    await lijstRonde(l);
+    if (!B.klaarAl(l, LIJST.id)) {
+      B.st(l).laatste = true;
+      void l.zeg().catch(() => {});
+      toon(l, LIJST.rooster, { lijst: lijstRegels(), verf: null, verfKiezen: true });
+      speelLesgeluid("verschijn");
+      await B.zegDoor(l, ZIN.lijstOvergang());
+      await lijstRonde(l);
+    }
 
     /* Stap 10. Einde: het nieuwe eindscherm (proef, Sara 24 nov 2026; EINDSCHERM-ONTWERP.md). Was: slotzin, de kaart met
        "Tik op de kaart." en een eindzin (WEGGEHAALD.md). */

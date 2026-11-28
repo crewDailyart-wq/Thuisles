@@ -12,6 +12,7 @@
  * krijgt nadruk. De stem leest de zin zonder die tekens.
  */
 
+import type { Hervatstand, HervatUitkomst } from "@/lib/hervatstand";
 import type { ComponentType } from "react";
 
 /** Iets wat een eigen speelvlak meldt: een tik, een sleep, een gekozen getal. */
@@ -86,6 +87,15 @@ export interface Lesgids {
    * nooit terug (een lagere waarde wordt genegeerd). `null` haalt de balk weg.
    */
   voortgang?(fractie: number | null): void;
+  /**
+   * Verdergaan waar je was (BOUWREGELS 15.53; alleen lessen met `eindscherm`). `hervat` = de stand van een speelbeurt die niet
+   * af is (anders afwezig). `stap` na elke afgeronde vraag (in `noteer`, na `voortgang`). `onthoud` = een eigen keuze van de les
+   * bewaren die nodig is om dezelfde stap terug te vinden. `openingsZin` = wat Bliepo eerst zegt bij verdergaan of opnieuw doen.
+   */
+  hervat?: Hervatstand;
+  stap?(vraag: string, uit: HervatUitkomst, denkfouten: readonly string[]): void;
+  onthoud?(sleutel: string, waarde: string | number): void;
+  openingsZin?: string;
   /**
    * Proef eindscherm (Sara, 24 november 2026; EINDSCHERM-ONTWERP.md): er komt 1 sleutel bij (antwoord in 1 keer goed,
    * BOUWREGELS 15.52). Het lesscherm laat een sleuteltje naar de teller rechtsboven vliegen en zet de teller +1. Alleen in

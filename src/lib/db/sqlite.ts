@@ -723,6 +723,8 @@ function werkTabellenBij(d: DatabaseSync) {
   voegKolomToe(d, "domeinen", "actief", "integer not null default 1");
   voegKolomToe(d, "subdomeinen", "omschrijving", "text");
   voegKolomToe(d, "subdomeinen", "icoon", "text");
+  /* Verdergaan waar je was (28 nov 2026): de al gemaakte vragen van de lopende speelbeurt (JSON), leeg na het afmaken. */
+  voegKolomToe(d, "les_tussenstanden", "stand", "text");
   /*
     Welke vorm van uitleg-animatie bij dit leerdoel hoort. Leeg betekent: volg
     gewoon de groep van het kind.

@@ -40,3 +40,16 @@ export function eindzin(percentage: number): string {
 
 /** De zin die Bliepo zegt als de kaart in beeld komt (voor alle lessen gelijk). */
 export const EIND_TIK_KAART = "Tik op de kaart om hem af te vinken.";
+
+/**
+ * Wat Bliepo eerst zegt als het kind terugkomt (BOUWREGELS 15.53; zoals Synthesis: de tutor noemt dat het de les al eens deed).
+ * verder = halverwege gestopt; opnieuw = al eens afgemaakt, nog niet de beste kleur; perfect = al eens met de beste kleur.
+ */
+export const TERUGZINNEN = {
+  verder: ["Welkom terug! We gaan verder waar je was.", "Fijn dat je er weer bent. We gaan verder waar je was.", "Daar ben je weer! We maken de les samen af."],
+  /* Zonder groet: de les groet daarna zelf. */
+  opnieuw: ["Deze les deed je al eens. We beginnen weer bij het begin.", "Je doet deze les nog 1 keer. We beginnen bij het begin.", "Deze les ken je al. We doen hem nog 1 keer."],
+  perfect: ["Deze les ging al heel goed. Leuk dat je hem nog 1 keer doet!", "Dit deed je al heel goed. We doen het nog 1 keer.", "De vorige keer ging dit heel goed. Daar gaan we weer!"],
+} as const;
+
+export const terugzin = (soort: keyof typeof TERUGZINNEN): string => TERUGZINNEN[soort][Math.floor(Math.random() * TERUGZINNEN[soort].length)];

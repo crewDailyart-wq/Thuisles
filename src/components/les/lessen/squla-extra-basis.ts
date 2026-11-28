@@ -50,7 +50,7 @@ export function maakBasis(LES_ID: string) {
   const STAAT = new WeakMap<Lesgids, Staat>();
   const st = (l: Lesgids): Staat => {
     let s = STAAT.get(l);
-    if (!s) STAAT.set(l, (s = { totaal: 0, vorige: new Map(), zinNr: 0, robotNr: -99, naamVraag: -99, naamKeer: 0, namen: 0, opRij: 0, momenten: new Set(), haak: 0, goed: 0, fout: 0, vraag: 0, laatste: false, eerste: new Map(), vraagFouten: new Map(), alleDenkfouten: [], log: [] }));
+    if (!s) STAAT.set(l, (s = { totaal: 0, vorige: new Map(), zinNr: 0, robotNr: -99, naamVraag: -99, naamKeer: 0, namen: 0, opRij: 0, momenten: new Set(), haak: 0, goed: 0, fout: 0, vraag: 0, laatste: false, eerste: new Map(), vraagFouten: new Map(), alleDenkfouten: [...(l.hervat?.denkfouten ?? [])], log: [] }));
     return s;
   };
 
@@ -98,6 +98,8 @@ export function maakBasis(LES_ID: string) {
     const fouten = s.vraagFouten.get(vraag) ?? [];
     s.vraagFouten.delete(vraag);
     s.alleDenkfouten.push(...fouten);
+    /* Verdergaan waar je was (15.53): na elke vraag onthouden waar het kind is. */
+    l.stap?.(vraag, uit, fouten);
     if (typeof window === "undefined") return uit;
     const naam = { goed: "goed in één keer", naFout: "goed na een fout", samen: "samen gedaan" } as const;
     /* Een sleutel per vraag is maar 1 keer te verdienen, ook bij opnieuw spelen (Sara, 25 nov 2026, 15.52): de server weet of
@@ -342,7 +344,20 @@ export function maakBasis(LES_ID: string) {
     if (afscheid) await zeg(l, afscheid);
   }
 
-  return { st, zeg, log, haak, legDenkfoutVast, noteer, veelFouten, kies, lof, bevestig, zegDoor, zegOpdracht, vraagMetKnoppen, foutZinnen, goedMoment, foutMoment, handKlok, keuzeVraag, einde };
+  /**
+   * Verdergaan waar je was (15.53): is deze vraag al gemaakt vóór het kind wegging, dan telt het antwoord van toen en slaat de
+   * les de vraag (met zijn overgangszin) over.
+   */
+  function klaarAl(l: Lesgids, vraag: string): boolean {
+    const al = l.hervat?.antwoorden.find((a) => a[0] === vraag)?.[1];
+    if (!al) return false;
+    const s = st(l);
+    if (!s.eerste.has(vraag)) s.eerste.set(vraag, al);
+    if (s.totaal > 0) l.voortgang?.(Math.min(1, s.eerste.size / s.totaal));
+    return true;
+  }
+
+  return { klaarAl, st, zeg, log, haak, legDenkfoutVast, noteer, veelFouten, kies, lof, bevestig, zegDoor, zegOpdracht, vraagMetKnoppen, foutZinnen, goedMoment, foutMoment, handKlok, keuzeVraag, einde };
 }
 
 export type Basis = ReturnType<typeof maakBasis>;

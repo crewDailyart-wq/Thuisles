@@ -45,7 +45,10 @@ import "@/components/oefenen/opdracht-nieuw.css";
 import { Voortgangsbalk } from "./Voortgangsbalk";
 import { Eindscherm, Sleutelteller, VliegendeSleutel, leesEindversie, type Eindversie } from "./Eindscherm";
 import es from "./Eindscherm.module.css";
-import { bewaarLesAfgemaakt, bewaarLesResultaat, bewaarLesTussenstand, haalSterrenTotaal } from "@/app/lesuitkomstacties";
+import { bewaarLesAfgemaakt, bewaarLesResultaat, bewaarLesStap, haalLesStart, haalSterrenTotaal } from "@/app/lesuitkomstacties";
+import type { Hervatstand, HervatUitkomst } from "@/lib/hervatstand";
+import { BESTE_VANAF } from "@/lib/les-kleuren";
+import { terugzin } from "./eindzinnen";
 
 /*
   Het ontwerp van de lessen (23 oktober 2026, opdracht eigenaar): "nieuw" =
@@ -545,19 +548,6 @@ function Lesscherm({
   const [pauze, setPauze] = useState(false);
   /** Voortgangsbalk (gouden lessen, 15.54): 0 tot 1, of null = geen balk. Gaat nooit terug. */
   const [voortgang, setVoortgang] = useState<number | null>(null);
-  /* De tussenstand voor het rondje op het onderwerpenscherm (28 nov 2026): bij elke nieuwe stap van de voortgangsbalk. */
-  const beurtStartRef = useRef(0);
-  useEffect(() => {
-    beurtStartRef.current = Date.now();
-  }, [les.id]);
-  useEffect(() => {
-    if (!les.eindscherm || !voortgang || snelRef.current) return;
-    /* Even wachten: het antwoord van deze vraag wordt tegelijk bewaard en telt mee voor de kleur. */
-    const t = setTimeout(() => {
-      void bewaarLesTussenstand({ lesId: les.id, af: Math.round(voortgang * 100), duurMs: Date.now() - beurtStartRef.current }).catch(() => {});
-    }, 800);
-    return () => clearTimeout(t);
-  }, [voortgang, les.id, les.eindscherm]);
   /*
     Proef eindscherm en sleutelteller (Sara, 24 november 2026; EINDSCHERM-ONTWERP.md): alleen in lessen met `eindscherm`.
     `sleutels` = wat de teller rechtsboven laat zien; `vliegers` = sleuteltjes die nog onderweg zijn; `eind` = het eindscherm.
@@ -700,6 +690,13 @@ function Lesscherm({
     let pijlVers = false;
     /* Proef eindscherm: hoeveel sleutels er in deze speelbeurt zijn verdiend (ook als het laatste sleuteltje nog vliegt). */
     let sleutelNr = 0;
+    /* Verdergaan waar je was (15.53): de vragen van deze speelbeurt (ook die van vóór het weggaan) en de voortgang. */
+    const gemaakt: Hervatstand = { antwoorden: [], denkfouten: [], extra: {} };
+    let af = 0;
+    const bewaarStapje = () => {
+      if (snelRef.current || !gemaakt.antwoorden.length) return;
+      void bewaarLesStap({ lesId: les.id, af: Math.round(af * 100), stand: gemaakt }).catch(() => {});
+    };
     /* "Jouw instellingen" bewaart onderweg, dus steeds opnieuw gelezen. */
     const vk = () => leesVoorkeuren();
     const pas = (f: (b: Beeld) => Beeld) => {
@@ -929,7 +926,28 @@ function Lesscherm({
     const gids: Lesgids = {
       lesId: les.id,
       naam,
-      ...(les.pijlZoalsSynthesis ? { voortgang: (f: number | null) => setVoortgang((v) => (f === null ? null : Math.max(v ?? 0, Math.max(0, Math.min(1, f))))) } : {}),
+      ...(les.pijlZoalsSynthesis
+        ? {
+            voortgang: (f: number | null) => {
+              if (f !== null) af = Math.max(af, Math.max(0, Math.min(1, f)));
+              setVoortgang((v) => (f === null ? null : Math.max(v ?? 0, Math.max(0, Math.min(1, f)))));
+            },
+          }
+        : {}),
+      ...(les.eindscherm
+        ? {
+            stap: (vraag: string, uit: HervatUitkomst, denkfouten: readonly string[]) => {
+              if (!levend || gemaakt.antwoorden.some((a) => a[0] === vraag)) return;
+              gemaakt.antwoorden.push([vraag, uit]);
+              gemaakt.denkfouten.push(...denkfouten);
+              bewaarStapje();
+            },
+            onthoud: (sleutel: string, waarde: string | number) => {
+              gemaakt.extra[sleutel] = waarde;
+              bewaarStapje();
+            },
+          }
+        : {}),
       /* Proef eindscherm (24 nov 2026): de sleutelteller en het eindscherm, alleen in lessen met `eindscherm`. */
       ...(les.eindscherm
         ? {
@@ -1277,7 +1295,24 @@ function Lesscherm({
     };
 
     laadVoorwerpen(les.voorwerpen)
-      .then(() => (levend ? les.speel(gids) : undefined))
+      .then(async () => {
+        if (!levend) return;
+        if (les.eindscherm && !snelRef.current) {
+          const start = await haalLesStart(les.id).catch(() => null);
+          if (!levend) return;
+          if (start?.stand) {
+            gids.hervat = start.stand;
+            gids.openingsZin = terugzin("verder");
+            gemaakt.antwoorden.push(...start.stand.antwoorden);
+            gemaakt.denkfouten.push(...start.stand.denkfouten);
+            Object.assign(gemaakt.extra, start.stand.extra);
+            /* De sleutels die al verdiend waren in deze beurt staan weer op de teller (een terugkomende vraag gaf er geen). */
+            sleutelNr = start.stand.antwoorden.filter((a) => a[1] === "goed" && !a[0].endsWith("-terug")).length;
+            setSleutels(sleutelNr);
+          } else if (start && start.eerder !== null) gids.openingsZin = terugzin(start.eerder >= BESTE_VANAF ? "perfect" : "opnieuw");
+        }
+        return les.speel(gids);
+      })
       .then(() => {
         if (!levend) return;
         pas((b) => ({ ...b, klaar: true }));

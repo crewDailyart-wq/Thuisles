@@ -600,7 +600,21 @@ async function speel(c, id) {
         }
       }
       if (!z) continue;
+      /* STOPNA=n (verdergaan, 28 nov 2026): stop na n nieuw beantwoorde vragen, zoals een kind dat weggaat. UITLOG=1 meldt welke. */
+      const gemeld = async () => process.env.UITLOG && console.log(`ZINNEN ${id} ${JSON.stringify([...zinnen].slice(0, 3))}`) === undefined && console.log(`UITKOMSTEN ${id} ${await ev(`JSON.stringify((window.__uitkomsten ?? []).map((u) => u.vraag))`)}`);
+      if (process.env.STOPNA && Number(await ev(`(window.__uitkomsten ?? []).length`)) >= Number(process.env.STOPNA)) {
+        await wacht(2500);
+        await gemeld();
+        einde = true;
+        break;
+      }
       if (z.klaar) {
+        /* TIKKAART=1: aan het eind echt op de kaart tikken, zodat het resultaat bewaard wordt. */
+        if (process.env.TIKKAART) {
+          for (let i = 0; i < 80 && !(await ev(`(() => { const k = document.querySelector("[data-eind-kaart]"); if (!k || k.disabled) return false; k.click(); return true; })()`)); i++) await wacht(250);
+          await wacht(3500);
+        }
+        await gemeld();
         einde = true;
         break;
       }
