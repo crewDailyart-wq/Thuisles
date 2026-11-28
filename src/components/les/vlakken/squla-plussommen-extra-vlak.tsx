@@ -18,7 +18,7 @@ export const KLEINER_TEGELS = 0.86;
 export function KleinTegelVlak(props: HoloTegelProps & Vlakbasis) {
   return (
     <div style={{ position: "absolute", inset: 0, transform: `scale(${KLEINER_TEGELS})`, transformOrigin: "0 50%" }} data-tegels-extra="">
-      <HoloTegelvlak {...props} handPlaatje tegelPlaatje />
+      <HoloTegelvlak {...props} handPlaatje tegelPlaatje kleurWissel />
     </div>
   );
 }

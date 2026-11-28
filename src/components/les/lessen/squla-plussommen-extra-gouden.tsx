@@ -315,7 +315,7 @@ const gouden: Lesdraaiboek = {
   kaarttegels: [3, 1],
   eindscherm: true,
   eindLeerzin: "Je kunt nu met tegels optellen tot 10.",
-  eindPlaatje: "/voorwerpen/tegels/tegel-7.png",
+  eindPlaatje: "/voorwerpen/tegels/tegel-1.png",
   eindOnderwerp: "Optellen met tegels",
   eindKaartZin: EIND_TIK_KAART,
   async speel(l) {

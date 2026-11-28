@@ -26,7 +26,7 @@
  * WIJZIGINGEN-ZINNEN-PLUSSOMMEN.md.
  *
  * Leesbare versie: FOUTTABEL-squla-plus-bakkerij-1-gouden-extra.md (maak hem opnieuw met
- * `npx tsx scripts/fouttabel-plussommen-extra-gouden.ts`). {5:tegel} = een getal in de kleur van zijn tegel (keuring 20 nov: een kaal {5} werd wit in de indeling "synthesis"; de naam "tegel" geeft de tegelkleur, Lesscherm getalKleur).
+ * `npx tsx scripts/fouttabel-plussommen-extra-gouden.ts`). {5:tegel} = een getal in de kleur van zijn tegel (keuring 20 nov: een kaal {5} werd wit in de indeling "synthesis"; de naam "tegelx" geeft de gewisselde tegelkleur van deze les (28 nov 2026, TEGELWISSEL in tegels.ts), Lesscherm getalKleur).
  */
 
 import { OND_FOUT, type Fout, type Rijtje } from "./squla-extra-zuiver";
@@ -38,8 +38,8 @@ export { NAAM_GROET } from "./squla-klok-gouden-zinnen";
 const rij = (zinnen: string[], robot: number[] = []): Rijtje => ({ zinnen, robot });
 
 /** "{3} + {4} = {7}" met elk getal in de kleur van zijn tegel. */
-export const som = (a: number, b: number, t: number) => `{${a}:tegel} + {${b}:tegel} = {${t}:tegel}`;
-export const g = (n: number) => `{${n}:tegel}`;
+export const som = (a: number, b: number, t: number) => `{${a}:tegelx} + {${b}:tegelx} = {${t}:tegelx}`;
+export const g = (n: number) => `{${n}:tegelx}`;
 
 /* ---------- vaste zinnen van het verloop ---------- */
 

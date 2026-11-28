@@ -21,7 +21,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import type { Vlakbasis } from "../soort";
-import { getalkleur } from "../tegels";
+import { wisselKleur } from "../tegels";
 import s from "./squla-splitsen-extra.module.css";
 import { HulphandDom } from "../holo/hulphand-dom";
 
@@ -70,7 +70,7 @@ export function stippen(n: number, r: number): { x: number; y: number }[] {
   return uit;
 }
 
-const kleurVan = (n: number) => (n === 0 ? "#9aa3c2" : getalkleur(n));
+const kleurVan = (n: number) => (n === 0 ? "#9aa3c2" : wisselKleur(n));
 
 function Cirkel({ x, y, r, n, tel, ring, naam }: { x: number; y: number; r: number; n: number; tel?: number; ring: boolean; naam: string }) {
   const kleur = kleurVan(n);

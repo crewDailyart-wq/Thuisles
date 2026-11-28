@@ -22,6 +22,15 @@ export const TEGELKLEUR: Record<number, string> = {
   10: "#ef5d8a",
 };
 
+/**
+ * Gewisselde kleuren voor de gouden lessen (Sara, 28 november 2026: niet precies de kleurverdeling van Synthesis overnemen).
+ * De kleuren zelf zijn dezelfde, alleen verdeeld over andere getallen: getal n krijgt de kleur (en het plaatje) van
+ * TEGELWISSEL[n]. Zo is 1 nu blauw en 7 rood. De 10 blijft. De oude lessen houden TEGELKLEUR zoals het was.
+ */
+export const TEGELWISSEL: Record<number, number> = { 1: 7, 7: 1, 2: 5, 5: 2, 3: 8, 8: 3, 4: 6, 6: 9, 9: 4 };
+export const wisselNummer = (n: number): number => TEGELWISSEL[n] ?? n;
+export const wisselKleur = (n: number): string => getalkleur(wisselNummer(n));
+
 /** Kleur van een getal in de tekst en in de som; boven de 10 gewoon wit. */
 export function getalkleur(n: number): string {
   return TEGELKLEUR[n] ?? "#ffffff";

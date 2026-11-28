@@ -26,7 +26,7 @@ import { LosPraatknop } from "@/components/gesprek/Gesprek";
 import { Bliepo } from "@/components/avontuur/Bliepo";
 import { leesVoorkeuren, metUitspraak, type Lesvoorkeuren } from "./voorkeuren";
 import { useInBeeld } from "@/components/oefenen/toetsenbordruimte";
-import { getalkleur, hoogte, stapel, TEGELKLEUR, vorm, type Hokje } from "./tegels";
+import { getalkleur, wisselKleur, hoogte, stapel, TEGELKLEUR, vorm, type Hokje } from "./tegels";
 import type { Lesdraaiboek, Lesgids, Somdeel, Vlak, Vlakgebeurtenis, Kiesinstel } from "./soort";
 import { magStaandGroeien } from "./soort";
 import s from "./Lesscherm.module.css";
@@ -184,7 +184,8 @@ export function kleurGetallen(zin: string): string {
     })
     .join("");
 }
-const getalKleur = (n: string, naam?: string) => (naam && KLEURNAAM[naam]) || getalkleur(Number(n));
+/* "tegelx" = de gewisselde tegelkleur van de gouden les met tegels (TEGELWISSEL, 28 nov 2026). */
+const getalKleur = (n: string, naam?: string) => (naam === "tegelx" ? wisselKleur(Number(n)) : (naam && KLEURNAAM[naam]) || getalkleur(Number(n)));
 
 /*
   Gekleurde woorden in de zin van Bliepo (28 oktober 2026, zoals Synthesis): [[b:eerst]] blauw,

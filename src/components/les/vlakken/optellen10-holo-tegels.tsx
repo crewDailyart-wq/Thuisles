@@ -35,7 +35,7 @@
 
 import { useEffect, useMemo, useRef, useState, type CSSProperties } from "react";
 import type { Somdeel, Vlakbasis, Vlakgebeurtenis } from "../soort";
-import { getalkleur, hoogte, stapel, TEGELKLEUR, vorm, type Hokje } from "../tegels";
+import { getalkleur, hoogte, stapel, TEGELKLEUR, vorm, wisselKleur, wisselNummer, type Hokje } from "../tegels";
 import { holoBasis, TX, VLAK_B, VLAK_H, type PhaserModule } from "../holo/basis";
 import { HOLO_CANVAS, useHoloMotor } from "../holo/motor";
 import s from "./optellen10-holo.module.css";
@@ -123,6 +123,8 @@ export type HoloTegelProps = {
    * hokje staan (reserve).
    */
   tegelPlaatje?: boolean;
+  /** Opt-in (gouden extra Plussommen, 28 nov 2026): de kleuren zijn anders over de getallen verdeeld (tegels.ts, TEGELWISSEL). */
+  kleurWissel?: boolean;
 };
 
 /* ---------- de Magnific-hokjes (opt-in) ---------- */
@@ -254,7 +256,7 @@ interface TegelScene {
   verbind(melder: (g: Vlakgebeurtenis) => void, aangeraakt: () => void): void;
 }
 
-function maakTegelScene(Phaser: PhaserModule, rustig: boolean, plaatjes: { w: Tegelplaatjes | null } = { w: null }) {
+function maakTegelScene(Phaser: PhaserModule, rustig: boolean, plaatjes: { w: Tegelplaatjes | null } = { w: null }, wissel = false) {
   const Basis = holoBasis(Phaser, rustig);
   type Img = import("phaser").GameObjects.Image;
   type Box = import("phaser").GameObjects.Container;
@@ -291,11 +293,12 @@ function maakTegelScene(Phaser: PhaserModule, rustig: boolean, plaatjes: { w: Te
 
     maak() {
       for (let n = 1; n <= 10; n++) {
-        const kl = hex(n);
+        const kn = wissel ? wisselNummer(n) : n;
+        const kl = hex(kn);
         const kleur = Phaser.Display.Color.HexStringToColor(kl).color;
         /* één hokje (voor de torens) */
         /* Opt-in: het Magnific-hokje (alleen voor 1 t/m 9; de 10 en bij niet laden blijft het getekende hokje). */
-        const pl = plaatjes.w?.[n];
+        const pl = n <= 9 ? plaatjes.w?.[kn] : undefined;
         const tekenEen = (c: CanvasRenderingContext2D, x: number, y: number) => (pl ? tekenHokjePlaatje(c, x, y, CEL, pl) : tekenHokje(c, x, y, CEL, kl));
         this.canvasPlaatje(`hk-${n}`, CEL, CEL, (c) => tekenEen(c, 0, 0));
         this.bak(`hk-${n}`, `hkg-${n}`, kleur);
@@ -770,13 +773,14 @@ function maakTegelScene(Phaser: PhaserModule, rustig: boolean, plaatjes: { w: Te
 
 /* ---------- de som, scherp in HTML ---------- */
 
-function Som({ delen, aan, groot }: { delen: Somdeel[]; aan?: number | null; groot: boolean }) {
+function Som({ delen, aan, groot, wissel = false }: { delen: Somdeel[]; aan?: number | null; groot: boolean; wissel?: boolean }) {
+  const kleurVoor = wissel ? wisselKleur : getalkleur;
   const maat = groot ? 84 : 58;
   return (
     <div className={s.som} style={{ top: groot ? 270 : 26, height: groot ? 120 : 84, gap: groot ? 40 : 28, fontSize: maat }} aria-hidden>
       {delen.map((d, i) =>
         d.t === "getal" ? (
-          <span key={i} style={{ color: getalkleur(d.n) }}>
+          <span key={i} style={{ color: kleurVoor(d.n) }}>
             {d.n}
           </span>
         ) : d.t === "teken" ? (
@@ -791,7 +795,7 @@ function Som({ delen, aan, groot }: { delen: Somdeel[]; aan?: number | null; gro
               width: groot ? 124 : 92,
               height: groot ? 116 : 80,
               fontSize: maat * 0.92,
-              color: d.waarde && /^\d+$/.test(d.waarde) ? getalkleur(Number(d.waarde)) : undefined,
+              color: d.waarde && /^\d+$/.test(d.waarde) ? kleurVoor(Number(d.waarde)) : undefined,
             }}
           >
             {d.waarde ?? ""}
@@ -855,12 +859,13 @@ export function HoloTegelvlak({
   hand = false,
   handPlaatje = false,
   tegelPlaatje = false,
+  kleurWissel = false,
   meld,
   schaal,
   metSom,
 }: HoloTegelProps & Vlakbasis) {
   const plaatjes = useRef<{ w: Tegelplaatjes | null }>({ w: null });
-  const { plek, scene } = useHoloMotor<TegelScene>(schaal, (P, r) => maakTegelScene(P, r, plaatjes.current), {
+  const { plek, scene } = useHoloMotor<TegelScene>(schaal, (P, r) => maakTegelScene(P, r, plaatjes.current, kleurWissel), {
     invoer: true,
     voor: tegelPlaatje
       ? laadTegelplaatjes().then((w) => {
@@ -940,7 +945,7 @@ export function HoloTegelvlak({
   return (
     <div className={s.vlak}>
       <div ref={plek} style={{ ...HOLO_CANVAS, touchAction: "none" }} aria-hidden />
-      {som && <Som delen={som} aan={somAan} groot={!raster} />}
+      {som && <Som wissel={kleurWissel} delen={som} aan={somAan} groot={!raster} />}
 
       {raster && leegKnop && (
         <button type="button" className={s.knop} data-knop="leeg" aria-label="Leegmaken" style={{ left: 14, top: onderRaster - 84 }} onClick={() => actief && meld({ soort: "leeg" })}>
