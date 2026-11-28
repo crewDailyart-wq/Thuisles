@@ -129,6 +129,8 @@ type Staat = {
   alleDenkfouten: string[];
   /** Vragen waarvoor al een sleutel kwam (blijft staan als de proef de uitkomsten wist). */
   sleutelVragen: Set<string>;
+  /** Verdergaan (15.53): tijdens de proef worden de vragen pas onthouden als de proef gehaald is (anders tellen ze niet). */
+  proef: [string, Exclude<Uitkomst, "gestopt">, string[]][] | null;
   log: unknown[];
   robotReactie: boolean;
   nakijk: number;
@@ -143,7 +145,7 @@ const st = (l: Lesgids): Staat => {
   if (!s)
     STAAT.set(
       l,
-      (s = { vorige: new Map(), recent: new Map(), zinNr: 0, robotNr: -99, namen: 0, naamKeer: 0, naamVraag: -99, opRij: 0, momenten: new Set(), vraag: 0, haak: 0, laatste: false, eerste: new Map(), vraagFouten: new Map(), alleDenkfouten: [], sleutelVragen: new Set(), log: [], robotReactie: false, nakijk: 0, terug: 0, zetK: 0, golf: 0, ordenUitgelegd: false }),
+      (s = { vorige: new Map(), recent: new Map(), zinNr: 0, robotNr: -99, namen: 0, naamKeer: 0, naamVraag: -99, opRij: 0, momenten: new Set(), vraag: 0, haak: 0, laatste: false, eerste: new Map(), vraagFouten: new Map(), alleDenkfouten: [...(l.hervat?.denkfouten ?? [])], sleutelVragen: new Set(), proef: null, log: [], robotReactie: false, nakijk: 0, terug: 0, zetK: 0, golf: 0, ordenUitgelegd: false }),
     );
   return s;
 };
@@ -191,6 +193,19 @@ function legDenkfoutVast(l: Lesgids, d: { vraag: string; antwoord: string; denkf
    tellen niet mee (Math.min). Na elke afgeronde vraag een stukje verder; nooit terug (het lesscherm negeert een lagere waarde). */
 const balkTotaal = (): number => VRAGEN.length;
 
+/**
+ * Verdergaan waar je was (15.53): is deze vraag al gemaakt vóór het kind wegging, dan telt het antwoord van toen en slaat de
+ * les de vraag (met zijn overgangszin) over. Zoals `klaarAl` in squla-extra-basis.
+ */
+function klaarAl(l: Lesgids, vraag: string): boolean {
+  const al = l.hervat?.antwoorden.find((a) => a[0] === vraag)?.[1];
+  if (!al) return false;
+  const s = st(l);
+  if (!s.eerste.has(vraag)) s.eerste.set(vraag, al);
+  l.voortgang?.(Math.min(1, s.eerste.size / balkTotaal()));
+  return true;
+}
+
 function noteer(l: Lesgids, vraag: string, uit: Uitkomst): Uitkomst {
   const s = st(l);
   /* "gestopt" (de proef stopt na 2 fouten) is geen uitkomst van de vraag: die vraag komt later opnieuw. */
@@ -202,6 +217,9 @@ function noteer(l: Lesgids, vraag: string, uit: Uitkomst): Uitkomst {
   s.vraagFouten.delete(vraag);
   /* Voor het eindscherm: alle denkfouten van deze speelbeurt (bewaard bij de kaart). */
   s.alleDenkfouten.push(...fouten);
+  /* Verdergaan waar je was (15.53): na elke vraag onthouden waar het kind is. */
+  if (s.proef) s.proef.push([vraag, uit, fouten]);
+  else l.stap?.(vraag, uit, fouten);
   if (typeof window === "undefined") return uit;
   const naam = { goed: "goed in één keer", naFout: "goed na een fout", samen: "samen gedaan" } as const;
   try {
@@ -972,13 +990,29 @@ const gouden: Lesdraaiboek = {
 
     /* Stap 3. Groet en startvraag zijn 1 stuk (Sara, 10 november 2026): Ja = proef van 2 opgaven, 2 fouten = alsnog de
        uitleg; Nee = de uitleg. Zonder eerdere tik zegt Bliepo het hele stuk bij de eerste tik (lib/stem.ts heelUitpraten). */
+    /* Verdergaan (15.53): Bliepo heet welkom terug; geen groet, startvraag, proef of uitleg, en verder waar het kind was. */
+    if (l.hervat) {
+      st(l).naamKeer = 1;
+      st(l).naamVraag = 0;
+      await zegDoor(l, l.openingsZin ?? NAAM_GROET);
+      for (let i = 0; i < VRAGEN.length; i++) {
+        if (klaarAl(l, VRAGEN[i].id)) continue;
+        st(l).laatste = i === VRAGEN.length - 1;
+        await speelVraag(l, VRAGEN[i], i === 0);
+      }
+      zet(l, { ...LEEG, beeld: { soort: "leeg", id: "einde" }, raketje: null, orden: null });
+      l.voortgang?.(1);
+      await eindeScherm(l);
+      return;
+    }
     log(l, "vraag", { zin: "startvraag", opties: ["Ja", "Nee"] });
     zetTestAntwoord("Nee");
     haak(l, { soort: "kies", opties: ["Ja", "Nee"], goed: "Nee", poging: 1, vraag: "start" }, true);
     const pStart = l.kies(["Ja", "Nee"], { direct: true, weetniet: false });
     /* Groet en vraag in 1 alinea (19 nov 2026, keuring F16/15.37): als 2 alinea's stond de groet soms 3 s alleen wit in beeld,
        met Ja en Nee al tikbaar en de vraag nog gedimd. Nu komen ze samen in beeld en worden ze samen uitgesproken. */
-    void zeg(l, `${NAAM_GROET} ${variant("start", ZIN.start)}`).catch(() => {});
+    /* Opnieuw doen (15.59): eerst zeggen dat het kind de les al deed. */
+    void zeg(l, `${l.openingsZin ? `${l.openingsZin} ` : ""}${NAAM_GROET} ${variant("start", ZIN.start)}`).catch(() => {});
     st(l).naamKeer = 1;
     st(l).naamVraag = 0;
     const start = await pStart;
@@ -991,11 +1025,16 @@ const gouden: Lesdraaiboek = {
     if (start === "Ja") {
       await zegDoor(l, variant("proefBegin", ZIN.proefBegin));
       let proefFouten = 0;
+      st(l).proef = [];
       for (let i = 0; i < 2 && !uitleg; i++) {
         const uit = await speelVraag(l, VRAGEN[i], i === 0, () => ++proefFouten >= 2);
         if (uit === "gestopt") uitleg = true;
       }
       log(l, "proef", { fouten: proefFouten, uitleg });
+      /* Verdergaan (15.53): alleen een gehaalde proef telt; dan pas worden de 2 vragen onthouden. */
+      const proef = st(l).proef ?? [];
+      st(l).proef = null;
+      if (!uitleg) for (const [vraag, uit, fouten] of proef) l.stap?.(vraag, uit, fouten);
       if (uitleg) {
         await zegDoor(l, ...variantStukken("proefLastig", ZIN.proefLastig));
         /* De vragen uit de proef tellen niet: alle 15 komen na de uitleg. */

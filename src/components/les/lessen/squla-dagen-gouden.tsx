@@ -136,7 +136,7 @@ const st = (l: Lesgids): Staat => {
   if (!s)
     STAAT.set(
       l,
-      (s = { vorige: new Map(), recent: new Map(), zinNr: 0, robotNr: -99, namen: 0, naamKeer: 0, naamVraag: -99, opRij: 0, momenten: new Set(), vraag: 0, haak: 0, laatste: false, eerste: new Map(), vraagFouten: new Map(), alleDenkfouten: [], log: [], robotReactie: false, nakijk: 0, nr: 0, golf: 0, kaartUitgelegd: false, kiezer: maakKiezer({ wissel: WISSEL }), m: { ...LEEG, beeld: "b0" } }),
+      (s = { vorige: new Map(), recent: new Map(), zinNr: 0, robotNr: -99, namen: 0, naamKeer: 0, naamVraag: -99, opRij: 0, momenten: new Set(), vraag: 0, haak: 0, laatste: false, eerste: new Map(), vraagFouten: new Map(), alleDenkfouten: [...(l.hervat?.denkfouten ?? [])], log: [], robotReactie: false, nakijk: 0, nr: 0, golf: 0, kaartUitgelegd: false, kiezer: maakKiezer({ wissel: WISSEL }), m: { ...LEEG, beeld: "b0" } }),
     );
   return s;
 };
@@ -201,6 +201,19 @@ function legDenkfoutVast(l: Lesgids, d: { vraag: string; antwoord: string; denkf
    tellen niet mee (Math.min). Na elke afgeronde vraag een stukje verder; nooit terug (het lesscherm negeert een lagere waarde). */
 const balkTotaal = (): number => VRAGEN.length;
 
+/**
+ * Verdergaan waar je was (15.53): is deze vraag al gemaakt vóór het kind wegging, dan telt het antwoord van toen en slaat de
+ * les de vraag (met zijn overgangszin) over. Zoals `klaarAl` in squla-extra-basis.
+ */
+function klaarAl(l: Lesgids, vraag: string): boolean {
+  const al = l.hervat?.antwoorden.find((a) => a[0] === vraag)?.[1];
+  if (!al) return false;
+  const s = st(l);
+  if (!s.eerste.has(vraag)) s.eerste.set(vraag, al);
+  l.voortgang?.(Math.min(1, s.eerste.size / balkTotaal()));
+  return true;
+}
+
 function noteer(l: Lesgids, vraag: string, uit: Uitkomst): Uitkomst {
   const s = st(l);
   const nieuweVraag = !s.eerste.has(vraag);
@@ -210,6 +223,8 @@ function noteer(l: Lesgids, vraag: string, uit: Uitkomst): Uitkomst {
   s.vraagFouten.delete(vraag);
   /* Voor het eindscherm: alle denkfouten van deze speelbeurt (bewaard bij de kaart). */
   s.alleDenkfouten.push(...fouten);
+  /* Verdergaan waar je was (15.53): na elke vraag onthouden waar het kind is. */
+  l.stap?.(vraag, uit, fouten);
   if (typeof window === "undefined") return uit;
   const naamU = { goed: "goed in één keer", naFout: "goed na een fout", samen: "samen gedaan" } as const;
   try {
@@ -822,21 +837,35 @@ const gouden: Lesdraaiboek = {
 
     /* Het begin (geen startvraag): de groet en het uitlegdeel in 1 stuk. Zonder eerdere tik zegt Bliepo het bij de
        eerste tik (lib/stem.ts heelUitpraten). */
-    await zegDoor(l, NAAM_GROET, variant(l, "start", ZIN.start));
+    /* Verdergaan (15.53): "welkom terug" in plaats van de groet. Opnieuw doen: eerst zeggen dat het kind de les al deed. */
+    if (l.hervat) await zegDoor(l, l.openingsZin ?? NAAM_GROET);
+    else await zegDoor(l, ...(l.openingsZin ? [l.openingsZin] : []), NAAM_GROET, variant(l, "start", ZIN.start));
     st(l).naamKeer = 1;
     st(l).naamVraag = 0;
 
     /* De 17 vragen van squla-dagen-van-de-week. */
-    let weekendDag = 5;
+    /* Verdergaan (15.53): de weekenddag die het kind koos (voor de 2e weekendvraag) wordt onthouden. */
+    let weekendDag = Number(l.hervat?.extra.weekendDag ?? 5);
+    let overgeslagen = false;
     for (let i = 0; i < VRAGEN.length; i++) {
+      /* Al gemaakt vóór het weggaan: overslaan, met de overgangszin. */
+      if (klaarAl(l, VRAGEN[i].id)) {
+        overgeslagen = true;
+        continue;
+      }
       st(l).laatste = i === VRAGEN.length - 1;
       /* Af en toe een overgangszin (BLIEPO-KARAKTER.md §12); meestal niet, het tempo gaat voor. */
       if (i === 10) await zegDoor(l, kies(l, OVERGANG));
       const v = VRAGEN[i].soort === "weekend2" ? weekend2(weekendDag) : VRAGEN[i];
       /* Vraag 1 gebruikt de trein van het beginscherm; de 2e weekendvraag de trein van de 1e (met het vinkje erop). */
-      const nieuw = !(i === 0 || v.soort === "weekend2");
+      /* Verdergaan: was de vorige vraag overgeslagen, dan staat zijn trein er niet; dan een nieuwe trein. */
+      const nieuw = !(i === 0 || v.soort === "weekend2") || overgeslagen;
+      overgeslagen = false;
       const r = await speelVraag(l, v, { eerste: i === 0, nieuw });
-      if (v.soort === "weekend1") weekendDag = r.dag;
+      if (v.soort === "weekend1") {
+        weekendDag = r.dag;
+        l.onthoud?.("weekendDag", r.dag);
+      }
     }
 
     /* Einde: het nieuwe eindscherm (27 nov 2026). Was: slotzin (ZIN.slot), de kaart (KaartWeektrein), een eindzin

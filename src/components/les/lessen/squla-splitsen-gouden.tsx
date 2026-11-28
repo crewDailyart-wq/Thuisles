@@ -156,6 +156,8 @@ type Staat = {
   nakijk: number;
   /** Hoeveelste opdracht van elke soort (voor de kortere opdrachtzin; kind-test punt 17). */
   soortKeer: Map<string, number>;
+  /** Verdergaan (15.53): tijdens de proef wacht de stand; pas als de proef gehaald is, tellen de 2 vragen als gemaakt. */
+  proefStap: [string, Uitkomst, string[]][] | null;
 };
 const STAAT = new WeakMap<Lesgids, Staat>();
 const st = (l: Lesgids): Staat => {
@@ -163,7 +165,7 @@ const st = (l: Lesgids): Staat => {
   if (!s)
     STAAT.set(
       l,
-      (s = { vorige: new Map(), zinNr: 0, robotNr: -99, namen: 0, naamKeer: 0, naamVraag: -99, opRij: 0, momenten: new Set(), sleepUitgelegd: false, vinkjeUitgelegd: false, goed: 0, fout: 0, vraag: 0, laatste: false, opnieuwNr: 0, eerste: new Map(), vraagFouten: new Map(), alleDenkfouten: [], gehad: new Set(), log: [], robotReactie: false, huidig: "", nakijk: 0, soortKeer: new Map() }),
+      (s = { vorige: new Map(), zinNr: 0, robotNr: -99, namen: 0, naamKeer: 0, naamVraag: -99, opRij: 0, momenten: new Set(), sleepUitgelegd: false, vinkjeUitgelegd: false, goed: 0, fout: 0, vraag: 0, laatste: false, opnieuwNr: 0, eerste: new Map(), vraagFouten: new Map(), alleDenkfouten: [...(l.hervat?.denkfouten ?? [])], gehad: new Set(), log: [], robotReactie: false, huidig: "", nakijk: 0, soortKeer: new Map(), proefStap: null }),
     );
   return s;
 };
@@ -216,6 +218,11 @@ function noteer(l: Lesgids, vraag: string, uit: Uitkomst, telt = true): Uitkomst
   const fouten = s.vraagFouten.get(vraag) ?? [];
   s.vraagFouten.delete(vraag);
   s.alleDenkfouten.push(...fouten);
+  /* Verdergaan waar je was (15.53): na elke vraag onthouden waar het kind is, ook na de uitlegvraag (komt het kind daarna
+     terug, dan gaat het verder bij vraag 1; de uitleg is al gedaan). Tijdens de proef pas als de proef gehaald is: mislukt
+     hij, dan komen de vragen van de proef in de les opnieuw. */
+  if (telt && s.proefStap) s.proefStap.push([vraag, uit, fouten]);
+  else l.stap?.(hervatId(vraag), uit, fouten);
   if (typeof window === "undefined") return uit;
   const naam = { goed: "goed in één keer", naFout: "goed na een fout", samen: "samen gedaan" } as const;
   try {
@@ -232,6 +239,22 @@ function noteer(l: Lesgids, vraag: string, uit: Uitkomst, telt = true): Uitkomst
   const w = window as unknown as { __uitkomsten?: unknown[] };
   (w.__uitkomsten ??= []).push({ les: LES_ID, vraag, uitkomst: { goed: "goed-in-een-keer", naFout: "goed-na-fout", samen: "samen-gedaan" }[uit], teltVoorBeheersing: uit === "goed", denkfouten: fouten, tijd: new Date().toISOString() });
   return uit;
+}
+
+/** De stand bewaart alleen letters, cijfers en _.:- (hervatstand.ts); andere tekens in de vraag-id worden "_". Alleen voor de stand. */
+const hervatId = (vraag: string) => vraag.replace(/[^A-Za-z0-9_.:-]/g, "_");
+
+/**
+ * Verdergaan waar je was (15.53; zoals klaarAl in squla-extra-basis.ts): is deze vraag al gemaakt vóór het kind wegging, dan
+ * telt het antwoord van toen (resultaat en voortgangsbalk) en slaat de les de vraag over. Geeft de uitkomst van toen, of null.
+ */
+function klaarAl(l: Lesgids, vraag: string): Uitkomst | null {
+  const al = l.hervat?.antwoorden.find((a) => a[0] === hervatId(vraag))?.[1];
+  if (!al) return null;
+  const s = st(l);
+  if (!s.eerste.has(vraag)) s.eerste.set(vraag, al);
+  l.voortgang?.(Math.min(1, s.eerste.size / balkTotaal()));
+  return al;
 }
 
 /** "Volgende keer gaat het nog beter" alleen als de helft of meer niet in 1 keer goed was (15.13 punt 3). */
@@ -1306,30 +1329,42 @@ const gouden: Lesdraaiboek = {
     /* Groet en startvraag zijn 1 stuk, met Ja en Nee eronder (Sara, 10 nov 2026: geen aparte begroeting). Eerst wat je in
        deze les doet, dan de vraag (BOUWREGELS 4.3, 4.4; kind-test punt 12). Zonder eerdere tik zegt Bliepo het hele stuk
        bij de eerste tik (lib/stem.ts heelUitpraten). */
-    log(l, "vraag", { zin: "startvraag", opties: ["Ja", "Nee"] });
-    zetTestAntwoord("Nee");
-    haak({ soort: "kies", opties: ["Ja", "Nee"], goed: "Nee", poging: 1, vraag: "start" });
-    const pStart = l.kies(["Ja", "Nee"], { direct: true, weetniet: false });
-    /* Groet en vraag in 1 alinea (19 nov 2026, keuring F16/15.37 bij Getallenlijn en Klok; hier dezelfde opbouw): nooit alleen
-       de groet wit in beeld terwijl Ja en Nee al tikbaar zijn en de vraag nog gedimd staat. */
-    void zeg(l, `${NAAM_GROET} ${variant("begin", ZIN.begin)} ${ZIN.start}`).catch(() => {});
-    const start = await pStart;
-    haak(null);
-    log(l, "tik", { x: start });
-    await l.wacht(DENK_MS);
+    /* Verdergaan (15.53): "welkom terug" in plaats van de groet, de startvraag, de proef en de uitleg. */
+    let start: string | null = "";
+    if (l.hervat) await zegDoor(l, l.openingsZin ?? NAAM_GROET);
+    else {
+      /* Opnieuw doen (15.59): eerst zeggen dat het kind de les al deed (nog zonder Ja en Nee), daarna de les zoals altijd. */
+      if (l.openingsZin) await zegDoor(l, l.openingsZin);
+      log(l, "vraag", { zin: "startvraag", opties: ["Ja", "Nee"] });
+      zetTestAntwoord("Nee");
+      haak({ soort: "kies", opties: ["Ja", "Nee"], goed: "Nee", poging: 1, vraag: "start" });
+      const pStart = l.kies(["Ja", "Nee"], { direct: true, weetniet: false });
+      /* Groet en vraag in 1 alinea (19 nov 2026, keuring F16/15.37 bij Getallenlijn en Klok; hier dezelfde opbouw): nooit alleen
+         de groet wit in beeld terwijl Ja en Nee al tikbaar zijn en de vraag nog gedimd staat. */
+      void zeg(l, `${NAAM_GROET} ${variant("begin", ZIN.begin)} ${ZIN.start}`).catch(() => {});
+      start = await pStart;
+      haak(null);
+      log(l, "tik", { x: start });
+      await l.wacht(DENK_MS);
+    }
 
-    let uitleg = start !== "Ja";
+    let uitleg = !l.hervat && start !== "Ja";
     let vanaf = 0;
     if (start === "Ja") {
       /* Stap 2a. De proef: vraag 1 en 2. Twee fouten samen = alsnog de uitleg (draaiboek §1 en §3 A.4). */
       await zegDoor(l, ZIN.proefBegin);
       const proef: Proef = { fouten: 0 };
+      st(l).proefStap = [];
       for (let i = 0; i < 2 && !uitleg; i++) {
         st(l).laatste = false;
         const uit = await huisVraag(l, VRAGEN[i] as HuisVraag, i === 0, proef);
         if (uit === "gestopt") uitleg = true;
       }
       log(l, "proef", { fouten: proef.fouten, uitleg });
+      /* Verdergaan (15.53): de proef is gehaald, dus de 2 vragen tellen nu als gemaakt. */
+      const proefStap = st(l).proefStap ?? [];
+      st(l).proefStap = null;
+      if (!uitleg) for (const [vraag, uit, fouten] of proefStap) l.stap?.(hervatId(vraag), uit, fouten);
       if (!uitleg) {
         await zegDoor(l, ZIN.proefGoed);
         vanaf = 2;
@@ -1337,7 +1372,7 @@ const gouden: Lesdraaiboek = {
         /* De vragen van de proef komen in de les opnieuw: hun uitkomst telt dan pas. */
         st(l).eerste.clear();
       }
-    } else {
+    } else if (!l.hervat) {
       /* Stap 2b. Nee: geen probleem, vanzelf door naar de uitleg. */
       await zegDoor(l, ZIN.nee);
     }
@@ -1346,6 +1381,8 @@ const gouden: Lesdraaiboek = {
     /* Stap 11–15. De 15 vragen van squla-splits-splitsen1-1. */
     for (let i = vanaf; i < VRAGEN.length; i++) {
       const v: Sleepvraag = VRAGEN[i];
+      /* Verdergaan (15.53): een vraag die al gemaakt is, wordt met zijn overgangszin overgeslagen. */
+      if (klaarAl(l, v.id)) continue;
       st(l).laatste = i === VRAGEN.length - 1;
       /* Af en toe een overgangszin (BLIEPO-KARAKTER.md §12): alleen bij een nieuwe soort opdracht. */
       if (i === 9) await zegDoor(l, kies(l, OVERGANG));

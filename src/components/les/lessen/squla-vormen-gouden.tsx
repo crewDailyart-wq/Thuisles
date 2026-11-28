@@ -232,7 +232,7 @@ const st = (l: Lesgids): Staat => {
   if (!s)
     STAAT.set(
       l,
-      (s = { vorige: new Map(), recent: new Map(), zinNr: 0, robotNr: -99, namen: 0, naamKeer: 0, naamVraag: -99, opRij: 0, momenten: new Set(), vraag: 0, haak: 0, laatste: false, eerste: new Map(), vraagFouten: new Map(), alleDenkfouten: [], log: [], robotReactie: false, nakijk: 0, goedTeller: 0, hint: 0, legt: 0, samenNr: 0, kiesUitgelegd: false, sleepUitgelegd: false, puzzelUitgelegd: false }),
+      (s = { vorige: new Map(), recent: new Map(), zinNr: 0, robotNr: -99, namen: 0, naamKeer: 0, naamVraag: -99, opRij: 0, momenten: new Set(), vraag: 0, haak: 0, laatste: false, eerste: new Map(), vraagFouten: new Map(), alleDenkfouten: [...(l.hervat?.denkfouten ?? [])], log: [], robotReactie: false, nakijk: 0, goedTeller: 0, hint: 0, legt: 0, samenNr: 0, kiesUitgelegd: false, sleepUitgelegd: false, puzzelUitgelegd: false }),
     );
   return s;
 };
@@ -292,6 +292,8 @@ function noteer(l: Lesgids, vraag: string, uit: Uitkomst): Uitkomst {
   const fouten = s.vraagFouten.get(vraag) ?? [];
   s.vraagFouten.delete(vraag);
   s.alleDenkfouten.push(...fouten);
+  /* Verdergaan waar je was (15.53): na elke vraag onthouden waar het kind is. */
+  l.stap?.(vraag, uit, fouten);
   if (typeof window === "undefined") return uit;
   const naam = { goed: "goed in één keer", naFout: "goed na een fout", samen: "samen gedaan" } as const;
   /* Een sleutel per vraag is maar 1 keer te verdienen, ook bij opnieuw spelen (15.52, 15.55; zoals noteer in
@@ -311,6 +313,19 @@ function noteer(l: Lesgids, vraag: string, uit: Uitkomst): Uitkomst {
   const w = window as unknown as { __uitkomsten?: unknown[] };
   (w.__uitkomsten ??= []).push({ les: LES_ID, vraag, uitkomst: { goed: "goed-in-een-keer", naFout: "goed-na-fout", samen: "samen-gedaan" }[uit], teltVoorBeheersing: uit === "goed", denkfouten: fouten, tijd: new Date().toISOString() });
   return uit;
+}
+
+/**
+ * Verdergaan waar je was (15.53; zoals klaarAl in squla-extra-basis.ts): is deze vraag al gemaakt vóór het kind wegging, dan
+ * telt het antwoord van toen (resultaat en voortgangsbalk) en slaat de les de vraag over. Geeft de uitkomst van toen, of null.
+ */
+function klaarAl(l: Lesgids, vraag: string): Uitkomst | null {
+  const al = l.hervat?.antwoorden.find((a) => a[0] === vraag)?.[1];
+  if (!al) return null;
+  const s = st(l);
+  if (!s.eerste.has(vraag)) s.eerste.set(vraag, al);
+  l.voortgang?.(Math.min(1, s.eerste.size / balkTotaal()));
+  return al;
 }
 
 /** "Volgende keer gaat het nog beter" alleen als de helft of meer niet in 1 keer goed was (15.13 punt 3). */
@@ -963,12 +978,17 @@ const gouden: Lesdraaiboek = {
 
     /* Het begin (geen startvraag): de groet en het uitlegdeel in 1 stuk. Zonder eerdere tik zegt Bliepo het bij de
        eerste tik (lib/stem.ts heelUitpraten). */
-    await zegDoor(l, NAAM_GROET, variant("start", passend(ZIN.start, NAAM_GROET)));
+    /* Verdergaan (15.53): "welkom terug" in plaats van de groet en het uitlegdeel. Opnieuw doen: eerst zeggen dat het kind
+       de les al deed, daarna de les zoals altijd. */
+    if (l.hervat) await zegDoor(l, l.openingsZin ?? NAAM_GROET);
+    else await zegDoor(l, ...(l.openingsZin ? [l.openingsZin] : []), NAAM_GROET, variant("start", passend(ZIN.start, NAAM_GROET)));
     st(l).naamKeer = 1;
     st(l).naamVraag = 0;
 
     /* De 15 vragen van squla-vormen-patronen-1. */
     for (let i = 0; i < VRAGEN.length; i++) {
+      /* Verdergaan (15.53): een vraag die al gemaakt is, wordt met zijn overgangszin overgeslagen. */
+      if (klaarAl(l, VRAGEN[i].id)) continue;
       st(l).laatste = i === VRAGEN.length - 1;
       /* Af en toe een overgangszin (BLIEPO-KARAKTER.md §12); meestal niet, het tempo gaat voor. */
       if (i === 10) await zegDoor(l, kies(l, OVERGANG));

@@ -332,13 +332,23 @@ const gouden: Lesdraaiboek = {
     await l.wacht(600);
     B.st(l).naamKeer = 1;
     B.st(l).naamVraag = 0;
-    await B.zegDoor(l, NAAM_GROET, `${variant("begin", ZIN.begin)} ${ZIN.beginTegels}`);
+    /* Verdergaan (15.53): "welkom terug" in plaats van de groet. Opnieuw doen: eerst zeggen dat het kind de les al deed. */
+    if (l.hervat) await B.zegDoor(l, l.openingsZin ?? NAAM_GROET);
+    else await B.zegDoor(l, ...(l.openingsZin ? [l.openingsZin] : []), NAAM_GROET, `${variant("begin", ZIN.begin)} ${ZIN.beginTegels}`);
+    /* Verdergaan (15.53): de vraag-id's hangen af van de tegels die het kind koos; die worden onthouden (l.onthoud). */
+    const eerder = (k: string) => Number(l.hervat?.extra[k] ?? 0);
 
     /* Stap 1-3. Een tegel kiezen en zeggen welk getal het is (3 keer). */
     let bak = [...ALLES];
     for (let nr = 1; nr <= 3; nr++) {
+      const al = eerder(`kies${nr}`);
+      if (al && B.klaarAl(l, `getal${nr}-${al}`)) {
+        bak = bak.filter((x) => x !== al);
+        continue;
+      }
       pas(l, { bak });
       const n = (await pakTegel(l, { zin: nr === 1 ? ZIN.kies1 : variant("kiesAnder", ZIN.kiesAnder), test: nr === 1 ? 5 : nr === 2 ? 2 : 7, id: `kies${nr}` })) as number;
+      l.onthoud?.(`kies${nr}`, n);
       leg(vak, 0, n);
       await l.wacht(DENK_MS);
       await welkGetal(l, vak, n, nr, nr === 1);
@@ -347,57 +357,81 @@ const gouden: Lesdraaiboek = {
     }
 
     /* Stap 4. Twee tegels naar keuze: wat is het totaal? */
-    pas(l, { bak: [1, 2, 3, 4], slot: [] });
-    const [a, b] = await tweeTegels(l, vak, ZIN.tweeTegels, "twee1", [2, 3]);
-    await totaalVraag(l, vak, a, b, 1);
-    vak.zet([]);
-    /* Stap 6. Nog eens, met 3 nieuwe tegels. */
-    pas(l, { bak: [3, 4, 5], slot: [] });
-    const [c, d] = await tweeTegels(l, vak, [ZIN.tweeTegelsNog], "twee2", [4, 5]);
-    await totaalVraag(l, vak, c, d, 2);
-    vak.zet([]);
+    for (const [nr, zin, bakTwee, tests] of [
+      [1, ZIN.tweeTegels, [1, 2, 3, 4], [2, 3]],
+      [2, [ZIN.tweeTegelsNog], [3, 4, 5], [4, 5]],
+    ] as [number, string[], number[], [number, number]][]) {
+      const [ea, eb] = [eerder(`twee${nr}a`), eerder(`twee${nr}b`)];
+      if (ea && eb && B.klaarAl(l, `totaal${nr}-${ea}-${eb}`)) continue;
+      pas(l, { bak: bakTwee, slot: [] });
+      const [a, b] = await tweeTegels(l, vak, zin, `twee${nr}`, tests);
+      l.onthoud?.(`twee${nr}a`, a);
+      l.onthoud?.(`twee${nr}b`, b);
+      await totaalVraag(l, vak, a, b, nr);
+      vak.zet([]);
+      /* Stap 6. Nog eens, met 3 nieuwe tegels (de 2e ronde hierboven). */
+    }
 
     /* Stap 7. Maak samen 7. */
-    pas(l, { bak: [1, 2, 3, 4, 5, 6], slot: [] });
-    const g7 = (await pakTegel(l, { zin: ZIN.zetEen, test: 6, id: "kies-samen7" })) as number;
-    leg(vak, 0, g7);
-    await aanvullen(l, vak, `samen7-${g7}`, g7, 7, ZIN.maakSamen(g7, 7), [1, 2, 3, 4, 5, 6]);
-    vak.zet([]);
+    const al7 = eerder("samen7");
+    if (!(al7 && B.klaarAl(l, `samen7-${al7}`))) {
+      pas(l, { bak: [1, 2, 3, 4, 5, 6], slot: [] });
+      const g7 = (await pakTegel(l, { zin: ZIN.zetEen, test: 6, id: "kies-samen7" })) as number;
+      l.onthoud?.("samen7", g7);
+      leg(vak, 0, g7);
+      await aanvullen(l, vak, `samen7-${g7}`, g7, 7, ZIN.maakSamen(g7, 7), [1, 2, 3, 4, 5, 6]);
+      vak.zet([]);
+    }
 
     /* Stap 8. Moeilijker: maak samen 10, de som kiezen en omwisselen. */
-    pas(l, { bak: ALLES, om: false });
-    /* De lof alleen als hij klopt: niets samen voorgedaan en minder dan de helft na een fout (keuring 20 nov). */
-    const totNu = [...B.st(l).eerste.values()];
-    const snapt = !totNu.includes("samen") && !B.veelFouten(l);
-    await B.zegDoor(l, ...(snapt ? [ZIN.moeilijkerLof, ...ZIN.moeilijker] : ZIN.moeilijker));
-    const p = (await pakTegel(l, { test: 3, id: "kies-samen10" })) as number;
-    leg(vak, 0, p);
-    const uit10 = await aanvullen(l, vak, `samen10-${p}`, p, 10, ZIN.maakSamen10(p), ALLES);
+    const al10 = eerder("samen10");
+    let p: number;
+    if (al10 && B.klaarAl(l, `samen10-${al10}`)) {
+      /* Verdergaan: de toren van samen 10 staat weer in het rooster, zoals na de vraag. */
+      p = al10;
+      pas(l, { bak: ALLES, om: false });
+      leg(vak, 0, p);
+      if (pastOp([p], 10 - p)) leg(vak, 0, 10 - p);
+      else leg(vak, 1, 10 - p);
+    } else {
+      pas(l, { bak: ALLES, om: false });
+      /* De lof alleen als hij klopt: niets samen voorgedaan en minder dan de helft na een fout (keuring 20 nov). */
+      const totNu = [...B.st(l).eerste.values()];
+      const snapt = !totNu.includes("samen") && !B.veelFouten(l);
+      await B.zegDoor(l, ...(snapt ? [ZIN.moeilijkerLof, ...ZIN.moeilijker] : ZIN.moeilijker));
+      p = (await pakTegel(l, { test: 3, id: "kies-samen10" })) as number;
+      l.onthoud?.("samen10", p);
+      leg(vak, 0, p);
+      await aanvullen(l, vak, `samen10-${p}`, p, 10, ZIN.maakSamen10(p), ALLES);
+    }
     const q = 10 - p;
-    vak.torens[0] = { ...vak.toren(0), rand: true };
-    vak.toon();
-    pas(l, { om: false, bak: ALLES });
     /* Stap 9. Welke som heb je gemaakt? */
-    await somVraag(l, p, q);
-    vak.torens[0] = { ...vak.toren(0), rand: false };
-    vak.toon();
+    if (!B.klaarAl(l, `som-${p}-${q}`)) {
+      vak.torens[0] = { ...vak.toren(0), rand: true };
+      vak.toon();
+      pas(l, { om: false, bak: ALLES });
+      await somVraag(l, p, q);
+      vak.torens[0] = { ...vak.toren(0), rand: false };
+      vak.toon();
+    }
     /* Stap 11. Omwisselen. */
-    const uitOm = await omwisselen(l, vak, p, q);
+    const uitOm = B.klaarAl(l, `omwisselen-${p}-${q}`) ? B.st(l).eerste.get(`omwisselen-${p}-${q}`) : await omwisselen(l, vak, p, q);
     vak.zet([]);
 
     /* Stap 12. Nog een manier om 10 (alleen als het omwisselen niet "samen gedaan" was, zoals het draaiboek). */
-    if (uitOm !== "samen") {
+    const alM = eerder("manier10");
+    if (uitOm !== "samen" && !(alM && B.klaarAl(l, `manier10-${alM}`))) {
       B.st(l).laatste = true;
       const rij = ALLES.filter((t) => t !== p && t !== q);
       pas(l, { bak: rij, om: false });
       await B.zegDoor(l, ...ZIN.nogManier);
       const m = (await pakTegel(l, { test: rij.includes(2) ? 2 : rij[0], id: "kies-manier10" })) as number;
+      l.onthoud?.("manier10", m);
       leg(vak, 0, m);
       const bak10 = rij.includes(10 - m) ? rij : [...rij, 10 - m].sort((x, y) => x - y);
       await aanvullen(l, vak, `manier10-${m}`, m, 10, ZIN.maakSamen10(m), bak10);
       vak.zet([]);
     }
-    void uit10;
 
     /* Stap 13. Einde: het nieuwe eindscherm (27 nov 2026). Was: slotzin (ZIN.slot), de kaart met tegels, een eindzin
        (EINDE / EINDE_VEEL_FOUTEN) met "Tik op de kaart." (ZIN.kaartTik) en het afscheid (afscheidNa). */

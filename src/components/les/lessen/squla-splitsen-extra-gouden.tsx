@@ -509,42 +509,81 @@ const gouden: Lesdraaiboek = {
     await l.wacht(600);
     B.st(l).naamKeer = 1;
     B.st(l).naamVraag = 0;
-    await B.zegDoor(l, NAAM_GROET, `${variant("begin", ZIN.begin)} ${ZIN.beginKijk}`);
+    /* Verdergaan (15.53): "welkom terug" in plaats van de groet. Opnieuw doen: eerst zeggen dat het kind de les al deed. */
+    if (l.hervat) await B.zegDoor(l, l.openingsZin ?? NAAM_GROET);
+    else await B.zegDoor(l, ...(l.openingsZin ? [l.openingsZin] : []), NAAM_GROET, `${variant("begin", ZIN.begin)} ${ZIN.beginKijk}`);
+    /* Verdergaan (15.53): het gekozen getal en de gevonden delen bepalen de volgende vragen; die worden onthouden. */
+    const eerder = (k: string) => l.hervat?.extra[k];
+    const paarVan = (k: string): Paar | null => {
+      const m = /^(\d+)-(\d+)$/.exec(String(eerder(k) ?? ""));
+      return m ? [Number(m[1]), Number(m[2])] : null;
+    };
+    const sv = S(l);
 
-    /* Stap 7. De machine stap voor stap: 4 maken, 1 eraf (3), en 2 in het andere deel (totaal 5). */
-    await tikTot(l, { id: "machine-plus-4", deel: 0, d: 1, doel: 4, knop: "plus0", zin: ZIN.a1, hand: variant("tikPlus", ZIN.tikPlus) });
-    await B.zegDoor(l, ZIN.a1Klaar);
-    await tikTot(l, { id: "machine-min-3", deel: 0, d: -1, doel: 3, knop: "min0", zin: ZIN.a2, hand: ZIN.a2Hand });
-    zet(l, { ring: "totaal" });
-    await B.zegDoor(l, ...ZIN.a2Klaar);
-    zet(l, { ring: null });
-    await tikTot(l, { id: "machine-plus-2", deel: 1, d: 1, doel: 2, knop: "plus1", zin: ZIN.a3, hand: variant("tikPlus", ZIN.tikPlus) });
-    /* Wat staat er nu in het totaal? */
-    await totaalVraag(l);
+    if (B.klaarAl(l, "totaal-5")) {
+      /* Verdergaan: de machine staat weer op 3 en 2, zoals na de vraag. */
+      sv.delen = [A, B_DEEL];
+      zetDelen(l);
+    } else {
+      /* Stap 7. De machine stap voor stap: 4 maken, 1 eraf (3), en 2 in het andere deel (totaal 5). */
+      await tikTot(l, { id: "machine-plus-4", deel: 0, d: 1, doel: 4, knop: "plus0", zin: ZIN.a1, hand: variant("tikPlus", ZIN.tikPlus) });
+      await B.zegDoor(l, ZIN.a1Klaar);
+      await tikTot(l, { id: "machine-min-3", deel: 0, d: -1, doel: 3, knop: "min0", zin: ZIN.a2, hand: ZIN.a2Hand });
+      zet(l, { ring: "totaal" });
+      await B.zegDoor(l, ...ZIN.a2Klaar);
+      zet(l, { ring: null });
+      await tikTot(l, { id: "machine-plus-2", deel: 1, d: 1, doel: 2, knop: "plus1", zin: ZIN.a3, hand: variant("tikPlus", ZIN.tikPlus) });
+      /* Wat staat er nu in het totaal? */
+      await totaalVraag(l);
+    }
     /* Stap 9. Welke som heb je gemaakt? */
-    await somVraag(l);
+    if (B.klaarAl(l, "som-3-2-5")) {
+      sv.lijst = [{ a: A, b: B_DEEL, t: TOTAAL5 }];
+      zet(l, { lijst: sv.lijst });
+    } else await somVraag(l);
 
     /* Stap 10. Kun je 5 ook anders splitsen? (omgedraaid telt hier goed) */
     const gehad5: Paar[] = [[A, B_DEEL]];
-    await splitsOpdracht(l, { id: "ander-5", T: TOTAAL5, vast: true, kop: null, opdracht: ZIN.anders.join(" "), hand: variant("plusMin", ZIN.plusMin), vinkje: false, ruil: "goed", gehad: gehad5 });
+    if (!B.klaarAl(l, "ander-5")) await splitsOpdracht(l, { id: "ander-5", T: TOTAAL5, vast: true, kop: null, opdracht: ZIN.anders.join(" "), hand: variant("plusMin", ZIN.plusMin), vinkje: false, ruil: "goed", gehad: gehad5 });
 
     /* Stap 11. Een nieuw totaal: welk getal is het? */
-    await nieuwTotaalVraag(l);
+    if (B.klaarAl(l, "nieuw-totaal-7")) {
+      sv.delen = [0, 0];
+      sv.lijst = [];
+    } else await nieuwTotaalVraag(l);
     /* Stap 12. Zoek 2 delen die samen 7 maken. */
     const gehad7: Paar[] = [];
-    await splitsOpdracht(l, { id: "zoek-7", T: TOTAAL7, vast: true, kop: ZIN.zoekKop, opdracht: ZIN.zoekOpdracht, hand: variant("plusMin", ZIN.plusMin), vinkje: true, ruil: "niet", gehad: gehad7, goedZinnen: (lof, a, b, p) => (p === 1 ? [lof, variant("goedSplits", ZIN.goedSplits(a, b, TOTAAL7))] : [lof]) });
+    const al7 = paarVan("zoek7");
+    if (al7 && B.klaarAl(l, "zoek-7")) {
+      gehad7.push(al7);
+      sv.lijst = [...sv.lijst, { a: al7[0], b: al7[1], t: TOTAAL7 }];
+    } else {
+      const r = await splitsOpdracht(l, { id: "zoek-7", T: TOTAAL7, vast: true, kop: ZIN.zoekKop, opdracht: ZIN.zoekOpdracht, hand: variant("plusMin", ZIN.plusMin), vinkje: true, ruil: "niet", gehad: gehad7, goedZinnen: (lof, a, b, p) => (p === 1 ? [lof, variant("goedSplits", ZIN.goedSplits(a, b, TOTAAL7))] : [lof]) });
+      l.onthoud?.("zoek7", r.paar.join("-"));
+    }
     /* Stap 14. Nog een manier voor 7. */
-    await splitsOpdracht(l, { id: "nog-7", T: TOTAAL7, vast: true, kop: ZIN.nogKop, opdracht: ZIN.nogOpdracht, hand: variant("plusMin", ZIN.plusMin), vinkje: true, ruil: "niet", gehad: gehad7, goedZinnen: (lof, a, b, p) => (p === 1 ? [lof, variant("goedSplits", ZIN.goedSplits(a, b, TOTAAL7))] : [lof]) });
+    if (!B.klaarAl(l, "nog-7")) await splitsOpdracht(l, { id: "nog-7", T: TOTAAL7, vast: true, kop: ZIN.nogKop, opdracht: ZIN.nogOpdracht, hand: variant("plusMin", ZIN.plusMin), vinkje: true, ruil: "niet", gehad: gehad7, goedZinnen: (lof, a, b, p) => (p === 1 ? [lof, variant("goedSplits", ZIN.goedSplits(a, b, TOTAAL7))] : [lof]) });
 
     /* Stap 15. Kiezen: nog een getal zoals dit (8) of een groter getal (10), en dat op 2 manieren splitsen. */
-    const T = await keuzeGetal(l);
-    await B.zegDoor(l, ZIN.keuzeReactie);
+    const alT = Number(eerder("T") ?? 0);
     const gehadT: Paar[] = [];
-    B.st(l).laatste = false;
-    const eerste = await splitsOpdracht(l, { id: `splits-${T}-1`, T, vast: false, kop: ZIN.keuzeKop(T), opdracht: ZIN.keuzeOpdracht(T), hand: variant("plusMin", ZIN.plusMin), vinkje: true, ruil: "niet", gehad: gehadT, goedZinnen: (_lof, a, b) => [ZIN.keuzeNog(a, b, T)] });
-    void eerste;
+    let T: number;
+    const al1 = paarVan("splitsT1");
+    if (alT && al1 && B.klaarAl(l, `splits-${alT}-1`)) {
+      /* Verdergaan: het gekozen getal en de eerste manier staan weer klaar. */
+      T = alT;
+      gehadT.push(al1);
+      sv.lijst = [{ a: al1[0], b: al1[1], t: T }];
+    } else {
+      T = await keuzeGetal(l);
+      l.onthoud?.("T", T);
+      await B.zegDoor(l, ZIN.keuzeReactie);
+      B.st(l).laatste = false;
+      const eerste = await splitsOpdracht(l, { id: `splits-${T}-1`, T, vast: false, kop: ZIN.keuzeKop(T), opdracht: ZIN.keuzeOpdracht(T), hand: variant("plusMin", ZIN.plusMin), vinkje: true, ruil: "niet", gehad: gehadT, goedZinnen: (_lof, a, b) => [ZIN.keuzeNog(a, b, T)] });
+      l.onthoud?.("splitsT1", eerste.paar.join("-"));
+    }
     B.st(l).laatste = true;
-    await splitsOpdracht(l, { id: `splits-${T}-2`, T, vast: false, kop: ZIN.keuzeKop(T), opdracht: ZIN.keuzeNogOpdracht(T), hand: variant("plusMin", ZIN.plusMin), vinkje: true, ruil: "niet", gehad: gehadT });
+    if (!B.klaarAl(l, `splits-${T}-2`)) await splitsOpdracht(l, { id: `splits-${T}-2`, T, vast: false, kop: ZIN.keuzeKop(T), opdracht: ZIN.keuzeNogOpdracht(T), hand: variant("plusMin", ZIN.plusMin), vinkje: true, ruil: "niet", gehad: gehadT });
 
     /* Stap 16. Einde: het nieuwe eindscherm (27 nov 2026). Was: slotzin (ZIN.slot), de kaart (KaartSplitsenExtra), een
        eindzin (EINDE / EINDE_VEEL_FOUTEN) met "Tik op de kaart." (ZIN.kaartTik) en het afscheid (afscheidNa). */

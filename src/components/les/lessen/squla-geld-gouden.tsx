@@ -137,7 +137,7 @@ const st = (l: Lesgids): Staat => {
   if (!s)
     STAAT.set(
       l,
-      (s = { vorige: new Map(), recent: new Map(), zinNr: 0, robotNr: -99, namen: 0, naamKeer: 0, naamVraag: -99, opRij: 0, momenten: new Set(), vraag: 0, haak: 0, laatste: false, eerste: new Map(), vraagFouten: new Map(), alleDenkfouten: [], log: [], robotReactie: false, nakijk: 0, nr: 0, golf: 0, waarUitgelegd: false, kiezer: maakKiezer({ wissel: WISSEL }), m: { ...LEEG_M, nr: 0 } }),
+      (s = { vorige: new Map(), recent: new Map(), zinNr: 0, robotNr: -99, namen: 0, naamKeer: 0, naamVraag: -99, opRij: 0, momenten: new Set(), vraag: 0, haak: 0, laatste: false, eerste: new Map(), vraagFouten: new Map(), alleDenkfouten: [...(l.hervat?.denkfouten ?? [])], log: [], robotReactie: false, nakijk: 0, nr: 0, golf: 0, waarUitgelegd: false, kiezer: maakKiezer({ wissel: WISSEL }), m: { ...LEEG_M, nr: 0 } }),
     );
   return s;
 };
@@ -205,6 +205,19 @@ function legDenkfoutVast(l: Lesgids, d: { vraag: string; antwoord: string; denkf
    tellen niet mee (Math.min). Na elke afgeronde vraag een stukje verder; nooit terug (het lesscherm negeert een lagere waarde). */
 const balkTotaal = (): number => VRAGEN.length + 3;
 
+/**
+ * Verdergaan waar je was (15.53): is deze vraag al gemaakt vóór het kind wegging, dan telt het antwoord van toen en slaat de
+ * les de vraag (met zijn overgangszin) over. Zoals `klaarAl` in squla-extra-basis.
+ */
+function klaarAl(l: Lesgids, vraag: string): boolean {
+  const al = l.hervat?.antwoorden.find((a) => a[0] === vraag)?.[1];
+  if (!al) return false;
+  const s = st(l);
+  if (!s.eerste.has(vraag)) s.eerste.set(vraag, al);
+  l.voortgang?.(Math.min(1, s.eerste.size / balkTotaal()));
+  return true;
+}
+
 function noteer(l: Lesgids, vraag: string, uit: Uitkomst): Uitkomst {
   const s = st(l);
   const nieuweVraag = !s.eerste.has(vraag);
@@ -214,6 +227,8 @@ function noteer(l: Lesgids, vraag: string, uit: Uitkomst): Uitkomst {
   s.vraagFouten.delete(vraag);
   /* Voor het eindscherm: alle denkfouten van deze speelbeurt (bewaard bij de kaart). */
   s.alleDenkfouten.push(...fouten);
+  /* Verdergaan waar je was (15.53): na elke vraag onthouden waar het kind is. */
+  l.stap?.(vraag, uit, fouten);
   if (typeof window === "undefined") return uit;
   const naam = { goed: "goed in één keer", naFout: "goed na een fout", samen: "samen gedaan" } as const;
   try {
@@ -820,13 +835,20 @@ const gouden: Lesdraaiboek = {
 
     /* Het begin (geen startvraag): de groet en het uitlegdeel in 1 stuk. Zonder eerdere tik zegt Bliepo het bij de
        eerste tik (lib/stem.ts heelUitpraten). */
-    await zegDoor(l, NAAM_GROET, variant(l, "start", ZIN.start));
+    /* Verdergaan (15.53): "welkom terug" in plaats van de groet. Opnieuw doen: eerst zeggen dat het kind de les al deed. */
+    if (l.hervat) await zegDoor(l, l.openingsZin ?? NAAM_GROET);
+    else await zegDoor(l, ...(l.openingsZin ? [l.openingsZin] : []), NAAM_GROET, variant(l, "start", ZIN.start));
     st(l).naamKeer = 1;
     st(l).naamVraag = 0;
 
     /* De 12 vragen van squla-geld-geldmachine-1. */
     const mis: number[] = [];
     for (let i = 0; i < VRAGEN.length; i++) {
+      /* Verdergaan (15.53): al gemaakt vóór het weggaan? Dan telt het antwoord van toen (ook voor de vragen die terugkomen). */
+      if (klaarAl(l, VRAGEN[i].id)) {
+        if (st(l).eerste.get(VRAGEN[i].id) !== "goed") mis.push(i);
+        continue;
+      }
       /* Af en toe een overgangszin (BLIEPO-KARAKTER.md §12); meestal niet, het tempo gaat voor. */
       if (i === 8) await zegDoor(l, kies(l, OVERGANG));
       const uit = await speelVraag(l, VRAGEN[i], { eerste: i === 0, terug: false, ctx: i === 0 ? c0 : undefined });
@@ -835,11 +857,18 @@ const gouden: Lesdraaiboek = {
 
     /* Daarna 3 vragen terug: eerst wat niet meteen goed was, aangevuld met de vaste reserve (zoals de oude les). */
     const terug = [...mis, ...RESERVE.filter((i) => !mis.includes(i))].slice(0, 3);
-    void l.zeg().catch(() => {});
-    nieuwBeeld(l, {});
-    await zegDoor(l, variant(l, "terug", mis.length ? (terug.length === 1 ? ZIN.terug1 : ZIN.terugN(terug.length)) : terug.length === 1 ? ZIN.extra1 : ZIN.extraN(terug.length)));
+    /* Verdergaan: was het terugvragen al begonnen, dan niet nog eens de overgangszin. */
+    if (!terug.some((i) => l.hervat?.antwoorden.some((a) => a[0] === `${VRAGEN[i].id}-terug`))) {
+      void l.zeg().catch(() => {});
+      nieuwBeeld(l, {});
+      await zegDoor(l, variant(l, "terug", mis.length ? (terug.length === 1 ? ZIN.terug1 : ZIN.terugN(terug.length)) : terug.length === 1 ? ZIN.extra1 : ZIN.extraN(terug.length)));
+    }
     let weerFout = 0;
     for (const [n, i] of terug.entries()) {
+      if (klaarAl(l, `${VRAGEN[i].id}-terug`)) {
+        if (st(l).eerste.get(`${VRAGEN[i].id}-terug`) !== "goed") weerFout++;
+        continue;
+      }
       st(l).laatste = n === terug.length - 1;
       if ((await speelVraag(l, VRAGEN[i], { eerste: false, terug: true })) !== "goed") weerFout++;
     }

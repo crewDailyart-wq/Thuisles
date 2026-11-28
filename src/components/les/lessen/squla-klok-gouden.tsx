@@ -44,6 +44,7 @@ import { speelLesgeluid } from "@/lib/lesgeluiden";
 import { bliepoScherm } from "@/lib/bliepo-scherm";
 import { bewaarUitkomst } from "@/app/lesuitkomstacties";
 import { percentageGoed } from "@/lib/les-kleuren";
+import type { HervatUitkomst } from "@/lib/hervatstand";
 import { EIND_TIK_KAART, eindzin } from "../eindzinnen";
 import { AANMOEDIG, AANMOEDIG_DENK, AANMOEDIG_KIEST, BEVESTIG, KLOKKEN, KLOKREACTIE, LOF, LOF_KIJK_INDEX, MOMENT, NAAM_GROET, NAAM_LOF, ONDUIDELIJK, ONDUIDELIJK_ANDERE, ONDUIDELIJK_NOG_1_KEER, OVERGANG, SNEL, VAR, VOORDOEN, ZIN, foutReactie, kiesStuk, kleineStap as kleineStapZin, metNaam, nieuweKiezer, vraagMet, vraagOpnieuw, zetFout, zetSamen, type Fout, type Rijtje, type Scherm } from "./squla-klok-gouden-zinnen";
 import type { Kiezer } from "./nooit-dubbel";
@@ -64,11 +65,11 @@ const u = (uur: number, minuut = 0) => (uur % 12) * 60 + minuut;
 
 const zet = (l: Lesgids, p: Partial<GoudenKlokProps>) => l.pasVlakAan<GoudenKlokProps>(p);
 
-type Staat = { vorige: Map<Rijtje, number>; zinNr: number; robotNr: number; snelVraag: number; naamVraag: number; naamKeer: number; opRij: number; momenten: Set<string>; pijlUitgelegd: boolean; goed: number; rondje: number; speel: number; haak: number; vraag: number; denkfouten: Map<string, number>; foutVragen: Set<string>; laatste: boolean; eerste: Map<string, Uitkomst>; namen: number; snelGehad: Set<number>; log: unknown[]; vraagFouten: Map<string, string[]>; alleDenkfouten: string[]; klokVorige: number; kiezer: Kiezer };
+type Staat = { vorige: Map<Rijtje, number>; zinNr: number; robotNr: number; snelVraag: number; naamVraag: number; naamKeer: number; opRij: number; momenten: Set<string>; pijlUitgelegd: boolean; goed: number; rondje: number; speel: number; haak: number; vraag: number; denkfouten: Map<string, number>; foutVragen: Set<string>; laatste: boolean; eerste: Map<string, Uitkomst>; namen: number; snelGehad: Set<number>; log: unknown[]; vraagFouten: Map<string, string[]>; alleDenkfouten: string[]; klokVorige: number; kiezer: Kiezer; proef: [string, HervatUitkomst, string[]][] | null; metUitleg: boolean };
 const STAAT = new WeakMap<Lesgids, Staat>();
 const st = (l: Lesgids): Staat => {
   let s = STAAT.get(l);
-  if (!s) STAAT.set(l, (s = { vorige: new Map(), zinNr: 0, robotNr: -99, snelVraag: -99, naamVraag: -99, naamKeer: 0, opRij: 0, momenten: new Set(), pijlUitgelegd: false, goed: 0, rondje: 0, speel: 0, haak: 0, vraag: 0, denkfouten: new Map(), foutVragen: new Set(), laatste: false, eerste: new Map(), namen: 0, snelGehad: new Set(), log: [], vraagFouten: new Map(), alleDenkfouten: [], klokVorige: -1, kiezer: nieuweKiezer() }));
+  if (!s) STAAT.set(l, (s = { vorige: new Map(), zinNr: 0, robotNr: -99, snelVraag: -99, naamVraag: -99, naamKeer: 0, opRij: 0, momenten: new Set(), pijlUitgelegd: false, goed: 0, rondje: 0, speel: 0, haak: 0, vraag: 0, denkfouten: new Map(), foutVragen: new Set(), laatste: false, eerste: new Map(), namen: 0, snelGehad: new Set(), log: [], vraagFouten: new Map(), alleDenkfouten: [...(l.hervat?.denkfouten ?? [])], klokVorige: -1, kiezer: nieuweKiezer(), proef: null, metUitleg: false }));
   return s;
 };
 
@@ -149,15 +150,45 @@ const UITKOMST_NAAM: Record<Uitkomst, UitkomstRegel["uitkomst"]> = { goed: "goed
    (na een fout): dan wordt de balk vol bij de eindkaart. */
 const balkTotaal = (): number => KLOKKEN.length + (DRAAIBOEK_EXTRA ? 3 : 0);
 const balkTelt = (id: string): boolean => /^(klok\d|tussendoor-|bonus-)/.test(id);
+/**
+ * Verdergaan en het rondje (15.53, 15.59): zit het kind in de uitleg (route Nee, of na een mislukte proef), dan loopt de balk
+ * ook mee met de 17 vragen van de uitleg, zodat het rondje op het onderwerpenscherm laat zien dat het kind al begonnen is
+ * (vroeger stond de balk de hele uitleg op 0). Het percentage goed (de kleur) telt de uitleg nog steeds niet mee.
+ */
+const UITLEG_VRAGEN = 17;
+const balkStand = (s: Staat): number => Math.min(1, [...s.eerste.keys()].filter((id) => balkTelt(id) || (s.metUitleg && /^stap\d/.test(id))).length / (balkTotaal() + (s.metUitleg ? UITLEG_VRAGEN : 0)));
+
+/**
+ * Verdergaan waar je was (15.53): is deze vraag al gemaakt vóór het kind wegging, dan telt het antwoord van toen en slaat de
+ * les de vraag (met zijn uitleg ervoor) over. Zoals `klaarAl` in squla-extra-basis.
+ */
+function klaarAl(l: Lesgids, vraag: string): boolean {
+  const al = l.hervat?.antwoorden.find((a) => a[0] === vraag)?.[1];
+  if (!al) return false;
+  const s = st(l);
+  if (!s.eerste.has(vraag)) s.eerste.set(vraag, al === "samen" ? "voorgedaan" : al);
+  l.voortgang?.(balkStand(s));
+  return true;
+}
+/** Verdergaan: stond deze vraag al in de bewaarde stand (zonder iets te tellen)? */
+const alGemaakt = (l: Lesgids, vraag: string) => !!l.hervat?.antwoorden.some((a) => a[0] === vraag);
+const klokId = (i: number) => `klok${i + 1}-${KLOKKEN[i].uur}uur`;
 
 function noteer(l: Lesgids, vraag: string, uit: Uitkomst): Uitkomst {
   const s = st(l);
   const nieuweVraag = !s.eerste.has(vraag);
   if (nieuweVraag) s.eerste.set(vraag, uit);
-  l.voortgang?.(Math.min(1, [...s.eerste.keys()].filter(balkTelt).length / balkTotaal()));
+  l.voortgang?.(balkStand(s));
   const fouten = s.vraagFouten.get(vraag) ?? [];
   s.vraagFouten.delete(vraag);
   s.alleDenkfouten.push(...fouten);
+  /* Verdergaan waar je was (15.53): na elke vraag onthouden waar het kind is. Tijdens de proef pas als de proef gehaald is
+     (een mislukte proef telt niet); "gestopt" is geen uitkomst. */
+  if (uit !== "gestopt") {
+    const u = uit === "voorgedaan" ? "samen" : uit;
+    if (s.proef) s.proef.push([vraag, u, fouten]);
+    else l.stap?.(vraag, u, fouten);
+  }
   /* "gestopt" (de proef stopt na 2 fouten) is geen uitkomst van de vraag: die klok komt later in het oefenblok opnieuw. */
   if (uit !== "gestopt" && typeof window !== "undefined") {
     const naam = { goed: "goed in één keer", naFout: "goed na een fout", voorgedaan: "samen gedaan" } as const;
@@ -591,7 +622,7 @@ async function oefenKlok(l: Lesgids, i: number, stopNaFout?: () => boolean): Pro
   zet(l, { stand: { tijd: u(k.uur), draai: true } });
   await l.wacht(1100);
   return keuze(l, {
-    id: `klok${i + 1}-${k.uur}uur`,
+    id: klokId(i),
     bijGoed: () => {
       if (k.naspeel) zet(l, { verhaal: verhaal(++s.speel) });
     },
@@ -639,6 +670,25 @@ const gouden: Lesdraaiboek = {
     speelLesgeluid("verschijn");
     await l.wacht(600);
 
+    /* Verdergaan (15.53): Bliepo heet welkom terug; geen groet, startvraag of proef, en verder waar het kind was (ook in de
+       uitleg, als het kind daar wegging). */
+    if (l.hervat) {
+      st(l).naamKeer = 1;
+      st(l).metUitleg = l.hervat.antwoorden.some((a) => /^stap\d/.test(a[0]));
+      await zegDoor(l, l.openingsZin ?? NAAM_GROET);
+      const ex = l.hervat.extra;
+      const vanaf = Number(ex.vanaf ?? 0);
+      const proefMis: number[] = [];
+      for (let i = 0; i < vanaf; i++) if (klaarAl(l, klokId(i)) && st(l).eerste.get(klokId(i)) !== "goed") proefMis.push(i);
+      const oefenBegonnen = KLOKKEN.some((_, i) => alGemaakt(l, klokId(i)));
+      if (!vanaf && !ex.uitleg && !oefenBegonnen) await uitlegRoute(l);
+      const fouten = await oefenblok(l, vanaf, proefMis);
+      zet(l, { verhaal: null, ring: null, licht: null, getalKleur: null, hand: null, uurwijzer: "fel", minuutwijzer: "fel" });
+      log(l, "einde", { fouten });
+      await eindeScherm(l);
+      return;
+    }
+
     /* Stap 1. "Weet je dit al?" (4e ronde, T21): Ja = proef van 2 opgaven, 2 fouten = alsnog de uitleg; Nee = de uitleg. */
     /* Groet en startvraag zijn 1 stuk (Sara, 10 november 2026, zoals Synthesis: 1 scherm, 2 alinea's): de korte groet met
        de naam en daaronder meteen de startvraag met Ja en Nee; geen eigen pijl of wachttijd voor de groet, en het geheel
@@ -650,7 +700,8 @@ const gouden: Lesdraaiboek = {
     const pStart = l.kies(["Ja", "Nee"], { direct: true, weetniet: false });
     /* Groet en vraag in 1 alinea (19 nov 2026, keuring F16/15.37): als 2 alinea's stond de groet soms 3 s alleen wit in beeld,
        met Ja en Nee al tikbaar en de vraag nog gedimd. Nu komen ze samen in beeld en worden ze samen uitgesproken. */
-    void zeg(l, `${NAAM_GROET} ${K(l).kies("start", VAR.start)}`).catch(() => {});
+    /* Opnieuw doen (15.59): eerst zeggen dat het kind de les al deed. */
+    void zeg(l, `${l.openingsZin ? `${l.openingsZin} ` : ""}${NAAM_GROET} ${K(l).kies("start", VAR.start)}`).catch(() => {});
     st(l).naamKeer = 1;
     const start = await pStart;
     haak(l, null);
@@ -663,12 +714,20 @@ const gouden: Lesdraaiboek = {
     if (start === "Ja") {
       await zegDoor(l, K(l).kies("proefBegin", VAR.proefBegin));
       let proefFouten = 0;
+      st(l).proef = [];
       for (let i = 0; i < 2 && !uitleg; i++) {
         const uit = await oefenKlok(l, i, () => ++proefFouten >= 2);
         if (uit === "gestopt") uitleg = true;
         else if (uit !== "goed") proefMis.push(i);
       }
       log(l, "proef", { fouten: proefFouten, uitleg });
+      /* Verdergaan (15.53): alleen een gehaalde proef telt; dan pas worden de 2 klokken onthouden, en waar het oefenblok begint. */
+      const proef = st(l).proef ?? [];
+      st(l).proef = null;
+      if (!uitleg) {
+        for (const [vraag, uit, fouten] of proef) l.stap?.(vraag, uit, fouten);
+        l.onthoud?.("vanaf", 2);
+      }
       if (uitleg) {
         zet(l, { verhaal: null, getalKleur: null, ring: null, licht: null, hand: null, uurwijzer: "fel", minuutwijzer: "fel" });
         await zegDoor(l, ...kiesStuk(K(l), "proefLastig", VAR.proefLastig));
@@ -754,137 +813,163 @@ async function snelNaarEinde(l: Lesgids) {
 
 /** Stap 2 t/m 18 van het draaiboek: de route na "Nee" (en na een mislukte proef). */
 async function uitlegRoute(l: Lesgids) {
+  st(l).metUitleg = true;
+  /* Verdergaan (15.53): een vraag van de uitleg die al gemaakt is, komt niet terug, en ook niet wat ervoor hoort (een zin,
+     een opdracht, de klok die uitrolt). Wat in beeld moet staan, wordt dan meteen klaargezet. */
+  const al = (id: string) => klaarAl(l, id);
   zet(l, { stand: { tijd: u(3) }, wijzers: false, verhaal: null });
   await l.wacht(600);
 
-  /* Stap 3. De klok rolt uit tot een getallenlijn (± 3 s in het draaiboek). */
-  speelLesgeluid("klokDraai");
-  zet(l, { vorm: "lijn" });
-  const rolUit = l.wacht(2400);
-  rolUit.catch(() => {});
-  await zegDoor(l, ZIN.lijnKijk);
-  await rolUit;
+  const al4 = al("stap4-hoe-heet");
+  if (!al4) {
+    /* Stap 3. De klok rolt uit tot een getallenlijn (± 3 s in het draaiboek). */
+    speelLesgeluid("klokDraai");
+    zet(l, { vorm: "lijn" });
+    const rolUit = l.wacht(2400);
+    rolUit.catch(() => {});
+    await zegDoor(l, ZIN.lijnKijk);
+    await rolUit;
 
-  /* Stap 4. Hoe heet dit? (het draaiboek geeft hier geen 2e poging; Sara 8 nov: na een fout komt de vraag terug) */
-  await keuze(l, {
-    id: "stap4-hoe-heet",
-    voordoen: () => [],
-  });
+    /* Stap 4. Hoe heet dit? (het draaiboek geeft hier geen 2e poging; Sara 8 nov: na een fout komt de vraag terug) */
+    await keuze(l, {
+      id: "stap4-hoe-heet",
+      voordoen: () => [],
+    });
+  }
 
-  /* Stap 5. Tik op een getal; daarna buigt de lijn terug tot een klok. Na 5,5 s stilte het hulphandje (6.10b). */
-  haak(l, { soort: "getal", poging: 1 }, true);
-  zet(l, { actief: true, tikGetal: true });
-  const getikt = l.wachtOpVlak("getal");
-  let klaar = false;
-  log(l, "vraag", { zin: ZIN.tikGetal });
-  /* De pijl alleen tijdens de opdrachtzin (PIJL-KLOK.md stap 6). */
-  await zegOpdracht(l, ZIN.tikGetal, getikt);
-  log(l, "vraag-klaar");
-  const hint = setTimeout(() => {
-    if (klaar) return;
-    log(l, "aanwijzing");
-    zet(l, { hand: 5 });
-    void zeg(l, ...handZinnen(l, ZIN.tikGetalHand)).catch(() => {});
-  }, AANWIJZING_MS);
-  await getikt;
-  klaar = true;
-  clearTimeout(hint);
-  log(l, "tik", { x: "getal" });
-  haak(l, null);
-  zet(l, { actief: false, tikGetal: false, hand: null });
-  speelLesgeluid("klokDraai");
-  zet(l, { vorm: "klok" });
-  await l.wacht(2600);
+  if (!al("stap6-hoe-heet-nu")) {
+    if (al4) zet(l, { vorm: "lijn" });
+    /* Stap 5. Tik op een getal; daarna buigt de lijn terug tot een klok. Na 5,5 s stilte het hulphandje (6.10b). */
+    haak(l, { soort: "getal", poging: 1 }, true);
+    zet(l, { actief: true, tikGetal: true });
+    const getikt = l.wachtOpVlak("getal");
+    let klaar = false;
+    log(l, "vraag", { zin: ZIN.tikGetal });
+    /* De pijl alleen tijdens de opdrachtzin (PIJL-KLOK.md stap 6). */
+    await zegOpdracht(l, ZIN.tikGetal, getikt);
+    log(l, "vraag-klaar");
+    const hint = setTimeout(() => {
+      if (klaar) return;
+      log(l, "aanwijzing");
+      zet(l, { hand: 5 });
+      void zeg(l, ...handZinnen(l, ZIN.tikGetalHand)).catch(() => {});
+    }, AANWIJZING_MS);
+    await getikt;
+    klaar = true;
+    clearTimeout(hint);
+    log(l, "tik", { x: "getal" });
+    haak(l, null);
+    zet(l, { actief: false, tikGetal: false, hand: null });
+    speelLesgeluid("klokDraai");
+    zet(l, { vorm: "klok" });
+    await l.wacht(2600);
 
-  /* Stap 6. En hoe heet dit nu? */
-  await keuze(l, {
-    id: "stap6-hoe-heet-nu",
-    voordoen: () => [],
-  });
+    /* Stap 6. En hoe heet dit nu? */
+    await keuze(l, {
+      id: "stap6-hoe-heet-nu",
+      voordoen: () => [],
+    });
+  } else zet(l, { vorm: "klok" });
 
   /* Stap 7. Het hoogste punt; het driehoekje komt pas NA het antwoord (goed of samen voordoen; Ronde 33 punt 1, 15.17). */
-  await keuze(l, {
-    id: "stap7-hoogste",
-    bijGoed: () => zet(l, { driehoek: 12 }),
-    voordoen: () => {
-      zet(l, { driehoek: 12, ring: 12, ringWijzer: "uur", getalKleur: { n: 12, wijzer: "uur" } });
-      return [];
-    },
-  });
-  zet(l, { driehoek: null, ring: null, getalKleur: null });
+  if (!al("stap7-hoogste")) {
+    await keuze(l, {
+      id: "stap7-hoogste",
+      bijGoed: () => zet(l, { driehoek: 12 }),
+      voordoen: () => {
+        zet(l, { driehoek: 12, ring: 12, ringWijzer: "uur", getalKleur: { n: 12, wijzer: "uur" } });
+        return [];
+      },
+    });
+    zet(l, { driehoek: null, ring: null, getalKleur: null });
+  }
 
   /* Stap 8. Het laagste punt; het driehoekje komt pas NA het antwoord (goed of samen voordoen). */
-  await keuze(l, {
-    id: "stap8-laagste",
-    bijGoed: () => zet(l, { driehoek: 6 }),
-    voordoen: () => {
-      zet(l, { driehoek: 6, ring: 6, ringWijzer: "uur", getalKleur: { n: 6, wijzer: "uur" } });
-      return [];
-    },
-  });
-  zet(l, { driehoek: null, ring: null, getalKleur: null });
+  if (!al("stap8-laagste")) {
+    await keuze(l, {
+      id: "stap8-laagste",
+      bijGoed: () => zet(l, { driehoek: 6 }),
+      voordoen: () => {
+        zet(l, { driehoek: 6, ring: 6, ringWijzer: "uur", getalKleur: { n: 6, wijzer: "uur" } });
+        return [];
+      },
+    });
+    zet(l, { driehoek: null, ring: null, getalKleur: null });
+  }
 
   /* Stap 9. Wat komt na de 6? Met de klok mee (de blauwe pijl). */
-  const stap9 = await keuze(l, {
-    id: "stap9-na-6",
-    bijGoed: () => zet(l, { pijl: { van: 6, naar: 7 } }),
-    voordoen: () => {
-      zet(l, { pijl: { van: 6, naar: 7 }, ring: 7, ringWijzer: "uur", getalKleur: { n: 7, wijzer: "uur" } });
-      return [];
-    },
-    /* Zoals Synthesis: "met de klok mee" komt in hetzelfde stuk onder de lof, en dan wacht Bliepo op de pijl. */
-    wachtNaGoed: [ZIN.metDeKlokMee],
-  });
-  zet(l, { pijl: { van: 6, naar: 7 }, ring: null });
-  if (stap9 === "voorgedaan") await zegDoor(l, ZIN.metDeKlokMee);
-  zet(l, { pijl: null, getalKleur: null });
+  if (!al("stap9-na-6")) {
+    const stap9 = await keuze(l, {
+      id: "stap9-na-6",
+      bijGoed: () => zet(l, { pijl: { van: 6, naar: 7 } }),
+      voordoen: () => {
+        zet(l, { pijl: { van: 6, naar: 7 }, ring: 7, ringWijzer: "uur", getalKleur: { n: 7, wijzer: "uur" } });
+        return [];
+      },
+      /* Zoals Synthesis: "met de klok mee" komt in hetzelfde stuk onder de lof, en dan wacht Bliepo op de pijl. */
+      wachtNaGoed: [ZIN.metDeKlokMee],
+    });
+    zet(l, { pijl: { van: 6, naar: 7 }, ring: null });
+    if (stap9 === "voorgedaan") await zegDoor(l, ZIN.metDeKlokMee);
+    zet(l, { pijl: null, getalKleur: null });
+  }
 
   /* Stap 10. Een lastige: na de 12 komt de 1. */
-  await keuze(l, {
-    id: "stap10-na-12",
-    bijGoed: () => zet(l, { pijl: { van: 12, naar: 1 } }),
-    voordoen: () => {
-      zet(l, { pijl: { van: 12, naar: 1 }, ring: 1, ringWijzer: "uur", getalKleur: { n: 1, wijzer: "uur" } });
-      return [];
-    },
-  });
-  zet(l, { pijl: null, getalKleur: null, ring: null });
-  await l.wacht(300);
+  if (!al("stap10-na-12")) {
+    await keuze(l, {
+      id: "stap10-na-12",
+      bijGoed: () => zet(l, { pijl: { van: 12, naar: 1 } }),
+      voordoen: () => {
+        zet(l, { pijl: { van: 12, naar: 1 }, ring: 1, ringWijzer: "uur", getalKleur: { n: 1, wijzer: "uur" } });
+        return [];
+      },
+    });
+    zet(l, { pijl: null, getalKleur: null, ring: null });
+    await l.wacht(300);
+  }
 
   /* Stap 11. Twee wijzers verschijnen (plopje). Wacht op de pijl. Dan: wat telt de lange wijzer? */
-  zet(l, { stand: { tijd: u(1) } });
-  await l.wacht(400);
-  zet(l, { wijzers: true });
-  speelLesgeluid("plop");
-  await l.wacht(500);
-  /* Synthesis gaat hier vanzelf door (PIJL-KLOK.md stap 20). */
-  await zegDoor(l, ZIN.tweeWijzers);
-  await keuze(l, {
-    id: "stap11-lange-telt",
-    voordoen: () => {
-      zet(l, { licht: "minuut", uurwijzer: "flets" });
-      return [];
-    },
-    opruimen: () => zet(l, { licht: null, uurwijzer: "fel", minuutwijzer: "fel" }),
-  });
+  if (!al("stap11-lange-telt")) {
+    zet(l, { stand: { tijd: u(1) } });
+    await l.wacht(400);
+    zet(l, { wijzers: true });
+    speelLesgeluid("plop");
+    await l.wacht(500);
+    /* Synthesis gaat hier vanzelf door (PIJL-KLOK.md stap 20). */
+    await zegDoor(l, ZIN.tweeWijzers);
+    await keuze(l, {
+      id: "stap11-lange-telt",
+      voordoen: () => {
+        zet(l, { licht: "minuut", uurwijzer: "flets" });
+        return [];
+      },
+      opruimen: () => zet(l, { licht: null, uurwijzer: "fel", minuutwijzer: "fel" }),
+    });
+  } else zet(l, { stand: { tijd: u(1) }, wijzers: true });
 
   /* Stap 12. De namen van de wijzers: de lange licht op, de korte is vaag; daarna andersom. */
-  zet(l, { licht: "minuut", uurwijzer: "flets", minuutwijzer: "fel" });
-  await keuze(l, {
-    id: "stap12-lange-naam",
-    voordoen: () => [],
-    opruimen: () => zet(l, { licht: "minuut", uurwijzer: "flets", minuutwijzer: "fel" }),
-  });
-  zet(l, { licht: "uur", uurwijzer: "fel", minuutwijzer: "flets" });
-  await keuze(l, {
-    id: "stap12-korte-naam",
-    voordoen: () => [],
-    opruimen: () => zet(l, { licht: "uur", uurwijzer: "fel", minuutwijzer: "flets" }),
-  });
+  if (!al("stap12-lange-naam")) {
+    zet(l, { licht: "minuut", uurwijzer: "flets", minuutwijzer: "fel" });
+    await keuze(l, {
+      id: "stap12-lange-naam",
+      voordoen: () => [],
+      opruimen: () => zet(l, { licht: "minuut", uurwijzer: "flets", minuutwijzer: "fel" }),
+    });
+  }
+  if (!al("stap12-korte-naam")) {
+    zet(l, { licht: "uur", uurwijzer: "fel", minuutwijzer: "flets" });
+    await keuze(l, {
+      id: "stap12-korte-naam",
+      voordoen: () => [],
+      opruimen: () => zet(l, { licht: "uur", uurwijzer: "fel", minuutwijzer: "flets" }),
+    });
+  }
 
   /* Stap 13. De kleine wijzer leest het uur: de grote is vaag; de kleine draait naar 3, 7 en 11 terwijl de vraag klinkt. */
-  await zegDoor(l, ...ZIN.urenUitleg);
+  if (!alGemaakt(l, "stap13-wijst-3")) await zegDoor(l, ...ZIN.urenUitleg);
+  const al13 = alGemaakt(l, "stap13-wijst-11");
   for (const uur of [3, 7, 11]) {
+    if (al(`stap13-wijst-${uur}`)) continue;
     zet(l, { stand: { tijd: u(uur), draai: true }, licht: "uur", uurwijzer: "fel", minuutwijzer: "flets", getalKleur: null });
     await keuze(l, {
       id: `stap13-wijst-${uur}`,
@@ -895,92 +980,106 @@ async function uitlegRoute(l: Lesgids) {
       opruimen: () => zet(l, { ring: null, licht: "uur", uurwijzer: "fel", minuutwijzer: "flets" }),
     });
   }
-  await zegDoor(l, ZIN.urenKlaar);
+  if (!al13) await zegDoor(l, ZIN.urenKlaar);
 
   /* Stap 14. Zelf de kleine wijzer verzetten (3 keer). De grote wijzer is weer fel; eerst wacht Bliepo op de pijl. */
-  zet(l, { licht: "minuut", minuutwijzer: "fel", uurwijzer: "fel", getalKleur: null, ring: null });
-  await zegDoor(l, ZIN.groteWijzerKijk);
-  zet(l, { licht: null });
-  await zetUur(l, 2);
-  await zegDoor(l, ZIN.na2);
-  zet(l, { getalKleur: null });
-  await zetUur(l, 3);
-  await zegDoor(l, ZIN.na3);
-  zet(l, { getalKleur: null });
-  await zetUur(l, 6);
-  zet(l, { licht: null, getalKleur: null, doel: null });
+  if (!al("stap15-grote-steeds")) {
+    zet(l, { licht: "minuut", minuutwijzer: "fel", uurwijzer: "fel", getalKleur: null, ring: null });
+    await zegDoor(l, ZIN.groteWijzerKijk);
+    zet(l, { licht: null });
+    await zetUur(l, 2);
+    await zegDoor(l, ZIN.na2);
+    zet(l, { getalKleur: null });
+    await zetUur(l, 3);
+    await zegDoor(l, ZIN.na3);
+    zet(l, { getalKleur: null });
+    await zetUur(l, 6);
+    zet(l, { licht: null, getalKleur: null, doel: null });
 
-  /* Stap 15. Waar stond de grote wijzer elke keer? De kleine wijzer is vaag. */
-  zet(l, { uurwijzer: "flets", minuutwijzer: "fel" });
-  await keuze(l, {
-    id: "stap15-grote-steeds",
-    naFout1: async () => {
-      /* Zoals het draaiboek: een extra keer verzetten, en dan goed op de grote wijzer letten. */
-      zet(l, { licht: null, uurwijzer: "fel", minuutwijzer: "fel" });
-      await zetUur(l, 7);
-      zet(l, { doel: null, getalKleur: null });
-    },
-    voordoen: () => {
-      zet(l, { licht: "minuut", ring: 12, ringWijzer: "minuut", getalKleur: { n: 12, wijzer: "minuut" } });
-      return [];
-    },
-    opruimen: () => zet(l, { uurwijzer: "flets", minuutwijzer: "fel", licht: "minuut" }),
-  });
-  zet(l, { licht: "minuut", ring: null, getalKleur: { n: 12, wijzer: "minuut" } });
-  await zegDoor(l, ...ZIN.heelUur);
-  zet(l, { licht: null, uurwijzer: "fel", getalKleur: null });
+    /* Stap 15. Waar stond de grote wijzer elke keer? De kleine wijzer is vaag. */
+    zet(l, { uurwijzer: "flets", minuutwijzer: "fel" });
+    await keuze(l, {
+      id: "stap15-grote-steeds",
+      naFout1: async () => {
+        /* Zoals het draaiboek: een extra keer verzetten, en dan goed op de grote wijzer letten. */
+        zet(l, { licht: null, uurwijzer: "fel", minuutwijzer: "fel" });
+        await zetUur(l, 7);
+        zet(l, { doel: null, getalKleur: null });
+      },
+      voordoen: () => {
+        zet(l, { licht: "minuut", ring: 12, ringWijzer: "minuut", getalKleur: { n: 12, wijzer: "minuut" } });
+        return [];
+      },
+      opruimen: () => zet(l, { uurwijzer: "flets", minuutwijzer: "fel", licht: "minuut" }),
+    });
+    zet(l, { licht: "minuut", ring: null, getalKleur: { n: 12, wijzer: "minuut" } });
+    await zegDoor(l, ...ZIN.heelUur);
+    zet(l, { licht: null, uurwijzer: "fel", getalKleur: null });
+  }
 
   /* Stap 16. De klok op 3 uur, met de 2 uitlegvragen van de oude les (12 / 3 / 6 en 12 uur / 6 uur / 3 uur). */
-  zet(l, { stand: { tijd: u(3), draai: true }, licht: "uur", minuutwijzer: "flets" });
-  await l.wacht(1300);
-  await keuze(l, {
-    id: "stap16-wijst-3",
-    voordoen: () => {
-      zet(l, { ring: 3, ringWijzer: "uur", getalKleur: { n: 3, wijzer: "uur" } });
-      return [K(l).kies("voordoenGetal", VOORDOEN.getal(3))];
-    },
-    opruimen: () => zet(l, { ring: null, licht: "uur", minuutwijzer: "flets", uurwijzer: "fel" }),
-  });
-  zet(l, { licht: null, minuutwijzer: "fel", ring: null, getalKleur: null });
-  await keuze(l, {
-    id: "stap16-hoe-laat",
-    voordoen: () => {
-      zet(l, { licht: "uur", minuutwijzer: "flets", ring: 3, ringWijzer: "uur", getalKleur: { n: 3, wijzer: "uur" } });
-      return kiesStuk(K(l), "voordoenKlok", VOORDOEN.klok(3));
-    },
-    opruimen: () => zet(l, { licht: null, minuutwijzer: "fel", uurwijzer: "fel", ring: null }),
-  });
-  zet(l, { licht: null, minuutwijzer: "fel", ring: null, getalKleur: null });
+  const al16 = al("stap16-wijst-3");
+  if (!al16) {
+    zet(l, { stand: { tijd: u(3), draai: true }, licht: "uur", minuutwijzer: "flets" });
+    await l.wacht(1300);
+    await keuze(l, {
+      id: "stap16-wijst-3",
+      voordoen: () => {
+        zet(l, { ring: 3, ringWijzer: "uur", getalKleur: { n: 3, wijzer: "uur" } });
+        return [K(l).kies("voordoenGetal", VOORDOEN.getal(3))];
+      },
+      opruimen: () => zet(l, { ring: null, licht: "uur", minuutwijzer: "flets", uurwijzer: "fel" }),
+    });
+    zet(l, { licht: null, minuutwijzer: "fel", ring: null, getalKleur: null });
+  }
+  if (!al("stap16-hoe-laat")) {
+    if (al16) zet(l, { stand: { tijd: u(3) } });
+    await keuze(l, {
+      id: "stap16-hoe-laat",
+      voordoen: () => {
+        zet(l, { licht: "uur", minuutwijzer: "flets", ring: 3, ringWijzer: "uur", getalKleur: { n: 3, wijzer: "uur" } });
+        return kiesStuk(K(l), "voordoenKlok", VOORDOEN.klok(3));
+      },
+      opruimen: () => zet(l, { licht: null, minuutwijzer: "fel", uurwijzer: "fel", ring: null }),
+    });
+    zet(l, { licht: null, minuutwijzer: "fel", ring: null, getalKleur: null });
+  }
 
   /* Stap 17. 6 uur. */
-  speelLesgeluid("klokDraai");
-  zet(l, { stand: { tijd: u(6), draai: true } });
-  await l.wacht(1300);
-  await keuze(l, {
-    id: "stap17-6-uur",
-    voordoen: () => {
-      zet(l, { licht: "uur", minuutwijzer: "flets", ring: 6, ringWijzer: "uur", getalKleur: { n: 6, wijzer: "uur" } });
-      return kiesStuk(K(l), "voordoenKlok", VOORDOEN.klok(6));
-    },
-    opruimen: () => zet(l, { licht: null, minuutwijzer: "fel", uurwijzer: "fel", ring: null }),
-  });
-  zet(l, { licht: null, minuutwijzer: "fel", getalKleur: null, ring: null });
+  if (!al("stap17-6-uur")) {
+    speelLesgeluid("klokDraai");
+    zet(l, { stand: { tijd: u(6), draai: true } });
+    await l.wacht(1300);
+    await keuze(l, {
+      id: "stap17-6-uur",
+      voordoen: () => {
+        zet(l, { licht: "uur", minuutwijzer: "flets", ring: 6, ringWijzer: "uur", getalKleur: { n: 6, wijzer: "uur" } });
+        return kiesStuk(K(l), "voordoenKlok", VOORDOEN.klok(6));
+      },
+      opruimen: () => zet(l, { licht: null, minuutwijzer: "fel", uurwijzer: "fel", ring: null }),
+    });
+    zet(l, { licht: null, minuutwijzer: "fel", getalKleur: null, ring: null });
+  }
 
   /* Stap 18. Een strikvraag: is dit 7 uur? (de grote wijzer staat onderaan). Ook bij goed de uitleg. */
-  speelLesgeluid("klokDraai");
-  zet(l, { stand: { tijd: u(7, 30), draai: true } });
-  await l.wacht(1500);
-  await keuze(l, {
-    id: "stap18-strik",
-    vast: true,
-    bijGoed: () => zet(l, { licht: "minuut", uurwijzer: "fel", minuutwijzer: "fel" }),
-    voordoen: () => {
-      zet(l, { licht: "minuut", uurwijzer: "fel", minuutwijzer: "fel" });
-      return [];
-    },
-    opruimen: () => zet(l, { licht: null, uurwijzer: "fel", minuutwijzer: "fel" }),
-  });
-  zet(l, { licht: null });
+  if (!al("stap18-strik")) {
+    speelLesgeluid("klokDraai");
+    zet(l, { stand: { tijd: u(7, 30), draai: true } });
+    await l.wacht(1500);
+    await keuze(l, {
+      id: "stap18-strik",
+      vast: true,
+      bijGoed: () => zet(l, { licht: "minuut", uurwijzer: "fel", minuutwijzer: "fel" }),
+      voordoen: () => {
+        zet(l, { licht: "minuut", uurwijzer: "fel", minuutwijzer: "fel" });
+        return [];
+      },
+      opruimen: () => zet(l, { licht: null, uurwijzer: "fel", minuutwijzer: "fel" }),
+    });
+    zet(l, { licht: null });
+  }
+  /* Verdergaan: de uitleg is af (daarna komt hij niet meer terug). */
+  l.onthoud?.("uitleg", 1);
 }
 
 /**
@@ -989,21 +1088,36 @@ async function uitlegRoute(l: Lesgids) {
  */
 async function oefenblok(l: Lesgids, vanaf: number, mis: number[]): Promise<number> {
   zet(l, { stand: { tijd: u(12) }, wijzers: true, vorm: "klok", licht: null, ring: null, getalKleur: null, uurwijzer: "fel", minuutwijzer: "fel", driehoek: null, pijl: null, hand: null });
-  await zegDoor(l, vanaf ? K(l).kies("oefenVerder", VAR.oefenVerder) : K(l).kies("oefenBegin", VAR.oefenBegin));
+  /* Verdergaan (15.53): was het oefenblok al begonnen, dan niet nog eens de beginzin. */
+  if (!KLOKKEN.some((_, i) => i >= vanaf && alGemaakt(l, klokId(i)))) await zegDoor(l, vanaf ? K(l).kies("oefenVerder", VAR.oefenVerder) : K(l).kies("oefenBegin", VAR.oefenBegin));
   let fouten = mis.length;
   let tussen = 0;
   for (let i = vanaf; i < KLOKKEN.length; i++) {
-    /* Af en toe een overgangszin (BLIEPO-KARAKTER.md §12); meestal niet, want het draaiboek gaat vanzelf door. */
-    if (i === 7) await zegDoor(l, kies(l, OVERGANG));
-    if ((await oefenKlok(l, i)) !== "goed") {
-      fouten++;
-      mis.push(i);
+    /* Verdergaan: een klok die al gemaakt is, telt zoals toen (ook voor de fouten, de klokken die terugkomen en de bonus). */
+    if (klaarAl(l, klokId(i))) {
+      if (st(l).eerste.get(klokId(i)) !== "goed") {
+        fouten++;
+        mis.push(i);
+      }
+    } else {
+      /* Af en toe een overgangszin (BLIEPO-KARAKTER.md §12); meestal niet, want het draaiboek gaat vanzelf door. */
+      if (i === 7) await zegDoor(l, kies(l, OVERGANG));
+      if ((await oefenKlok(l, i)) !== "goed") {
+        fouten++;
+        mis.push(i);
+      }
     }
     /* Vragen tussendoor (draaiboek stap 19): na de eerste klok van het blok "welke wijzer liet het uur zien?", daarna bij
        de eerstvolgende klok die niet op 12 staat "waar wijst de grote wijzer?". Alleen hele uren. */
     if (DRAAIBOEK_EXTRA && tussen < 2) {
       const uur = KLOKKEN[i].uur;
-      if (tussen === 0) {
+      if (tussen === 0 && klaarAl(l, "tussendoor-welke-wijzer")) {
+        tussen = 1;
+        if (st(l).eerste.get("tussendoor-welke-wijzer") !== "goed") fouten++;
+      } else if (tussen === 1 && uur !== 12 && klaarAl(l, `tussendoor-grote-${uur}uur`)) {
+        tussen = 2;
+        if (st(l).eerste.get(`tussendoor-grote-${uur}uur`) !== "goed") fouten++;
+      } else if (tussen === 0) {
         tussen = 1;
         zet(l, { verhaal: null, ring: null, getalKleur: null, licht: null });
         const w = await keuze(l, {
@@ -1033,21 +1147,30 @@ async function oefenblok(l: Lesgids, vanaf: number, mis: number[]): Promise<numb
   const nodig = Math.max(0, MINIMAAL - KLOKKEN.length);
   const terug = [...mis.slice(0, 3), ...RESERVE.filter((i) => !mis.includes(i))].slice(0, Math.max(nodig, Math.min(3, mis.length)));
   if (terug.length) {
-    zet(l, { verhaal: null, ring: null, licht: null, getalKleur: null });
-    /* "Van net terug" alleen als het kind echt iets miste; anders zijn het gewoon extra klokken. */
-    await zegDoor(l, K(l).kies("terug", mis.length ? VAR.terug(terug.length) : VAR.extra(terug.length)));
-    let weerFout = 0;
+    /* Verdergaan (15.53): een klok die terugkomt heeft dezelfde id als de eerste keer; daarom onthoudt de les hoeveel er al
+       terug zijn gekomen en hoeveel daarvan weer niet in 1 keer goed waren. */
+    const terugKlaar = Number(l.hervat?.extra.terugKlaar ?? 0);
+    let weerFout = Number(l.hervat?.extra.terugFout ?? 0);
+    fouten += weerFout;
+    if (!terugKlaar) {
+      zet(l, { verhaal: null, ring: null, licht: null, getalKleur: null });
+      /* "Van net terug" alleen als het kind echt iets miste; anders zijn het gewoon extra klokken. */
+      await zegDoor(l, K(l).kies("terug", mis.length ? VAR.terug(terug.length) : VAR.extra(terug.length)));
+    }
     for (const [n, i] of terug.entries()) {
+      if (n < terugKlaar) continue;
       st(l).laatste = n === terug.length - 1;
       if ((await oefenKlok(l, i)) !== "goed") {
         fouten++;
         weerFout++;
+        l.onthoud?.("terugFout", weerFout);
       }
+      l.onthoud?.("terugKlaar", n + 1);
     }
     if (weerFout) await zegDoor(l, K(l).kies("terugLastig", VAR.terugLastig));
   }
   /* Stap 20. De bonus "hoe laat is het over 1 uur?": alleen als alles in 1 keer goed ging (draaiboek). */
-  if (DRAAIBOEK_EXTRA && fouten === 0) {
+  if (DRAAIBOEK_EXTRA && fouten === 0 && !klaarAl(l, "bonus-over-1-uur")) {
     zet(l, { verhaal: null, ring: null, licht: null, getalKleur: null });
     speelLesgeluid("klokDraai");
     zet(l, { stand: { tijd: u(12), draai: true } });

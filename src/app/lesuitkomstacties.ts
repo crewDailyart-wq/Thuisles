@@ -25,9 +25,11 @@ export async function bewaarUitkomst(invoer: { lesId: string; vraagId: string; u
     /* PRIVACY.md punt C (besluit Sara 19 nov 2026, B5): de voorbeeldpagina bewaart alleen voor Testkind, ook zonder Referer. */
     const kop = await headers();
     if (!voorbeeldMagBewaren(kop.get("referer"), kind.roepnaam, kop.get("next-router-state-tree"))) return { ok: false };
-    const ok = bewaarLesUitkomst({ kindId: kind.id, ...invoer, denkfouten: Array.isArray(invoer.denkfouten) ? invoer.denkfouten.map(String) : [] });
+    /* Vraagnamen met een "+" of spatie (bijvoorbeeld "vraag4-2+6-krentenbol" bij Plussommen) werden stil geweigerd (gevonden 28 nov 2026). */
+    const vraagId = String(invoer.vraagId).toLowerCase().replace(/[^a-z0-9-]+/g, "-").slice(0, 80);
+    const ok = bewaarLesUitkomst({ kindId: kind.id, ...invoer, vraagId, denkfouten: Array.isArray(invoer.denkfouten) ? invoer.denkfouten.map(String) : [] });
     /* Sleutel alleen bij 'goed in één keer' (pogingen 1, geen denkfout); bij een fout verliest het kind nooit iets. */
-    const nieuweSleutel = ok && invoer.uitkomst === "goed in één keer" && invoer.pogingen === 1 ? beloonInEenKeer(kind.id, invoer.lesId, invoer.vraagId) : false;
+    const nieuweSleutel = ok && invoer.uitkomst === "goed in één keer" && invoer.pogingen === 1 ? beloonInEenKeer(kind.id, invoer.lesId, vraagId) : false;
     return { ok, nieuweSleutel };
   } catch {
     return { ok: false };
