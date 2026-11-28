@@ -496,7 +496,8 @@ Vraag niet tussendoor (12.10). Zet in KEUZES-VOOR-SARA.md, onder een nieuw kopje
 
 - Sleutel alleen bij een antwoord in 1 keer goed, nooit afgeschreven bij een fout; 1 ster voor het afmaken van de les, nooit dubbel bij opnieuw spelen. Alles gaat via `bewaarUitkomst` (al in elke gouden les) en aan het eind `bewaarLesAfgemaakt(LES_ID)`.
 - Een nieuwe sleutel speelt een kort geluidje via het geluidsysteem en stoort het leren niet.
-- Verdergaan waar het kind was en de voortgangsbalk: volgens BOUWREGELS 15.53 en het ontwerp van Sara (nog niet af).
+- Verdergaan waar het kind was (BOUWREGELS 15.53): vaste vraag-id's, `l.stap` in `noteer`, `klaarAl` om gemaakte vragen met hun uitleg over te slaan, `l.openingsZin` bij terugkomen, `l.onthoud` alleen voor een keuze die nodig is. Referentie: `squla-tellen-extra-gouden.tsx`; volledige opdracht HERVAT-INBOUW.md; controle `scripts/hervat-controle.mjs`.
+- Opnieuw doen na afmaken en het rondje: BOUWREGELS 15.59. Voortgangsbalk: 15.54 (`B.st(l).totaal` of het aantal vragen, `l.voortgang`).
 
 ## 10. Opslaan
 
